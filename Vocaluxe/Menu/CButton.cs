@@ -7,6 +7,7 @@ using System.Xml.XPath;
 
 using Vocaluxe.Base;
 using Vocaluxe.Lib.Draw;
+using Vocaluxe.Menu.Animations;
 
 namespace Vocaluxe.Menu
 {
@@ -42,6 +43,10 @@ namespace Vocaluxe.Menu
         public float SReflectionSpace;
         public float SReflectionHeight;
 
+        public bool SAnimation;
+        public EAnimationType SAnimationType;
+        private CAnimation _SAnimation;
+
         private bool _Selected;
         public bool Pressed;
         public bool Selected
@@ -75,6 +80,8 @@ namespace Vocaluxe.Menu
             SReflection = false;
             SReflectionSpace = 0f;
             SReflectionHeight = 0f;
+
+            SAnimation = false;
         }
 
         public bool LoadTheme(string XmlPath, string ElementName, XPathNavigator navigator, int SkinIndex)
@@ -144,10 +151,27 @@ namespace Vocaluxe.Menu
             else
                 SReflection = false;
 
+            //Animation
+            if (CHelper.ItemExistsInXML(item + "/SAnimation", navigator))
+            {
+                SAnimation = true;
+                _ThemeLoaded &= CHelper.TryGetEnumValueFromXML<EAnimationType>(item + "/SAnimation/Type", navigator, ref SAnimationType);
+                _SAnimation = new CAnimation(SAnimationType);
+                _SAnimation.LoadAnimation(item + "/SAnimation", navigator);
+            }
+            else
+                SAnimation = false;
+
             if (_ThemeLoaded)
             {
                 _Theme.Name = ElementName;
                 LoadTextures();
+                //Give button-data to animation
+                if (SAnimation)
+                {
+                    _SAnimation.setRect(Rect);
+                    _SAnimation.setColor(Color);
+                }
             }
             return _ThemeLoaded;
         }
@@ -262,24 +286,44 @@ namespace Vocaluxe.Menu
             }
             else if(!SelText)
             {
+                SRectF dRect = new SRectF();
+                if (SAnimation)
+                {
+                    if (!_SAnimation.AnimationActive())
+                        _SAnimation.StartAnimation();
+                    _SAnimation.Update();
+                    dRect = _SAnimation.getRect();
+                }
+                else
+                    dRect = Rect;
                 texture = CTheme.GetSkinTexture(_Theme.STextureName);
-                CDraw.DrawTexture(texture, Rect, SColor);
-                Text.DrawRelative(Rect.X, Rect.Y);
+                CDraw.DrawTexture(texture, dRect, SColor);
+                Text.DrawRelative(dRect.X, dRect.Y);
                 if (Reflection)
                 {
-                    CDraw.DrawTextureReflection(texture, Rect, SColor, Rect, ReflectionSpace, ReflectionHeight);
-                    Text.DrawRelative(Rect.X, Rect.Y, ReflectionSpace, ReflectionHeight, Rect.H);
+                    CDraw.DrawTextureReflection(texture, dRect, SColor, dRect, ReflectionSpace, ReflectionHeight);
+                    Text.DrawRelative(dRect.X, dRect.Y, ReflectionSpace, ReflectionHeight, dRect.H);
                 }
             }
             else if(SelText)
             {
+                SRectF dRect = new SRectF();
+                if (SAnimation)
+                {
+                    if (!_SAnimation.AnimationActive())
+                        _SAnimation.StartAnimation();
+                    _SAnimation.Update();
+                    dRect = _SAnimation.getRect();
+                }
+                else
+                    dRect = Rect;
                 texture = CTheme.GetSkinTexture(_Theme.STextureName);
-                CDraw.DrawTexture(texture, Rect, SColor);
-                SText.DrawRelative(Rect.X, Rect.Y);
+                CDraw.DrawTexture(texture, dRect, SColor);
+                SText.DrawRelative(dRect.X, dRect.Y);
                 if (Reflection)
                 {
-                    CDraw.DrawTextureReflection(texture, Rect, SColor, Rect, ReflectionSpace, ReflectionHeight);
-                    SText.DrawRelative(Rect.X, Rect.Y, ReflectionSpace, ReflectionHeight, Rect.H);
+                    CDraw.DrawTextureReflection(texture, dRect, SColor, dRect, ReflectionSpace, ReflectionHeight);
+                    SText.DrawRelative(dRect.X, dRect.Y, ReflectionSpace, ReflectionHeight, dRect.H);
                 }
             }
         }

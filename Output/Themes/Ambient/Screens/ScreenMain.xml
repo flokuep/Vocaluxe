@@ -85,6 +85,15 @@
         <Space>10</Space>
         <Height>26</Height>
       </SReflection>
+      <SAnimation>
+	    <Type>Resize</Type>
+	    <Speed>10000,00</Speed>
+	    <Repeat>Repeat</Repeat>
+	    <X>95</X>
+	    <Y>550</Y>
+	    <W>200</W>
+	    <H>100</H>	    
+      </SAnimation>
     </ButtonSing>
     <ButtonOptions>
       <!--<Skin>: Texture name-->

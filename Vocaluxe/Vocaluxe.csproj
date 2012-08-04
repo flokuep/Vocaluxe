@@ -205,6 +205,10 @@
     <Compile Include="Lib\Video\CVideoDecoder.cs" />
     <Compile Include="Lib\Video\CVideoDecoderFFmpeg.cs" />
     <Compile Include="Lib\Video\IVideoDecoder.cs" />
+    <Compile Include="Menu\Animations\CAnimation.cs" />
+    <Compile Include="Menu\Animations\CAnimationResize.cs" />
+    <Compile Include="Menu\Animations\CAnimationFramework.cs" />
+    <Compile Include="Menu\Animations\IAnimation.cs" />
     <Compile Include="Menu\CBackground.cs" />
     <Compile Include="Menu\CButton.cs" />
     <Compile Include="Menu\CEqualizer.cs" />
