@@ -68,7 +68,7 @@ namespace Vocaluxe.Menu.Animations
         {
             bool finished = false;
 
-            float factor = Timer.ElapsedMilliseconds / Speed;
+            float factor = Timer.ElapsedMilliseconds / Time;
             if (!ResetMode)
             {
                 CurrentRect.X = OriginalRect.X + ((FinalRect.X - OriginalRect.X) * factor);

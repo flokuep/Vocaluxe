@@ -114,7 +114,7 @@ namespace Vocaluxe.Menu.Animations
             switch (Order)
             {
                 case EAnimationResizeOrder.Both:
-                    float factor = Timer.ElapsedMilliseconds / Speed;
+                    float factor = Timer.ElapsedMilliseconds / Time;
                     if (!ResetMode)
                     {  
                         CurrentRect.X = OriginalRect.X + ((FinalRect.X - OriginalRect.X) * factor);
@@ -138,8 +138,8 @@ namespace Vocaluxe.Menu.Animations
                 case EAnimationResizeOrder.HeightFirst:
                     if (!ResetMode)
                     {
-                        float factorH = Timer.ElapsedMilliseconds / (Speed / 2);
-                        float factorW = (Timer.ElapsedMilliseconds - (Speed / 2)) / (Speed / 2);
+                        float factorH = Timer.ElapsedMilliseconds / (Time / 2);
+                        float factorW = (Timer.ElapsedMilliseconds - (Time / 2)) / (Time / 2);
                         if (factorH < 1f)
                         {
                             CurrentRect.Y = OriginalRect.Y + ((FinalRect.Y - OriginalRect.Y) * factorH);
@@ -155,8 +155,8 @@ namespace Vocaluxe.Menu.Animations
                     }
                     else
                     {
-                        float factorH = Timer.ElapsedMilliseconds / (Speed / 2);
-                        float factorW = (Timer.ElapsedMilliseconds - (Speed / 2)) / (Speed / 2);
+                        float factorH = Timer.ElapsedMilliseconds / (Time / 2);
+                        float factorW = (Timer.ElapsedMilliseconds - (Time / 2)) / (Time / 2);
                         if (factorH < 1f)
                         {
                             CurrentRect.Y = FinalRect.Y + ((OriginalRect.Y - FinalRect.Y) * factorH);
@@ -175,8 +175,8 @@ namespace Vocaluxe.Menu.Animations
                 case EAnimationResizeOrder.WidthFirst:
                     if (!ResetMode)
                     {
-                        float factorH = (Timer.ElapsedMilliseconds - (Speed / 2)) / (Speed / 2);
-                        float factorW = Timer.ElapsedMilliseconds / (Speed / 2);
+                        float factorH = (Timer.ElapsedMilliseconds - (Time / 2)) / (Time / 2);
+                        float factorW = Timer.ElapsedMilliseconds / (Time / 2);
                         if (factorW < 1f)
                         {
                             CurrentRect.W = OriginalRect.W + ((FinalRect.W - OriginalRect.W) * factorW);
@@ -192,8 +192,8 @@ namespace Vocaluxe.Menu.Animations
                     }
                     else
                     {
-                        float factorH = (Timer.ElapsedMilliseconds - (Speed / 2)) / (Speed / 2);
-                        float factorW = Timer.ElapsedMilliseconds / (Speed / 2);
+                        float factorH = (Timer.ElapsedMilliseconds - (Time / 2)) / (Time / 2);
+                        float factorW = Timer.ElapsedMilliseconds / (Time / 2);
                         if (factorW < 1f)
                         {
                             CurrentRect.W = FinalRect.W + ((OriginalRect.W - FinalRect.W) * factorW);

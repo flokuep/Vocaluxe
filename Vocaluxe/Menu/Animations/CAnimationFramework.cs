@@ -35,7 +35,7 @@ namespace Vocaluxe.Menu.Animations
         public EAnimationType Type;
         public EAnimationRepeat Repeat;
         public EOffOn Reset;
-        public float Speed;
+        public float Time;
 
         public Stopwatch Timer = new Stopwatch();
         public bool ResetMode = false;
@@ -47,7 +47,7 @@ namespace Vocaluxe.Menu.Animations
         {
             _AnimationLoaded = true;
 
-            _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/Speed", navigator, ref Speed);
+            _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/Time", navigator, ref Time);
             _AnimationLoaded &= CHelper.TryGetEnumValueFromXML<EAnimationRepeat>(item + "/Repeat", navigator, ref Repeat);
 
             return _AnimationLoaded;

@@ -87,7 +87,7 @@
       </SReflection>
       <Animation1>
 	    <Type>Resize</Type>
-	    <Speed>4000,00</Speed>
+	    <Time>4000,00</Time>
 	    <Repeat>RepeatWithReset</Repeat>
 	    <Position>Center</Position>
 	    <Order>HeightFirst</Order>
@@ -153,7 +153,7 @@
       </SReflection>
       <Animation1>
 	    <Type>MoveLinear</Type>
-	    <Speed>2000,00</Speed>
+	    <Time>2000,00</Time>
 	    <Repeat>RepeatWithReset</Repeat>
 	    <X>500</X>
 	    <Y>400</Y>	    
@@ -217,7 +217,7 @@
       </SReflection>
       <Animation1>
 	    <Type>Resize</Type>
-	    <Speed>2000,00</Speed>
+	    <Time>2000,00</Time>
 	    <Repeat>Reset</Repeat>
 	    <Position>BottomLeft</Position>
 	    <Order>Both</Order>
@@ -283,7 +283,7 @@
       </SReflection>
       <Animation1>
 	    <Type>Resize</Type>
-	    <Speed>2000,00</Speed>
+	    <Time>2000,00</Time>
 	    <Repeat>Repeat</Repeat>
 	    <Position>BottomRight</Position>
 	    <Order>WidthFirst</Order>
