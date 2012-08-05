@@ -29,10 +29,12 @@ namespace Vocaluxe.Menu.Animations
 
         public EAnimationType Type;
         public EAnimationRepeat Repeat;
+        public EOffOn Reset;
         public float Speed;
 
         public Stopwatch Timer = new Stopwatch();
         public bool ResetMode = false;
+        public bool AnimationDrawn = false;
 
         public abstract void Init();
 
@@ -60,16 +62,22 @@ namespace Vocaluxe.Menu.Animations
         {
             Timer.Stop();
             Timer.Reset();
+            if(Repeat == EAnimationRepeat.None)
+                AnimationDrawn = true;
         }
 
         public virtual void ResetAnimation()
         {
             ResetMode = !ResetMode;
+            Timer.Stop();
+            Timer.Reset();
+            Timer.Start();
+            AnimationDrawn = false;
         }
 
         public virtual bool AnimationActive()
         {
-            return Timer.IsRunning;
+            return Timer.IsRunning || (AnimationDrawn && Repeat == EAnimationRepeat.None);
         }
 
         public virtual void setRect(SRectF rect)
@@ -88,6 +96,21 @@ namespace Vocaluxe.Menu.Animations
         public virtual SColorF getColor()
         {
             return new SColorF();
+        }
+
+        public virtual bool isDrawn()
+        {
+            return AnimationDrawn;
+        }
+
+        public virtual void setAnimationReset(EOffOn reset)
+        {
+            Reset = reset;
+        }
+
+        public virtual EOffOn getAnimationReset()
+        {
+            return Reset;
         }
 
         public abstract void Update();

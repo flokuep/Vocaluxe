@@ -158,6 +158,9 @@ namespace Vocaluxe.Menu
                 _ThemeLoaded &= CHelper.TryGetEnumValueFromXML<EAnimationType>(item + "/SAnimation/Type", navigator, ref SAnimationType);
                 _SAnimation = new CAnimation(SAnimationType);
                 _SAnimation.LoadAnimation(item + "/SAnimation", navigator);
+                EOffOn reset = EOffOn.TR_CONFIG_OFF;
+                _ThemeLoaded &= CHelper.TryGetEnumValueFromXML<EOffOn>(item + "SAnimation/ResetAnimation", navigator, ref reset);
+                _SAnimation.setAnimationReset(reset);
             }
             else
                 SAnimation = false;
@@ -289,7 +292,7 @@ namespace Vocaluxe.Menu
                 SRectF dRect = new SRectF();
                 if (SAnimation)
                 {
-                    if (!_SAnimation.AnimationActive())
+                    if (!_SAnimation.AnimationActive() && !_SAnimation.isDrawn())
                         _SAnimation.StartAnimation();
                     _SAnimation.Update();
                     dRect = _SAnimation.getRect();
