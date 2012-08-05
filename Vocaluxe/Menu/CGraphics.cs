@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Vocaluxe.Base;
 using Vocaluxe.Lib.Draw;
 using Vocaluxe.Screens;
+using Vocaluxe.Menu.Animations;
 
 namespace Vocaluxe.Menu
 {
@@ -331,6 +332,8 @@ namespace Vocaluxe.Menu
 
             CSound.Update();
             CBackgroundMusic.Update();
+
+            CAnimations.Update();
 
             if (CConfig.CoverLoading == ECoverLoading.TR_CONFIG_COVERLOADING_DYNAMIC && _CurrentScreen != EScreens.ScreenSing)
                 CSongs.LoadCover(30L, 1);

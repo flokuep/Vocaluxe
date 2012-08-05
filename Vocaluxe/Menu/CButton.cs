@@ -62,7 +62,6 @@ namespace Vocaluxe.Menu
 
         public bool Animation;
         private List<CAnimation> _Animations;
-        public CAnimations Animations;
 
         private bool _Selected;
         public bool Pressed;
@@ -210,7 +209,7 @@ namespace Vocaluxe.Menu
                         anim.setRect(Rect);
                         anim.setTexture(Texture);
                         //Add this to CAnimations
-                        Animations.Add(this, anim);
+                        CAnimations.Add(this, anim);
                     }
                 }
             }
@@ -312,9 +311,6 @@ namespace Vocaluxe.Menu
             if (!Visible && CSettings.GameState != EGameState.EditTheme && !ForceDraw)
                 return;
 
-            if (Animation)
-                Animations.Update();
-
             if (!Selected && !Pressed)
             {
                 CDraw.DrawTexture(Texture, Rect, Color);
@@ -357,7 +353,7 @@ namespace Vocaluxe.Menu
         public void LoadTextures()
         {
             Text.LoadTextures();
-            _Texture = CTheme.GetSkinTexture(_Theme.TextureName);
+            Texture = CTheme.GetSkinTexture(_Theme.TextureName);
 
             if (_Theme.ColorName != String.Empty)
                 Color = CTheme.GetColor(_Theme.ColorName);

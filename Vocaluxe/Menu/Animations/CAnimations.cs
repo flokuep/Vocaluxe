@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Vocaluxe.Menu.Animations
 {
-    public class CAnimations
+    public static class CAnimations
     {
         struct SAnimationMenu {
             public IMenuProperties element;
@@ -17,14 +17,14 @@ namespace Vocaluxe.Menu.Animations
             }
         }
 
-        private List<SAnimationMenu> Elements = new List<SAnimationMenu>();
+        private static List<SAnimationMenu> Elements = new List<SAnimationMenu>();
 
-        public void Add(IMenuProperties e, CAnimation anim)
+        public static void Add(IMenuProperties e, CAnimation anim)
         {
             Elements.Add(new SAnimationMenu(e, anim));
         }
 
-        public void Update()
+        public static void Update()
         {
             foreach (SAnimationMenu am in Elements)
             {

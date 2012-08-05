@@ -44,6 +44,8 @@ namespace Vocaluxe.Menu.Animations
 
         public override bool LoadAnimation(string item, XPathNavigator navigator)
         {
+            _AnimationLoaded = true;
+
             //Load normal animation-options
             _AnimationLoaded &= base.LoadAnimation(item, navigator);
 

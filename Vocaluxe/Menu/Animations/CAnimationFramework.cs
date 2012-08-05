@@ -27,6 +27,10 @@ namespace Vocaluxe.Menu.Animations
     {
         public bool _AnimationLoaded;
 
+        private SRectF OriginalRect;
+        private SColorF OriginalColor;
+        private STexture OriginalTexture;
+
         public EAnimationType Type;
         public EAnimationRepeat Repeat;
         public EOffOn Reset;
@@ -82,29 +86,32 @@ namespace Vocaluxe.Menu.Animations
 
         public virtual void setRect(SRectF rect)
         {
+            OriginalRect = rect;
         }
 
         public virtual SRectF getRect()
         {
-            return new SRectF();
+            return OriginalRect;
         }
 
         public virtual void setColor(SColorF color)
         {
+            OriginalColor = color;
         }
 
         public virtual SColorF getColor()
         {
-            return new SColorF();
+            return OriginalColor;
         }
 
         public virtual void setTexture(STexture texture)
         {
+            OriginalTexture = texture;
         }
 
         public virtual STexture getTexture()
         {
-            return new STexture();
+            return OriginalTexture;
         }
 
         public virtual bool isDrawn()
