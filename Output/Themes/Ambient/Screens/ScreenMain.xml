@@ -152,13 +152,11 @@
         <Height>26</Height>
       </SReflection>
       <Animation1>
-	    <Type>Resize</Type>
+	    <Type>MoveLinear</Type>
 	    <Speed>2000,00</Speed>
-	    <Repeat>None</Repeat>
-	    <Position>TopRight</Position>
-	    <Order>HeightFirst</Order>
-	    <W>200</W>
-	    <H>100</H>	    
+	    <Repeat>RepeatWithReset</Repeat>
+	    <X>500</X>
+	    <Y>400</Y>	    
       </Animation1>      
     </ButtonOptions>
     <ButtonProfiles>

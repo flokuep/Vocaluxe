@@ -79,9 +79,9 @@ namespace Vocaluxe.Menu.Animations
             return _Animation.getColor();
         }
 
-        public void setTexture(STexture texture)
+        public void setTexture(ref STexture texture)
         {
-            _Animation.setTexture(texture);
+            _Animation.setTexture(ref texture);
         }
 
         public STexture getTexture()
@@ -110,6 +110,10 @@ namespace Vocaluxe.Menu.Animations
             {
                 case EAnimationType.Resize:
                     _Animation = new CAnimationResize();
+                    break;
+
+                case EAnimationType.MoveLinear:
+                    _Animation = new CAnimationMoveLinear();
                     break;
             }
         }

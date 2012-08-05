@@ -207,7 +207,7 @@ namespace Vocaluxe.Menu
                     {
                         anim.setColor(Color);
                         anim.setRect(Rect);
-                        anim.setTexture(Texture);
+                        anim.setTexture(ref _Texture);
                         //Add this to CAnimations
                         CAnimations.Add(this, anim);
                     }

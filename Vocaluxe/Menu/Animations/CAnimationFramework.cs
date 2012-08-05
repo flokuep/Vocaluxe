@@ -12,7 +12,8 @@ namespace Vocaluxe.Menu.Animations
 {
     public enum EAnimationType
     {
-        Resize
+        Resize,
+        MoveLinear
     }
 
     public enum EAnimationRepeat
@@ -104,7 +105,7 @@ namespace Vocaluxe.Menu.Animations
             return OriginalColor;
         }
 
-        public virtual void setTexture(STexture texture)
+        public virtual void setTexture(ref STexture texture)
         {
             OriginalTexture = texture;
         }

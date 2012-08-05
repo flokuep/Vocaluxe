@@ -114,10 +114,9 @@ namespace Vocaluxe.Menu.Animations
             switch (Order)
             {
                 case EAnimationResizeOrder.Both:
-                    
+                    float factor = Timer.ElapsedMilliseconds / Speed;
                     if (!ResetMode)
-                    {
-                        float factor = Timer.ElapsedMilliseconds / Speed ;
+                    {  
                         CurrentRect.X = OriginalRect.X + ((FinalRect.X - OriginalRect.X) * factor);
                         CurrentRect.Y = OriginalRect.Y + ((FinalRect.Y - OriginalRect.Y) * factor);
                         CurrentRect.H = OriginalRect.H + ((FinalRect.H - OriginalRect.H) * factor);
@@ -127,10 +126,12 @@ namespace Vocaluxe.Menu.Animations
                     }
                     else
                     {
-                        CurrentRect.X = CurrentRect.X + ((OriginalRect.X - CurrentRect.X) / Speed * Timer.ElapsedMilliseconds);
-                        CurrentRect.Y = CurrentRect.Y + ((OriginalRect.Y - CurrentRect.Y) / Speed * Timer.ElapsedMilliseconds);
-                        CurrentRect.H = CurrentRect.H + ((OriginalRect.H - CurrentRect.H) / Speed * Timer.ElapsedMilliseconds);
-                        CurrentRect.W = CurrentRect.W + ((OriginalRect.W - CurrentRect.W) / Speed * Timer.ElapsedMilliseconds);
+                        CurrentRect.X = FinalRect.X + ((OriginalRect.X - FinalRect.X) * factor);
+                        CurrentRect.Y = FinalRect.Y + ((OriginalRect.Y - FinalRect.Y) * factor);
+                        CurrentRect.H = FinalRect.H + ((OriginalRect.H - FinalRect.H) * factor);
+                        CurrentRect.W = FinalRect.W + ((OriginalRect.W - FinalRect.W) * factor);
+                        if (factor >= 1f)
+                            finished = true;
                     }
                     break;
 
@@ -191,6 +192,20 @@ namespace Vocaluxe.Menu.Animations
                     }
                     else
                     {
+                        float factorH = (Timer.ElapsedMilliseconds - (Speed / 2)) / (Speed / 2);
+                        float factorW = Timer.ElapsedMilliseconds / (Speed / 2);
+                        if (factorW < 1f)
+                        {
+                            CurrentRect.W = FinalRect.W + ((OriginalRect.W - FinalRect.W) * factorW);
+                            CurrentRect.X = FinalRect.X + ((OriginalRect.X - FinalRect.X) * factorW);
+                        }
+                        else if (factorH < 1f)
+                        {
+                            CurrentRect.Y = FinalRect.Y + ((OriginalRect.Y - FinalRect.Y) * factorH);
+                            CurrentRect.H = FinalRect.H + ((OriginalRect.H - FinalRect.H) * factorH);
+                        }
+                        else
+                            finished = true;
                     }
                     break;
             }
