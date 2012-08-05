@@ -115,6 +115,10 @@ namespace Vocaluxe.Menu.Animations
                 case EAnimationType.MoveLinear:
                     _Animation = new CAnimationMoveLinear();
                     break;
+
+                case EAnimationType.Video:
+                    _Animation = new CAnimationVideo();
+                    break;
             }
         }
     }

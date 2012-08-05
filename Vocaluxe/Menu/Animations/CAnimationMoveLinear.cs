@@ -14,12 +14,16 @@ namespace Vocaluxe.Menu.Animations
     {
         public EAnimationResizePosition Position;
         public EAnimationResizeOrder Order;
+        public EAnimationType Type;
+        public EAnimationRepeat Repeat;
+
         public SRectF FinalRect;
         public SRectF CurrentRect;
         public SRectF OriginalRect;
 
         public CAnimationMoveLinear()
         {
+            Init();
         }
 
         public override void Init()
@@ -35,8 +39,11 @@ namespace Vocaluxe.Menu.Animations
             _AnimationLoaded &= base.LoadAnimation(item, navigator);
 
             //Load specific animation-options
+            _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/Time", navigator, ref Time);
+            _AnimationLoaded &= CHelper.TryGetEnumValueFromXML<EAnimationRepeat>(item + "/Repeat", navigator, ref Repeat);
             _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/X", navigator, ref FinalRect.X);
             _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/Y", navigator, ref FinalRect.Y);
+
 
             return _AnimationLoaded;
         }

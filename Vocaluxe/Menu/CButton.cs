@@ -84,9 +84,11 @@ namespace Vocaluxe.Menu
         public CButton()
         {
             _Theme = new SThemeButton();
-            Rect = new SRectF();
-            Color = new SColorF();
+            _Rect = new SRectF();
+            _Color = new SColorF();
             SColor = new SColorF();
+
+            _Texture = new STexture();
 
             SelText = false;
             Text = new CText();

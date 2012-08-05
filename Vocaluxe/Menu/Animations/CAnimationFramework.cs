@@ -13,7 +13,8 @@ namespace Vocaluxe.Menu.Animations
     public enum EAnimationType
     {
         Resize,
-        MoveLinear
+        MoveLinear,
+        Video
     }
 
     public enum EAnimationRepeat
@@ -28,12 +29,13 @@ namespace Vocaluxe.Menu.Animations
     {
         public bool _AnimationLoaded;
 
-        private SRectF OriginalRect;
-        private SColorF OriginalColor;
-        private STexture OriginalTexture;
-
         public EAnimationType Type;
         public EAnimationRepeat Repeat;
+
+        public SRectF OriginalRect;
+        public SColorF OriginalColor;
+        public  STexture OriginalTexture;
+
         public EOffOn Reset;
         public float Time;
 
@@ -46,9 +48,6 @@ namespace Vocaluxe.Menu.Animations
         public virtual bool LoadAnimation(string item, XPathNavigator navigator)
         {
             _AnimationLoaded = true;
-
-            _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/Time", navigator, ref Time);
-            _AnimationLoaded &= CHelper.TryGetEnumValueFromXML<EAnimationRepeat>(item + "/Repeat", navigator, ref Repeat);
 
             return _AnimationLoaded;
         }

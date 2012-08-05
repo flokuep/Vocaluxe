@@ -88,7 +88,7 @@
       <Animation1>
 	    <Type>Resize</Type>
 	    <Time>4000,00</Time>
-	    <Repeat>RepeatWithReset</Repeat>
+	    <Repeat>None</Repeat>
 	    <Position>Center</Position>
 	    <Order>HeightFirst</Order>
 	    <W>200</W>
@@ -157,7 +157,16 @@
 	    <Repeat>RepeatWithReset</Repeat>
 	    <X>500</X>
 	    <Y>400</Y>	    
-      </Animation1>      
+      </Animation1>    
+      <Animation2>
+	    <Type>Resize</Type>
+	    <Time>2000,00</Time>
+	    <Repeat>RepeatWithReset</Repeat>
+	    <Position>Center</Position>
+	    <Order>HeightFirst</Order>
+	    <W>200</W>
+	    <H>100</H>	    
+      </Animation2>
     </ButtonOptions>
     <ButtonProfiles>
       <!--<Skin>: Texture name-->

@@ -210,6 +210,7 @@
     <Compile Include="Menu\Animations\CAnimationResize.cs" />
     <Compile Include="Menu\Animations\CAnimationFramework.cs" />
     <Compile Include="Menu\Animations\CAnimations.cs" />
+    <Compile Include="Menu\Animations\CAnimationVideo.cs" />
     <Compile Include="Menu\Animations\IAnimation.cs" />
     <Compile Include="Menu\CBackground.cs" />
     <Compile Include="Menu\CButton.cs" />
