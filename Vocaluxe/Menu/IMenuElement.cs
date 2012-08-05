@@ -4,9 +4,12 @@ using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 
+using Vocaluxe.Base;
+using Vocaluxe.Lib.Draw;
+
 namespace Vocaluxe.Menu
 {
-    interface IMenuElement
+    public interface IMenuElement
     {
         bool LoadTheme(string XmlPath, string ElementName, XPathNavigator navigator, int SkinIndex);
         bool SaveTheme(XmlWriter writer);

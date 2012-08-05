@@ -98,6 +98,15 @@ namespace Vocaluxe.Menu.Animations
             return new SColorF();
         }
 
+        public virtual void setTexture(STexture texture)
+        {
+        }
+
+        public virtual STexture getTexture()
+        {
+            return new STexture();
+        }
+
         public virtual bool isDrawn()
         {
             return AnimationDrawn;

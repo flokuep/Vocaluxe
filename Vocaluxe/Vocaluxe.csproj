@@ -208,6 +208,7 @@
     <Compile Include="Menu\Animations\CAnimation.cs" />
     <Compile Include="Menu\Animations\CAnimationResize.cs" />
     <Compile Include="Menu\Animations\CAnimationFramework.cs" />
+    <Compile Include="Menu\Animations\CAnimations.cs" />
     <Compile Include="Menu\Animations\IAnimation.cs" />
     <Compile Include="Menu\CBackground.cs" />
     <Compile Include="Menu\CButton.cs" />
@@ -220,6 +221,7 @@
     <Compile Include="Menu\CSelectSlide.cs" />
     <Compile Include="Menu\CStatic.cs" />
     <Compile Include="Menu\CText.cs" />
+    <Compile Include="Menu\IMenuProperties.cs" />
     <Compile Include="Menu\IMenuElement.cs" />
     <Compile Include="Menu\SingNotes\CSingNotes.cs" />
     <Compile Include="Menu\SingNotes\CSingNotesClassic.cs" />

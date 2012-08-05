@@ -20,6 +20,8 @@ namespace Vocaluxe.Menu.Animations
         SRectF getRect();
         void setColor(SColorF color);
         SColorF getColor();
+        void setTexture(STexture texture);
+        STexture getTexture();
         bool isDrawn();
         void setAnimationReset(EOffOn reset);
         EOffOn getAnimationReset();

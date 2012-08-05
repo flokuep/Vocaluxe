@@ -22,14 +22,31 @@ namespace Vocaluxe.Menu
         public string STextureName;
     }
 
-    class CButton : IMenuElement
+    class CButton : IMenuElement, IMenuProperties
     {
         private SThemeButton _Theme;
         private bool _ThemeLoaded;
 
-        public SRectF Rect;
-        public SColorF Color;
+        private SRectF _Rect;
+        public SRectF Rect
+        {
+            get { return _Rect; }
+            set { _Rect = value; }
+        }
+        private SColorF _Color;
+        public SColorF Color
+        {
+            get { return _Color; }
+            set { _Color = value; }
+        }
         public SColorF SColor;
+
+        private STexture _Texture;
+        public STexture Texture
+        {
+            get { return _Texture; }
+            set { _Texture = value; }
+        }
 
         public bool SelText;
         public CText Text;
@@ -43,9 +60,9 @@ namespace Vocaluxe.Menu
         public float SReflectionSpace;
         public float SReflectionHeight;
 
-        public bool SAnimation;
-        public EAnimationType SAnimationType;
-        private CAnimation _SAnimation;
+        public bool Animation;
+        private List<CAnimation> _Animations;
+        public CAnimations Animations;
 
         private bool _Selected;
         public bool Pressed;
@@ -58,7 +75,12 @@ namespace Vocaluxe.Menu
                 Text.Selected = value;
             }
         }
-        public bool Visible;
+        private bool _Visible;
+        public bool Visible
+        {
+            get { return _Visible; }
+            set { _Visible = value; }
+        }
 
         public CButton()
         {
@@ -81,7 +103,8 @@ namespace Vocaluxe.Menu
             SReflectionSpace = 0f;
             SReflectionHeight = 0f;
 
-            SAnimation = false;
+            Animation = false;
+            _Animations = new List<CAnimation>();
         }
 
         public bool LoadTheme(string XmlPath, string ElementName, XPathNavigator navigator, int SkinIndex)
@@ -92,22 +115,22 @@ namespace Vocaluxe.Menu
             _ThemeLoaded &= CHelper.GetValueFromXML(item + "/Skin", navigator, ref _Theme.TextureName, String.Empty);
             _ThemeLoaded &= CHelper.GetValueFromXML(item + "/SkinSelected", navigator, ref _Theme.STextureName, String.Empty);
             
-            _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/X", navigator, ref Rect.X);
-            _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/Y", navigator, ref Rect.Y);
-            _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/Z", navigator, ref Rect.Z);
-            _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/W", navigator, ref Rect.W);
-            _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/H", navigator, ref Rect.H);
+            _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/X", navigator, ref _Rect.X);
+            _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/Y", navigator, ref _Rect.Y);
+            _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/Z", navigator, ref _Rect.Z);
+            _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/W", navigator, ref _Rect.W);
+            _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/H", navigator, ref _Rect.H);
 
             if (CHelper.GetValueFromXML(item + "/Color", navigator, ref _Theme.ColorName, String.Empty))
             {
-                _ThemeLoaded &= CTheme.GetColor(_Theme.ColorName, SkinIndex, ref Color);
+                _ThemeLoaded &= CTheme.GetColor(_Theme.ColorName, SkinIndex, ref _Color);
             }
             else
             {
-                _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/R", navigator, ref Color.R);
-                _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/G", navigator, ref Color.G);
-                _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/B", navigator, ref Color.B);
-                _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/A", navigator, ref Color.A);
+                _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/R", navigator, ref _Color.R);
+                _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/G", navigator, ref _Color.G);
+                _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/B", navigator, ref _Color.B);
+                _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/A", navigator, ref _Color.A);
             }
 
             if (CHelper.GetValueFromXML(item + "/SColor", navigator, ref _Theme.SColorName, String.Empty))
@@ -151,29 +174,44 @@ namespace Vocaluxe.Menu
             else
                 SReflection = false;
 
-            //Animation
-            if (CHelper.ItemExistsInXML(item + "/SAnimation", navigator))
+            //Animations
+            int i = 1;
+            while (CHelper.ItemExistsInXML(item + "/Animation"+i.ToString(), navigator))
             {
-                SAnimation = true;
-                _ThemeLoaded &= CHelper.TryGetEnumValueFromXML<EAnimationType>(item + "/SAnimation/Type", navigator, ref SAnimationType);
-                _SAnimation = new CAnimation(SAnimationType);
-                _SAnimation.LoadAnimation(item + "/SAnimation", navigator);
-                EOffOn reset = EOffOn.TR_CONFIG_OFF;
-                _ThemeLoaded &= CHelper.TryGetEnumValueFromXML<EOffOn>(item + "SAnimation/ResetAnimation", navigator, ref reset);
-                _SAnimation.setAnimationReset(reset);
+                Animation = true;
+                EAnimationType type = new EAnimationType();
+                _ThemeLoaded &= CHelper.TryGetEnumValueFromXML<EAnimationType>(item + "/Animation" + i.ToString() + "/Type", navigator, ref type);
+                CAnimation anim = new CAnimation(type);
+                _Animations.Add(anim);
+                i++;
             }
-            else
-                SAnimation = false;
+
+            //Load Animations
+            if (Animation)
+            {
+                i = 1;
+                foreach (CAnimation anim in _Animations)
+                {
+                    _ThemeLoaded &= anim.LoadAnimation(item + "/Animation" + i.ToString(), navigator);
+                    i++;
+                }
+            }
 
             if (_ThemeLoaded)
             {
                 _Theme.Name = ElementName;
                 LoadTextures();
                 //Give button-data to animation
-                if (SAnimation)
+                if (Animation)
                 {
-                    _SAnimation.setRect(Rect);
-                    _SAnimation.setColor(Color);
+                    foreach (CAnimation anim in _Animations) 
+                    {
+                        anim.setColor(Color);
+                        anim.setRect(Rect);
+                        anim.setTexture(Texture);
+                        //Add this to CAnimations
+                        Animations.Add(this, anim);
+                    }
                 }
             }
             return _ThemeLoaded;
@@ -274,59 +312,39 @@ namespace Vocaluxe.Menu
             if (!Visible && CSettings.GameState != EGameState.EditTheme && !ForceDraw)
                 return;
 
-            STexture texture = new STexture(-1);
+            if (Animation)
+                Animations.Update();
 
             if (!Selected && !Pressed)
             {
-                texture = CTheme.GetSkinTexture(_Theme.TextureName);
-                CDraw.DrawTexture(texture, Rect, Color);
+                CDraw.DrawTexture(Texture, Rect, Color);
                 Text.DrawRelative(Rect.X, Rect.Y);
                 if (Reflection)
                 {
-                    CDraw.DrawTextureReflection(texture, Rect, Color, Rect, ReflectionSpace, ReflectionHeight);
+                    CDraw.DrawTextureReflection(Texture, Rect, Color, Rect, ReflectionSpace, ReflectionHeight);
                     Text.DrawRelative(Rect.X, Rect.Y, ReflectionSpace, ReflectionHeight, Rect.H);
                 }
             }
             else if(!SelText)
             {
-                SRectF dRect = new SRectF();
-                if (SAnimation)
-                {
-                    if (!_SAnimation.AnimationActive() && !_SAnimation.isDrawn())
-                        _SAnimation.StartAnimation();
-                    _SAnimation.Update();
-                    dRect = _SAnimation.getRect();
-                }
-                else
-                    dRect = Rect;
-                texture = CTheme.GetSkinTexture(_Theme.STextureName);
-                CDraw.DrawTexture(texture, dRect, SColor);
-                Text.DrawRelative(dRect.X, dRect.Y);
+                Texture = CTheme.GetSkinTexture(_Theme.STextureName);
+                CDraw.DrawTexture(Texture, Rect, SColor);
+                Text.DrawRelative(Rect.X, Rect.Y);
                 if (Reflection)
                 {
-                    CDraw.DrawTextureReflection(texture, dRect, SColor, dRect, ReflectionSpace, ReflectionHeight);
-                    Text.DrawRelative(dRect.X, dRect.Y, ReflectionSpace, ReflectionHeight, dRect.H);
+                    CDraw.DrawTextureReflection(Texture, Rect, SColor, Rect, ReflectionSpace, ReflectionHeight);
+                    Text.DrawRelative(Rect.X, Rect.Y, ReflectionSpace, ReflectionHeight, Rect.H);
                 }
             }
             else if(SelText)
             {
-                SRectF dRect = new SRectF();
-                if (SAnimation)
-                {
-                    if (!_SAnimation.AnimationActive())
-                        _SAnimation.StartAnimation();
-                    _SAnimation.Update();
-                    dRect = _SAnimation.getRect();
-                }
-                else
-                    dRect = Rect;
-                texture = CTheme.GetSkinTexture(_Theme.STextureName);
-                CDraw.DrawTexture(texture, dRect, SColor);
-                SText.DrawRelative(dRect.X, dRect.Y);
+                Texture = CTheme.GetSkinTexture(_Theme.STextureName);
+                CDraw.DrawTexture(Texture, Rect, SColor);
+                SText.DrawRelative(Rect.X, Rect.Y);
                 if (Reflection)
                 {
-                    CDraw.DrawTextureReflection(texture, dRect, SColor, dRect, ReflectionSpace, ReflectionHeight);
-                    SText.DrawRelative(dRect.X, dRect.Y, ReflectionSpace, ReflectionHeight, dRect.H);
+                    CDraw.DrawTextureReflection(Texture, Rect, SColor, Rect, ReflectionSpace, ReflectionHeight);
+                    SText.DrawRelative(Rect.X, Rect.Y, ReflectionSpace, ReflectionHeight, Rect.H);
                 }
             }
         }
@@ -339,6 +357,7 @@ namespace Vocaluxe.Menu
         public void LoadTextures()
         {
             Text.LoadTextures();
+            _Texture = CTheme.GetSkinTexture(_Theme.TextureName);
 
             if (_Theme.ColorName != String.Empty)
                 Color = CTheme.GetColor(_Theme.ColorName);
@@ -356,19 +375,19 @@ namespace Vocaluxe.Menu
         #region ThemeEdit
         public void MoveElement(int stepX, int stepY)
         {
-            Rect.X += stepX;
-            Rect.Y += stepY;
+            _Rect.X += stepX;
+            _Rect.Y += stepY;
         }
 
         public void ResizeElement(int stepW, int stepH)
         {
-            Rect.W += stepW;
+            _Rect.W += stepW;
             if (Rect.W <= 0)
-                Rect.W = 1;
+                _Rect.W = 1;
 
-            Rect.H += stepH;
+            _Rect.H += stepH;
             if (Rect.H <= 0)
-                Rect.H = 1;
+                _Rect.H = 1;
         }
         #endregion ThemeEdit
     }

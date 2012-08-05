@@ -79,6 +79,16 @@ namespace Vocaluxe.Menu.Animations
             return _Animation.getColor();
         }
 
+        public void setTexture(STexture texture)
+        {
+            _Animation.setTexture(texture);
+        }
+
+        public STexture getTexture()
+        {
+            return _Animation.getTexture();
+        }
+
         public bool isDrawn()
         {
             return _Animation.isDrawn();

@@ -85,7 +85,7 @@
         <Space>10</Space>
         <Height>26</Height>
       </SReflection>
-      <SAnimation>
+      <Animation1>
 	    <Type>Resize</Type>
 	    <Speed>4000,00</Speed>
 	    <Repeat>RepeatWithReset</Repeat>
@@ -93,7 +93,7 @@
 	    <Order>HeightFirst</Order>
 	    <W>200</W>
 	    <H>100</H>	    
-      </SAnimation>
+      </Animation1>
     </ButtonSing>
     <ButtonOptions>
       <!--<Skin>: Texture name-->
@@ -151,7 +151,7 @@
         <Space>10</Space>
         <Height>26</Height>
       </SReflection>
-      <SAnimation>
+      <Animation1>
 	    <Type>Resize</Type>
 	    <Speed>2000,00</Speed>
 	    <Repeat>None</Repeat>
@@ -159,7 +159,7 @@
 	    <Order>HeightFirst</Order>
 	    <W>200</W>
 	    <H>100</H>	    
-      </SAnimation>      
+      </Animation1>      
     </ButtonOptions>
     <ButtonProfiles>
       <!--<Skin>: Texture name-->
@@ -217,7 +217,7 @@
         <Space>10</Space>
         <Height>26</Height>
       </SReflection>
-      <SAnimation>
+      <Animation1>
 	    <Type>Resize</Type>
 	    <Speed>2000,00</Speed>
 	    <Repeat>Reset</Repeat>
@@ -225,7 +225,7 @@
 	    <Order>Both</Order>
 	    <W>200</W>
 	    <H>100</H>	    
-      </SAnimation>      
+      </Animation1>      
     </ButtonProfiles>
     <ButtonExit>
       <!--<Skin>: Texture name-->
@@ -283,7 +283,7 @@
         <Space>10</Space>
         <Height>26</Height>
       </SReflection>
-      <SAnimation>
+      <Animation1>
 	    <Type>Resize</Type>
 	    <Speed>2000,00</Speed>
 	    <Repeat>Repeat</Repeat>
@@ -291,7 +291,7 @@
 	    <Order>WidthFirst</Order>
 	    <W>200</W>
 	    <H>100</H>	    
-      </SAnimation>      
+      </Animation1>      
     </ButtonExit>
   </ScreenMain>
 </root>
