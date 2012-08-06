@@ -33,6 +33,7 @@ namespace Vocaluxe.Menu.Animations
         public EAnimationRepeat Repeat;
 
         public SRectF OriginalRect;
+        public SRectF LastRect;
         public SColorF OriginalColor;
         public  STexture OriginalTexture;
 
@@ -92,6 +93,16 @@ namespace Vocaluxe.Menu.Animations
         public virtual SRectF getRect()
         {
             return OriginalRect;
+        }
+
+        public virtual float[] getRectChanges()
+        {
+            float[] changes = new float[4];
+            changes[0] = getRect().X - LastRect.X;
+            changes[1] = getRect().Y - LastRect.Y;
+            changes[2] = getRect().W - LastRect.W;
+            changes[3] = getRect().H - LastRect.H;
+            return changes;
         }
 
         public virtual void setColor(SColorF color)

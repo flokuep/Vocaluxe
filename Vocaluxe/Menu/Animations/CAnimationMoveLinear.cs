@@ -14,7 +14,7 @@ namespace Vocaluxe.Menu.Animations
     {
         public EAnimationResizePosition Position;
         public EAnimationResizeOrder Order;
-        public EAnimationType Type;
+        public EAnimationType Type = new EAnimationType();
         public EAnimationRepeat Repeat;
 
         public SRectF FinalRect;
@@ -73,6 +73,8 @@ namespace Vocaluxe.Menu.Animations
 
         public override void Update()
         {
+            LastRect = CurrentRect;
+
             bool finished = false;
 
             float factor = Timer.ElapsedMilliseconds / Time;

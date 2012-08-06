@@ -18,6 +18,7 @@ namespace Vocaluxe.Menu.Animations
 
         void setRect(SRectF rect);
         SRectF getRect();
+        float[] getRectChanges();
         void setColor(SColorF color);
         SColorF getColor();
         void setTexture(ref STexture texture);

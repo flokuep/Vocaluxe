@@ -112,6 +112,8 @@ namespace Vocaluxe.Menu.Animations
 
         public override void Update()
         {
+            LastRect = CurrentRect;
+
             bool finished = false;
 
             switch (Order)

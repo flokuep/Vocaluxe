@@ -69,6 +69,11 @@ namespace Vocaluxe.Menu.Animations
             return _Animation.getRect();
         }
 
+        public float[] getRectChanges()
+        {
+            return _Animation.getRectChanges();
+        }
+
         public void setColor(SColorF color)
         {
             _Animation.setColor(color);
