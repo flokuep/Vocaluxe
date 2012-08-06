@@ -86,13 +86,11 @@
         <Height>26</Height>
       </SReflection>
       <Animation1>
-	    <Type>Resize</Type>
-	    <Time>4000,00</Time>
-	    <Repeat>None</Repeat>
-	    <Position>Center</Position>
-	    <Order>HeightFirst</Order>
-	    <W>200</W>
-	    <H>100</H>	    
+	    <Type>FadeColor</Type>
+	    <Time>2000,00</Time>
+	    <Repeat>RepeatWithReset</Repeat>
+	    <StartColor>ButtonColor</StartColor>  
+	    <EndColor>ButtonSColor</EndColor>
       </Animation1>
     </ButtonSing>
     <ButtonOptions>

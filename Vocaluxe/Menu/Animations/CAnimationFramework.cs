@@ -14,7 +14,8 @@ namespace Vocaluxe.Menu.Animations
     {
         Resize,
         MoveLinear,
-        Video
+        Video,
+        FadeColor
     }
 
     public enum EAnimationRepeat
@@ -67,7 +68,7 @@ namespace Vocaluxe.Menu.Animations
         {
             Timer.Stop();
             Timer.Reset();
-            if(Repeat == EAnimationRepeat.None)
+            if(Repeat == EAnimationRepeat.None || Repeat == EAnimationRepeat.Reset)
                 AnimationDrawn = true;
         }
 
@@ -88,6 +89,7 @@ namespace Vocaluxe.Menu.Animations
         public virtual void setRect(SRectF rect)
         {
             OriginalRect = rect;
+            LastRect = rect;
         }
 
         public virtual SRectF getRect()
@@ -95,13 +97,13 @@ namespace Vocaluxe.Menu.Animations
             return OriginalRect;
         }
 
-        public virtual float[] getRectChanges()
+        public virtual SRectF getRectChanges()
         {
-            float[] changes = new float[4];
-            changes[0] = getRect().X - LastRect.X;
-            changes[1] = getRect().Y - LastRect.Y;
-            changes[2] = getRect().W - LastRect.W;
-            changes[3] = getRect().H - LastRect.H;
+            SRectF changes = new SRectF();
+            changes.X = getRect().X - LastRect.X;
+            changes.Y = getRect().Y - LastRect.Y;
+            changes.W = getRect().W - LastRect.W;
+            changes.H = getRect().H - LastRect.H;
             return changes;
         }
 

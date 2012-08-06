@@ -69,7 +69,7 @@ namespace Vocaluxe.Menu.Animations
             return _Animation.getRect();
         }
 
-        public float[] getRectChanges()
+        public SRectF getRectChanges()
         {
             return _Animation.getRectChanges();
         }
@@ -123,6 +123,10 @@ namespace Vocaluxe.Menu.Animations
 
                 case EAnimationType.Video:
                     _Animation = new CAnimationVideo();
+                    break;
+
+                case EAnimationType.FadeColor:
+                    _Animation = new CAnimationFadeColor();
                     break;
             }
         }

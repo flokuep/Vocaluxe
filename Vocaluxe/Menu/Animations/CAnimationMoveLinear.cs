@@ -60,6 +60,8 @@ namespace Vocaluxe.Menu.Animations
         {
             if (AnimationDrawn && Repeat == EAnimationRepeat.None)
                 return FinalRect;
+            else if (AnimationDrawn && Repeat == EAnimationRepeat.Reset)
+                return OriginalRect;
             else
                 return CurrentRect;
         }
