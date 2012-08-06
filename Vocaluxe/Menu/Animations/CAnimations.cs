@@ -38,11 +38,11 @@ namespace Vocaluxe.Menu.Animations
                         am.anim.StartAnimation();
                     }
                     am.anim.Update();
-                    float x = am.element.Rect.X + (am.element.Rect.X - am.anim.getRect().X);
-                    float y = am.element.Rect.Y + (am.element.Rect.Y - am.anim.getRect().Y);
-                    float w = am.element.Rect.W + (am.element.Rect.W - am.anim.getRect().W);
-                    float h = am.element.Rect.H + (am.element.Rect.H - am.anim.getRect().H);
-                    am.element.Rect = new SRectF(x, y, w, h, am.element.Rect.Z);
+                    float x = am.element.Rect.X + (am.anim.getRect().X - am.element.Rect.X);
+                    float y = am.element.Rect.Y + (am.anim.getRect().Y - am.element.Rect.Y);
+                    float w = am.element.Rect.W + (am.anim.getRect().W - am.element.Rect.W);
+                    float h = am.element.Rect.H + (am.anim.getRect().H - am.element.Rect.H);
+                    am.element.Rect = new SRectF(x, y, w, h, am.element.Rect.Z);                   
                     am.element.Color = am.anim.getColor();
                     am.element.Texture = am.anim.getTexture();
                 }
