@@ -123,6 +123,10 @@ namespace Vocaluxe.Menu.Animations
                 case EAnimationType.FadeColor:
                     _Animation = new CAnimationFadeColor();
                     break;
+
+                case EAnimationType.Rotate:
+                    _Animation = new CAnimationRotate();
+                    break;
             }
         }
     }

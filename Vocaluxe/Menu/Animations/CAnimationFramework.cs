@@ -15,7 +15,8 @@ namespace Vocaluxe.Menu.Animations
         Resize,
         MoveLinear,
         Video,
-        FadeColor
+        FadeColor,
+        Rotate
     }
 
     public enum EAnimationRepeat
@@ -117,6 +118,7 @@ namespace Vocaluxe.Menu.Animations
             changes.Y = getRect().Y - LastRect.Y;
             changes.W = getRect().W - LastRect.W;
             changes.H = getRect().H - LastRect.H;
+            changes.Rotation = getRect().Rotation - LastRect.Rotation;
             return changes;
         }
 

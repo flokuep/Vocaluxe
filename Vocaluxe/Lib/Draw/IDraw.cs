@@ -52,6 +52,16 @@ namespace Vocaluxe.Lib.Draw
             Rotation = 0f;
         }
 
+        public SRectF(float x, float y, float w, float h, float z, float r)
+        {
+            X = x;
+            Y = y;
+            W = w;
+            H = h;
+            Z = z;
+            Rotation = r;
+        }
+
         public SRectF(SRectF rect)
         {
             X = rect.X;

@@ -30,8 +30,8 @@ namespace Vocaluxe.Menu.Animations
         public EAnimationResizePosition Position;
         public EAnimationResizeOrder Order;
 
-        public SRectF FinalRect;
-        public SRectF CurrentRect;
+        private SRectF _FinalRect;
+        private SRectF _CurrentRect;
 
         public CAnimationResize()
         {
@@ -53,8 +53,8 @@ namespace Vocaluxe.Menu.Animations
             //Load specific animation-options
             _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/Time", navigator, ref Time);
             _AnimationLoaded &= CHelper.TryGetEnumValueFromXML<EAnimationRepeat>(item + "/Repeat", navigator, ref Repeat);
-            _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/W", navigator, ref FinalRect.W);
-            _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/H", navigator, ref FinalRect.H);
+            _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/W", navigator, ref _FinalRect.W);
+            _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/H", navigator, ref _FinalRect.H);
             _AnimationLoaded &= CHelper.TryGetEnumValueFromXML<EAnimationResizePosition>(item + "/Position", navigator, ref Position);
             _AnimationLoaded &= CHelper.TryGetEnumValueFromXML<EAnimationResizeOrder>(item + "/Order", navigator, ref Order);
 
@@ -68,28 +68,28 @@ namespace Vocaluxe.Menu.Animations
             switch (Position)
             {
                 case EAnimationResizePosition.TopLeft:
-                    FinalRect.X = OriginalRect.X;
-                    FinalRect.Y = OriginalRect.Y;
+                    _FinalRect.X = OriginalRect.X;
+                    _FinalRect.Y = OriginalRect.Y;
                     break;
 
                 case EAnimationResizePosition.TopRight:
-                    FinalRect.X = OriginalRect.X + OriginalRect.W - FinalRect.W;
-                    FinalRect.Y = OriginalRect.Y;
+                    _FinalRect.X = OriginalRect.X + OriginalRect.W - _FinalRect.W;
+                    _FinalRect.Y = OriginalRect.Y;
                     break;
 
                 case EAnimationResizePosition.BottomLeft:
-                    FinalRect.X = OriginalRect.X;
-                    FinalRect.Y = OriginalRect.Y + OriginalRect.H - FinalRect.H;
+                    _FinalRect.X = OriginalRect.X;
+                    _FinalRect.Y = OriginalRect.Y + OriginalRect.H - _FinalRect.H;
                     break;
 
                 case EAnimationResizePosition.BottomRight:
-                    FinalRect.X = OriginalRect.X + OriginalRect.W - FinalRect.W;
-                    FinalRect.Y = OriginalRect.Y + OriginalRect.H - FinalRect.H;
+                    _FinalRect.X = OriginalRect.X + OriginalRect.W - _FinalRect.W;
+                    _FinalRect.Y = OriginalRect.Y + OriginalRect.H - _FinalRect.H;
                     break;
 
                 case EAnimationResizePosition.Center:
-                    FinalRect.X = OriginalRect.X + (OriginalRect.W - FinalRect.W) / 2;
-                    FinalRect.Y = OriginalRect.Y + (OriginalRect.H - FinalRect.H) / 2;
+                    _FinalRect.X = OriginalRect.X + (OriginalRect.W - _FinalRect.W) / 2;
+                    _FinalRect.Y = OriginalRect.Y + (OriginalRect.H - _FinalRect.H) / 2;
                     break;
 
             }
@@ -98,23 +98,23 @@ namespace Vocaluxe.Menu.Animations
         public override SRectF getRect()
         {
             if (AnimationDrawn && Repeat == EAnimationRepeat.None)
-                return FinalRect;
+                return _FinalRect;
             else if (AnimationDrawn && Repeat == EAnimationRepeat.Reset)
                 return OriginalRect;
             else
-                return CurrentRect;
+                return _CurrentRect;
         }
 
         public override void StartAnimation()
         {
             base.StartAnimation();
 
-            CurrentRect = OriginalRect;
+            _CurrentRect = OriginalRect;
         }
 
         public override void Update()
         {
-            LastRect = CurrentRect;
+            LastRect = _CurrentRect;
 
             bool finished = false;
 
@@ -124,19 +124,19 @@ namespace Vocaluxe.Menu.Animations
                     float factor = Timer.ElapsedMilliseconds / Time;
                     if (!ResetMode)
                     {  
-                        CurrentRect.X = OriginalRect.X + ((FinalRect.X - OriginalRect.X) * factor);
-                        CurrentRect.Y = OriginalRect.Y + ((FinalRect.Y - OriginalRect.Y) * factor);
-                        CurrentRect.H = OriginalRect.H + ((FinalRect.H - OriginalRect.H) * factor);
-                        CurrentRect.W = OriginalRect.W + ((FinalRect.W - OriginalRect.W) * factor);
+                        _CurrentRect.X = OriginalRect.X + ((_FinalRect.X - OriginalRect.X) * factor);
+                        _CurrentRect.Y = OriginalRect.Y + ((_FinalRect.Y - OriginalRect.Y) * factor);
+                        _CurrentRect.H = OriginalRect.H + ((_FinalRect.H - OriginalRect.H) * factor);
+                        _CurrentRect.W = OriginalRect.W + ((_FinalRect.W - OriginalRect.W) * factor);
                         if (factor >= 1f)
                             finished = true;
                     }
                     else
                     {
-                        CurrentRect.X = FinalRect.X + ((OriginalRect.X - FinalRect.X) * factor);
-                        CurrentRect.Y = FinalRect.Y + ((OriginalRect.Y - FinalRect.Y) * factor);
-                        CurrentRect.H = FinalRect.H + ((OriginalRect.H - FinalRect.H) * factor);
-                        CurrentRect.W = FinalRect.W + ((OriginalRect.W - FinalRect.W) * factor);
+                        _CurrentRect.X = _FinalRect.X + ((OriginalRect.X - _FinalRect.X) * factor);
+                        _CurrentRect.Y = _FinalRect.Y + ((OriginalRect.Y - _FinalRect.Y) * factor);
+                        _CurrentRect.H = _FinalRect.H + ((OriginalRect.H - _FinalRect.H) * factor);
+                        _CurrentRect.W = _FinalRect.W + ((OriginalRect.W - _FinalRect.W) * factor);
                         if (factor >= 1f)
                             finished = true;
                     }
@@ -149,13 +149,13 @@ namespace Vocaluxe.Menu.Animations
                         float factorW = (Timer.ElapsedMilliseconds - (Time / 2)) / (Time / 2);
                         if (factorH < 1f)
                         {
-                            CurrentRect.Y = OriginalRect.Y + ((FinalRect.Y - OriginalRect.Y) * factorH);
-                            CurrentRect.H = OriginalRect.H + ((FinalRect.H - OriginalRect.H) * factorH);
+                            _CurrentRect.Y = OriginalRect.Y + ((_FinalRect.Y - OriginalRect.Y) * factorH);
+                            _CurrentRect.H = OriginalRect.H + ((_FinalRect.H - OriginalRect.H) * factorH);
                         }
                         else if (factorW < 1f)
                         {
-                            CurrentRect.W = OriginalRect.W + ((FinalRect.W - OriginalRect.W) * factorW);
-                            CurrentRect.X = OriginalRect.X + ((FinalRect.X - OriginalRect.X) * factorW);
+                            _CurrentRect.W = OriginalRect.W + ((_FinalRect.W - OriginalRect.W) * factorW);
+                            _CurrentRect.X = OriginalRect.X + ((_FinalRect.X - OriginalRect.X) * factorW);
                         }
                         else
                             finished = true;
@@ -166,13 +166,13 @@ namespace Vocaluxe.Menu.Animations
                         float factorW = (Timer.ElapsedMilliseconds - (Time / 2)) / (Time / 2);
                         if (factorH < 1f)
                         {
-                            CurrentRect.Y = FinalRect.Y + ((OriginalRect.Y - FinalRect.Y) * factorH);
-                            CurrentRect.H = FinalRect.H + ((OriginalRect.H - FinalRect.H) * factorH);
+                            _CurrentRect.Y = _FinalRect.Y + ((OriginalRect.Y - _FinalRect.Y) * factorH);
+                            _CurrentRect.H = _FinalRect.H + ((OriginalRect.H - _FinalRect.H) * factorH);
                         }
                         else if (factorW < 1f)
                         {
-                            CurrentRect.W = FinalRect.W + ((OriginalRect.W - FinalRect.W) * factorW);
-                            CurrentRect.X = FinalRect.X + ((OriginalRect.X - FinalRect.X) * factorW);
+                            _CurrentRect.W = _FinalRect.W + ((OriginalRect.W - _FinalRect.W) * factorW);
+                            _CurrentRect.X = _FinalRect.X + ((OriginalRect.X - _FinalRect.X) * factorW);
                         }
                         else
                             finished = true;
@@ -186,13 +186,13 @@ namespace Vocaluxe.Menu.Animations
                         float factorW = Timer.ElapsedMilliseconds / (Time / 2);
                         if (factorW < 1f)
                         {
-                            CurrentRect.W = OriginalRect.W + ((FinalRect.W - OriginalRect.W) * factorW);
-                            CurrentRect.X = OriginalRect.X + ((FinalRect.X - OriginalRect.X) * factorW);
+                            _CurrentRect.W = OriginalRect.W + ((_FinalRect.W - OriginalRect.W) * factorW);
+                            _CurrentRect.X = OriginalRect.X + ((_FinalRect.X - OriginalRect.X) * factorW);
                         }
                         else if (factorH < 1f)
                         {
-                            CurrentRect.Y = OriginalRect.Y + ((FinalRect.Y - OriginalRect.Y) * factorH);
-                            CurrentRect.H = OriginalRect.H + ((FinalRect.H - OriginalRect.H) * factorH);
+                            _CurrentRect.Y = OriginalRect.Y + ((_FinalRect.Y - OriginalRect.Y) * factorH);
+                            _CurrentRect.H = OriginalRect.H + ((_FinalRect.H - OriginalRect.H) * factorH);
                         }
                         else
                             finished = true;
@@ -203,13 +203,13 @@ namespace Vocaluxe.Menu.Animations
                         float factorW = Timer.ElapsedMilliseconds / (Time / 2);
                         if (factorW < 1f)
                         {
-                            CurrentRect.W = FinalRect.W + ((OriginalRect.W - FinalRect.W) * factorW);
-                            CurrentRect.X = FinalRect.X + ((OriginalRect.X - FinalRect.X) * factorW);
+                            _CurrentRect.W = _FinalRect.W + ((OriginalRect.W - _FinalRect.W) * factorW);
+                            _CurrentRect.X = _FinalRect.X + ((OriginalRect.X - _FinalRect.X) * factorW);
                         }
                         else if (factorH < 1f)
                         {
-                            CurrentRect.Y = FinalRect.Y + ((OriginalRect.Y - FinalRect.Y) * factorH);
-                            CurrentRect.H = FinalRect.H + ((OriginalRect.H - FinalRect.H) * factorH);
+                            _CurrentRect.Y = _FinalRect.Y + ((OriginalRect.Y - _FinalRect.Y) * factorH);
+                            _CurrentRect.H = _FinalRect.H + ((OriginalRect.H - _FinalRect.H) * factorH);
                         }
                         else
                             finished = true;
@@ -225,7 +225,7 @@ namespace Vocaluxe.Menu.Animations
                 {
                     case EAnimationRepeat.Repeat:
                         StopAnimation();
-                        CurrentRect = OriginalRect;
+                        _CurrentRect = OriginalRect;
                         StartAnimation();
                         break;
 

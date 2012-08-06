@@ -10,22 +10,20 @@ using Vocaluxe.Lib.Draw;
 
 namespace Vocaluxe.Menu.Animations
 {
-    public class CAnimationMoveLinear : CAnimationFramework
+    public class CAnimationRotate : CAnimationFramework
     {
-        public EAnimationResizePosition Position;
-        public EAnimationResizeOrder Order;
-
+        private float _Degree;
         private SRectF _FinalRect;
         private SRectF _CurrentRect;
 
-        public CAnimationMoveLinear()
+        public CAnimationRotate()
         {
             Init();
         }
 
         public override void Init()
         {
-            Type = EAnimationType.MoveLinear;
+            Type = EAnimationType.Rotate;
         }
 
         public override bool LoadAnimation(string item, XPathNavigator navigator)
@@ -38,9 +36,7 @@ namespace Vocaluxe.Menu.Animations
             //Load specific animation-options
             _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/Time", navigator, ref Time);
             _AnimationLoaded &= CHelper.TryGetEnumValueFromXML<EAnimationRepeat>(item + "/Repeat", navigator, ref Repeat);
-            _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/X", navigator, ref _FinalRect.X);
-            _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/Y", navigator, ref _FinalRect.Y);
-
+            _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/Degree", navigator, ref _Degree);
 
             return _AnimationLoaded;
         }
@@ -49,8 +45,8 @@ namespace Vocaluxe.Menu.Animations
         {
             OriginalRect = rect;
 
-            _FinalRect.H = OriginalRect.H;
-            _FinalRect.W = OriginalRect.W;
+            _FinalRect = OriginalRect;
+            _FinalRect.Rotation = OriginalRect.Rotation + _Degree;
         }
 
         public override SRectF getRect()
@@ -79,15 +75,13 @@ namespace Vocaluxe.Menu.Animations
             float factor = Timer.ElapsedMilliseconds / Time;
             if (!ResetMode)
             {
-                _CurrentRect.X = OriginalRect.X + ((_FinalRect.X - OriginalRect.X) * factor);
-                _CurrentRect.Y = OriginalRect.Y + ((_FinalRect.Y - OriginalRect.Y) * factor);
+                _CurrentRect.Rotation = OriginalRect.Rotation + ((_FinalRect.Rotation - OriginalRect.Rotation) * factor);
                 if (factor >= 1f)
                     finished = true;
             }
             else
             {
-                _CurrentRect.X = _FinalRect.X + ((OriginalRect.X - _FinalRect.X) * factor);
-                _CurrentRect.Y = _FinalRect.Y + ((OriginalRect.Y - _FinalRect.Y) * factor);
+                _CurrentRect.Rotation = _FinalRect.Rotation + ((OriginalRect.Rotation - _FinalRect.Rotation) * factor);
                 if (factor >= 1f)
                     finished = true;
             }
