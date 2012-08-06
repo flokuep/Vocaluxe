@@ -31,12 +31,14 @@ namespace Vocaluxe.Menu.Animations
         {
             foreach (SAnimationMenu am in Elements)
             {
-                if (am.element.Visible)
+                if (am.element.Event == am.anim.getEvent())
                 {
                     if (!am.anim.AnimationActive() && !am.anim.isDrawn())
                     {
                         am.anim.StartAnimation();
                     }
+                    else if (am.element.Event == EAnimationEvent.AfterSelected)
+                        am.element.Event = EAnimationEvent.Visible;
                     am.anim.Update();
                     float x = am.element.Rect.X + am.anim.getRectChanges().X;
                     float y = am.element.Rect.Y + am.anim.getRectChanges().Y;
@@ -47,6 +49,17 @@ namespace Vocaluxe.Menu.Animations
                     am.element.Texture = am.anim.getTexture();
                 }
             }
+        }
+
+        public static bool AnimAvailable(IMenuProperties e, EAnimationEvent ev)
+        {
+            foreach (SAnimationMenu am in Elements)
+            {
+                if (am.element == e)
+                    if (am.anim.getEvent() == ev)
+                        return true;
+            }
+            return false;
         }
     }
 }

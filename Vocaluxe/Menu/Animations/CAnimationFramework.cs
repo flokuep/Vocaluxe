@@ -26,19 +26,27 @@ namespace Vocaluxe.Menu.Animations
         RepeatWithReset
     }
 
+    public enum EAnimationEvent
+    {
+        None, //Couldn't choosen by theme-designer
+        Visible,
+        Selected,
+        AfterSelected
+    }
+
     public abstract class CAnimationFramework:IAnimation
     {
         public bool _AnimationLoaded;
 
         public EAnimationType Type;
         public EAnimationRepeat Repeat;
+        public EAnimationEvent Event;
 
         public SRectF OriginalRect;
         public SRectF LastRect;
         public SColorF OriginalColor;
         public  STexture OriginalTexture;
 
-        public EOffOn Reset;
         public float Time;
 
         public Stopwatch Timer = new Stopwatch();
@@ -50,6 +58,11 @@ namespace Vocaluxe.Menu.Animations
         public virtual bool LoadAnimation(string item, XPathNavigator navigator)
         {
             _AnimationLoaded = true;
+
+            _AnimationLoaded &= CHelper.TryGetEnumValueFromXML<EAnimationEvent>(item + "/Event", navigator, ref Event);
+
+            if (_AnimationLoaded)
+                _AnimationLoaded = Event != EAnimationEvent.None;
 
             return _AnimationLoaded;
         }
@@ -127,19 +140,14 @@ namespace Vocaluxe.Menu.Animations
             return OriginalTexture;
         }
 
+        public virtual EAnimationEvent getEvent()
+        {
+            return Event;
+        }
+
         public virtual bool isDrawn()
         {
             return AnimationDrawn;
-        }
-
-        public virtual void setAnimationReset(EOffOn reset)
-        {
-            Reset = reset;
-        }
-
-        public virtual EOffOn getAnimationReset()
-        {
-            return Reset;
         }
 
         public abstract void Update();

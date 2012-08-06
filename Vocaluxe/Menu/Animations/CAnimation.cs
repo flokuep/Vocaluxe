@@ -94,19 +94,14 @@ namespace Vocaluxe.Menu.Animations
             return _Animation.getTexture();
         }
 
+        public EAnimationEvent getEvent()
+        {
+            return _Animation.getEvent();
+        }
+
         public bool isDrawn()
         {
             return _Animation.isDrawn();
-        }
-
-        public void setAnimationReset(EOffOn reset)
-        {
-            _Animation.setAnimationReset(reset);
-        }
-
-        public EOffOn getAnimationReset()
-        {
-            return _Animation.getAnimationReset();
         }
 
         public void setAnimation(EAnimationType Type)

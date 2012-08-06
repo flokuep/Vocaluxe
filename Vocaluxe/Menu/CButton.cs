@@ -62,6 +62,12 @@ namespace Vocaluxe.Menu
 
         public bool Animation;
         private List<CAnimation> _Animations;
+        private EAnimationEvent _Event;
+        public EAnimationEvent Event
+        {
+            get { return _Event; }
+            set { _Event = value; }
+        }
 
         private bool _Selected;
         public bool Pressed;
@@ -70,6 +76,15 @@ namespace Vocaluxe.Menu
             get { return _Selected; }
             set
             {
+                if (value)
+                    Event = EAnimationEvent.Selected;
+                else
+                {
+                    if (CAnimations.AnimAvailable(this, EAnimationEvent.AfterSelected))
+                        Event = EAnimationEvent.AfterSelected;
+                    else
+                        Event = EAnimationEvent.Visible;
+                }
                 _Selected = value;
                 Text.Selected = value;
             }
@@ -78,7 +93,15 @@ namespace Vocaluxe.Menu
         public bool Visible
         {
             get { return _Visible; }
-            set { _Visible = value; }
+            set 
+            {
+                if (value)
+                    Event = EAnimationEvent.Visible;
+                else
+                    Event = EAnimationEvent.None;
+
+                _Visible = value; 
+            }
         }
 
         public CButton()

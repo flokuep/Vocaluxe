@@ -86,6 +86,7 @@
         <Height>26</Height>
       </SReflection>
       <Animation1>
+		<Event>Visible</Event>
 	    <Type>FadeColor</Type>
 	    <Time>2000,00</Time>
 	    <Repeat>RepeatWithReset</Repeat>
@@ -150,6 +151,7 @@
         <Height>26</Height>
       </SReflection>
       <Animation1>
+		<Event>Visible</Event>
 	    <Type>MoveLinear</Type>
 	    <Time>2000,00</Time>
 	    <Repeat>RepeatWithReset</Repeat>
@@ -157,6 +159,7 @@
 	    <Y>400</Y>	    
       </Animation1>    
       <Animation2>
+		<Event>Visible</Event>  
 	    <Type>Resize</Type>
 	    <Time>2000,00</Time>
 	    <Repeat>RepeatWithReset</Repeat>
@@ -223,14 +226,25 @@
         <Height>26</Height>
       </SReflection>
       <Animation1>
+		<Event>Selected</Event>
 	    <Type>Resize</Type>
 	    <Time>2000,00</Time>
-	    <Repeat>Reset</Repeat>
+	    <Repeat>None</Repeat>
 	    <Position>BottomLeft</Position>
 	    <Order>Both</Order>
 	    <W>200</W>
 	    <H>100</H>	    
       </Animation1>      
+      <Animation2>
+		<Event>AfterSelected</Event>
+	    <Type>Resize</Type>
+	    <Time>2000,00</Time>
+	    <Repeat>None</Repeat>
+	    <Position>BottomLeft</Position>
+	    <Order>Both</Order>
+	    <W>150</W>
+	    <H>50</H>	    
+      </Animation2>      
     </ButtonProfiles>
     <ButtonExit>
       <!--<Skin>: Texture name-->
@@ -289,6 +303,7 @@
         <Height>26</Height>
       </SReflection>
       <Animation1>
+		<Event>Visible</Event>
 	    <Type>Resize</Type>
 	    <Time>2000,00</Time>
 	    <Repeat>Repeat</Repeat>

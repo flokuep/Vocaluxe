@@ -4,6 +4,7 @@ using System.Text;
 
 using Vocaluxe.Base;
 using Vocaluxe.Lib.Draw;
+using Vocaluxe.Menu.Animations;
 
 namespace Vocaluxe.Menu
 {
@@ -28,6 +29,12 @@ namespace Vocaluxe.Menu
         }
 
         STexture Texture
+        {
+            get;
+            set;
+        }
+
+        EAnimationEvent Event
         {
             get;
             set;
