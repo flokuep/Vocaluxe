@@ -95,7 +95,13 @@ namespace Vocaluxe.Menu.Animations
             }
 
             if (factor >= 1f)
+            {
+                if (!ResetMode)
+                    _CurrentColor = _EndColor;
+                else
+                    _CurrentColor = _StartColor;
                 finished = true;
+            }
 
             //If Animation finished
             if (finished)
