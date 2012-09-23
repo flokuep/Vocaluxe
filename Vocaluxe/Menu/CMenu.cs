@@ -13,6 +13,7 @@ using Vocaluxe.Lib.Draw;
 using Vocaluxe.Menu;
 using Vocaluxe.Menu.SingNotes;
 using Vocaluxe.Menu.SongMenu;
+using Vocaluxe.Menu.Animations;
 
 namespace Vocaluxe.Menu
 {
@@ -1000,6 +1001,7 @@ namespace Vocaluxe.Menu
         public virtual void OnShow()
         {
             ResumeBG();
+            CAnimations.UpdateEvent(EAnimationEvent.OnVisible);
         }
 
         public virtual void OnShowFinish()

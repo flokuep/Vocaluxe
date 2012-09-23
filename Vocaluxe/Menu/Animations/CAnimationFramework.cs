@@ -30,6 +30,7 @@ namespace Vocaluxe.Menu.Animations
     public enum EAnimationEvent
     {
         None, //Couldn't choosen by theme-designer
+        OnVisible,
         Visible,
         Selected,
         AfterSelected

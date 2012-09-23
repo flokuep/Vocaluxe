@@ -39,16 +39,28 @@ namespace Vocaluxe.Menu.Animations
                     }
                     else if (am.element.Event == EAnimationEvent.AfterSelected)
                         am.element.Event = EAnimationEvent.Visible;
-                    am.anim.Update();
-                    float x = am.element.Rect.X + am.anim.getRectChanges().X;
-                    float y = am.element.Rect.Y + am.anim.getRectChanges().Y;
-                    float w = am.element.Rect.W + am.anim.getRectChanges().W;
-                    float h = am.element.Rect.H + am.anim.getRectChanges().H;
-                    float r = am.element.Rect.Rotation + am.anim.getRectChanges().Rotation;
-                    am.element.Rect = new SRectF(x, y, w, h, am.element.Rect.Z, r);
+                    if (!am.anim.isDrawn())
+                    {
+                        am.anim.Update();
+                        float x = am.element.Rect.X + am.anim.getRectChanges().X;
+                        float y = am.element.Rect.Y + am.anim.getRectChanges().Y;
+                        float w = am.element.Rect.W + am.anim.getRectChanges().W;
+                        float h = am.element.Rect.H + am.anim.getRectChanges().H;
+                        float r = am.element.Rect.Rotation + am.anim.getRectChanges().Rotation;
+                        am.element.Rect = new SRectF(x, y, w, h, am.element.Rect.Z, r);
+                    }
                     am.element.Color = am.anim.getColor();
                     am.element.Texture = am.anim.getTexture();
                 }
+            }
+        }
+
+        public static void UpdateEvent(EAnimationEvent evt)
+        {
+            foreach (SAnimationMenu am in Elements)
+            {
+                if (AnimAvailable(am.element, evt))
+                    am.element.Event = evt;
             }
         }
 
