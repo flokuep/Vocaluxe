@@ -77,13 +77,16 @@ namespace Vocaluxe.Menu
             set
             {
                 if (value)
-                    Event = EAnimationEvent.Selected;
+                    CAnimations.SetOnSelectAnim(this);
                 else
                 {
-                    if (CAnimations.AnimAvailable(this, EAnimationEvent.AfterSelected))
-                        Event = EAnimationEvent.AfterSelected;
-                    else
-                        Event = EAnimationEvent.Visible;
+                    CAnimations.SetAfterSelectAnim(this);
+                    if (Event == EAnimationEvent.None)
+                    {
+                        Rect = _Rect;
+                        Color = _Color;
+                        Texture = _Texture;
+                    }
                 }
                 _Selected = value;
                 Text.Selected = value;

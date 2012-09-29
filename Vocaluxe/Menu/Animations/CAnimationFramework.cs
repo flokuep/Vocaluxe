@@ -32,6 +32,7 @@ namespace Vocaluxe.Menu.Animations
         None, //Couldn't choosen by theme-designer
         OnVisible,
         Visible,
+        OnSelected,
         Selected,
         AfterSelected
     }
@@ -76,13 +77,13 @@ namespace Vocaluxe.Menu.Animations
 
         public virtual void StartAnimation()
         {
+            AnimationDrawn = false;
             Timer.Start();
         }
 
         public virtual void StopAnimation()
         {
             Timer.Stop();
-            Timer.Reset();
             if(Repeat == EAnimationRepeat.None || Repeat == EAnimationRepeat.Reset)
                 AnimationDrawn = true;
         }
@@ -93,6 +94,14 @@ namespace Vocaluxe.Menu.Animations
             Timer.Stop();
             Timer.Reset();
             Timer.Start();
+            AnimationDrawn = false;
+        }
+
+        public virtual void ResetValues()
+        {
+            ResetMode = false;
+            Timer.Stop();
+            Timer.Reset();
             AnimationDrawn = false;
         }
 

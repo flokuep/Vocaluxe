@@ -49,6 +49,11 @@ namespace Vocaluxe.Menu.Animations
             _Animation.ResetAnimation();
         }
 
+        public void ResetValues()
+        {
+            _Animation.ResetValues();
+        }
+
         public bool AnimationActive()
         {
             return _Animation.AnimationActive();

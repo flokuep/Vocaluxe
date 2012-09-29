@@ -29,6 +29,7 @@ namespace Vocaluxe.Menu.Animations
         void StartAnimation();
         void StopAnimation();
         void ResetAnimation();
+        void ResetValues();
         bool AnimationActive();
         void Update();
     }

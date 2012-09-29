@@ -151,12 +151,13 @@
         <Height>26</Height>
       </SReflection>
       <Animation1>
-		<Event>Visible</Event>
-	    <Type>Rotate</Type>
+		<Event>OnVisible</Event>
+	    <Type>FadeColor</Type>
 	    <Time>2000,00</Time>
-	    <Repeat>RepeatWithReset</Repeat>
-	    <Degree>90</Degree>   
-      </Animation1>    
+	    <Repeat>Reset</Repeat>
+	    <StartColor>ButtonColor</StartColor>  
+	    <EndColor>ButtonSColor</EndColor>
+      </Animation1>
       <Animation2>
 		<Event>Visible</Event>  
 	    <Type>Resize</Type>
@@ -225,24 +226,24 @@
         <Height>26</Height>
       </SReflection>
       <Animation1>
-		<Event>Selected</Event>
+		<Event>OnSelected</Event>
 	    <Type>Resize</Type>
 	    <Time>2000,00</Time>
-	    <Repeat>None</Repeat>
+	    <Repeat>Reset</Repeat>
 	    <Position>BottomLeft</Position>
-	    <Order>Both</Order>
+	    <Order>WidthFirst</Order>
 	    <W>200</W>
 	    <H>100</H>	    
       </Animation1>      
       <Animation2>
-		<Event>AfterSelected</Event>
+		<Event>Selected</Event>
 	    <Type>Resize</Type>
 	    <Time>2000,00</Time>
-	    <Repeat>None</Repeat>
+	    <Repeat>Reset</Repeat>
 	    <Position>BottomLeft</Position>
 	    <Order>Both</Order>
-	    <W>150</W>
-	    <H>50</H>	    
+	    <W>200</W>
+	    <H>200</H>	    
       </Animation2>      
     </ButtonProfiles>
     <ButtonExit>
