@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 
-using Vocaluxe.Base;
-using Vocaluxe.Lib.Draw;
-
 namespace Vocaluxe.Menu.Animations
 {
     public class CAnimationFadeColor : CAnimationFramework
@@ -16,9 +13,9 @@ namespace Vocaluxe.Menu.Animations
         private SColorF _StartColor;
         private SColorF _EndColor;
 
-        public CAnimationFadeColor()
+        public CAnimationFadeColor(int PartyModeID)
+            :base(PartyModeID)
         {
-            Init();
         }
 
         public override void Init()
@@ -26,33 +23,33 @@ namespace Vocaluxe.Menu.Animations
             Type = EAnimationType.FadeColor;
         }
 
-        public override bool LoadAnimation(string item, System.Xml.XPath.XPathNavigator navigator)
+        public override bool LoadAnimation(string item, CXMLReader xmlReader)
         {
             _AnimationLoaded = true;
-            _AnimationLoaded &= base.LoadAnimation(item, navigator);
-            _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/Time", navigator, ref Time);
-            _AnimationLoaded &= CHelper.TryGetEnumValueFromXML<EAnimationRepeat>(item + "/Repeat", navigator, ref Repeat);
-            if (CHelper.GetValueFromXML(item + "/StartColor", navigator, ref _StartColorName, String.Empty))
+            _AnimationLoaded &= base.LoadAnimation(item, xmlReader);
+            _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/Time", ref Time);
+            _AnimationLoaded &= xmlReader.TryGetEnumValue<EAnimationRepeat>(item + "/Repeat", ref Repeat);
+            if (xmlReader.GetValue(item + "/StartColor", ref _StartColorName, String.Empty))
             {
-                _StartColor = CTheme.GetColor(_StartColorName);
+                _StartColor = CBase.Theme.GetColor(_StartColorName, _PartyModeID);
             }
             else
             {
-                _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/StartR", navigator, ref _StartColor.R);
-                _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/StartG", navigator, ref _StartColor.G);
-                _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/StartB", navigator, ref _StartColor.B);
-                _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/StartA", navigator, ref _StartColor.A);
+                _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/StartR", ref _StartColor.R);
+                _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/StartG", ref _StartColor.G);
+                _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/StartB", ref _StartColor.B);
+                _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/StartA", ref _StartColor.A);
             }
-            if (CHelper.GetValueFromXML(item + "/EndColor", navigator, ref _EndColorName, String.Empty))
+            if (xmlReader.GetValue(item + "/EndColor", ref _EndColorName, String.Empty))
             {
-                _EndColor = CTheme.GetColor(_EndColorName);
+                _EndColor = CBase.Theme.GetColor(_EndColorName, _PartyModeID);
             }
             else
             {
-                _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/EndR", navigator, ref _EndColor.R);
-                _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/EndG", navigator, ref _EndColor.G);
-                _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/EndB", navigator, ref _EndColor.B);
-                _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/EndA", navigator, ref _EndColor.A);
+                _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/EndR", ref _EndColor.R);
+                _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/EndG", ref _EndColor.G);
+                _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/EndB", ref _EndColor.B);
+                _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/EndA", ref _EndColor.A);
             }
             return _AnimationLoaded;
         }

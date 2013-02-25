@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 
-using Vocaluxe.Base;
-using Vocaluxe.Lib.Draw;
 using Vocaluxe.Menu.Animations;
 
 namespace Vocaluxe.Menu
@@ -21,7 +19,7 @@ namespace Vocaluxe.Menu
         public string STextureName;
     }
 
-    class CButton : IMenuElement, IMenuProperties
+    public class CButton : IMenuElement, IMenuProperties
     {
         private SThemeButton _Theme;
         private bool _ThemeLoaded;
@@ -39,10 +37,8 @@ namespace Vocaluxe.Menu
             get { return _Color; }
             set { _Color = value; }
         }
-        public STexture Texture;
+
         public STexture STexture;
-        public SRectF Rect;
-        public SColorF Color;
         public SColorF SColor;
 
         private STexture _Texture;
@@ -201,17 +197,12 @@ namespace Vocaluxe.Menu
 
             _ThemeLoaded &= xmlReader.GetValue(item + "/Skin", ref _Theme.TextureName, String.Empty);
             _ThemeLoaded &= xmlReader.GetValue(item + "/SkinSelected", ref _Theme.STextureName, String.Empty);
-            
-            _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/X", navigator, ref _Rect.X);
-            _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/Y", navigator, ref _Rect.Y);
-            _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/Z", navigator, ref _Rect.Z);
-            _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/W", navigator, ref _Rect.W);
-            _ThemeLoaded &= CHelper.TryGetFloatValueFromXML(item + "/H", navigator, ref _Rect.H);
-            _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/X", ref Rect.X);
-            _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/Y", ref Rect.Y);
-            _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/Z", ref Rect.Z);
-            _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/W", ref Rect.W);
-            _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/H", ref Rect.H);
+
+            _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/X", ref _Rect.X);
+            _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/Y", ref _Rect.Y);
+            _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/Z", ref _Rect.Z);
+            _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/W", ref _Rect.W);
+            _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/H", ref _Rect.H);
 
             if (xmlReader.GetValue(item + "/Color", ref _Theme.ColorName, String.Empty))
             {
@@ -268,12 +259,12 @@ namespace Vocaluxe.Menu
 
             //Animations
             int i = 1;
-            while (CHelper.ItemExistsInXML(item + "/Animation"+i.ToString(), navigator))
+            while (xmlReader.ItemExists(item + "/Animation" + i.ToString()))
             {
                 Animation = true;
                 EAnimationType type = new EAnimationType();
-                _ThemeLoaded &= CHelper.TryGetEnumValueFromXML<EAnimationType>(item + "/Animation" + i.ToString() + "/Type", navigator, ref type);
-                CAnimation anim = new CAnimation(type);
+                _ThemeLoaded &= xmlReader.TryGetEnumValue<EAnimationType>(item + "/Animation" + i.ToString() + "/Type", ref type);
+                CAnimation anim = new CAnimation(type, _PartyModeID);
                 _Animations.Add(anim);
                 i++;
             }
@@ -284,7 +275,7 @@ namespace Vocaluxe.Menu
                 i = 1;
                 foreach (CAnimation anim in _Animations)
                 {
-                    _ThemeLoaded &= anim.LoadAnimation(item + "/Animation" + i.ToString(), navigator);
+                    _ThemeLoaded &= anim.LoadAnimation(item + "/Animation" + i.ToString(), xmlReader);
                     i++;
                 }
             }
@@ -472,7 +463,7 @@ namespace Vocaluxe.Menu
         public void LoadTextures()
         {
             Text.LoadTextures();
-            Texture = CTheme.GetSkinTexture(_Theme.TextureName);
+            Texture = CBase.Theme.GetSkinTexture(_Theme.TextureName, _PartyModeID);
 
             if (_Theme.ColorName != String.Empty)
                 Color = CBase.Theme.GetColor(_Theme.ColorName, _PartyModeID);

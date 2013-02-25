@@ -5,9 +5,6 @@ using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 
-using Vocaluxe.Base;
-using Vocaluxe.Lib.Draw;
-
 namespace Vocaluxe.Menu.Animations
 {
     public enum EAnimationType
@@ -56,13 +53,21 @@ namespace Vocaluxe.Menu.Animations
         public bool ResetMode = false;
         public bool AnimationDrawn = false;
 
+        protected int _PartyModeID;
+
+        public CAnimationFramework(int PartyModeID)
+        {
+            _PartyModeID = PartyModeID;
+            Init();
+        }
+
         public abstract void Init();
 
-        public virtual bool LoadAnimation(string item, XPathNavigator navigator)
+        public virtual bool LoadAnimation(string item, CXMLReader xmlReader)
         {
             _AnimationLoaded = true;
 
-            _AnimationLoaded &= CHelper.TryGetEnumValueFromXML<EAnimationEvent>(item + "/Event", navigator, ref Event);
+            _AnimationLoaded &= xmlReader.TryGetEnumValue<EAnimationEvent>(item + "/Event", ref Event);
 
             if (_AnimationLoaded)
                 _AnimationLoaded = Event != EAnimationEvent.None;

@@ -300,8 +300,10 @@ namespace Vocaluxe.PartyModes
             for (int i = 1; i <= _PartyMode.GetMaxPlayer(); i++)
             {
                 CButton b = GetNewButton(Buttons[htButtons(ButtonPlayerDestination)]);
-                b.Rect.X = PlayerDestinationButtonsFirstX + column * (b.Rect.W + PlayerDestinationButtonsSpaceH);
-                b.Rect.Y = PlayerDestinationButtonsFirstY + row * (b.Rect.H + PlayerDestinationButtonsSpaceW);
+                SRectF btRect = b.Rect;
+                btRect.X = PlayerDestinationButtonsFirstX + column * (btRect.W + PlayerDestinationButtonsSpaceH);
+                btRect.Y = PlayerDestinationButtonsFirstY + row * (btRect.H + PlayerDestinationButtonsSpaceW);
+                b.Rect = btRect;
                 PlayerDestinationButtons.Add(b);
                 column++;
                 if (column >= PlayerDestinationButtonsNumH)
@@ -324,8 +326,11 @@ namespace Vocaluxe.PartyModes
             for (int i = 1; i <= PlayerChooseButtonsNumH * PlayerChooseButtonsNumW; i++)
             {
                 CButton b = GetNewButton(Buttons[htButtons(ButtonPlayerChoose)]);
-                b.Rect.X = PlayerChooseButtonsFirstX + column * (b.Rect.W + PlayerChooseButtonsSpaceH);
-                b.Rect.Y = PlayerChooseButtonsFirstY + row * (b.Rect.H + PlayerChooseButtonsSpaceW);
+                SRectF btRect = b.Rect;
+                btRect.X = PlayerChooseButtonsFirstX + column * (btRect.W + PlayerChooseButtonsSpaceH);
+                btRect.Y = PlayerChooseButtonsFirstY + row * (btRect.H + PlayerChooseButtonsSpaceW);
+                //TODO: CHeck if nec.
+                b.Rect = btRect;
                 CPlayerChooseButton pcb = new CPlayerChooseButton();
                 pcb.Button = b;
                 pcb.ProfileID = -1;

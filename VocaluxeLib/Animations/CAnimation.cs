@@ -5,17 +5,16 @@ using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 
-using Vocaluxe.Base;
-using Vocaluxe.Lib.Draw;
-
 namespace Vocaluxe.Menu.Animations
 {
     public class CAnimation:IAnimation
     {
         private IAnimation _Animation;
+        private int _PartyModeID;
 
-        public CAnimation(EAnimationType Type)
+        public CAnimation(EAnimationType Type, int PartyModeID)
         {
+            _PartyModeID = PartyModeID;
             setAnimation(Type);
         }
 
@@ -24,9 +23,9 @@ namespace Vocaluxe.Menu.Animations
             _Animation.Init();
         }
 
-        public bool LoadAnimation(string item, XPathNavigator navigator)
+        public bool LoadAnimation(string item, CXMLReader xmlReader)
         {
-            return _Animation.LoadAnimation(item, navigator);
+            return _Animation.LoadAnimation(item, xmlReader);
         }
 
         public bool SaveAnimation(XmlWriter writer)
@@ -114,23 +113,23 @@ namespace Vocaluxe.Menu.Animations
             switch (Type)
             {
                 case EAnimationType.Resize:
-                    _Animation = new CAnimationResize();
+                    _Animation = new CAnimationResize(_PartyModeID);
                     break;
 
                 case EAnimationType.MoveLinear:
-                    _Animation = new CAnimationMoveLinear();
+                    _Animation = new CAnimationMoveLinear(_PartyModeID);
                     break;
 
                 case EAnimationType.Video:
-                    _Animation = new CAnimationVideo();
+                    _Animation = new CAnimationVideo(_PartyModeID);
                     break;
 
                 case EAnimationType.FadeColor:
-                    _Animation = new CAnimationFadeColor();
+                    _Animation = new CAnimationFadeColor(_PartyModeID);
                     break;
 
                 case EAnimationType.Rotate:
-                    _Animation = new CAnimationRotate();
+                    _Animation = new CAnimationRotate(_PartyModeID);
                     break;
             }
         }

@@ -5,38 +5,39 @@ using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 
-using Vocaluxe.Base;
-using Vocaluxe.Lib.Draw;
-
 namespace Vocaluxe.Menu.Animations
 {
-    public class CAnimationRotate : CAnimationFramework
+    public class CAnimationMoveLinear : CAnimationFramework
     {
-        private float _Degree;
+        public EAnimationResizePosition Position;
+        public EAnimationResizeOrder Order;
+
         private SRectF _FinalRect;
         private SRectF _CurrentRect;
 
-        public CAnimationRotate()
+        public CAnimationMoveLinear(int PartyModeID)
+            : base(PartyModeID)
         {
-            Init();
         }
 
         public override void Init()
         {
-            Type = EAnimationType.Rotate;
+            Type = EAnimationType.MoveLinear;
         }
 
-        public override bool LoadAnimation(string item, XPathNavigator navigator)
+        public override bool LoadAnimation(string item, CXMLReader xmlReader)
         {
             _AnimationLoaded = true;
 
             //Load normal animation-options
-            _AnimationLoaded &= base.LoadAnimation(item, navigator);
+            _AnimationLoaded &= base.LoadAnimation(item, xmlReader);
 
             //Load specific animation-options
-            _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/Time", navigator, ref Time);
-            _AnimationLoaded &= CHelper.TryGetEnumValueFromXML<EAnimationRepeat>(item + "/Repeat", navigator, ref Repeat);
-            _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/Degree", navigator, ref _Degree);
+            _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/Time", ref Time);
+            _AnimationLoaded &= xmlReader.TryGetEnumValue<EAnimationRepeat>(item + "/Repeat", ref Repeat);
+            _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/X", ref _FinalRect.X);
+            _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/Y", ref _FinalRect.Y);
+
 
             return _AnimationLoaded;
         }
@@ -45,8 +46,8 @@ namespace Vocaluxe.Menu.Animations
         {
             OriginalRect = rect;
 
-            _FinalRect = OriginalRect;
-            _FinalRect.Rotation = OriginalRect.Rotation + _Degree;
+            _FinalRect.H = OriginalRect.H;
+            _FinalRect.W = OriginalRect.W;
         }
 
         public override SRectF getRect()
@@ -75,13 +76,15 @@ namespace Vocaluxe.Menu.Animations
             float factor = Timer.ElapsedMilliseconds / Time;
             if (!ResetMode)
             {
-                _CurrentRect.Rotation = OriginalRect.Rotation + ((_FinalRect.Rotation - OriginalRect.Rotation) * factor);
+                _CurrentRect.X = OriginalRect.X + ((_FinalRect.X - OriginalRect.X) * factor);
+                _CurrentRect.Y = OriginalRect.Y + ((_FinalRect.Y - OriginalRect.Y) * factor);
                 if (factor >= 1f)
                     finished = true;
             }
             else
             {
-                _CurrentRect.Rotation = _FinalRect.Rotation + ((OriginalRect.Rotation - _FinalRect.Rotation) * factor);
+                _CurrentRect.X = _FinalRect.X + ((OriginalRect.X - _FinalRect.X) * factor);
+                _CurrentRect.Y = _FinalRect.Y + ((OriginalRect.Y - _FinalRect.Y) * factor);
                 if (factor >= 1f)
                     finished = true;
             }

@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 
-using Vocaluxe.Base;
-using Vocaluxe.Lib.Draw;
-
 namespace Vocaluxe.Menu
 {
     public interface IMenuElement

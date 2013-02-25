@@ -399,10 +399,7 @@ namespace Vocaluxe.PartyModes
             {
                 if (i < GameData.NumFields)
                 {
-                    Fields[i].Button.Rect.W = FieldSize;
-                    Fields[i].Button.Rect.H = FieldSize;
-                    Fields[i].Button.Rect.X = x;
-                    Fields[i].Button.Rect.Y = y;
+                    Fields[i].Button.Rect = new SRectF(x, y, FieldSize, FieldSize, Fields[i].Button.Rect.Z);
                     Fields[i].Button.Visible = true;
                     Fields[i].Button.Enabled = true;
                     column++;

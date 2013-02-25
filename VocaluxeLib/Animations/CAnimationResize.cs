@@ -5,9 +5,6 @@ using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 
-using Vocaluxe.Base;
-using Vocaluxe.Lib.Draw;
-
 namespace Vocaluxe.Menu.Animations
 {
     public enum EAnimationResizePosition {
@@ -33,9 +30,9 @@ namespace Vocaluxe.Menu.Animations
         private SRectF _FinalRect;
         private SRectF _CurrentRect;
 
-        public CAnimationResize()
+        public CAnimationResize(int PartyModeID)
+            : base(PartyModeID)
         {
-            Init();
         }
 
         public override void Init()
@@ -43,20 +40,20 @@ namespace Vocaluxe.Menu.Animations
             Type = EAnimationType.Resize;
         }
 
-        public override bool LoadAnimation(string item, XPathNavigator navigator)
+        public override bool LoadAnimation(string item, CXMLReader xmlReader)
         {
             _AnimationLoaded = true;
 
             //Load normal animation-options
-            _AnimationLoaded &= base.LoadAnimation(item, navigator);
+            _AnimationLoaded &= base.LoadAnimation(item, xmlReader);
 
             //Load specific animation-options
-            _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/Time", navigator, ref Time);
-            _AnimationLoaded &= CHelper.TryGetEnumValueFromXML<EAnimationRepeat>(item + "/Repeat", navigator, ref Repeat);
-            _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/W", navigator, ref _FinalRect.W);
-            _AnimationLoaded &= CHelper.TryGetFloatValueFromXML(item + "/H", navigator, ref _FinalRect.H);
-            _AnimationLoaded &= CHelper.TryGetEnumValueFromXML<EAnimationResizePosition>(item + "/Position", navigator, ref Position);
-            _AnimationLoaded &= CHelper.TryGetEnumValueFromXML<EAnimationResizeOrder>(item + "/Order", navigator, ref Order);
+            _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/Time", ref Time);
+            _AnimationLoaded &= xmlReader.TryGetEnumValue<EAnimationRepeat>(item + "/Repeat", ref Repeat);
+            _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/W", ref _FinalRect.W);
+            _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/H", ref _FinalRect.H);
+            _AnimationLoaded &= xmlReader.TryGetEnumValue<EAnimationResizePosition>(item + "/Position", ref Position);
+            _AnimationLoaded &= xmlReader.TryGetEnumValue<EAnimationResizeOrder>(item + "/Order", ref Order);
 
             return _AnimationLoaded;
         }

@@ -110,6 +110,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Animations\CAnimation.cs" />
+    <Compile Include="Animations\CAnimationFadeColor.cs" />
+    <Compile Include="Animations\CAnimationFramework.cs" />
+    <Compile Include="Animations\CAnimationMoveLinear.cs" />
+    <Compile Include="Animations\CAnimationResize.cs" />
+    <Compile Include="Animations\CAnimationRotate.cs" />
+    <Compile Include="Animations\CAnimations.cs" />
+    <Compile Include="Animations\CAnimationVideo.cs" />
+    <Compile Include="Animations\IAnimation.cs" />
     <Compile Include="Menu\CBackground.cs" />
     <Compile Include="Menu\CBasic.cs" />
     <Compile Include="Menu\CButton.cs" />
@@ -130,6 +139,7 @@
     <Compile Include="Menu\CXMLReader.cs" />
     <Compile Include="Menu\IMenu.cs" />
     <Compile Include="Menu\IMenuElement.cs" />
+    <Compile Include="Menu\IMenuProperties.cs" />
     <Compile Include="Menu\SingNotes\CNotes.cs" />
     <Compile Include="Menu\SingNotes\CSingNotes.cs" />
     <Compile Include="Menu\SingNotes\CSingNotesClassic.cs" />
@@ -148,6 +158,7 @@
     <Compile Include="PartyModes\IPartyMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

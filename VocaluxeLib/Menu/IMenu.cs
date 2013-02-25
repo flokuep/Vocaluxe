@@ -492,14 +492,14 @@ namespace Vocaluxe.Menu
         public float Z;
         public float Rotation; //0..360°
 
-        public SRectF(float x, float y, float w, float h, float z)
+        public SRectF(float x, float y, float w, float h, float z, float r = 0f)
         {
             X = x;
             Y = y;
             W = w;
             H = h;
             Z = z;
-            Rotation = 0f;
+            Rotation = r;
         }
 
         public SRectF(SRectF rect)
