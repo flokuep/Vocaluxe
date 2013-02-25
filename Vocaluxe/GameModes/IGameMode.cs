@@ -3,17 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 
 using Vocaluxe.Base;
-using Vocaluxe.Lib.Song;
+using Vocaluxe.Menu;
+using Vocaluxe.Menu.SongMenu;
 
 namespace Vocaluxe.GameModes
 {
-    public enum EGameMode
-    {
-        Normal,
-        Medley,
-        Duet
-    }
-
     interface IGameMode
     {
         void Init();
@@ -37,5 +31,6 @@ namespace Vocaluxe.GameModes
         int GetNumSongs();
         CSong GetSong();
         CSong GetSong(int Num);
+        EGameMode GetGameMode(int Num);
     }
 }

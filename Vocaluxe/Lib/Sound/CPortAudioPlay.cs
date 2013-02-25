@@ -218,6 +218,21 @@ namespace Vocaluxe.Lib.Sound
             }
         }
 
+        public void SetStreamVolumeMax(int Stream, float Volume)
+        {
+            if (_Initialized)
+            {
+                lock (MutexDecoder)
+                {
+                    if (AlreadyAdded(Stream))
+                    {
+                        _Decoder[GetStreamIndex(Stream)].VolumeMax = Volume;
+                    }
+                }
+
+            }
+        }
+
         public float GetLength(int Stream)
         {
             if (_Initialized)
@@ -369,12 +384,16 @@ namespace Vocaluxe.Lib.Sound
 
     class PortAudioStream
     {
-        const long BUFSIZE = 50000L;
+        const long BUFSIZE = 1000000L;
+        const long BEGINREFILL = 800000L;
 
         private CSyncTimer _SyncTimer;
-        private bool _Initialized;
+        private static bool _Initialized = false;
+        private static int _NumStreams = 0;
+        private static Object _Mutex = new object();
         private int _ByteCount = 4;
         private float _Volume = 1f;
+        private float _VolumeMax = 1f;
         
         private Stopwatch _fadeTimer = new Stopwatch();
 
@@ -386,8 +405,8 @@ namespace Vocaluxe.Lib.Sound
         private bool _fading = false;
 
 
-        private PortAudio.PaHostApiInfo _apiInfo;
-        private PortAudio.PaDeviceInfo _outputDeviceInfo;
+        private static PortAudio.PaHostApiInfo _apiInfo;
+        private static PortAudio.PaDeviceInfo _outputDeviceInfo;
         private IntPtr _Ptr = new IntPtr(0);
 
         private Stopwatch _FadeTimer = new Stopwatch();
@@ -429,7 +448,6 @@ namespace Vocaluxe.Lib.Sound
 
         public PortAudioStream()
         {
-            _Initialized = false;
             _SyncTimer = new CSyncTimer(0f, 1f, 0.02f);
             _DecoderThread = new Thread(Execute);
         }
@@ -458,7 +476,7 @@ namespace Vocaluxe.Lib.Sound
             {
                 lock (_LockData)
                 {
-                    return _NoMoreData && _data.BytesNotRead == 0L;
+                    return _NoMoreData && _data.BytesNotRead == 0L && _SyncTimer.Time >= _Duration;
                 }
             }
         }
@@ -476,6 +494,23 @@ namespace Vocaluxe.Lib.Sound
 
                     if (_Volume > 1f)
                         _Volume = 1f;
+                }
+            }
+        }
+
+        public float VolumeMax
+        {
+            get { return _VolumeMax * 100f; }
+            set
+            {
+                lock (_LockData)
+                {
+                    _VolumeMax = value / 100f;
+                    if (_VolumeMax < 0f)
+                        _VolumeMax = 0f;
+
+                    if (_VolumeMax > 1f)
+                        _VolumeMax = 1f;
                 }
             }
         }
@@ -544,12 +579,18 @@ namespace Vocaluxe.Lib.Sound
         {
             Paused = false;
             _pauseStreamAfterFade = false;
-            errorCheck("StartStream", PortAudio.Pa_StartStream(_Ptr));
+            lock (_Mutex)
+            {
+                errorCheck("StartStream", PortAudio.Pa_StartStream(_Ptr));
+            }
         }
 
         public void Stop()
         {
-            errorCheck("StartStream", PortAudio.Pa_StopStream(_Ptr));
+            lock (_Mutex)
+            {
+                errorCheck("StopStream (playback)", PortAudio.Pa_StopStream(_Ptr));
+            }
             Skip(0f);
         }
 
@@ -575,17 +616,23 @@ namespace Vocaluxe.Lib.Sound
 
             try
             {
-                if (errorCheck("Initialize", PortAudio.Pa_Initialize()))
-                    return -1;
+                lock (_Mutex)
+                {
+                    if (!_Initialized)
+                    {
+                        if (errorCheck("Initialize", PortAudio.Pa_Initialize()))
+                            return -1;
+                        _Initialized = true;
 
-                _Initialized = true;
-                int hostApi = apiSelect();
-                _apiInfo = PortAudio.Pa_GetHostApiInfo(hostApi);
-                _outputDeviceInfo = PortAudio.Pa_GetDeviceInfo(_apiInfo.defaultOutputDevice);
-                _paStreamCallback = new PortAudio.PaStreamCallbackDelegate(_PaStreamCallback);
+                        int hostApi = apiSelect();
+                        _apiInfo = PortAudio.Pa_GetHostApiInfo(hostApi);
+                        _outputDeviceInfo = PortAudio.Pa_GetDeviceInfo(_apiInfo.defaultOutputDevice);
+                        if (_outputDeviceInfo.defaultLowOutputLatency < 0.1)
+                            _outputDeviceInfo.defaultLowOutputLatency = 0.1;
+                    }
+                }
 
-                if (_outputDeviceInfo.defaultLowOutputLatency < 0.1)
-                    _outputDeviceInfo.defaultLowOutputLatency = 0.1;
+                _paStreamCallback = new PortAudio.PaStreamCallbackDelegate(_PaStreamCallback);         
             }
 
             catch (Exception)
@@ -600,6 +647,9 @@ namespace Vocaluxe.Lib.Sound
             _Duration = _Decoder.GetLength();
 
             FormatInfo format = _Decoder.GetFormatInfo();
+            if (format.SamplesPerSecond == 0)
+                return -1;
+
             _ByteCount = 2 * format.ChannelCount;
             _BytesPerSecond = format.SamplesPerSecond * _ByteCount;
             _CurrentTime = 0f;
@@ -616,20 +666,24 @@ namespace Vocaluxe.Lib.Sound
             outputParams.suggestedLatency = _outputDeviceInfo.defaultLowOutputLatency;
 
             uint bufsize = (uint)CConfig.AudioBufferSize;
-            errorCheck("OpenDefaultStream", PortAudio.Pa_OpenStream(
-                out _Ptr,
-                IntPtr.Zero,
-                ref outputParams,
-                format.SamplesPerSecond,
-                bufsize,
-                PortAudio.PaStreamFlags.paNoFlag,
-                _paStreamCallback,
-                data));
+            lock (_Mutex)
+            {
+                errorCheck("OpenDefaultStream (playback)", PortAudio.Pa_OpenStream(
+                    out _Ptr,
+                    IntPtr.Zero,
+                    ref outputParams,
+                    format.SamplesPerSecond,
+                    bufsize,
+                    PortAudio.PaStreamFlags.paNoFlag,
+                    _paStreamCallback,
+                    data));
+            }
 
             stream.handle = _Ptr.ToInt32();
 
             if (stream.handle != 0)
             {
+                _NumStreams++;
                 _Paused = true;
                 _waiting = true;
                 _FileOpened = true;
@@ -727,7 +781,7 @@ namespace Vocaluxe.Lib.Sound
             bool DoIt = false;
             lock (_LockData)
             {
-                if (!_skip && BUFSIZE - 10000L > _data.BytesNotRead)
+                if (!_skip && BEGINREFILL > _data.BytesNotRead)
                     DoIt = true;
             }
 
@@ -759,7 +813,7 @@ namespace Vocaluxe.Lib.Sound
             {
                 _data.Write(Buffer);
                 _TimeCode = Timecode;
-                if (_data.BytesNotRead < BUFSIZE - 10000L)
+                if (_data.BytesNotRead < BEGINREFILL)
                 {
                     _waiting = false;
                     EventDecode.Set();
@@ -774,7 +828,15 @@ namespace Vocaluxe.Lib.Sound
             if (_Initialized)
             {
                 Stop();
-                PortAudio.Pa_Terminate();
+                _NumStreams--;
+                if (_NumStreams == 0)
+                {
+                    lock (_Mutex)
+                    {
+                        PortAudio.Pa_Terminate();
+                        _Initialized = false;
+                    }
+                }
             }
 
             _Closeproc(_StreamID);
@@ -817,7 +879,7 @@ namespace Vocaluxe.Lib.Sound
                         b[0] = buf[i];
                         b[1] = buf[i + 1];
 
-                        b = BitConverter.GetBytes((Int16)(BitConverter.ToInt16(b, 0) * _Volume));
+                        b = BitConverter.GetBytes((Int16)(BitConverter.ToInt16(b, 0) * _Volume * _VolumeMax));
                         buf[i] = b[0];
                         buf[i + 1] = b[1];
 
@@ -826,14 +888,14 @@ namespace Vocaluxe.Lib.Sound
                             b[0] = buf[i + 2];
                             b[1] = buf[i + 3];
 
-                            b = BitConverter.GetBytes((Int16)(BitConverter.ToInt16(b, 0) * _Volume));
+                            b = BitConverter.GetBytes((Int16)(BitConverter.ToInt16(b, 0) * _Volume * _VolumeMax));
                             buf[i + 2] = b[0];
                             buf[i + 3] = b[1];
                         }
                     }
                 }
 
-                if (_data.BytesNotRead < BUFSIZE - 10000L)
+                if (_data.BytesNotRead < BEGINREFILL)
                 {
                     EventDecode.Set();
                     _waiting = false;
@@ -844,7 +906,8 @@ namespace Vocaluxe.Lib.Sound
                 float latency = buf.Length / _BytesPerSecond + CConfig.AudioLatency/1000f;
                 float time = _TimeCode - _data.BytesNotRead / _BytesPerSecond - latency;
 
-                _CurrentTime = _SyncTimer.Update(time);
+                if (!_NoMoreData)
+                    _CurrentTime = _SyncTimer.Update(time);
             }
   
             try
@@ -867,7 +930,7 @@ namespace Vocaluxe.Lib.Sound
                 if (errorCode == PortAudio.PaError.paStreamIsNotStopped)
                     return false;
 
-                CLog.LogError(action + " error: " + PortAudio.Pa_GetErrorText(errorCode));
+                CLog.LogError(action + " error (playback): " + PortAudio.Pa_GetErrorText(errorCode));
                 if (errorCode == PortAudio.PaError.paUnanticipatedHostError)
                 {
                     PortAudio.PaHostErrorInfo errorInfo = PortAudio.Pa_GetLastHostErrorInfo();

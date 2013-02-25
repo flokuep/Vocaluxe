@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
-using System.Xml.XPath;
+
+using Vocaluxe.Menu;
 
 namespace Vocaluxe.Base
 {
@@ -14,13 +15,19 @@ namespace Vocaluxe.Base
         public string LanguageFilePath;
 
         public Hashtable Texts;
+        public List<SPartyLanguage> PartyModeTexts;
+    }
+
+    struct SPartyLanguage
+    {
+        public int PartyModeID;
+        public Hashtable Texts;
     }
 
     static class CLanguage
     {
         private static XmlWriterSettings _settings = new XmlWriterSettings();
         private static List<SLanguage> _Languages;
-        private static CHelper Helper = new CHelper();
         private static int _CurrentLanguage = 0;
         private static int _FallbackLanguage = 0;
 
@@ -54,7 +61,7 @@ namespace Vocaluxe.Base
             _settings.ConformanceLevel = ConformanceLevel.Document;
 
             List<string> files = new List<string>();
-            files.AddRange(Helper.ListFiles(CSettings.sFolderLanguages, "*.xml", true, true));
+            files.AddRange(CHelper.ListFiles(CSettings.sFolderLanguages, "*.xml", true, true));
             
             foreach (string file in files)
 	        {
@@ -64,21 +71,34 @@ namespace Vocaluxe.Base
 
         public static bool SetLanguage(string Language)
         {
-            for (int i = 0; i < _Languages.Count; i++)
+            int nr = GetLanguageNr(Language);
+            if (nr != -1)
             {
-                if (_Languages[i].Name == Language)
-                {
-                    _CurrentLanguage = i;
-                    return true;
-                }
+                _CurrentLanguage = nr;
+                return true;
             }
             return false;
         }
 
+        public static int GetLanguageNr(string Language)
+        {
+            for (int i = 0; i < _Languages.Count; i++)
+            {
+                if (_Languages[i].Name == Language)
+                    return i;
+            }
+            return -1;
+        }
+
         public static string Translate(string KeyWord)
         {
+            return Translate(KeyWord, -1);
+        }
+
+        public static string Translate(string KeyWord, int PartyModeID)
+        {
             if (KeyWord == null)
-                return null;
+                return "Error";
 
             if (KeyWord.Length < 3)
                 return KeyWord;
@@ -87,14 +107,38 @@ namespace Vocaluxe.Base
             if (tag != "TR_")
                 return KeyWord;
 
-            string result = String.Empty;
-            try
+            string result = null;
+
+            int PartyModeNr = GetPartyModeNr(PartyModeID, _CurrentLanguage);
+            if (PartyModeID != -1)
             {
-                result = (string)_Languages[_CurrentLanguage].Texts[KeyWord];
+                if (PartyModeNr != -1)
+                {
+                    try
+                    {
+                        result = (string)_Languages[_CurrentLanguage].PartyModeTexts[PartyModeNr].Texts[KeyWord];
+                    }
+                    catch { }
+                }
+
+                if (result == null && (PartyModeNr = GetPartyModeNr(PartyModeID, _FallbackLanguage)) != -1)
+                {
+                    try
+                    {
+                        result = (string)_Languages[_FallbackLanguage].PartyModeTexts[PartyModeNr].Texts[KeyWord];
+                    }
+                    catch { }
+                }
             }
-            catch (Exception)
+
+
+            if (result == null)
             {
-                ;
+                try
+                {
+                    result = (string)_Languages[_CurrentLanguage].Texts[KeyWord];
+                }
+                catch { }
             }
 
             if (result == null)
@@ -104,10 +148,7 @@ namespace Vocaluxe.Base
                 {
                     result = (string)_Languages[_FallbackLanguage].Texts[KeyWord];
                 }
-                catch (Exception)
-                {
-                    ;
-                }
+                catch { }
 
                 if (result == null)
                     return KeyWord;
@@ -118,6 +159,14 @@ namespace Vocaluxe.Base
 
         public static bool TranslationExists(string KeyWord)
         {
+            return TranslationExists(KeyWord, -1);
+        }
+
+        public static bool TranslationExists(string KeyWord, int PartyModeID)
+        {
+            if (KeyWord == null)
+                return false;
+
             if (KeyWord.Length < 3)
                 return false;
 
@@ -126,13 +175,37 @@ namespace Vocaluxe.Base
                 return false;
 
             string result = String.Empty;
-            try
+
+            int PartyModeNr = GetPartyModeNr(PartyModeID, _CurrentLanguage);
+            if (PartyModeID != -1)
             {
-                result = (string)_Languages[_CurrentLanguage].Texts[KeyWord];
+                if (PartyModeNr != -1)
+                {
+                    try
+                    {
+                        result = (string)_Languages[_CurrentLanguage].PartyModeTexts[PartyModeNr].Texts[KeyWord];
+                    }
+                    catch { }
+                }
+
+                if (result == null && (PartyModeNr = GetPartyModeNr(PartyModeID, _FallbackLanguage)) != -1)
+                {
+                    try
+                    {
+                        result = (string)_Languages[_FallbackLanguage].PartyModeTexts[PartyModeNr].Texts[KeyWord];
+                    }
+                    catch { }
+                }
             }
-            catch (Exception)
+
+
+            if (result == null)
             {
-                ;
+                try
+                {
+                    result = (string)_Languages[_CurrentLanguage].Texts[KeyWord];
+                }
+                catch { }
             }
 
             if (result == null)
@@ -142,10 +215,7 @@ namespace Vocaluxe.Base
                 {
                     result = (string)_Languages[_FallbackLanguage].Texts[KeyWord];
                 }
-                catch (Exception)
-                {
-                    ;
-                }
+                catch { }
 
                 if (result == null)
                     return false;
@@ -154,64 +224,113 @@ namespace Vocaluxe.Base
             return true;
         }
 
+        public static bool LoadPartyLanguageFiles(int PartyModeID, string Path)
+        {
+            List<string> files = new List<string>();
+            files.AddRange(CHelper.ListFiles(Path, "*.xml", true, true));
+
+            foreach (string file in files)
+            {
+                if (!LoadPartyLanguageFile(PartyModeID, file))
+                    return false;
+            }
+            return true;
+        }
+
+        private static bool LoadPartyLanguageFile(int PartyModeID, string file)
+        {
+            CXMLReader xmlReader = CXMLReader.OpenFile(file);
+            if (xmlReader == null)
+                return false;
+
+            string value = string.Empty;
+            if (xmlReader.GetValue("//resources/string[@name='language']", ref value, value))
+            {
+                int nr = GetLanguageNr(value);
+
+                if (nr == -1)
+                    return true;
+
+                SPartyLanguage lang = new SPartyLanguage();
+                lang.PartyModeID = PartyModeID;
+                lang.Texts = new Hashtable();
+
+                List<string> texts = xmlReader.GetAttributes("resources", "name");
+                for (int i = 0; i < texts.Count; i++)
+                {
+                    if (xmlReader.GetValue("//resources/string[@name='" + texts[i] + "']", ref value, value))
+                    {
+                        try
+                        {
+                            lang.Texts.Add(texts[i], value);
+                        }
+                        catch (Exception e)
+                        {
+                            CLog.LogError("Error reading Party Language File " + file + ": " + e.Message);
+                            return false;
+                        }
+                    }
+
+                }
+                _Languages[nr].PartyModeTexts.Add(lang);
+                return true;
+            }
+            else
+            {
+                CLog.LogError("Error reading Party Language File " + file);
+                return false;
+            }
+        }
+
         private static void LoadLanguageFile(string FileName)
         {
-            bool loaded = false;
-            XPathDocument xPathDoc = null;
-            XPathNavigator navigator = null;
             SLanguage lang = new SLanguage();
             lang.LanguageFilePath = Path.Combine(CSettings.sFolderLanguages, FileName);
 
-            try
-            {
-                xPathDoc = new XPathDocument(lang.LanguageFilePath);
-                navigator = xPathDoc.CreateNavigator();
-                loaded = true;
-            }
-            catch (Exception e)
-            {
-                loaded = false;
-                if (navigator != null)
-                    navigator = null;
+            CXMLReader xmlReader = CXMLReader.OpenFile(lang.LanguageFilePath);
+            if (xmlReader == null)
+                return;
 
-                if (xPathDoc != null)
-                    xPathDoc = null;
-
-                CLog.LogError("Error opening Language File " + FileName + ": " + e.Message); 
-            }
-
-            if (loaded)
+            string value = string.Empty;
+            if (xmlReader.GetValue("//resources/string[@name='language']", ref value, value))
             {
-                string value = string.Empty;
-                if (CHelper.GetValueFromXML("//root/Info/Name", navigator, ref value, value))
+                lang.Name = value;
+
+                if (lang.Name == CSettings.FallbackLanguage)
+                    _FallbackLanguage = _Languages.Count;
+
+                lang.Texts = new Hashtable();
+                lang.PartyModeTexts = new List<SPartyLanguage>();
+
+                List<string> texts = xmlReader.GetAttributes("resources", "name");
+                for (int i = 0; i < texts.Count; i++)
                 {
-                    lang.Name = value;
-
-                    if (lang.Name == CSettings.FallbackLanguage)
-                        _FallbackLanguage = _Languages.Count;
-
-                    lang.Texts = new Hashtable();
-
-                    List<string> texts = CHelper.GetValuesFromXML("Texts", navigator);
-                    for (int i = 0; i < texts.Count; i++)
+                    if (xmlReader.GetValue("//resources/string[@name='" + texts[i] + "']", ref value, value))
                     {
-                        if (CHelper.GetValueFromXML("//root/Texts/" + texts[i], navigator, ref value, value))
+                        try
                         {
-                            try
-                            {
-                                lang.Texts.Add(texts[i], value);
-                            }
-                            catch (Exception e)
-                            {
-                                CLog.LogError("Error reading Language File " + FileName + ": " + e.Message);
-                            }
+                            lang.Texts.Add(texts[i], value);
                         }
-                        
+                        catch (Exception e)
+                        {
+                            CLog.LogError("Error reading Language File " + FileName + ": " + e.Message);
+                        }
                     }
-
-                    _Languages.Add(lang);
+                        
                 }
+
+                _Languages.Add(lang);
             }
+        }
+
+        private static int GetPartyModeNr(int PartyModeID, int Language)
+        {
+            for (int i = 0; i < _Languages[Language].PartyModeTexts.Count; i++)
+			{
+                if (_Languages[Language].PartyModeTexts[i].PartyModeID == PartyModeID)
+                    return i;
+			}
+            return -1;
         }
     }
 }

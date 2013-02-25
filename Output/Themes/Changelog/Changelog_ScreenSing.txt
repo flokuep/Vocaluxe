@@ -1,10 +1,16 @@
 ScreenSing
 
 +++++++++
-Version 5
+Version 6
 
 Add:
 <TextDuetName1> and <TextDuetName2> (only showed when sining duet)
+
+++++++++++
+Version 5:
+
+Add:
+<ButtonSkip>
 
 ++++++++++
 Version 4:

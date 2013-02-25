@@ -37,6 +37,7 @@ namespace Vocaluxe.Lib.Sound
                 CloseAll();
 
             AC = new AudioContext();
+            
             AC.MakeCurrent();
             
 
@@ -234,6 +235,21 @@ namespace Vocaluxe.Lib.Sound
             }
         }
 
+        public void SetStreamVolumeMax(int Stream, float Volume)
+        {
+            if (_Initialized)
+            {
+                lock (MutexDecoder)
+                {
+                    if (AlreadyAdded(Stream))
+                    {
+                        _Decoder[GetStreamIndex(Stream)].VolumeMax = Volume;
+                    }
+                }
+
+            }
+        }
+
         public float GetLength(int Stream)
         {
             if (_Initialized)
@@ -385,8 +401,8 @@ namespace Vocaluxe.Lib.Sound
 
     class OpenAlStream
     {
-        const int buffer_size = 16384;
-        const int buffer_count = 2;
+        const int buffer_size = 2048;
+        const int buffer_count = 5;
         const long BUFSIZE = 50000L;
 
         Object CloseMutex;
@@ -399,6 +415,7 @@ namespace Vocaluxe.Lib.Sound
         private bool _Initialized;
         private int _ByteCount = 4;
         private float _Volume = 1f;
+        private float _VolumeMax = 1f;
 
         private Stopwatch _fadeTimer = new Stopwatch();
 
@@ -500,6 +517,23 @@ namespace Vocaluxe.Lib.Sound
             }
         }
 
+        public float VolumeMax
+        {
+            get { return _VolumeMax * 100f; }
+            set
+            {
+                lock (MutexData)
+                {
+                    _VolumeMax = value / 100f;
+                    if (_VolumeMax < 0f)
+                        _VolumeMax = 0f;
+
+                    if (_VolumeMax > 1f)
+                        _VolumeMax = 1f;
+                }
+            }
+        }
+
         public float Position
         {
             get
@@ -595,7 +629,12 @@ namespace Vocaluxe.Lib.Sound
             try
             {
                 _source = AL.GenSource();
-                _buffers = AL.GenBuffers(buffer_count);
+                _buffers = new int[buffer_count];
+                for (int i = 0; i < buffer_count; i++)
+			    {
+                    _buffers[i] = AL.GenBuffer();
+			    }
+               
                 _state = 0;
                 //AL.SourceQueueBuffers(_source, _buffers.Length, _buffers);
             }
@@ -800,11 +839,11 @@ namespace Vocaluxe.Lib.Sound
             AL.GetSource(_source, ALGetSourcei.BuffersQueued, out queued_count);
 
             int processed_count = buffer_count;
-            if (queued_count != 0)
+            if (queued_count > 0)
             {
                 AL.GetSource(_source, ALGetSourcei.BuffersProcessed, out processed_count);
                 doit = false;
-                Console.WriteLine("Buffers Prozessed on Stream " + _source.ToString() + " = " + processed_count.ToString());
+                Console.WriteLine("Buffers Processed on Stream " + _source.ToString() + " = " + processed_count.ToString());
                 if (processed_count < 1)
                     return;
             }
@@ -826,7 +865,7 @@ namespace Vocaluxe.Lib.Sound
                                 b[0] = buf[i];
                                 b[1] = buf[i + 1];
 
-                                b = BitConverter.GetBytes((Int16)(BitConverter.ToInt16(b, 0) * _Volume));
+                                b = BitConverter.GetBytes((Int16)(BitConverter.ToInt16(b, 0) * _Volume * _VolumeMax));
                                 buf[i] = b[0];
                                 buf[i + 1] = b[1];
 
@@ -835,7 +874,7 @@ namespace Vocaluxe.Lib.Sound
                                     b[0] = buf[i + 2];
                                     b[1] = buf[i + 3];
 
-                                    b = BitConverter.GetBytes((Int16)(BitConverter.ToInt16(b, 0) * _Volume));
+                                    b = BitConverter.GetBytes((Int16)(BitConverter.ToInt16(b, 0) * _Volume * _VolumeMax));
                                     buf[i + 2] = b[0];
                                     buf[i + 3] = b[1];
                                 }

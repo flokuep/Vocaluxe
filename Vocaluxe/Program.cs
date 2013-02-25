@@ -39,6 +39,7 @@ namespace Vocaluxe
                 // Init Log
                 CLog.Init();
 
+                CMain.Init();
                 CSettings.CreateFolders();
                 Application.DoEvents();
 
@@ -86,6 +87,13 @@ namespace Vocaluxe
                 CLog.StartBenchmark(0, "Init Record");
                 CSound.RecordInit();
                 CLog.StopBenchmark(0, "Init Record");
+
+                Application.DoEvents();
+
+                //Init Webcam
+                CLog.StartBenchmark(0, "Init Webcam");
+                CWebcam.Init();
+                CLog.StopBenchmark(0, "Init Webcam");
 
                 Application.DoEvents();
 
@@ -138,10 +146,20 @@ namespace Vocaluxe
 
                 Application.DoEvents();
 
+                // Init Input
+                CLog.StartBenchmark(0, "Init Input");
+                CInput.Init();
+                CLog.StopBenchmark(0, "Init Input");
+
                 // Init Game;
                 CLog.StartBenchmark(0, "Init Game");
                 CGame.Init();
                 CLog.StopBenchmark(0, "Init Game");
+
+                // Init Party Modes;
+                CLog.StartBenchmark(0, "Init Party Modes");
+                CParty.Init();
+                CLog.StopBenchmark(0, "Init Party Modes");
             }
             catch (Exception e)
             {
@@ -173,12 +191,14 @@ namespace Vocaluxe
             // Unloading
             try
             {
+                CInput.Close();
                 CSound.RecordCloseAll();
                 CSound.CloseAllStreams();
                 CVideo.VdCloseAll();
                 CDraw.Unload();
                 CLog.CloseAll();
                 CDataBase.CloseConnections();
+                CWebcam.Close();
             }
             catch (Exception)
             {

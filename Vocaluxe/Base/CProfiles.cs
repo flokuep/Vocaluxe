@@ -3,39 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
-using System.Xml.XPath;
 
 using Vocaluxe.Lib.Draw;
+using Vocaluxe.Menu;
 
 namespace Vocaluxe.Base
-{
-    struct SProfile
-    {
-        public string PlayerName;
-        public string ProfileFile;
-
-        public EGameDifficulty Difficulty;
-        public SAvatar Avatar;
-        public EOffOn GuestProfile;
-        public EOffOn Active;
-    }
-
-    struct SAvatar
-    {
-        public string FileName;
-        public STexture Texture;
-
-        public SAvatar(int dummy)
-        {
-            FileName = String.Empty;
-            Texture = new STexture(-1);
-        }
-    }
-    
+{    
     static class CProfiles
     {
         private static XmlWriterSettings _settings = new XmlWriterSettings();
-        private static CHelper Helper = new CHelper();
         private static List<SProfile> _Profiles;
         private static List<SAvatar> _Avatars = new List<SAvatar>();
 
@@ -109,7 +85,7 @@ namespace Vocaluxe.Base
         {
             _Profiles = new List<SProfile>();
             List<string> files = new List<string>();
-            files.AddRange(Helper.ListFiles(CSettings.sFolderProfiles, "*.xml", true, true));
+            files.AddRange(CHelper.ListFiles(CSettings.sFolderProfiles, "*.xml", true, true));
 
             foreach (string file in files)
             {
@@ -129,10 +105,10 @@ namespace Vocaluxe.Base
             _Avatars.Clear();
 
             List<string> files = new List<string>();
-            files.AddRange(Helper.ListFiles(CSettings.sFolderProfiles, "*.png", true, true));
-            files.AddRange(Helper.ListFiles(CSettings.sFolderProfiles, "*.jpg", true, true));
-            files.AddRange(Helper.ListFiles(CSettings.sFolderProfiles, "*.jpeg", true, true));
-            files.AddRange(Helper.ListFiles(CSettings.sFolderProfiles, "*.bmp", true, true));
+            files.AddRange(CHelper.ListFiles(CSettings.sFolderProfiles, "*.png", true, true));
+            files.AddRange(CHelper.ListFiles(CSettings.sFolderProfiles, "*.jpg", true, true));
+            files.AddRange(CHelper.ListFiles(CSettings.sFolderProfiles, "*.jpeg", true, true));
+            files.AddRange(CHelper.ListFiles(CSettings.sFolderProfiles, "*.bmp", true, true));
 
             foreach (string file in files)
             {
@@ -381,59 +357,38 @@ namespace Vocaluxe.Base
 
         private static void LoadProfile(string FileName)
         {
-            bool loaded = false;
-            XPathDocument xPathDoc = null;
-            XPathNavigator navigator = null;
-
             SProfile profile = new SProfile();
             profile.ProfileFile = Path.Combine(CSettings.sFolderProfiles, FileName);
 
-            try
-            {
-                xPathDoc = new XPathDocument(profile.ProfileFile);
-                navigator = xPathDoc.CreateNavigator();
-                loaded = true;
-            }
-            catch (Exception e)
-            {
-                loaded = false;
-                if (navigator != null)
-                    navigator = null;
+            CXMLReader xmlReader = CXMLReader.OpenFile(profile.ProfileFile);
+            if (xmlReader == null)
+                return;
 
-                if (xPathDoc != null)
-                    xPathDoc = null;
-
-                CLog.LogError("Error opening Profile File " + FileName + ": " + e.Message); 
-            }
-
-            if (loaded)
+            string value = String.Empty;
+            if (xmlReader.GetValue("//root/Info/PlayerName", ref value, value))
             {
-                string value = String.Empty;
-                if (CHelper.GetValueFromXML("//root/Info/PlayerName", navigator, ref value, value))
+                profile.PlayerName = value;
+
+                profile.Difficulty = EGameDifficulty.TR_CONFIG_EASY;
+                xmlReader.TryGetEnumValue<EGameDifficulty>("//root/Info/Difficulty", ref profile.Difficulty);
+
+                profile.Avatar = new SAvatar(-1);
+                if (xmlReader.GetValue("//root/Info/Avatar", ref value, value))
                 {
-                    profile.PlayerName = value;
-
-                    profile.Difficulty = EGameDifficulty.TR_CONFIG_EASY;
-                    CHelper.TryGetEnumValueFromXML<EGameDifficulty>("//root/Info/Difficulty", navigator, ref profile.Difficulty);
-
-                    profile.Avatar = new SAvatar(-1);
-                    if (CHelper.GetValueFromXML("//root/Info/Avatar", navigator, ref value, value))
-                    {
-                        profile.Avatar = GetAvatar(value);
-                    }
-
-                    profile.GuestProfile = EOffOn.TR_CONFIG_OFF;
-                    CHelper.TryGetEnumValueFromXML<EOffOn>("//root/Info/GuestProfile", navigator, ref profile.GuestProfile);
-
-                    profile.Active = EOffOn.TR_CONFIG_ON;
-                    CHelper.TryGetEnumValueFromXML<EOffOn>("//root/Info/Active", navigator, ref profile.Active);
-
-                    _Profiles.Add(profile);
+                    profile.Avatar = GetAvatar(value);
                 }
-                else
-                {
-                    CLog.LogError("Can't find PlayerName in Profile File: " + FileName);
-                }
+
+                profile.GuestProfile = EOffOn.TR_CONFIG_OFF;
+                xmlReader.TryGetEnumValue<EOffOn>("//root/Info/GuestProfile", ref profile.GuestProfile);
+
+                profile.Active = EOffOn.TR_CONFIG_ON;
+                xmlReader.TryGetEnumValue<EOffOn>("//root/Info/Active", ref profile.Active);
+
+                _Profiles.Add(profile);
+            }
+            else
+            {
+                CLog.LogError("Can't find PlayerName in Profile File: " + FileName);
             }
         }
         #endregion private methods

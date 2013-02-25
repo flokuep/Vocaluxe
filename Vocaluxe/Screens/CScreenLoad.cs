@@ -9,8 +9,8 @@ using System.Windows.Forms;
 
 using Vocaluxe.Base;
 using Vocaluxe.Lib.Draw;
-using Vocaluxe.Lib.Song;
 using Vocaluxe.Menu;
+using Vocaluxe.Menu.SongMenu;
 
 namespace Vocaluxe.Screens
 {
@@ -36,7 +36,6 @@ namespace Vocaluxe.Screens
                 
         public CScreenLoad()
         {
-            Init();
         }
 
         protected override void Init()
@@ -138,7 +137,7 @@ namespace Vocaluxe.Screens
                 }
             }
 
-            CLog.StartBenchmark(3, "Load Cover");
+            CLog.StartBenchmark(0, "Load Songs Full");
             _SongLoaderThread.IsBackground = true;
             _SongLoaderThread.Start();
             _timer.Start();
@@ -166,8 +165,7 @@ namespace Vocaluxe.Screens
             else
                 _timer.Start();            
 
-            bool next = ((CConfig.CoverLoading == ECoverLoading.TR_CONFIG_COVERLOADING_ATSTART && CSongs.CoverLoaded) ||
-                CConfig.CoverLoading != ECoverLoading.TR_CONFIG_COVERLOADING_ATSTART);
+            bool next = (CConfig.CoverLoading != ECoverLoading.TR_CONFIG_COVERLOADING_ATSTART || CSongs.CoverLoaded);
 
             if ((_IntroOutPlayed || _SkipIntro) && next && CSettings.GameState != EGameState.EditTheme && CSongs.SongsLoaded)
             {
@@ -222,7 +220,12 @@ namespace Vocaluxe.Screens
 
             CBackgroundMusic.CanSing = true;
 
-            CLog.StopBenchmark(3, "Load Cover");
+            CLog.StopBenchmark(0, "Load Songs Full");
+
+            //Init Playlists
+            CLog.StartBenchmark(0, "Init Playlists");
+            CPlaylists.Init();
+            CLog.StopBenchmark(0, "Init Playlists");
         }
 
         private void CheckStartIntroVideos()
@@ -240,23 +243,17 @@ namespace Vocaluxe.Screens
             {
                 _CurrentIntroVideoNr = 0;
                 _Intros[0].Start();
-            }
-
-            if (_CurrentIntroVideoNr == 0 && _Intros[0].IsFinished && CConfig.CoverLoading == ECoverLoading.TR_CONFIG_COVERLOADING_ATSTART)
+            }else if (_CurrentIntroVideoNr == 0 && _Intros[0].IsFinished && CConfig.CoverLoading == ECoverLoading.TR_CONFIG_COVERLOADING_ATSTART)
             {
                 _CurrentIntroVideoNr = 1;
                 _Intros[1].Loop = true;
                 _Intros[1].Start();
-            }
-
-            if ((_CurrentIntroVideoNr == 1 && CSongs.CoverLoaded) || 
-                (_CurrentIntroVideoNr == 0 && _Intros[0].IsFinished && CConfig.CoverLoading != ECoverLoading.TR_CONFIG_COVERLOADING_ATSTART))
+            }else if ((_CurrentIntroVideoNr == 1 && CSongs.CoverLoaded) || 
+                (_CurrentIntroVideoNr == 0 && _Intros[0].IsFinished))
             {
                 _CurrentIntroVideoNr = 2;
                 _Intros[2].Start();
-            }
-
-            if (_CurrentIntroVideoNr == 2 && _Intros[2].IsFinished)
+            }else if (_CurrentIntroVideoNr == 2 && _Intros[2].IsFinished)
                 _IntroOutPlayed = true;
         }
     }

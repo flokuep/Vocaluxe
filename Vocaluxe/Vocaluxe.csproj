@@ -29,6 +29,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <StartupObject>Vocaluxe.MainProgram</StartupObject>
     <ApplicationIcon>Vocaluxe.ico</ApplicationIcon>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugWin|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -140,6 +141,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="AForge.Video, Version=2.2.4.0, Culture=neutral, PublicKeyToken=cbfb6e07d173c401, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Output\AForge.Video.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="AForge.Video.DirectShow, Version=2.2.4.1, Culture=neutral, PublicKeyToken=61ea4348d43881b7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Output\AForge.Video.DirectShow.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Community.CsharpSqlite">
       <HintPath>..\Output\Community.CsharpSqlite.dll</HintPath>
     </Reference>
@@ -152,7 +163,6 @@
     <Reference Include="OpenTK.GLControl">
       <HintPath>..\Output\OpenTK.GLControl.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Data.Sqlite" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -167,14 +177,19 @@
     <Compile Include="Base\CDraw.cs" />
     <Compile Include="Base\CFont.cs" />
     <Compile Include="Base\CGame.cs" />
+    <Compile Include="Base\CInput.cs" />
     <Compile Include="Base\CLanguage.cs" />
     <Compile Include="Base\CLog.cs" />
+    <Compile Include="Base\CMain.cs" />
+    <Compile Include="Base\CParty.cs" />
+    <Compile Include="Base\CPlaylists.cs" />
     <Compile Include="Base\CProfiles.cs" />
     <Compile Include="Base\CUtility.cs" />
     <Compile Include="Base\CSettings.cs" />
     <Compile Include="Base\CSongs.cs" />
     <Compile Include="Base\CTheme.cs" />
     <Compile Include="Base\CVideo.cs" />
+    <Compile Include="Base\CWebcam.cs" />
     <Compile Include="GameModes\CGameMode.cs" />
     <Compile Include="GameModes\CGameModeNormal.cs" />
     <Compile Include="GameModes\IGameMode.cs" />
@@ -188,8 +203,11 @@
     <Compile Include="Lib\Draw\COpenGL.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Lib\Song\CNotes.cs" />
-    <Compile Include="Lib\Song\CSong.cs" />
+    <Compile Include="Lib\Input\CHIDAPI.cs" />
+    <Compile Include="Lib\Input\IInput.cs" />
+    <Compile Include="Lib\Input\WiiMote\CWiiMote.cs" />
+    <Compile Include="Lib\Input\WiiMote\WiiMoteLib.cs" />
+    <Compile Include="Lib\Playlist\CPlaylistFile.cs" />
     <Compile Include="Lib\Sound\CDirectSoundRecord.cs" />
     <Compile Include="Lib\Sound\COpenALPlay.cs" />
     <Compile Include="Lib\Sound\COpenALRecord.cs" />
@@ -237,10 +255,14 @@
     <Compile Include="Menu\SongMenu\CSongMenuList.cs" />
     <Compile Include="Menu\SongMenu\CSongMenuTileBoard.cs" />
     <Compile Include="Menu\SongMenu\ISongMenu.cs" />
+    <Compile Include="Lib\Webcam\CAForgeNet.cs" />
+    <Compile Include="Lib\Webcam\IWebcam.cs" />
+    <Compile Include="Base\CGraphics.cs" />
     <Compile Include="Program.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Screens\CPopupScreenPlayerControl.cs" />
+    <Compile Include="Screens\CPopupScreenVolumeControl.cs" />
     <Compile Include="Screens\CScreenCredits.cs" />
     <Compile Include="Screens\CScreenHighscore.cs" />
     <Compile Include="Screens\CScreenLoad.cs" />
@@ -249,6 +271,7 @@
     <Compile Include="Screens\CScreenOptions.cs" />
     <Compile Include="Screens\CScreenOptionsGame.cs" />
     <Compile Include="Screens\CScreenOptionsLyrics.cs" />
+    <Compile Include="Screens\CScreenParty.cs" />
     <Compile Include="Screens\CScreenProfiles.cs" />
     <Compile Include="Screens\CScreenScore.cs" />
     <Compile Include="Screens\CScreenSing.cs" />
@@ -286,7 +309,12 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\VocaluxeLib\VocaluxeLib.csproj">
+      <Project>{D2B6DDEF-E0E1-4DDF-A73A-E6ACEF5C95EC}</Project>
+      <Name>VocaluxeLib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

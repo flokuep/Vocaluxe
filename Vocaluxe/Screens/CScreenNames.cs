@@ -43,7 +43,6 @@ namespace Vocaluxe.Screens
         
         public CScreenNames()
         {
-            Init();
         }
 
         protected override void Init()
@@ -92,13 +91,13 @@ namespace Vocaluxe.Screens
             texts.AddRange(EqualizerPlayer);
             _ThemeEqualizers = texts.ToArray();
 
-            chooseAvatarStatic = new CStatic();
+            chooseAvatarStatic = GetNewStatic();
             chooseAvatarStatic.Visible = false;
         }
 
-        public override void LoadTheme()
+        public override void LoadTheme(string XmlPath)
         {
-            base.LoadTheme();
+            base.LoadTheme(XmlPath);
             
             _PlayerNr = new int[CSettings.MaxNumPlayer];
             for (int i = 0; i < _PlayerNr.Length; i++)
@@ -335,6 +334,22 @@ namespace Vocaluxe.Screens
                         //Update Tiles-List
                         NameSelections[htNameSelections(NameSelection)].UpdateList();
                         break;
+                    
+                    case Keys.F10:
+                        if (CGame.GetNumSongs() == 1 && CGame.GetSong(1).IsDuet)
+                        {
+                            if (SelectSlides[htSelectSlides(SelectSlideDuetPlayer[selectingKeyboardPlayerNr - 1])].Selection == 0)
+                                SelectSlides[htSelectSlides(SelectSlideDuetPlayer[selectingKeyboardPlayerNr - 1])].Selection = 1;
+                            else
+                                SelectSlides[htSelectSlides(SelectSlideDuetPlayer[selectingKeyboardPlayerNr - 1])].Selection = 0;
+                            //Reset all values
+                            selectingKeyboardPlayerNr = 0;
+                            selectingKeyboardActive = false;
+                            selectingKeyboardUnendless = false;
+                            NameSelections[htNameSelections(NameSelection)].KeyboardSelection(false, -1);
+                            SetInteractionToButton(Buttons[htButtons(ButtonStart)]);
+                        }
+                        break;
 
                 }
             }
@@ -434,7 +449,7 @@ namespace Vocaluxe.Screens
                         CStatic SelectedPlayer = NameSelections[htNameSelections(NameSelection)].TilePlayerAvatar(MouseEvent);
                         chooseAvatarStatic.Visible = true;
                         chooseAvatarStatic.Rect = SelectedPlayer.Rect;
-                        chooseAvatarStatic.Rect.Z = CSettings.zNear + 1;
+                        chooseAvatarStatic.Rect.Z = CSettings.zNear;
                         chooseAvatarStatic.Color = new SColorF(1, 1, 1, 1);
                         chooseAvatarStatic.Texture = SelectedPlayer.Texture;
                     }
@@ -597,9 +612,9 @@ namespace Vocaluxe.Screens
                     SelectSlides[htSelectSlides(SelectSlideDuetPlayer[i])].AddValue(CGame.GetSong(1).DuetPart1);
                     SelectSlides[htSelectSlides(SelectSlideDuetPlayer[i])].AddValue(CGame.GetSong(1).DuetPart2);
                     if ((i + 1) % 2 == 0)
-                        SelectSlides[htSelectSlides(SelectSlideDuetPlayer[i])].SetSelectionByValueIndex(1);
+                        SelectSlides[htSelectSlides(SelectSlideDuetPlayer[i])].Selection = 1;
                     else
-                        SelectSlides[htSelectSlides(SelectSlideDuetPlayer[i])].SetSelectionByValueIndex(0);
+                        SelectSlides[htSelectSlides(SelectSlideDuetPlayer[i])].Selection = 0;
                 }
                 else
                     SelectSlides[htSelectSlides(SelectSlideDuetPlayer[i])].Visible = false;

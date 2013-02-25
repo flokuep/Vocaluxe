@@ -136,7 +136,7 @@ namespace Vocaluxe.Lib.Sound.Decoder
             if (!_Initialized && !_FileOpened)
                 return 0f;
 
-            return (float)_Instance.info.duration / 1000f; ;
+            return (float)_Instance.info.duration / 1000f;
         }
 
         public override void SetPosition(float Time)

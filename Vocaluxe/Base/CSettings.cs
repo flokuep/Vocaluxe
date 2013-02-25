@@ -3,15 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
+using Vocaluxe.Menu;
+
 namespace Vocaluxe.Base
 {
-    public enum EGameState
-    {
-        Start,
-        Normal,
-        EditTheme
-    }
-
     enum ERevision
     {
         Alpha,
@@ -40,16 +35,16 @@ namespace Vocaluxe.Base
         public static EGameState GameState = EGameState.Start;
 
         public const string sProgramName = "Vocaluxe";
-        public const string sProgramCodeName = "Test";
+        public const string sProgramCodeName = "Shining Heaven";
 
         public const int iVersionMajor = 0;
-        public const int iVersionMinor = 2;      // milestones
+        public const int iVersionMinor = 3;      // milestones
         public const int iVersionSub = 0;        // patches
         public const ERevision VersionRevision = ERevision.Alpha;
 
-        public const int iBuild = 67;             // Increase on every published version! Never Reset!
+        public const int iBuild = 76;             // Increase on every published version! Never Reset!
 
-        public const int iDatabaseHighscoreVersion = 1;
+        public const int iDatabaseHighscoreVersion = 2;
         public const int iDatabaseCoverVersion = 1;
         public const int iDatabaseCreditsRessourcesVersion = 1;
         
@@ -88,12 +83,20 @@ namespace Vocaluxe.Base
         public const string sFolderSkins = "Skins";
         public const string sFolderThemeFonts = "Fonts";
         public const string sFolderScreens = "Screens";
-        public const string sFolderProfiles = "Profiles";
+        public static string sFolderProfiles = "Profiles";
         public const string sFolderSongs = "Songs";
         public const string sFolderSounds = "Sounds";
         public const string sFolderLanguages = "Languages";
         public const string sFolderScreenshots = "Screenshots";
         public const string sFolderBackgroundMusic = "BackgroundMusic";
+        public static string sFolderPlaylists = "Playlists";
+
+
+        public static string sFolderPartyModes = "PartyModes";
+        public const string sFolderPartyModeCode = "Code";
+        public const string sFolderPartyModeScreens = "Screens";
+        public const string sFolderPartyModeLanguages = "Languages";
+        public const string sFolderPartyModeFonts = "Fonts";
 
         //public const String[] ToneStrings = new String[]{ "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
         public const int ToneMin = -36;
@@ -111,6 +114,11 @@ namespace Vocaluxe.Base
         public const float LyricHelperEnableTime = 5f;
         public const float LyricHelperMoveTime = 1.5f;
         public const float LyricHelperMinTime = 0.2f;
+
+        public const float DefaultMedleyFadeInTime = 8f;
+        public const float DefaultMedleyFadeOutTime = 2f;
+        public const int MedleyMinSeriesLength = 3;
+        public const float MedleyMinDuration = 40f;
 
         public static bool TabNavigation = false;
 
@@ -158,7 +166,7 @@ namespace Vocaluxe.Base
             return (float)iRenderW / (float)iRenderH;
         }
 
-        public static void MouseInacive()
+        public static void MouseInactive()
         {
             MouseMoveDiffMin = 15;
         }
@@ -179,6 +187,7 @@ namespace Vocaluxe.Base
             Folders.Add(sFolderScreenshots);
             Folders.Add(sFolderBackgroundMusic);
             Folders.Add(sFolderSounds);
+            Folders.Add(sFolderPlaylists);
 
             foreach (string folder in Folders)
             {
@@ -186,6 +195,12 @@ namespace Vocaluxe.Base
                 if (!Directory.Exists(path))
                     Directory.CreateDirectory(path);   
             }       
+        }
+
+        public static void CreateFolder(string path)
+        {
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);  
         }
     }
 }

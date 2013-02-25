@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Text;
 
-using Vocaluxe.Lib.Draw;
+using Vocaluxe.Menu;
 using Vocaluxe.Lib.Video;
 
 namespace Vocaluxe.Base
@@ -126,7 +126,7 @@ namespace Vocaluxe.Base
 
         public void Load(string VideoName)
         {
-            _VideoStream = CVideo.VdLoad(CTheme.GetVideoFilePath(VideoName));
+            _VideoStream = CVideo.VdLoad(CTheme.GetVideoFilePath(VideoName, -1));
             _Loaded = true;
         }
 
