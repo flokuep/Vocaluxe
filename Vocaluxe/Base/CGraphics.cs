@@ -169,6 +169,7 @@ namespace Vocaluxe.Base
         private static IMenu _OldScreen;
         private static EScreens _CurrentScreen;
         private static EScreens _NextScreen;
+        private static EScreens _LastScreen;
         private static EPopupScreens _CurrentPopupScreen;
 
         private static readonly List<IMenu> _Screens = new List<IMenu>();
@@ -225,6 +226,7 @@ namespace Vocaluxe.Base
 
             _CurrentScreen = EScreens.ScreenLoad;
             _NextScreen = EScreens.ScreenNull;
+            _LastScreen = EScreens.ScreenNull;
             _CurrentPopupScreen = EPopupScreens.NoPopup;
             _FadingTimer = new Stopwatch();
             _VolumePopupTimer = new Stopwatch();
@@ -447,8 +449,14 @@ namespace Vocaluxe.Base
                 }
                 _Screens[(int)EScreens.ScreenPartyDummy] = scr;
             }
-
+            _LastScreen = _CurrentScreen;
             _NextScreen = Screen;
+        }
+
+        public static void Back()
+        {
+            if (_LastScreen != EScreens.ScreenNull)
+                FadeTo(_LastScreen);
         }
 
         public static void ShowPopup(EPopupScreens PopupScreen)
