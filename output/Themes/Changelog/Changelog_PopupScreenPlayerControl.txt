@@ -1,0 +1,7 @@
+PopupScreenPlayerControl
+
++++++++++
+Version 2:
+
+Added <SelectSlidePlaylist>
++++++++++

@@ -11,7 +11,7 @@ namespace Vocaluxe.Screens
         // Version number for theme files. Increment it, if you've changed something on the theme files!
         protected override int _ScreenVersion
         {
-            get { return 1; }
+            get { return 2; }
         }
 
         private const string StaticBG = "StaticBG";
@@ -25,6 +25,8 @@ namespace Vocaluxe.Screens
         private const string ButtonShowVideo = "ButtonShowVideo";
         private const string ButtonSing = "ButtonSing";
         private const string ButtonToBackgroundVideo = "ButtonToBackgroundVideo";
+
+        private const string SelectSlidePlaylist = "SelectSlidePlaylist";
 
         private const string TextCurrentSong = "TextCurrentSong";
         private bool _VideoPreview;
@@ -71,6 +73,7 @@ namespace Vocaluxe.Screens
 
             _ThemeStatics = new string[] {StaticBG, StaticCover};
             _ThemeTexts = new string[] {TextCurrentSong};
+            _ThemeSelectSlides = new string[] { SelectSlidePlaylist };
 
             List<string> buttons = new List<string>();
             buttons.Add(ButtonPlay);
@@ -93,7 +96,8 @@ namespace Vocaluxe.Screens
 
         public override bool HandleInput(KeyEvent keyEvent)
         {
-            base.HandleInput(keyEvent);
+            if(base.HandleInput(keyEvent))
+                UpdateActivePlaylist();
             if (keyEvent.KeyPressed && !Char.IsControl(keyEvent.Unicode)) {}
             else
             {
@@ -121,6 +125,8 @@ namespace Vocaluxe.Screens
                             StartSong(CBackgroundMusic.SongID, CBackgroundMusic.Duet);
                         if (Buttons[ButtonToBackgroundVideo].Selected)
                             VideoBackground = !VideoBackground;
+                        if (SelectSlides[SelectSlidePlaylist].Selected)
+                            UpdateActivePlaylist();
                         break;
                 }
             }
@@ -149,6 +155,8 @@ namespace Vocaluxe.Screens
                     StartSong(CBackgroundMusic.SongID, CBackgroundMusic.Duet);
                 if (Buttons[ButtonToBackgroundVideo].Selected)
                     VideoBackground = !VideoBackground;
+                if (SelectSlides[SelectSlidePlaylist].Selected)
+                    UpdateActivePlaylist();
             }
             else if (mouseEvent.LB)
             {
@@ -161,6 +169,14 @@ namespace Vocaluxe.Screens
                 return false;
             }
             return true;
+        }
+
+        public override void OnShow()
+        {
+            base.OnShow();
+            SelectSlides[SelectSlidePlaylist].Visible = CConfig.BackgroundMusicSource != EBackgroundMusicSource.TR_CONFIG_NO_OWN_MUSIC;
+            if (SelectSlides[SelectSlidePlaylist].NumValues - 1 != CPlaylists.NumPlaylists)
+                UpdateSelectSlide();
         }
 
         public override bool UpdateGame()
@@ -202,6 +218,24 @@ namespace Vocaluxe.Screens
 
                 CGraphics.FadeTo(EScreens.ScreenNames);
             }
+        }
+
+        private void UpdateSelectSlide()
+        {
+            int OldValue = SelectSlides[SelectSlidePlaylist].Selection;
+            SelectSlides[SelectSlidePlaylist].Clear();
+            SelectSlides[SelectSlidePlaylist].AddValue("TR_SCREENSONG_ALLSONGS");
+            SelectSlides[SelectSlidePlaylist].AddValues(CPlaylists.GetPlaylistNames());
+            if (OldValue < SelectSlides[SelectSlidePlaylist].NumValues)
+                SelectSlides[SelectSlidePlaylist].Selection = OldValue;
+            else
+                SelectSlides[SelectSlidePlaylist].Selection = SelectSlides[SelectSlidePlaylist].NumValues - 1;
+        }
+
+        private void UpdateActivePlaylist()
+        {
+            if (SelectSlides[SelectSlidePlaylist].Selection - 1 != CBackgroundMusic.ActivePlaylist)
+                CBackgroundMusic.ActivePlaylist = SelectSlides[SelectSlidePlaylist].Selection - 1;
         }
     }
 }

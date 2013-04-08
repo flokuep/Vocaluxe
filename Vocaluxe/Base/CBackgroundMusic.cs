@@ -24,6 +24,7 @@ namespace Vocaluxe.Base
         private static readonly Stopwatch _FadeTimer = new Stopwatch();
         private static bool _VideoEnabled;
 
+        private static int _ActivePlaylist;
         private static bool _OwnMusicAdded;
         private static bool _BackgroundMusicAdded;
         private static bool _Playing;
@@ -93,6 +94,22 @@ namespace Vocaluxe.Base
             get { return _Playing; }
         }
 
+        public static int ActivePlaylist
+        {
+            get { return _ActivePlaylist; }
+            set 
+            {
+                if (value != _ActivePlaylist)
+                {
+                    _ActivePlaylist = value;
+                    RemoveOwnMusic();
+                    AddOwnMusic();
+                    Stop();
+                    Play();
+                }
+            }
+        }
+
         public static string ArtistAndTitle
         {
             get
@@ -125,6 +142,8 @@ namespace Vocaluxe.Base
                 _VideoEnabled = true;
 
             _Playing = false;
+
+            _ActivePlaylist = -1;
         }
 
         public static void Play()
@@ -325,10 +344,22 @@ namespace Vocaluxe.Base
         {
             if (!_OwnMusicAdded)
             {
-                foreach (CSong song in CSongs.AllSongs)
+                if (_ActivePlaylist == -1 || CPlaylists.NumPlaylists <= _ActivePlaylist)
                 {
-                    _AllFileNames.Add(new PlaylistElement(song));
-                    _NotPlayedFileNames.Add(new PlaylistElement(song));
+                    foreach (CSong song in CSongs.AllSongs)
+                    {
+                        _AllFileNames.Add(new PlaylistElement(song));
+                        _NotPlayedFileNames.Add(new PlaylistElement(song));
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < CPlaylists.GetPlaylistSongCount(_ActivePlaylist); i++)
+                    {
+                        CPlaylistSong ps = CPlaylists.GetPlaylistSong(_ActivePlaylist, i);
+                        _AllFileNames.Add(new PlaylistElement(CSongs.AllSongs[ps.SongID]));
+                        _NotPlayedFileNames.Add(new PlaylistElement(CSongs.AllSongs[ps.SongID]));
+                    }
                 }
             }
             _OwnMusicAdded = true;
@@ -388,6 +419,7 @@ namespace Vocaluxe.Base
                             AddBackgroundMusic();
 
                         RemoveOwnMusic();
+                        _ActivePlaylist = -1;
                         break;
 
                     case EBackgroundMusicSource.TR_CONFIG_ONLY_OWN_MUSIC:

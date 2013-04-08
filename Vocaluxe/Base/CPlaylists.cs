@@ -10,7 +10,7 @@ namespace Vocaluxe.Base
 {
     static class CPlaylists
     {
-        private static List<CPlaylistFile> _Playlists;
+        private static List<CPlaylistFile> _Playlists = new List<CPlaylistFile>();
 
         public static CPlaylistFile[] Playlists
         {
@@ -56,7 +56,6 @@ namespace Vocaluxe.Base
 
         public static void LoadPlaylists()
         {
-            _Playlists = new List<CPlaylistFile>();
             List<string> files = new List<string>();
             files.AddRange(CHelper.ListFiles(CSettings.sFolderPlaylists, "*.xml", true, true));
 
