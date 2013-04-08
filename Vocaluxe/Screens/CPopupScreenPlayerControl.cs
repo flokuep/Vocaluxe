@@ -124,7 +124,7 @@ namespace Vocaluxe.Screens
                         if (Buttons[ButtonSing].Selected)
                             StartSong(CBackgroundMusic.SongID, CBackgroundMusic.Duet);
                         if (Buttons[ButtonToBackgroundVideo].Selected)
-                            VideoBackground = !VideoBackground;
+                            CGraphics.FadeTo(EScreens.ScreenJukebox);
                         if (SelectSlides[SelectSlidePlaylist].Selected)
                             UpdateActivePlaylist();
                         break;
@@ -154,7 +154,7 @@ namespace Vocaluxe.Screens
                 if (Buttons[ButtonSing].Selected)
                     StartSong(CBackgroundMusic.SongID, CBackgroundMusic.Duet);
                 if (Buttons[ButtonToBackgroundVideo].Selected)
-                    VideoBackground = !VideoBackground;
+                    CGraphics.FadeTo(EScreens.ScreenJukebox);
                 if (SelectSlides[SelectSlidePlaylist].Selected)
                     UpdateActivePlaylist();
             }

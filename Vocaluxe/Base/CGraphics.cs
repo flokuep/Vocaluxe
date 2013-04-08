@@ -218,6 +218,7 @@ namespace Vocaluxe.Base
             _Screens.Add(new CScreenCredits());
             _Screens.Add(new CScreenParty());
             _Screens.Add(new CScreenPartyDummy());
+            _Screens.Add(new CScreenJukebox());
 
             _PopupScreens.Add(new CPopupScreenPlayerControl());
             _PopupScreens.Add(new CPopupScreenVolumeControl());

@@ -279,6 +279,7 @@ namespace VocaluxeLib.Menu
         ScreenCredits = 16,
         ScreenParty = 17,
         ScreenPartyDummy = 18,
+        ScreenJukebox = 19,
 
         ScreenNull = -1
     }
