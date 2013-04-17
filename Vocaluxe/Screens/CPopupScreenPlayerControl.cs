@@ -25,12 +25,10 @@ namespace Vocaluxe.Screens
         private const string _ButtonShowVideo = "ButtonShowVideo";
         private const string _ButtonSing = "ButtonSing";
         private const string _ButtonToBackgroundVideo = "ButtonToBackgroundVideo";
-
         private const string _TextCurrentSong = "TextCurrentSong";
+        private const string _SelectSlidePlaylist = "SelectSlidePlaylist";
 
-        private const string TextCurrentSong = "TextCurrentSong";
         private bool _VideoPreviewInt;
-
         private bool _VideoPreview
         {
             get { return _VideoPreviewInt; }
@@ -73,7 +71,7 @@ namespace Vocaluxe.Screens
 
             _ThemeStatics = new string[] {_StaticBG, _StaticCover};
             _ThemeTexts = new string[] {_TextCurrentSong};
-            _ThemeSelectSlides = new string[] { SelectSlidePlaylist };
+            _ThemeSelectSlides = new string[] { _SelectSlidePlaylist };
 
             List<string> buttons = new List<string>();
             buttons.Add(_ButtonPlay);
@@ -125,7 +123,7 @@ namespace Vocaluxe.Screens
                             _StartSong(CBackgroundMusic.SongID, CBackgroundMusic.Duet);
                         if (Buttons[_ButtonToBackgroundVideo].Selected)
                             CGraphics.FadeTo(EScreens.ScreenJukebox);
-                        if (SelectSlides[SelectSlidePlaylist].Selected)
+                        if (SelectSlides[_SelectSlidePlaylist].Selected)
                             UpdateActivePlaylist();
                         break;
                 }
@@ -155,7 +153,7 @@ namespace Vocaluxe.Screens
                     _StartSong(CBackgroundMusic.SongID, CBackgroundMusic.Duet);
                 if (Buttons[_ButtonToBackgroundVideo].Selected)
                     CGraphics.FadeTo(EScreens.ScreenJukebox);
-                if (SelectSlides[SelectSlidePlaylist].Selected)
+                if (SelectSlides[_SelectSlidePlaylist].Selected)
                     UpdateActivePlaylist();
             }
             else if (mouseEvent.LB)
@@ -174,8 +172,8 @@ namespace Vocaluxe.Screens
         public override void OnShow()
         {
             base.OnShow();
-            SelectSlides[SelectSlidePlaylist].Visible = CConfig.BackgroundMusicSource != EBackgroundMusicSource.TR_CONFIG_NO_OWN_MUSIC;
-            if (SelectSlides[SelectSlidePlaylist].NumValues - 1 != CPlaylists.NumPlaylists)
+            SelectSlides[_SelectSlidePlaylist].Visible = CConfig.BackgroundMusicSource != EBackgroundMusicSource.TR_CONFIG_NO_OWN_MUSIC;
+            if (SelectSlides[_SelectSlidePlaylist].NumValues - 1 != CPlaylists.NumPlaylists)
                 UpdateSelectSlide();
         }
 
@@ -222,20 +220,20 @@ namespace Vocaluxe.Screens
 
         private void UpdateSelectSlide()
         {
-            int OldValue = SelectSlides[SelectSlidePlaylist].Selection;
-            SelectSlides[SelectSlidePlaylist].Clear();
-            SelectSlides[SelectSlidePlaylist].AddValue("TR_SCREENSONG_ALLSONGS");
-            SelectSlides[SelectSlidePlaylist].AddValues(CPlaylists.GetPlaylistNames());
-            if (OldValue < SelectSlides[SelectSlidePlaylist].NumValues)
-                SelectSlides[SelectSlidePlaylist].Selection = OldValue;
+            int OldValue = SelectSlides[_SelectSlidePlaylist].Selection;
+            SelectSlides[_SelectSlidePlaylist].Clear();
+            SelectSlides[_SelectSlidePlaylist].AddValue("TR_SCREENSONG_ALLSONGS");
+            SelectSlides[_SelectSlidePlaylist].AddValues(CPlaylists.GetPlaylistNames());
+            if (OldValue < SelectSlides[_SelectSlidePlaylist].NumValues)
+                SelectSlides[_SelectSlidePlaylist].Selection = OldValue;
             else
-                SelectSlides[SelectSlidePlaylist].Selection = SelectSlides[SelectSlidePlaylist].NumValues - 1;
+                SelectSlides[_SelectSlidePlaylist].Selection = SelectSlides[_SelectSlidePlaylist].NumValues - 1;
         }
 
         private void UpdateActivePlaylist()
         {
-            if (SelectSlides[SelectSlidePlaylist].Selection - 1 != CBackgroundMusic.ActivePlaylist)
-                CBackgroundMusic.ActivePlaylist = SelectSlides[SelectSlidePlaylist].Selection - 1;
+            if (SelectSlides[_SelectSlidePlaylist].Selection - 1 != CBackgroundMusic.ActivePlaylist)
+                CBackgroundMusic.ActivePlaylist = SelectSlides[_SelectSlidePlaylist].Selection - 1;
         }
     }
 }

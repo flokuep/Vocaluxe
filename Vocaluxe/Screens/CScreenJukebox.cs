@@ -18,7 +18,7 @@ namespace Vocaluxe.Screens
             base.Init();
         }
 
-        public override bool HandleInput(KeyEvent keyEvent)
+        public override bool HandleInput(SKeyEvent keyEvent)
         {
             base.HandleInput(keyEvent);
 
@@ -36,7 +36,7 @@ namespace Vocaluxe.Screens
             return true;
         }
 
-        public override bool HandleMouse(MouseEvent mouseEvent)
+        public override bool HandleMouse(SMouseEvent mouseEvent)
         {
             base.HandleMouse(mouseEvent);
 
@@ -54,10 +54,10 @@ namespace Vocaluxe.Screens
             base.Draw();
 
             STexture VideoTexture = CBase.BackgroundMusic.GetVideoTexture();
-            if (VideoTexture.height > 0)
+            if (VideoTexture.Height > 0)
             {
                 RectangleF bounds = new RectangleF(0f, 0f, CBase.Settings.GetRenderW(), CBase.Settings.GetRenderH());
-                RectangleF rect = new RectangleF(0f, 0f, VideoTexture.width, VideoTexture.height);
+                RectangleF rect = new RectangleF(0f, 0f, VideoTexture.Width, VideoTexture.Height);
                 CHelper.SetRect(bounds, ref rect, rect.Width / rect.Height, EAspect.Crop);
 
                 CBase.Drawing.DrawTexture(VideoTexture, new SRectF(rect.X, rect.Y, rect.Width, rect.Height, CBase.Settings.GetZFar() / 4));

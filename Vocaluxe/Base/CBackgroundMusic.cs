@@ -357,8 +357,8 @@ namespace Vocaluxe.Base
                     for (int i = 0; i < CPlaylists.GetPlaylistSongCount(_ActivePlaylist); i++)
                     {
                         CPlaylistSong ps = CPlaylists.GetPlaylistSong(_ActivePlaylist, i);
-                        _AllFileNames.Add(new PlaylistElement(CSongs.AllSongs[ps.SongID]));
-                        _NotPlayedFileNames.Add(new PlaylistElement(CSongs.AllSongs[ps.SongID]));
+                        _AllFileNames.Add(new CPlaylistElement(CSongs.AllSongs[ps.SongID]));
+                        _NotPlayedFileNames.Add(new CPlaylistElement(CSongs.AllSongs[ps.SongID]));
                     }
                 }
             }
