@@ -495,7 +495,7 @@ namespace Vocaluxe.Base
             SKeyEvent inputKeyEvent = new SKeyEvent();
             SMouseEvent inputMouseEvent = new SMouseEvent();
 
-            bool popupPlayerControlAllowed = _CurrentScreen != EScreens.ScreenOptionsRecord && _CurrentScreen != EScreens.ScreenSing &&
+            bool popupPlayerControlAllowed = _CurrentScreen != EScreens.ScreenOptionsRecord && _CurrentScreen != EScreens.ScreenSing && _CurrentScreen != EScreens.ScreenJukebox &&
                                              (_CurrentScreen != EScreens.ScreenSong ||
                                               (_CurrentScreen == EScreens.ScreenSong && !CSongs.IsInCategory && CConfig.Tabs == EOffOn.TR_CONFIG_ON))
                                              && _CurrentScreen != EScreens.ScreenCredits && !CBackgroundMusic.Disabled;
