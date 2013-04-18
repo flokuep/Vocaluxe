@@ -17,14 +17,14 @@
       <!--<Skin>: Texture name-->
       <Skin>Menu</Skin>
       <!--<X>, <Y>, <Z>, <W>, <H>: Static position, width and height-->
-      <X>159</X>
-      <Y>522</Y>
+      <X>154</X>
+      <Y>532</Y>
       <Z>0,00</Z>
-      <W>125</W>
-      <H>120</H>
+      <W>110</W>
+      <H>110</H>
       <!--<Color>: Static color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
-      <Color>Invisible</Color>
+      <Color>Visible</Color>
       <!--<Reflection> If exists:-->
       <!--   <Space>: Reflection Space-->
       <!--   <Height>: Reflection Height-->
@@ -77,12 +77,12 @@
     </TextAlbum>
     <TextArtist>
       <!--<X>, <Y>: Text position-->
-      <X>410</X>
-      <Y>4</Y>
+      <X>272</X>
+      <Y>527</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>580</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -107,8 +107,8 @@
     </TextArtist>
     <TextTimer>
       <!--<X>, <Y>: Text position-->
-      <X>410</X>
-      <Y>4</Y>
+      <X>270</X>
+      <Y>584</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
@@ -137,8 +137,8 @@
     </TextTimer>
     <TextTitle>
       <!--<X>, <Y>: Text position-->
-      <X>445</X>
-      <Y>249</Y>
+      <X>270</X>
+      <Y>549</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
@@ -171,11 +171,11 @@
       <!--<SkinSelected>: Texture name for selected button-->
       <SkinSelected>PlayIcon</SkinSelected>
       <!--<X>, <Y>, <Z>, <W>, <H>: Button position, width and height-->
-      <X>146</X>
-      <Y>8</Y>
+      <X>906</X>
+      <Y>543</Y>
       <Z>0,00</Z>
-      <W>28</W>
-      <H>28</H>
+      <W>78</W>
+      <H>73</H>
       <!--<Color>: Button color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
       <Color>ButtonColor</Color>
@@ -220,11 +220,11 @@
       <!--<SkinSelected>: Texture name for selected button-->
       <SkinSelected>PauseIcon</SkinSelected>
       <!--<X>, <Y>, <Z>, <W>, <H>: Button position, width and height-->
-      <X>145</X>
-      <Y>8</Y>
+      <X>905</X>
+      <Y>558</Y>
       <Z>0,00</Z>
-      <W>28</W>
-      <H>28</H>
+      <W>58</W>
+      <H>53</H>
       <!--<Color>: Button color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
       <Color>ButtonColor</Color>
@@ -269,11 +269,11 @@
       <!--<SkinSelected>: Texture name for selected button-->
       <SkinSelected>NextIcon</SkinSelected>
       <!--<X>, <Y>, <Z>, <W>, <H>: Button position, width and height-->
-      <X>185</X>
-      <Y>2</Y>
+      <X>1010</X>
+      <Y>537</Y>
       <Z>0,00</Z>
-      <W>38</W>
-      <H>38</H>
+      <W>63</W>
+      <H>83</H>
       <!--<Color>: Button color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
       <Color>ButtonColor</Color>
@@ -318,11 +318,11 @@
       <!--<SkinSelected>: Texture name for selected button-->
       <SkinSelected>PreviousIcon</SkinSelected>
       <!--<X>, <Y>, <Z>, <W>, <H>: Button position, width and height-->
-      <X>100</X>
-      <Y>2</Y>
+      <X>810</X>
+      <Y>542</Y>
       <Z>0,00</Z>
-      <W>38</W>
-      <H>38</H>
+      <W>63</W>
+      <H>78</H>
       <!--<Color>: Button color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
       <Color>ButtonColor</Color>
@@ -367,8 +367,8 @@
       <!--<SkinSelected>: Texture name for selected button-->
       <SkinSelected>RepeatIcon</SkinSelected>
       <!--<X>, <Y>, <Z>, <W>, <H>: Button position, width and height-->
-      <X>225</X>
-      <Y>2</Y>
+      <X>965</X>
+      <Y>617</Y>
       <Z>0,00</Z>
       <W>38</W>
       <H>38</H>

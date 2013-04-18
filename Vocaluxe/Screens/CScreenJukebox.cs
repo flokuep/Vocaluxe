@@ -15,7 +15,8 @@ namespace Vocaluxe.Screens
             get { return 1; }
         }
 
-        private Stopwatch FadePlayerTimer;
+        private Stopwatch _FadePlayerTimer;
+        private int _FadePlayerDirection;
 
         private const string _StaticPlayerBG = "StaticPlayerBG";
         private const string _StaticCover = "StaticCover";
@@ -40,6 +41,8 @@ namespace Vocaluxe.Screens
             _ThemeStatics = new string[] { _StaticCover, _StaticPlayerBG };
             _ThemeTexts = new string[] { _TextAlbum, _TextArtist, _TextTimer, _TextTitle };
             _ThemeButtons = new string[] { _ButtonPlay, _ButtonPause, _ButtonNext, _ButtonPrevious, _ButtonRepeat };
+
+            _FadePlayerTimer = new Stopwatch();
         }
 
         public override void OnShow()
@@ -48,6 +51,7 @@ namespace Vocaluxe.Screens
             CGraphics.HidePopup(EPopupScreens.PopupPlayerControl);
             _OldBGSetting = CConfig.VideosToBackground;
             CConfig.VideosToBackground = EOffOn.TR_CONFIG_ON;
+            _UpdatePlayerVisibility(1f);
         }
 
         public override void OnClose()
@@ -80,6 +84,24 @@ namespace Vocaluxe.Screens
         {
             base.HandleMouse(mouseEvent);
 
+            if (!CHelper.IsInBounds(Statics[_StaticPlayerBG].Rect, mouseEvent) && Statics[_StaticPlayerBG].Visible && !_FadePlayerTimer.IsRunning)
+            {
+                _FadePlayerTimer.Start();
+                _FadePlayerDirection = -1;
+            }
+            else if (CHelper.IsInBounds(Statics[_StaticPlayerBG].Rect, mouseEvent) && Statics[_StaticPlayerBG].Visible && _FadePlayerTimer.IsRunning)
+            {
+                _FadePlayerDirection = 1;
+            }
+            else if (CHelper.IsInBounds(Statics[_StaticPlayerBG].Rect, mouseEvent) && !Statics[_StaticPlayerBG].Visible && !_FadePlayerTimer.IsRunning)
+            {
+                _FadePlayerTimer.Start();
+                _FadePlayerDirection = 1;
+            }
+            else if (!CHelper.IsInBounds(Statics[_StaticPlayerBG].Rect, mouseEvent) && Statics[_StaticPlayerBG].Visible && _FadePlayerTimer.IsRunning)
+            {
+                _FadePlayerDirection = -1;
+            }
             if (mouseEvent.LB && IsMouseOver(mouseEvent))
             {
             }
@@ -93,28 +115,67 @@ namespace Vocaluxe.Screens
         {
             base.Draw();
 
-            /**STexture VideoTexture = CBase.BackgroundMusic.GetVideoTexture();
-            if (VideoTexture.Height > 0)
-            {
-                RectangleF bounds = new RectangleF(0f, 0f, CBase.Settings.GetRenderW(), CBase.Settings.GetRenderH());
-                RectangleF rect = new RectangleF(0f, 0f, VideoTexture.Width, VideoTexture.Height);
-                CHelper.SetRect(bounds, ref rect, rect.Width / rect.Height, EAspect.Crop);
-
-                CBase.Drawing.DrawTexture(VideoTexture, new SRectF(rect.X, rect.Y, rect.Width, rect.Height, CBase.Settings.GetZFar() / 4));
-            }
-            foreach (CStatic stat in Statics)
-                stat.Draw();
-            foreach (CText text in Texts)
-                text.Draw();
-            foreach (CButton btn in Buttons)
-                btn.Draw();
-            **/
             return true;
         }
 
         public override bool UpdateGame()
         {
+            Statics[_StaticCover].Texture = CBackgroundMusic.Cover;
+            Texts[_TextArtist].Text = CSongs.Songs[CBackgroundMusic.SongID].Artist;
+            Texts[_TextTitle].Text = CSongs.Songs[CBackgroundMusic.SongID].Title;
+            //Texts[_TextAlbum].Text = CSongs.Songs[CBackgroundMusic.SongID].;
+            Texts[_TextTimer].Text = CBackgroundMusic.Timer.ToString();
+
+            if (_FadePlayerTimer.IsRunning)
+            {
+                float alpha = 0f;
+                float t = _FadePlayerTimer.ElapsedMilliseconds / 1000f;
+                if(_FadePlayerDirection == -1)
+                    alpha = (2f - t) / 2f;
+                else if(_FadePlayerDirection == 1)
+                    alpha = t / 2f;
+
+                if ((_FadePlayerDirection == -1 && alpha <= 0f) || (_FadePlayerDirection == 1 && alpha >= 1f))
+                {
+                    _FadePlayerTimer.Stop();
+                    _FadePlayerTimer.Reset();
+                }
+
+                _UpdatePlayerVisibility(alpha);
+                
+            }
             return true;
+        }
+
+        private void _UpdatePlayerVisibility(float alpha)
+        {
+            if (alpha > 1f)
+                alpha = 1f;
+            else if (alpha < 0f)
+                alpha = 0f;
+            Statics[_StaticPlayerBG].Color.A = alpha;
+            Statics[_StaticCover].Color.A = alpha;
+            Texts[_TextArtist].Color.A = alpha;
+            Texts[_TextTitle].Color.A = alpha;
+            //Texts[_TextAlbum].Color.A = alpha;
+            Texts[_TextTimer].Color.A = alpha;
+            Buttons[_ButtonNext].Color.A = alpha;
+            Buttons[_ButtonPause].Color.A = alpha;
+            Buttons[_ButtonPlay].Color.A = alpha;
+            Buttons[_ButtonPrevious].Color.A = alpha;
+            Buttons[_ButtonRepeat].Color.A = alpha;
+
+            Statics[_StaticPlayerBG].Visible = alpha > 0f;
+            Statics[_StaticCover].Visible = alpha > 0f;
+            Texts[_TextArtist].Visible = alpha > 0f;
+            Texts[_TextTitle].Visible = alpha > 0f;
+            //Texts[_TextAlbum].Visible = alpha > 0f;
+            Texts[_TextTimer].Visible = alpha > 0f;
+            Buttons[_ButtonNext].Visible = alpha > 0f;
+            Buttons[_ButtonPause].Visible = alpha > 0f && CBackgroundMusic.Playing;
+            Buttons[_ButtonPlay].Visible = alpha > 0f && !CBackgroundMusic.Playing;
+            Buttons[_ButtonPrevious].Visible = alpha > 0f;
+            Buttons[_ButtonRepeat].Visible = alpha > 0f;
         }
     }
 }

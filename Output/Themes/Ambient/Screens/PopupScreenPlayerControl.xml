@@ -513,9 +513,7 @@
       <!--<TextH>: Text height-->
       <TextH>32,00</TextH>
       <!--<TextRelativeX>: Text relative x-position-->
-      <TextRelativeX>0</TextRelativeX>
       <!--<TextRelativeY>: Text relative y-position-->
-      <TextRelativeY>0</TextRelativeY>
       <!--<TextMaxW>: Maximum text width (if exists)-->
       <TextMaxW>164,00</TextMaxW>
       <!--<TextFont>: Text font name-->
@@ -524,6 +522,6 @@
       <TextStyle>Bold</TextStyle>
       <!--<NumVisible>: Number of visible elements in the slide-->
       <NumVisible>1</NumVisible>
-    </SelectSlidePlaylist>    
+    </SelectSlidePlaylist>
   </PopupScreenPlayerControl>
 </root>
