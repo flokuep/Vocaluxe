@@ -919,24 +919,60 @@ namespace Vocaluxe.Lib.Draw
 
             int w = bmp.Width;
             int h = bmp.Height;
+            float ratio = (float)w / h;
+            int newW = w;
+            int newH = h;
 
             if (w > maxSize && w > h)
+                newW = maxSize;
+            else if (h > maxSize)
+                newH = maxSize;
+            else if (w > h)
+                newW = (int)_CheckForNextPowerOf2(w);
+            else
+                newH = (int)_CheckForNextPowerOf2(h);
+
+            Bitmap bmp2 = null;
+            byte[] data;
+            try
             {
-                h = (int)Math.Round((float)maxSize / bmp.Width * bmp.Height);
-                w = maxSize;
+                if (w != newW || h != newH)
+                {
+                    if (w != newW)
+                    {
+                        w = newW;
+                        h = (int)Math.Round(w / ratio);
+                    }
+                    else
+                    {
+                        h = newH;
+                        w = (int)Math.Round(h * ratio);
+                    }
+                    //Create a new Bitmap with the new sizes
+                    bmp2 = new Bitmap(w, h);
+                    //Scale the texture
+                    Graphics g = Graphics.FromImage(bmp2);
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    g.SmoothingMode = SmoothingMode.HighQuality;
+                    g.DrawImage(bmp, new Rectangle(0, 0, bmp2.Width, bmp2.Height));
+                    g.Dispose();
+                    bmp = bmp2;
+                }
+
+                //Fill the new Bitmap with the texture data
+                BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                data = new byte[4 * w * h];
+                Marshal.Copy(bmpData.Scan0, data, 0, data.Length);
+                bmp.UnlockBits(bmpData);
+            }
+            finally
+            {
+                if (bmp2 != null)
+                    bmp2.Dispose();
             }
 
-            if (h > maxSize)
-            {
-                w = (int)Math.Round((float)maxSize / bmp.Height * bmp.Width);
-                h = maxSize;
-            }
-
-            //Fill the new Bitmap with the texture data
-            BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-            byte[] data = new byte[4 * w * h];
-            Marshal.Copy(bmpData.Scan0, data, 0, data.Length);
-            bmp.UnlockBits(bmpData);
+            if (data == null)
+                return new STexture(-1);
 
             return AddTexture(w, h, ref data);
         }
