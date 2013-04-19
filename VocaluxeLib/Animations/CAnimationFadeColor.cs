@@ -58,14 +58,8 @@ namespace VocaluxeLib.Menu.Animations
         {
             base.StartAnimation();
 
-            _CurrentColor = _StartColor;
-        }
-
-        public override void ResetValues()
-        {
-            base.ResetValues();
-
-            setColor(_StartColor);
+            if(AnimationFromStart)
+                _CurrentColor = _StartColor;
         }
 
         public override SColorF getColor()
@@ -76,6 +70,11 @@ namespace VocaluxeLib.Menu.Animations
                 return _StartColor;
             else
                 return _CurrentColor;
+        }
+
+        public override void SetCurrentValues(SRectF rect, SColorF color, STexture texture)
+        {
+            _CurrentColor = color;
         }
 
         public override void Update()

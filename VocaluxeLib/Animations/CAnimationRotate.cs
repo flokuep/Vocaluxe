@@ -56,11 +56,17 @@ namespace VocaluxeLib.Menu.Animations
                 return _CurrentRect;
         }
 
+        public override void SetCurrentValues(SRectF rect, SColorF color, STexture texture)
+        {
+            _CurrentRect = rect;
+        }
+
         public override void StartAnimation()
         {
             base.StartAnimation();
 
-            _CurrentRect = OriginalRect;
+            if(AnimationDrawn)
+                _CurrentRect = OriginalRect;
         }
 
         public override void Update()

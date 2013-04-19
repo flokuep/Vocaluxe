@@ -36,6 +36,10 @@ namespace VocaluxeLib.Menu.Animations
             return _VideoTexture;
         }
 
+        public override void SetCurrentValues(SRectF rect, SColorF color, STexture texture)
+        {
+        }
+
         public override void Update()
         {
             _VideoTexture = CBase.Theme.GetSkinVideoTexture(_VideoName, _PartyModeID);

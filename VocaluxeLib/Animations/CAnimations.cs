@@ -32,7 +32,7 @@ namespace VocaluxeLib.Menu.Animations
                 {
                     if (!am.anim.AnimationActive() && !am.anim.isDrawn())
                     {
-                        am.anim.ResetValues();
+                        am.anim.SetCurrentValues(am.element.Rect, am.element.Color, am.element.Texture);
                         am.anim.StartAnimation();
                     }
                     else if (am.element.Event == EAnimationEvent.AfterSelected && am.anim.isDrawn())
@@ -91,7 +91,7 @@ namespace VocaluxeLib.Menu.Animations
                     e.Event = EAnimationEvent.OnSelected;
                 else if (AnimAvailable(e, EAnimationEvent.Selected))
                     e.Event = EAnimationEvent.Selected;
-                ResetAnimation(e, e.Event);
+                ResetAnimation(e, EAnimationEvent.OnSelected);
             }
         }
 
@@ -105,7 +105,7 @@ namespace VocaluxeLib.Menu.Animations
                     e.Event = EAnimationEvent.Visible;
                 else
                     e.Event = EAnimationEvent.None;
-                ResetAnimation(e, e.Event);
+                ResetAnimation(e, EAnimationEvent.AfterSelected);
             }
         }
 
@@ -117,7 +117,7 @@ namespace VocaluxeLib.Menu.Animations
                     e.Event = EAnimationEvent.OnVisible;
                 else if (AnimAvailable(e, EAnimationEvent.Visible))
                     e.Event = EAnimationEvent.Visible;
-                ResetAnimation(e, e.Event);
+                ResetAnimation(e, EAnimationEvent.OnVisible);
             }
         }
 
@@ -129,7 +129,7 @@ namespace VocaluxeLib.Menu.Animations
                     e.Event = EAnimationEvent.AfterVisible;
                 else
                     e.Event = EAnimationEvent.None;
-                ResetAnimation(e, e.Event);
+                ResetAnimation(e, EAnimationEvent.AfterVisible);
             }
         }
 
@@ -141,18 +141,23 @@ namespace VocaluxeLib.Menu.Animations
                 {
                     am.anim.StopAnimation();
                     am.element.Event = evt;
-                    ResetAnimation(am.element, am.element.Event);
+                    ResetAnimation(am.element, evt);
                 }
             }
         }
 
         public static void ResetAnimation(IMenuProperties e, EAnimationEvent ev)
         {
+            bool fromStart = true;
+            if (GetCurrentAnimation(e) != null)
+            {
+                fromStart = !GetCurrentAnimation(e).AnimationActive();
+            }
             foreach (SAnimationMenu am in Elements)
             {
                 if (am.element == e)
                     if (am.anim.getEvent() == ev)
-                        am.anim.ResetValues();
+                        am.anim.ResetValues(fromStart);
             }
         }
 
@@ -165,6 +170,16 @@ namespace VocaluxeLib.Menu.Animations
                         return true;
             }
             return false;
+        }
+
+        public static CAnimation GetCurrentAnimation(IMenuProperties e)
+        {
+            foreach (SAnimationMenu am in Elements)
+            {
+                if (am.element == e)
+                    return am.anim;
+            }
+            return null;
         }
     }
 }

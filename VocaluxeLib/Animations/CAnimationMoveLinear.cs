@@ -50,6 +50,14 @@ namespace VocaluxeLib.Menu.Animations
             _FinalRect.W = OriginalRect.W;
         }
 
+        public override void SetCurrentValues(SRectF rect, SColorF color, STexture texture)
+        {
+            _CurrentRect = rect;
+
+            _FinalRect.H = rect.H;
+            _FinalRect.W = rect.W;
+        }
+
         public override SRectF getRect()
         {
             if (AnimationDrawn && Repeat == EAnimationRepeat.None)
@@ -64,7 +72,8 @@ namespace VocaluxeLib.Menu.Animations
         {
             base.StartAnimation();
 
-            _CurrentRect = OriginalRect;
+            if(AnimationDrawn)
+                _CurrentRect = OriginalRect;
         }
 
         public override void Update()

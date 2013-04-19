@@ -48,9 +48,9 @@ namespace VocaluxeLib.Menu.Animations
             _Animation.ResetAnimation();
         }
 
-        public void ResetValues()
+        public void ResetValues(bool fromStart)
         {
-            _Animation.ResetValues();
+            _Animation.ResetValues(fromStart);
         }
 
         public bool AnimationActive()
@@ -96,6 +96,11 @@ namespace VocaluxeLib.Menu.Animations
         public STexture getTexture()
         {
             return _Animation.getTexture();
+        }
+
+        public void SetCurrentValues(SRectF rect, SColorF color, STexture texture)
+        {
+            _Animation.SetCurrentValues(rect, color, texture);
         }
 
         public EAnimationEvent getEvent()

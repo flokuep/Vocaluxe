@@ -20,13 +20,14 @@ namespace VocaluxeLib.Menu.Animations
         SColorF getColor();
         void setTexture(ref STexture texture);
         STexture getTexture();
+        void SetCurrentValues(SRectF rect, SColorF color, STexture texture);
         EAnimationEvent getEvent();
         bool isDrawn();
 
         void StartAnimation();
         void StopAnimation();
         void ResetAnimation();
-        void ResetValues();
+        void ResetValues(bool fromStart);
         bool AnimationActive();
         void Update();
     }

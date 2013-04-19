@@ -53,6 +53,7 @@ namespace VocaluxeLib.Menu.Animations
         public Stopwatch Timer = new Stopwatch();
         public bool ResetMode = false;
         public bool AnimationDrawn = false;
+        public bool AnimationFromStart = true;
 
         protected int _PartyModeID;
 
@@ -103,12 +104,13 @@ namespace VocaluxeLib.Menu.Animations
             AnimationDrawn = false;
         }
 
-        public virtual void ResetValues()
+        public virtual void ResetValues(bool fromStart)
         {
             ResetMode = false;
             Timer.Stop();
             Timer.Reset();
             AnimationDrawn = false;
+            AnimationFromStart = fromStart;
         }
 
         public virtual bool AnimationActive()
@@ -167,6 +169,8 @@ namespace VocaluxeLib.Menu.Animations
         {
             return AnimationDrawn;
         }
+
+        public abstract void SetCurrentValues(SRectF rect, SColorF color, STexture texture);
 
         public abstract void Update();
     }
