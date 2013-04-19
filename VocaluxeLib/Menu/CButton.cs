@@ -413,13 +413,21 @@ namespace VocaluxeLib.Menu
                     texture = Texture;
                 else
                     texture = CBase.Theme.GetSkinTexture(_Theme.SelTextureName, _PartyModeID);
-
-                CBase.Drawing.DrawTexture(texture, Rect, SelColor);
+                    
+                bool anim = (Event == EAnimationEvent.OnSelected && CAnimations.AnimAvailable(this, EAnimationEvent.OnSelected)) ||
+                    (Event == EAnimationEvent.Selected && CAnimations.AnimAvailable(this, EAnimationEvent.Selected));
+                if(anim)
+                    CBase.Drawing.DrawTexture(texture, Rect, Color);
+                else
+                    CBase.Drawing.DrawTexture(texture, Rect, SelColor);
                 Text.DrawRelative(Rect.X, Rect.Y);
 
                 if (Reflection)
                 {
-                    CBase.Drawing.DrawTextureReflection(texture, Rect, SelColor, Rect, ReflectionSpace, ReflectionHeight);
+                    if(anim)
+                        CBase.Drawing.DrawTextureReflection(texture, Rect, Color, Rect, ReflectionSpace, ReflectionHeight);
+                    else
+                        CBase.Drawing.DrawTextureReflection(texture, Rect, SelColor, Rect, ReflectionSpace, ReflectionHeight);
                     Text.DrawRelative(Rect.X, Rect.Y, ReflectionSpace, ReflectionHeight, Rect.H);
                 }
                 else

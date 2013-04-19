@@ -61,6 +61,13 @@ namespace VocaluxeLib.Menu.Animations
             _CurrentColor = _StartColor;
         }
 
+        public override void ResetValues()
+        {
+            base.ResetValues();
+
+            setColor(_StartColor);
+        }
+
         public override SColorF getColor()
         {
             if (AnimationDrawn && Repeat == EAnimationRepeat.None)

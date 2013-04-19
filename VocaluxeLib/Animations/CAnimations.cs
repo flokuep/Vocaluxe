@@ -32,55 +32,36 @@ namespace VocaluxeLib.Menu.Animations
                 {
                     if (!am.anim.AnimationActive() && !am.anim.isDrawn())
                     {
+                        am.anim.ResetValues();
                         am.anim.StartAnimation();
                     }
                     else if (am.element.Event == EAnimationEvent.AfterSelected && am.anim.isDrawn())
                     {
                         if (AnimAvailable(am.element, EAnimationEvent.Visible))
-                        {
                             am.element.Event = EAnimationEvent.Visible;
-                            am.anim.ResetValues();
-                        }
                         else
-                        {
                             am.element.Event = EAnimationEvent.None;
-                        }
                     }
                     else if (am.element.Event == EAnimationEvent.OnSelected && am.anim.isDrawn())
                     {
                         if (AnimAvailable(am.element, EAnimationEvent.Selected))
-                        {
                             am.element.Event = EAnimationEvent.Selected;
-                            am.anim.ResetValues();
-                        }
                         else
-                        {
                             am.element.Event = EAnimationEvent.None;
-                        }
                     }
                     else if (am.element.Event == EAnimationEvent.OnVisible && am.anim.isDrawn())
                     {
                         if (AnimAvailable(am.element, EAnimationEvent.Visible))
-                        {
                             am.element.Event = EAnimationEvent.Visible;
-                            am.anim.ResetValues();
-                        }
                         else
-                        {
                             am.element.Event = EAnimationEvent.None;
-                        }
                     }
                     else if (am.element.Event == EAnimationEvent.AfterVisible && am.anim.isDrawn())
                     {
                         if (AnimAvailable(am.element, EAnimationEvent.AfterVisible))
-                        {
                             am.element.Event = EAnimationEvent.AfterVisible;
-                            am.anim.ResetValues();
-                        }
                         else
-                        {
                             am.element.Event = EAnimationEvent.None;
-                        }
                     }
 
                     if (!am.anim.isDrawn())
@@ -104,36 +85,52 @@ namespace VocaluxeLib.Menu.Animations
 
         public static void SetOnSelectAnim(IMenuProperties e)
         {
-            if (AnimAvailable(e, EAnimationEvent.OnSelected))
-                e.Event = EAnimationEvent.OnSelected;
-            else if (AnimAvailable(e, EAnimationEvent.Selected))
-                e.Event = EAnimationEvent.Selected;
+            if (e.Event != EAnimationEvent.OnSelected)
+            {
+                if (AnimAvailable(e, EAnimationEvent.OnSelected))
+                    e.Event = EAnimationEvent.OnSelected;
+                else if (AnimAvailable(e, EAnimationEvent.Selected))
+                    e.Event = EAnimationEvent.Selected;
+                ResetAnimation(e, e.Event);
+            }
         }
 
         public static void SetAfterSelectAnim(IMenuProperties e)
         {
-            if (AnimAvailable(e, EAnimationEvent.AfterSelected))
-                e.Event = EAnimationEvent.AfterSelected;
-            else if (AnimAvailable(e, EAnimationEvent.Visible))
-                e.Event = EAnimationEvent.Visible;
-            else
-                e.Event = EAnimationEvent.None;
+            if (e.Event != EAnimationEvent.AfterSelected)
+            {
+                if (AnimAvailable(e, EAnimationEvent.AfterSelected))
+                    e.Event = EAnimationEvent.AfterSelected;
+                else if (AnimAvailable(e, EAnimationEvent.Visible))
+                    e.Event = EAnimationEvent.Visible;
+                else
+                    e.Event = EAnimationEvent.None;
+                ResetAnimation(e, e.Event);
+            }
         }
 
         public static void SetOnVisibleAnim(IMenuProperties e)
         {
-            if (AnimAvailable(e, EAnimationEvent.OnVisible))
-                e.Event = EAnimationEvent.OnVisible;
-            else if (AnimAvailable(e, EAnimationEvent.Visible))
-                e.Event = EAnimationEvent.Visible;
+            if (e.Event != EAnimationEvent.OnVisible)
+            {
+                if (AnimAvailable(e, EAnimationEvent.OnVisible))
+                    e.Event = EAnimationEvent.OnVisible;
+                else if (AnimAvailable(e, EAnimationEvent.Visible))
+                    e.Event = EAnimationEvent.Visible;
+                ResetAnimation(e, e.Event);
+            }
         }
 
         public static void SetAfterVisibleAnim(IMenuProperties e)
         {
-            if (AnimAvailable(e, EAnimationEvent.AfterVisible))
-                e.Event = EAnimationEvent.AfterVisible;
-            else
-                e.Event = EAnimationEvent.None;
+            if (e.Event != EAnimationEvent.AfterVisible)
+            {
+                if (AnimAvailable(e, EAnimationEvent.AfterVisible))
+                    e.Event = EAnimationEvent.AfterVisible;
+                else
+                    e.Event = EAnimationEvent.None;
+                ResetAnimation(e, e.Event);
+            }
         }
 
         public static void UpdateEvent(EAnimationEvent evt)
@@ -144,8 +141,18 @@ namespace VocaluxeLib.Menu.Animations
                 {
                     am.anim.StopAnimation();
                     am.element.Event = evt;
-                    am.anim.StartAnimation();
+                    ResetAnimation(am.element, am.element.Event);
                 }
+            }
+        }
+
+        public static void ResetAnimation(IMenuProperties e, EAnimationEvent ev)
+        {
+            foreach (SAnimationMenu am in Elements)
+            {
+                if (am.element == e)
+                    if (am.anim.getEvent() == ev)
+                        am.anim.ResetValues();
             }
         }
 

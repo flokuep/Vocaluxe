@@ -86,13 +86,21 @@
         <Height>26</Height>
       </SReflection>
       <Animation1>
-		<Event>Visible</Event>
+		<Event>OnSelected</Event>
 	    <Type>FadeColor</Type>
-	    <Time>2000,00</Time>
-	    <Repeat>RepeatWithReset</Repeat>
+	    <Time>300,00</Time>
+	    <Repeat>None</Repeat>
 	    <StartColor>ButtonColor</StartColor>  
 	    <EndColor>ButtonSColor</EndColor>
       </Animation1>
+      <Animation2>
+		<Event>AfterSelected</Event>
+	    <Type>FadeColor</Type>
+	    <Time>1000,00</Time>
+	    <Repeat>None</Repeat>
+	    <StartColor>ButtonSColor</StartColor>  
+	    <EndColor>ButtonColor</EndColor>
+      </Animation2>
     </ButtonSing>
     <ButtonParty>
       <!--<Skin>: Texture name-->
@@ -207,24 +215,6 @@
         <Space>10</Space>
         <Height>26</Height>
       </SReflection>
-      <Animation1>
-		<Event>OnVisible</Event>
-	    <Type>FadeColor</Type>
-	    <Time>2000,00</Time>
-	    <Repeat>Reset</Repeat>
-	    <StartColor>ButtonColor</StartColor>  
-	    <EndColor>ButtonSColor</EndColor>
-      </Animation1>
-      <Animation2>
-		<Event>Visible</Event>  
-	    <Type>Resize</Type>
-	    <Time>2000,00</Time>
-	    <Repeat>RepeatWithReset</Repeat>
-	    <Position>Center</Position>
-	    <Order>HeightFirst</Order>
-	    <W>200</W>
-	    <H>100</H>	    
-      </Animation2>
     </ButtonOptions>
     <ButtonProfiles>
       <!--<Skin>: Texture name-->
@@ -281,27 +271,7 @@
       <SReflection>
         <Space>10</Space>
         <Height>26</Height>
-      </SReflection>
-      <Animation1>
-		<Event>OnSelected</Event>
-	    <Type>Resize</Type>
-	    <Time>2000,00</Time>
-	    <Repeat>Reset</Repeat>
-	    <Position>BottomLeft</Position>
-	    <Order>WidthFirst</Order>
-	    <W>200</W>
-	    <H>100</H>	    
-      </Animation1>      
-      <Animation2>
-		<Event>Selected</Event>
-	    <Type>Resize</Type>
-	    <Time>2000,00</Time>
-	    <Repeat>Reset</Repeat>
-	    <Position>BottomLeft</Position>
-	    <Order>Both</Order>
-	    <W>200</W>
-	    <H>200</H>	    
-      </Animation2>      
+      </SReflection>  
     </ButtonProfiles>
     <ButtonExit>
       <!--<Skin>: Texture name-->
@@ -359,16 +329,6 @@
         <Space>10</Space>
         <Height>26</Height>
       </SReflection>
-      <Animation1>
-		<Event>Visible</Event>
-	    <Type>Resize</Type>
-	    <Time>2000,00</Time>
-	    <Repeat>Repeat</Repeat>
-	    <Position>BottomRight</Position>
-	    <Order>WidthFirst</Order>
-	    <W>200</W>
-	    <H>100</H>	    
-      </Animation1>      
     </ButtonExit>
   </ScreenMain>
 </root>
