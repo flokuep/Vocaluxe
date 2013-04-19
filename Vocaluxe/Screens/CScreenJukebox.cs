@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Drawing;
@@ -120,11 +121,7 @@ namespace Vocaluxe.Screens
 
         public override bool UpdateGame()
         {
-            Statics[_StaticCover].Texture = CBackgroundMusic.Cover;
-            Texts[_TextArtist].Text = CSongs.Songs[CBackgroundMusic.SongID].Artist;
-            Texts[_TextTitle].Text = CSongs.Songs[CBackgroundMusic.SongID].Title;
-            //Texts[_TextAlbum].Text = CSongs.Songs[CBackgroundMusic.SongID].;
-            Texts[_TextTimer].Text = CBackgroundMusic.Timer.ToString();
+            _UpdatePlayerContent();
 
             if (_FadePlayerTimer.IsRunning)
             {
@@ -145,6 +142,22 @@ namespace Vocaluxe.Screens
                 
             }
             return true;
+        }
+
+        private void _UpdatePlayerContent()
+        {
+            float currentTime = CBackgroundMusic.CurrentTime;
+            float songLength = CBackgroundMusic.SongLength;
+            int minCurrent = (int)Math.Floor(currentTime / 60f);
+            int secCurrent = (int)(currentTime - minCurrent * 60f);
+            int minLength = (int)Math.Floor(songLength / 60f);
+            int secLength = (int)(songLength - minLength * 60f);
+
+            Statics[_StaticCover].Texture = CBackgroundMusic.Cover;
+            Texts[_TextArtist].Text = CSongs.Songs[CBackgroundMusic.SongID].Artist;
+            Texts[_TextTitle].Text = CSongs.Songs[CBackgroundMusic.SongID].Title;
+            //Texts[_TextAlbum].Text = CSongs.Songs[CBackgroundMusic.SongID].;
+            Texts[_TextTimer].Text = minCurrent.ToString("00") + ":" + secCurrent.ToString("00") + "/" + minLength.ToString("00") + ":" + secLength.ToString("00");
         }
 
         private void _UpdatePlayerVisibility(float alpha)

@@ -110,9 +110,14 @@ namespace Vocaluxe.Base
             }
         }
 
-        public static int Timer
+        public static int CurrentTime
         {
             get { return (int)CSound.GetPosition(_CurrentMusicStream); }
+        }
+
+        public static int SongLength
+        {
+            get { return (int)CSound.GetLength(_CurrentMusicStream); }
         }
 
         public static string ArtistAndTitle
