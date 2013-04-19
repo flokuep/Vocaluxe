@@ -4,7 +4,7 @@ using System.Text;
 
 using System.Drawing;
 
-namespace Vocaluxe.Menu.Animations
+namespace VocaluxeLib.Menu.Animations
 {
     public class CAnimationVideo : CAnimationFramework
     {

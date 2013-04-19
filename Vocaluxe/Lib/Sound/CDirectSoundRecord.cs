@@ -1,28 +1,26 @@
-﻿using System;
+﻿using SlimDX.DirectSound;
+using SlimDX.Multimedia;
+using System;
 using System.Collections.Generic;
 using System.Threading;
-using SlimDX.DirectSound;
-using SlimDX.Multimedia;
 using Vocaluxe.Base;
 
 namespace Vocaluxe.Lib.Sound
 {
     class CDirectSoundRecord : IRecord
     {
-        private bool _initialized = false;
-        private List<SRecordDevice> _Devices = null;
-        private SRecordDevice[] _DeviceConfig = null;
-        private List<SoundCardSource> _Sources = null;
+        private bool _Initialized;
+        private List<SRecordDevice> _Devices;
+        private SRecordDevice[] _DeviceConfig;
+        private List<CSoundCardSource> _Sources;
 
-        private CBuffer[] _Buffer;
+        private readonly CBuffer[] _Buffer;
 
         public CDirectSoundRecord()
         {
             _Buffer = new CBuffer[CSettings.MaxNumPlayer];
             for (int i = 0; i < _Buffer.Length; i++)
-            {
                 _Buffer[i] = new CBuffer();
-            }
 
             Init();
         }
@@ -31,77 +29,71 @@ namespace Vocaluxe.Lib.Sound
         {
             DeviceCollection devices = DirectSoundCapture.GetDevices();
             _Devices = new List<SRecordDevice>();
-            _Sources = new List<SoundCardSource>();
+            _Sources = new List<CSoundCardSource>();
 
             int id = 0;
             foreach (DeviceInformation dev in devices)
             {
-                DirectSoundCapture ds = new DirectSoundCapture(dev.DriverGuid);
+                using (DirectSoundCapture ds = new DirectSoundCapture(dev.DriverGuid))
+                {
+                    SRecordDevice device = new SRecordDevice();
+                    device.Driver = dev.DriverGuid.ToString();
+                    device.ID = id;
+                    device.Name = dev.Description;
+                    device.Inputs = new List<SInput>();
 
-                SRecordDevice device = new SRecordDevice();
-                device.Driver = dev.DriverGuid.ToString();
-                device.ID = id;
-                device.Name = dev.Description;
-                device.Inputs = new List<SInput>();
+                    SInput inp = new SInput();
+                    inp.Name = "Default";
+                    inp.Channels = ds.Capabilities.Channels;
 
-                SInput inp = new SInput();
-                inp.Name = "Default";
-                inp.Channels = ds.Capabilities.Channels;
+                    if (inp.Channels > 2)
+                        inp.Channels = 2; //more are not supported in vocaluxe
 
-                if (inp.Channels > 2)
-                    inp.Channels = 2; //more are not supported in vocaluxe
+                    device.Inputs.Add(inp);
+                    _Devices.Add(device);
 
-                device.Inputs.Add(inp);
-                _Devices.Add(device);
-
-                id++;
-                ds.Dispose();
+                    id++;
+                }
             }
 
             _DeviceConfig = _Devices.ToArray();
-            _initialized = true;
+            _Initialized = true;
 
             return true;
         }
 
         public void CloseAll()
         {
-            if (_initialized)
+            if (_Initialized)
             {
-                foreach (SoundCardSource source in _Sources)
-                {
-                    source.Stop();
-                    source.Dispose();
-                }
-                _initialized = false;
+                Stop();
+                _Initialized = false;
             }
             //System.IO.File.WriteAllBytes("test0.raw", _Buffer[0].Buffer);
         }
 
-        public bool Start(SRecordDevice[] DeviceConfig)
+        public bool Start(SRecordDevice[] deviceConfig)
         {
-            if (!_initialized)
+            if (!_Initialized)
                 return false;
 
             for (int i = 0; i < _Buffer.Length; i++)
-            {
                 _Buffer[i].Reset();
-            }
 
-            _DeviceConfig = DeviceConfig;
-            bool[] active = new bool[DeviceConfig.Length];
-            Guid[] guid = new Guid[DeviceConfig.Length];
-            short[] channels = new short[DeviceConfig.Length];
-            for (int dev = 0; dev < DeviceConfig.Length; dev++)
+            _DeviceConfig = deviceConfig;
+            bool[] active = new bool[deviceConfig.Length];
+            Guid[] guid = new Guid[deviceConfig.Length];
+            short[] channels = new short[deviceConfig.Length];
+            for (int dev = 0; dev < deviceConfig.Length; dev++)
             {
                 active[dev] = false;
-                for (int inp = 0; inp < DeviceConfig[dev].Inputs.Count; inp++)
+                for (int inp = 0; inp < deviceConfig[dev].Inputs.Count; inp++)
                 {
-                    if (DeviceConfig[dev].Inputs[inp].PlayerChannel1 > 0 ||
-                        DeviceConfig[dev].Inputs[inp].PlayerChannel2 > 0)
+                    if (deviceConfig[dev].Inputs[inp].PlayerChannel1 > 0 ||
+                        deviceConfig[dev].Inputs[inp].PlayerChannel2 > 0)
                         active[dev] = true;
-                    guid[dev] = new Guid(DeviceConfig[dev].Driver);
-                    channels[dev] = (short)DeviceConfig[dev].Inputs[0].Channels;
+                    guid[dev] = new Guid(deviceConfig[dev].Driver);
+                    channels[dev] = (short)deviceConfig[dev].Inputs[0].Channels;
                 }
             }
 
@@ -109,82 +101,85 @@ namespace Vocaluxe.Lib.Sound
             {
                 if (active[i])
                 {
-                    SoundCardSource source = new SoundCardSource(guid[i], channels[i]);
-                    source.SampleRateKHz = 44.1;
-                    source.SampleDataReady += this.OnDataReady;
+                    CSoundCardSource source = new CSoundCardSource(guid[i], channels[i]);
+                    source.SampleRateKhz = 44.1;
+                    source.SampleDataReady += _OnDataReady;
                     source.Start();
 
                     _Sources.Add(source);
-
                 }
             }
 
-            _DeviceConfig = DeviceConfig;
+            _DeviceConfig = deviceConfig;
             return true;
         }
 
         public bool Stop()
         {
-            if (!_initialized)
+            if (!_Initialized)
                 return false;
 
-            foreach (SoundCardSource source in _Sources)
+            foreach (CSoundCardSource source in _Sources)
             {
                 source.Stop();
+                source.Dispose();
             }
+            _Sources.Clear();
+
             return true;
         }
-        public void AnalyzeBuffer(int Player)
+
+        public void AnalyzeBuffer(int player)
         {
-            if (!_initialized)
+            if (!_Initialized)
                 return;
 
-            _Buffer[Player].AnalyzeBuffer();
+            _Buffer[player].AnalyzeBuffer();
         }
 
-        public int GetToneAbs(int Player)
+        public int GetToneAbs(int player)
         {
-            if (!_initialized)
+            if (!_Initialized)
                 return 0;
 
-            return _Buffer[Player].ToneAbs;
+            return _Buffer[player].ToneAbs;
         }
 
-        public int GetTone(int Player)
+        public int GetTone(int player)
         {
-            if (!_initialized)
+            if (!_Initialized)
                 return 0;
 
-            return _Buffer[Player].Tone;
+            return _Buffer[player].Tone;
         }
 
-        public void SetTone(int Player, int Tone)
+        public void SetTone(int player, int tone)
         {
-            if (!_initialized)
+            if (!_Initialized)
                 return;
 
-            _Buffer[Player].Tone = Tone;
+            _Buffer[player].Tone = tone;
         }
 
-        public float GetMaxVolume(int Player)
+        public float GetMaxVolume(int player)
         {
-            if (!_initialized)
+            if (!_Initialized)
                 return 0f;
 
-            return _Buffer[Player].MaxVolume;
+            return _Buffer[player].MaxVolume;
         }
 
-        public bool ToneValid(int Player)
+        public bool ToneValid(int player)
         {
-            if (!_initialized)
+            if (!_Initialized)
                 return false;
 
-            return _Buffer[Player].ToneValid;
+            return _Buffer[player].ToneValid;
         }
 
         public SRecordDevice[] RecordDevices()
         {
-            if (!_initialized)
+            if (!_Initialized)
                 return null;
 
             if (_Devices.Count == 0)
@@ -193,36 +188,36 @@ namespace Vocaluxe.Lib.Sound
             return _Devices.ToArray();
         }
 
-        public int NumHalfTones(int Player)
+        public int NumHalfTones(int player)
         {
-            if (!_initialized)
+            if (!_Initialized)
                 return 0;
 
-            return _Buffer[Player].NumHalfTones;
+            return _Buffer[player].NumHalfTones;
         }
 
-        public float[] ToneWeigth(int Player)
+        public float[] ToneWeigth(int player)
         {
-            if (!_initialized)
+            if (!_Initialized)
                 return null;
 
-            return _Buffer[Player].ToneWeigth;
+            return _Buffer[player].ToneWeigth;
         }
 
-        private void OnDataReady(object sender, SampleDataEventArgs e)
+        private void _OnDataReady(object sender, CSampleDataEventArgs e)
         {
-            if (_initialized)
+            if (_Initialized)
             {
-                byte[] _leftBuffer = new byte[e.Data.Length / 2];
-                byte[] _rightBuffer = new byte[e.Data.Length / 2];
+                byte[] leftBuffer = new byte[e.Data.Length / 2];
+                byte[] rightBuffer = new byte[e.Data.Length / 2];
 
                 //[]: Sample, L: Left channel R: Right channel
                 //[LR][LR][LR][LR][LR][LR]
                 //The data is interleaved and needs to be demultiplexed
                 for (int i = 0; i < e.Data.Length / 2; i++)
                 {
-                    _leftBuffer[i] = e.Data[i * 2 - (i % 2)];
-                    _rightBuffer[i] = e.Data[i * 2 - (i % 2) + 2];
+                    leftBuffer[i] = e.Data[i * 2 - (i % 2)];
+                    rightBuffer[i] = e.Data[i * 2 - (i % 2) + 2];
                 }
 
                 for (int i = 0; i < _DeviceConfig.Length; i++)
@@ -230,208 +225,196 @@ namespace Vocaluxe.Lib.Sound
                     if (_DeviceConfig[i].Driver == e.Guid.ToString())
                     {
                         if (_DeviceConfig[i].Inputs[0].PlayerChannel1 > 0)
-                            _Buffer[_DeviceConfig[i].Inputs[0].PlayerChannel1 - 1].ProcessNewBuffer(_leftBuffer);
+                            _Buffer[_DeviceConfig[i].Inputs[0].PlayerChannel1 - 1].ProcessNewBuffer(leftBuffer);
 
                         if (_DeviceConfig[i].Inputs[0].PlayerChannel2 > 0)
-                            _Buffer[_DeviceConfig[i].Inputs[0].PlayerChannel2 - 1].ProcessNewBuffer(_rightBuffer);
+                            _Buffer[_DeviceConfig[i].Inputs[0].PlayerChannel2 - 1].ProcessNewBuffer(rightBuffer);
                     }
                 }
             }
         }
 
-        public class SampleDataEventArgs : EventArgs
+        public class CSampleDataEventArgs : EventArgs
         {
-            public SampleDataEventArgs(byte[] data, Guid guid)
+            public CSampleDataEventArgs(byte[] data, Guid guid)
             {
-                this.Data = data;
-                this.Guid = guid;
+                Data = data;
+                Guid = guid;
             }
 
             public byte[] Data { get; private set; }
             public Guid Guid { get; private set; }
         }
 
-        public class SoundCardSource : IDisposable
+        public class CSoundCardSource : IDisposable
         {
-            private volatile bool running;
-            private int bufferSize;
-            private CaptureBuffer buffer;
-            private CaptureBufferDescription bufferDescription;
-            private DirectSoundCapture captureDevice;
-            private WaveFormat waveFormat;
-            private Thread captureThread;
-            private List<NotificationPosition> notifications;
-            private int bufferPortionCount;
-            private int bufferPortionSize;
-            private WaitHandle[] waitHandles;
-            private double sampleRate;
-            private Guid guid;
-            private short channels;
+            private volatile bool _Running;
+            private readonly int _BufferSize;
+            private CaptureBuffer _CaptureBuffer;
+            private CaptureBufferDescription _BufferDescription;
+            private DirectSoundCapture _CaptureDevice;
+            private readonly WaveFormat _WaveFormat;
+            private Thread _CaptureThread;
+            private List<NotificationPosition> _Notifications;
+            private int _BufferPortionCount;
+            private int _BufferPortionSize;
+            private WaitHandle[] _WaitHandles;
+            private double _SampleRate;
+            private readonly Guid _Guid;
+            private readonly short _Channels;
 
-            public SoundCardSource(Guid guid, short channels)
+            public CSoundCardSource(Guid guid, short channels)
             {
-                this.guid = guid;
-                this.channels = channels;
-                this.waveFormat = new WaveFormat();
-                this.SampleRateKHz = 44.1;
-                this.bufferSize = 2048;
+                this._Guid = guid;
+                this._Channels = channels;
+                _WaveFormat = new WaveFormat();
+                SampleRateKhz = 44.1;
+                _BufferSize = 2048;
             }
 
-            public event EventHandler<SampleDataEventArgs> SampleDataReady = delegate { };
+            public event EventHandler<CSampleDataEventArgs> SampleDataReady = delegate { };
 
-            public double SampleRateKHz
+            public double SampleRateKhz
             {
-                get
-                {
-                    return this.sampleRate;
-                }
+                get { return _SampleRate; }
 
                 set
                 {
-                    this.sampleRate = value;
+                    _SampleRate = value;
 
-                    if (this.running)
-                    {
-                        this.Restart();
-                    }
+                    if (_Running)
+                        Restart();
                 }
             }
 
             public void Start()
             {
-                if (this.running)
-                {
+                if (_Running)
                     throw new InvalidOperationException();
-                }
 
-                if (this.captureDevice == null)
-                {
-                    this.captureDevice = new DirectSoundCapture(guid);
-                }
+                if (_CaptureDevice == null)
+                    _CaptureDevice = new DirectSoundCapture(_Guid);
 
-                this.waveFormat.FormatTag = WaveFormatTag.Pcm; // Change to WaveFormatTag.IeeeFloat for float
-                this.waveFormat.BitsPerSample = 16; // Set this to 32 for float
-                this.waveFormat.BlockAlignment = (short)(channels * (waveFormat.BitsPerSample / 8));
-                this.waveFormat.Channels = this.channels;
-                this.waveFormat.SamplesPerSecond = (int)(this.SampleRateKHz * 1000D);
-                this.waveFormat.AverageBytesPerSecond =
-                    this.waveFormat.SamplesPerSecond *
-                    this.waveFormat.BlockAlignment;
+                _WaveFormat.FormatTag = WaveFormatTag.Pcm; // Change to WaveFormatTag.IeeeFloat for float
+                _WaveFormat.BitsPerSample = 16; // Set this to 32 for float
+                _WaveFormat.BlockAlignment = (short)(_Channels * (_WaveFormat.BitsPerSample / 8));
+                _WaveFormat.Channels = _Channels;
+                _WaveFormat.SamplesPerSecond = (int)(SampleRateKhz * 1000D);
+                _WaveFormat.AverageBytesPerSecond =
+                    _WaveFormat.SamplesPerSecond *
+                    _WaveFormat.BlockAlignment;
 
-                this.bufferPortionCount = 2;
+                _BufferPortionCount = 2;
 
-                this.bufferDescription.BufferBytes = this.bufferSize * sizeof(short) * bufferPortionCount * this.channels;
-                this.bufferDescription.Format = this.waveFormat;
-                this.bufferDescription.WaveMapped = false;
+                _BufferDescription.BufferBytes = _BufferSize * sizeof(short) * _BufferPortionCount * _Channels;
+                _BufferDescription.Format = _WaveFormat;
+                _BufferDescription.WaveMapped = false;
 
-                this.buffer = new CaptureBuffer(this.captureDevice, this.bufferDescription);
+                _CaptureBuffer = new CaptureBuffer(_CaptureDevice, _BufferDescription);
 
-                this.bufferPortionSize = this.buffer.SizeInBytes / this.bufferPortionCount;
-                this.notifications = new List<NotificationPosition>();
+                _BufferPortionSize = _CaptureBuffer.SizeInBytes / _BufferPortionCount;
+                _Notifications = new List<NotificationPosition>();
 
-                for (int i = 0; i < this.bufferPortionCount; i++)
+                for (int i = 0; i < _BufferPortionCount; i++)
                 {
                     NotificationPosition notification = new NotificationPosition();
-                    notification.Offset = this.bufferPortionCount - 1 + (bufferPortionSize * i);
+                    notification.Offset = _BufferPortionCount - 1 + (_BufferPortionSize * i);
                     notification.Event = new AutoResetEvent(false);
-                    this.notifications.Add(notification);
+                    _Notifications.Add(notification);
                 }
 
-                this.buffer.SetNotificationPositions(this.notifications.ToArray());
-                this.waitHandles = new WaitHandle[this.notifications.Count];
+                _CaptureBuffer.SetNotificationPositions(_Notifications.ToArray());
+                _WaitHandles = new WaitHandle[_Notifications.Count];
 
-                for (int i = 0; i < this.notifications.Count; i++)
-                {
-                    this.waitHandles[i] = this.notifications[i].Event;
-                }
+                for (int i = 0; i < _Notifications.Count; i++)
+                    _WaitHandles[i] = _Notifications[i].Event;
 
-                this.captureThread = new Thread(new ThreadStart(this.CaptureThread));
-                this.captureThread.IsBackground = true;
+                _CaptureThread = new Thread(_DoCapture);
+                _CaptureThread.IsBackground = true;
 
-                this.running = true;
-                this.captureThread.Start();
+                _Running = true;
+                _CaptureThread.Start();
             }
 
             public void Stop()
             {
-                this.running = false;
+                _Running = false;
 
-                if (this.captureThread != null)
+                if (_CaptureThread != null)
                 {
-                    this.captureThread.Join();
-                    this.captureThread = null;
+                    _CaptureThread.Join();
+                    _CaptureThread = null;
                 }
 
-                if (this.buffer != null)
+                if (_CaptureBuffer != null)
                 {
-                    this.buffer.Dispose();
-                    this.buffer = null;
+                    _CaptureBuffer.Dispose();
+                    _CaptureBuffer = null;
                 }
 
-                if (this.notifications != null)
+                if (_Notifications != null)
                 {
-                    for (int i = 0; i < this.notifications.Count; i++)
-                    {
-                        this.notifications[i].Event.Close();
-                    }
+                    for (int i = 0; i < _Notifications.Count; i++)
+                        _Notifications[i].Event.Close();
 
-                    this.notifications.Clear();
-                    this.notifications = null;
+                    _Notifications.Clear();
+                    _Notifications = null;
                 }
             }
 
             public void Restart()
             {
-                this.Stop();
-                this.Start();
+                Stop();
+                Start();
             }
 
-            private void CaptureThread()
+            private void _DoCapture()
             {
-                int bufferPortionSamples = this.bufferPortionSize / sizeof(byte);
+                int bufferPortionSamples = _BufferPortionSize / sizeof(byte);
 
                 // Buffer type must match this.waveFormat.FormatTag and this.waveFormat.BitsPerSample
                 byte[] bufferPortion = new byte[bufferPortionSamples];
                 int bufferPortionIndex;
 
-                this.buffer.Start(true);
+                _CaptureBuffer.Start(true);
 
-                while (this.running)
+                while (_Running)
                 {
-                    bufferPortionIndex = WaitHandle.WaitAny(this.waitHandles);
+                    bufferPortionIndex = WaitHandle.WaitAny(_WaitHandles);
 
-                    this.buffer.Read(
+                    _CaptureBuffer.Read(
                         bufferPortion,
                         0,
                         bufferPortionSamples,
-                        bufferPortionSize * Math.Abs((bufferPortionIndex - 1) % bufferPortionCount));
+                        _BufferPortionSize * Math.Abs((bufferPortionIndex - 1) % _BufferPortionCount));
 
-                    this.SampleDataReady(this, new SampleDataEventArgs(bufferPortion, guid));
+                    SampleDataReady(this, new CSampleDataEventArgs(bufferPortion, _Guid));
                 }
 
-                this.buffer.Stop();
+                _CaptureBuffer.Stop();
             }
 
             public void Dispose()
             {
-                this.Dispose(true);
+                Dispose(true);
                 GC.SuppressFinalize(this);
             }
 
+// ReSharper disable InconsistentNaming
             protected virtual void Dispose(bool disposing)
+// ReSharper restore InconsistentNaming
             {
                 if (disposing)
                 {
-                    this.Stop();
+                    Stop();
 
-                    if (this.captureDevice != null)
+                    if (_CaptureDevice != null)
                     {
-                        this.captureDevice.Dispose();
-                        this.captureDevice = null;
+                        _CaptureDevice.Dispose();
+                        _CaptureDevice = null;
                     }
                 }
             }
         }
-
     }
 }

@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
+﻿using System.Xml;
 
-namespace Vocaluxe.Menu
+namespace VocaluxeLib.Menu
 {
     public interface IMenuElement
     {
         string GetThemeName();
 
-        bool LoadTheme(string XmlPath, string ElementName, CXMLReader xmlReader, int SkinIndex);
+        bool LoadTheme(string xmlPath, string elementName, CXMLReader xmlReader, int skinIndex);
         bool SaveTheme(XmlWriter writer);
 
         void UnloadTextures();
         void LoadTextures();
         void ReloadTextures();
-        
+
         void MoveElement(int stepX, int stepY);
         void ResizeElement(int stepW, int stepH);
     }

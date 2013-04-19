@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
 using System.Xml;
 
-namespace Vocaluxe.Menu
+namespace VocaluxeLib.Menu
 {
-    enum EEqualizerStyle 
+    enum EEqualizerStyle
     {
         Collums
     }
@@ -27,7 +24,7 @@ namespace Vocaluxe.Menu
 
     public class CEqualizer : IMenuElement
     {
-        private int _PartyModeID;
+        private readonly int _PartyModeID;
         private SThemeEqualizer _Theme;
         private bool _ThemeLoaded;
 
@@ -51,9 +48,9 @@ namespace Vocaluxe.Menu
 
         private float[] _Bars;
 
-        public CEqualizer(int PartyModeID)
+        public CEqualizer(int partyModeID)
         {
-            _PartyModeID = PartyModeID;
+            _PartyModeID = partyModeID;
             _Theme = new SThemeEqualizer();
             _ThemeLoaded = false;
 
@@ -70,9 +67,9 @@ namespace Vocaluxe.Menu
             ReflectionHeight = 0f;
         }
 
-        public bool LoadTheme(string XmlPath, string ElementName, CXMLReader xmlReader, int SkinIndex)
+        public bool LoadTheme(string xmlPath, string elementName, CXMLReader xmlReader, int skinIndex)
         {
-            string item = XmlPath + "/" + ElementName;
+            string item = xmlPath + "/" + elementName;
             _ThemeLoaded = true;
 
             _ThemeLoaded &= xmlReader.GetValue(item + "/Skin", ref _Theme.TextureName, String.Empty);
@@ -87,14 +84,12 @@ namespace Vocaluxe.Menu
 
             _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/Space", ref Space);
 
-            _ThemeLoaded &= xmlReader.TryGetEnumValue<EEqualizerStyle>(item + "/Style", ref _Theme.Style);
+            _ThemeLoaded &= xmlReader.TryGetEnumValue(item + "/Style", ref _Theme.Style);
 
-            _ThemeLoaded &= xmlReader.TryGetEnumValue<EOffOn>(item + "/DrawNegative", ref _Theme.DrawNegative);
+            _ThemeLoaded &= xmlReader.TryGetEnumValue(item + "/DrawNegative", ref _Theme.DrawNegative);
 
             if (xmlReader.GetValue(item + "/Color", ref _Theme.ColorName, String.Empty))
-            {
-                _ThemeLoaded &= CBase.Theme.GetColor(_Theme.ColorName, SkinIndex, ref Color);
-            }
+                _ThemeLoaded &= CBase.Theme.GetColor(_Theme.ColorName, skinIndex, out Color);
             else
             {
                 _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/R", ref Color.R);
@@ -104,9 +99,7 @@ namespace Vocaluxe.Menu
             }
 
             if (xmlReader.GetValue(item + "/MaxColor", ref _Theme.MaxColorName, String.Empty))
-            {
-                _ThemeLoaded &= CBase.Theme.GetColor(_Theme.ColorName, SkinIndex, ref Color);
-            }
+                _ThemeLoaded &= CBase.Theme.GetColor(_Theme.ColorName, skinIndex, out Color);
             else
             {
                 _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/MaxR", ref MaxColor.R);
@@ -127,12 +120,10 @@ namespace Vocaluxe.Menu
 
             if (_ThemeLoaded)
             {
-                _Theme.Name = ElementName;
+                _Theme.Name = elementName;
                 _Bars = new float[_Theme.NumBars];
                 for (int i = 0; i < _Bars.Length; i++)
-                {
                     _Bars[i] = 0f;
-                }
                 LoadTextures();
             }
             return _ThemeLoaded;
@@ -165,10 +156,8 @@ namespace Vocaluxe.Menu
 
                 writer.WriteComment("<Color>: Equalizer color from ColorScheme (high priority)");
                 writer.WriteComment("or <R>, <G>, <B>, <A> (lower priority)");
-                if (_Theme.ColorName != String.Empty)
-                {
+                if (_Theme.ColorName.Length > 0)
                     writer.WriteElementString("Color", _Theme.ColorName);
-                }
                 else
                 {
                     writer.WriteElementString("R", Color.R.ToString("#0.00"));
@@ -178,10 +167,8 @@ namespace Vocaluxe.Menu
                 }
                 writer.WriteComment("<MaxColor>: Equalizer color for maximal volume from ColorScheme (high priority)");
                 writer.WriteComment("or <MaxR>, <MaxG>, <MaxB>, <MaxA> (lower priority)");
-                if (_Theme.ColorName != String.Empty)
-                {
+                if (_Theme.ColorName.Length > 0)
                     writer.WriteElementString("MaxColor", _Theme.ColorName);
-                }
                 else
                 {
                     writer.WriteElementString("MaxR", Color.R.ToString("#0.00"));
@@ -213,10 +200,11 @@ namespace Vocaluxe.Menu
                 return;
             for (int i = 0; i < _Bars.Length; i++)
             {
-                if (weights.Length > i){
+                if (weights.Length > i)
+                {
                     _Bars[i] = 1f - weights[i];
                     if (_Theme.DrawNegative == EOffOn.TR_CONFIG_OFF && weights[i] < 0)
-                        _Bars[i] = (1f + weights[i]);
+                        _Bars[i] = 1f + weights[i];
                 }
                 else
                     _Bars[i] = 0f;
@@ -229,9 +217,7 @@ namespace Vocaluxe.Menu
                 return;
 
             for (int i = 0; i < _Bars.Length; i++)
-            {
                 _Bars[i] = 0f;
-            }
         }
 
         public void Draw()
@@ -239,7 +225,7 @@ namespace Vocaluxe.Menu
             if (_Bars == null)
                 return;
 
-            float dx = (Rect.W ) / _Bars.Length;
+            float dx = Rect.W / _Bars.Length;
             int max = _Bars.Length - 1;
             float maxB = _Bars[max];
             for (int i = 0; i < _Bars.Length - 1; i++)
@@ -256,9 +242,7 @@ namespace Vocaluxe.Menu
                 SRectF bar = new SRectF(Rect.X + dx * i, Rect.Y + Rect.H - _Bars[i] * Rect.H, dx - Space, _Bars[i] * Rect.H, Rect.Z);
                 SColorF color = Color;
                 if (i == max)
-                {
                     color = MaxColor;
-                }
 
                 CBase.Drawing.DrawColor(color, bar);
 
@@ -267,16 +251,14 @@ namespace Vocaluxe.Menu
             }
         }
 
-        public void UnloadTextures()
-        {
-        }
+        public void UnloadTextures() {}
 
         public void LoadTextures()
         {
-            if (_Theme.ColorName != String.Empty)
+            if (_Theme.ColorName.Length > 0)
                 Color = CBase.Theme.GetColor(_Theme.ColorName, _PartyModeID);
 
-            if (_Theme.MaxColorName != String.Empty)
+            if (_Theme.MaxColorName.Length > 0)
                 MaxColor = CBase.Theme.GetColor(_Theme.MaxColorName, _PartyModeID);
         }
 

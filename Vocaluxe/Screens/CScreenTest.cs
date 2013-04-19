@@ -1,43 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
-
 using Vocaluxe.Base;
-using Vocaluxe.Lib.Draw;
-using Vocaluxe.Menu;
+using VocaluxeLib.Menu;
 
 namespace Vocaluxe.Screens
 {
     class CScreenTest : CMenu
     {
         // Version number for theme files. Increment it, if you've changed something on the theme files!
-        const int ScreenVersion = 1;
+        protected override int _ScreenVersion
+        {
+            get { return 1; }
+        }
 
         private int _TestMusic = -1;
 
-        public CScreenTest()
+        public override bool HandleInput(SKeyEvent keyEvent)
         {
-        }
-
-        protected override void Init()
-        {
-            base.Init();
-
-            _ThemeName = "ScreenTest";
-            _ScreenVersion = ScreenVersion;
-        }
-
-        public override bool HandleInput(KeyEvent KeyEvent)
-        {
-            if (KeyEvent.KeyPressed && !Char.IsControl(KeyEvent.Unicode))
-            {
-                
-            }
+            if (keyEvent.KeyPressed && !Char.IsControl(keyEvent.Unicode)) {}
             else
             {
-                switch (KeyEvent.Key)
+                switch (keyEvent.Key)
                 {
                     case Keys.Escape:
                     case Keys.Back:
@@ -47,7 +31,7 @@ namespace Vocaluxe.Screens
                     case Keys.Enter:
                         CGraphics.FadeTo(EScreens.ScreenMain);
                         break;
-                    
+
                     case Keys.F:
                         //FadeAndPause();
                         break;
@@ -65,43 +49,24 @@ namespace Vocaluxe.Screens
             return true;
         }
 
-        public override bool HandleMouse(MouseEvent MouseEvent)
+        public override bool HandleMouse(SMouseEvent mouseEvent)
         {
-            if (MouseEvent.LB && IsMouseOver(MouseEvent))
-            {
-                
-            }
+            if (mouseEvent.LB && IsMouseOver(mouseEvent)) {}
 
-            if (MouseEvent.LB)
-            {
+            if (mouseEvent.LB)
                 CGraphics.FadeTo(EScreens.ScreenMain);
-            }
 
-            if (MouseEvent.RB)
-            {
+            if (mouseEvent.RB)
                 CGraphics.FadeTo(EScreens.ScreenMain);
-            }
             return true;
         }
 
         public override bool UpdateGame()
         {
-
             return true;
         }
 
-        public override void OnShow()
-        {
-            base.OnShow();
-
-        }
-
-        public override bool Draw()
-        {
-            return base.Draw();
-        }
-
-        private void PlayFile()
+        private void _PlayFile()
         {
             if (_TestMusic == -1)
                 _TestMusic = CSound.Load(Path.Combine(Environment.CurrentDirectory, "Test.mp3"));
@@ -110,12 +75,12 @@ namespace Vocaluxe.Screens
             CSound.Fade(_TestMusic, 100f, 2f);
         }
 
-        private void PauseFile()
+        private void _PauseFile()
         {
             CSound.Pause(_TestMusic);
         }
 
-        private void FadeAndPause()
+        private void _FadeAndPause()
         {
             CSound.FadeAndPause(_TestMusic, 0f, 2f);
         }

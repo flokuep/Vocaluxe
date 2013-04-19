@@ -1,101 +1,67 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
+using VocaluxeLib.Menu;
 
-using Vocaluxe.Menu;
-
-namespace Vocaluxe.PartyModes
+namespace VocaluxeLib.PartyModes
 {
     public class CScreenPartyDummy : CMenuParty
     {
         // Version number for theme files. Increment it, if you've changed something on the theme files!
-        const int ScreenVersion = 1;
-        private CText Warning;
-
-        public CScreenPartyDummy()
+        protected override int _ScreenVersion
         {
+            get { return 1; }
+        }
+        private CText _Warning;
+
+        public override void LoadTheme(string xmlPath)
+        {
+            _Warning = GetNewText();
+            _Warning.Height = 100f;
+            _Warning.X = 150;
+            _Warning.Y = 300;
+            _Warning.Font = "Normal";
+            _Warning.Style = EStyle.Normal;
+            _Warning.Color = new SColorF(1f, 0f, 0f, 1f);
+            _Warning.SelColor = new SColorF(1f, 0f, 0f, 1f);
+            _Warning.Text = "SOMETHING WENT WRONG!";
+            AddText(_Warning);
         }
 
-        protected override void Init()
+        public override void ReloadTheme(string xmlPath) {}
+
+        public override void ReloadTextures() {}
+
+        public override void SaveTheme() {}
+
+        public override void UnloadTextures() {}
+
+        public override bool HandleInput(SKeyEvent keyEvent)
         {
-            base.Init();
+            base.HandleInput(keyEvent);
 
-            _ThemeName = "ScreenPartyDummy";
-            _ScreenVersion = ScreenVersion;
-        }
-
-        public override void LoadTheme(string XmlPath)
-        {
-            Warning = GetNewText();
-            Warning.Height = 100f;
-            Warning.X = 150;
-            Warning.Y = 300;
-            Warning.Fon = "Normal";
-            Warning.Style = EStyle.Normal;
-            Warning.Color = new SColorF(1f, 0f, 0f, 1f);
-            Warning.SColor = new SColorF(1f, 0f, 0f, 1f);
-            Warning.Text = "SOMETHING WENT WRONG!";
-            AddText(Warning);
-        }
-
-        public override void ReloadTheme(string XmlPath)
-        {
-        }
-
-        public override void ReloadTextures()
-        {
-        }
-
-        public override void SaveTheme()
-        {
-        }
-
-        public override void UnloadTextures()
-        {
-        }
-
-        public override bool HandleInput(KeyEvent KeyEvent)
-        {
-            base.HandleInput(KeyEvent);
-
-            if (KeyEvent.KeyPressed)
-            {
-
-            }
+            if (keyEvent.KeyPressed) {}
             else
             {
-                switch (KeyEvent.Key)
+                switch (keyEvent.Key)
                 {
                     case Keys.Back:
                     case Keys.Escape:
-                        FadeTo(EScreens.ScreenParty);
+                        _FadeTo(EScreens.ScreenParty);
                         break;
                 }
             }
             return true;
         }
 
-        public override bool HandleMouse(MouseEvent MouseEvent)
+        public override bool HandleMouse(SMouseEvent mouseEvent)
         {
-            base.HandleMouse(MouseEvent);
+            base.HandleMouse(mouseEvent);
 
-            if (MouseEvent.LB && IsMouseOver(MouseEvent))
-            {
+            if (mouseEvent.LB && IsMouseOver(mouseEvent)) {}
 
-            }
-
-            if (MouseEvent.RB)
-            {
-                FadeTo(EScreens.ScreenParty);
-            }
+            if (mouseEvent.RB)
+                _FadeTo(EScreens.ScreenParty);
 
             return true;
-        }
-
-        public override void OnShow()
-        {
-            base.OnShow();
         }
 
         public override bool UpdateGame()
@@ -107,11 +73,6 @@ namespace Vocaluxe.PartyModes
         {
             base.Draw();
             return true;
-        }
-
-        public override void OnClose()
-        {
-            base.OnClose();
         }
     }
 }

@@ -1,22 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Text;
 using System.Windows.Forms;
-
-using Vocaluxe.Lib.Draw;
-using Vocaluxe.Menu;
+using VocaluxeLib.Menu;
 
 namespace Vocaluxe.Base
 {
     static class CTime
     {
-        private static Stopwatch _Stopwatch = new Stopwatch();
-        private static float _fps = 0.0f;
-        private static double nanosecPerTick = (1000.0 * 1000.0 * 1000.0) / Stopwatch.Frequency;
+        private static readonly Stopwatch _Stopwatch = new Stopwatch();
+        private static float _Fps;
+        private static readonly double _NanosecPerTick = (1000.0 * 1000.0 * 1000.0) / Stopwatch.Frequency;
 
         public static void Reset()
         {
@@ -28,7 +22,6 @@ namespace Vocaluxe.Base
             _Stopwatch.Start();
         }
 
-		
         public static void Restart()
         {
             Reset();
@@ -46,9 +39,9 @@ namespace Vocaluxe.Base
             {
                 long ticks = _Stopwatch.ElapsedTicks;
                 if (Stopwatch.IsHighResolution && ticks != 0)
-                    return (float)((nanosecPerTick * ticks) / (1000.0 * 1000.0));
+                    return (float)((_NanosecPerTick * ticks) / (1000.0 * 1000.0));
                 else
-                    return (float)_Stopwatch.ElapsedMilliseconds;
+                    return _Stopwatch.ElapsedMilliseconds;
             }
             else
                 return 0f;
@@ -59,61 +52,57 @@ namespace Vocaluxe.Base
             float ms = GetMilliseconds();
 
             if (ms > 0)
-            {
-                _fps = 1 / ms;
-            }
+                _Fps = 1 / ms;
 
-            return _fps * 1000f;
+            return _Fps * 1000f;
         }
 
-        
         public static double GetFPS()
         {
-            return _fps * 1000f;
+            return _Fps * 1000f;
         }
     }
 
     class CKeys
     {
-        private List<KeyEvent> _KeysPool;
-        private List<KeyEvent> _ActualPool;
+        private readonly List<SKeyEvent> _KeysPool;
+        private readonly List<SKeyEvent> _ActualPool;
 
-        private Object _CopyLock = new Object();
+        private readonly Object _CopyLock = new Object();
 
-        private bool _ModALT;
-        private bool _ModCTRL;
-        private bool _ModSHIFT;
+        private bool _ModAlt;
+        private bool _ModCtrl;
+        private bool _ModShift;
         private bool _KeyPressed;
         private Keys _Keys;
-        private Char _char;
-        private System.Diagnostics.Stopwatch _timer;
-
+        private Char _Char;
+        private readonly Stopwatch _Timer;
 
         public CKeys()
         {
-            _ModALT = false;
-            _ModCTRL = false;
-            _ModSHIFT = false;
-            _char = ' ';
+            _ModAlt = false;
+            _ModCtrl = false;
+            _ModShift = false;
+            _Char = ' ';
             _KeyPressed = false;
             _Keys = Keys.D0;
 
-            _KeysPool = new List<KeyEvent>();
-            _ActualPool = new List<KeyEvent>();
-            _timer = new System.Diagnostics.Stopwatch();
+            _KeysPool = new List<SKeyEvent>();
+            _ActualPool = new List<SKeyEvent>();
+            _Timer = new Stopwatch();
         }
 
-        private void Add(bool alt, bool shift, bool ctrl, bool pressed, char unicode, Keys key)
+        private void _Add(bool alt, bool shift, bool ctrl, bool pressed, char unicode, Keys key)
         {
-            bool KeyRepeat = false;
-            if ((_char == unicode) && _KeyPressed)
-                KeyRepeat = true;
+            bool keyRepeat = false;
+            if ((_Char == unicode) && _KeyPressed)
+                keyRepeat = true;
             else if (_Keys == key)
-                KeyRepeat = true;
+                keyRepeat = true;
 
-            if (!_timer.IsRunning || (_timer.ElapsedMilliseconds > 75) || !KeyRepeat)
+            if (!_Timer.IsRunning || (_Timer.ElapsedMilliseconds > 75) || !keyRepeat)
             {
-                KeyEvent pool = new KeyEvent(ESender.Keyboard, alt, shift, ctrl, pressed && (unicode != Char.MinValue), unicode, key);
+                SKeyEvent pool = new SKeyEvent(ESender.Keyboard, alt, shift, ctrl, pressed && (unicode != Char.MinValue), unicode, key);
 
                 lock (_CopyLock)
                 {
@@ -121,198 +110,190 @@ namespace Vocaluxe.Base
                     {
                         _KeysPool.Add(pool);
                     }
-                    catch (Exception)
-                    {
-
-                    }
+                    catch (Exception) {}
                 }
-                
-                _timer.Reset();
-                _timer.Start();
+
+                _Timer.Reset();
+                _Timer.Start();
             }
         }
 
-        private void Del(int index)
+        private void _Del(int index)
         {
             _ActualPool.RemoveAt(index);
         }
 
-        private void CheckModifiers()
+        private void _CheckModifiers()
         {
             Keys keys = Control.ModifierKeys;
 
-            _ModSHIFT = ((keys & Keys.Shift) == Keys.Shift);
-            _ModALT = ((keys & Keys.Alt) == Keys.Alt);
-            _ModCTRL = ((keys & Keys.Control) == Keys.Control);
+            _ModShift = (keys & Keys.Shift) == Keys.Shift;
+            _ModAlt = (keys & Keys.Alt) == Keys.Alt;
+            _ModCtrl = (keys & Keys.Control) == Keys.Control;
         }
-        
 
         public void KeyDown(KeyEventArgs e)
         {
-            CheckModifiers();
+            _CheckModifiers();
 
-            bool Repeat = false;
+            bool repeat = false;
             if (_Keys == e.KeyCode)
-                Repeat = true;
+                repeat = true;
 
-            if (!_timer.IsRunning || (_timer.ElapsedMilliseconds > 75) || !Repeat)
+            if (!_Timer.IsRunning || (_Timer.ElapsedMilliseconds > 75) || !repeat)
             {
                 _Keys = e.KeyCode;
-                if (Repeat)
-                    Add(_ModALT, _ModSHIFT, _ModCTRL, _KeyPressed, _char, _Keys);
+                if (repeat)
+                    _Add(_ModAlt, _ModShift, _ModCtrl, _KeyPressed, _Char, _Keys);
                 else
-                    Add(_ModALT, _ModSHIFT, _ModCTRL, _KeyPressed, Char.MinValue, _Keys);
+                    _Add(_ModAlt, _ModShift, _ModCtrl, _KeyPressed, Char.MinValue, _Keys);
             }
         }
 
         public void KeyPress(KeyPressEventArgs e)
         {
-            CheckModifiers();
-            
-            Add(_ModALT, _ModSHIFT, _ModCTRL, true, e.KeyChar, Keys.None);
-            _char = e.KeyChar;
+            _CheckModifiers();
+
+            _Add(_ModAlt, _ModShift, _ModCtrl, true, e.KeyChar, Keys.None);
+            _Char = e.KeyChar;
             _KeyPressed = true;
         }
 
         public void KeyUp(KeyEventArgs e)
         {
-            CheckModifiers();
+            _CheckModifiers();
             _KeyPressed = false;
         }
 
-        public bool PollEvent(ref KeyEvent KeyEvent)
+        public bool PollEvent(ref SKeyEvent keyEvent)
         {
             if (_ActualPool.Count > 0)
             {
-                KeyEvent = _ActualPool[0];
-                Del(0);
+                keyEvent = _ActualPool[0];
+                _Del(0);
                 return true;
             }
-            else return false;
+            else
+                return false;
         }
 
         public void CopyEvents()
         {
             lock (_CopyLock)
             {
-                foreach (KeyEvent e in _KeysPool)
-                {
+                foreach (SKeyEvent e in _KeysPool)
                     _ActualPool.Add(e);
-                }
                 _KeysPool.Clear();
             }
         }
-
     }
 
     class CMouse
     {
-        private List<MouseEvent> _EventsPool;
-        private List<MouseEvent> _CurrentPool;
+        private readonly List<SMouseEvent> _EventsPool;
+        private readonly List<SMouseEvent> _CurrentPool;
 
-        private int _x = 0;
-        private int _y = 0;
-        
-        private Object _CopyLock = new Object();
+        private int _X;
+        private int _Y;
 
-        private bool _ModALT;
-        private bool _ModCTRL;
-        private bool _ModSHIFT;
+        private readonly Object _CopyLock = new Object();
 
-        private System.Diagnostics.Stopwatch _timer;
+        private bool _ModAlt;
+        private bool _ModCtrl;
+        private bool _ModShift;
+
+        private readonly Stopwatch _Timer;
 
         public int X
         {
-            get { return _x; }
+            get { return _X; }
         }
 
         public int Y
         {
-            get { return _y; }
+            get { return _Y; }
         }
 
         public bool Visible = false;
 
         public CMouse()
         {
-            _ModALT = false;
-            _ModCTRL = false;
-            _ModSHIFT = false;
+            _ModAlt = false;
+            _ModCtrl = false;
+            _ModShift = false;
 
-            _EventsPool = new List<MouseEvent>();
-            _CurrentPool = new List<MouseEvent>();
+            _EventsPool = new List<SMouseEvent>();
+            _CurrentPool = new List<SMouseEvent>();
 
-            _timer = new System.Diagnostics.Stopwatch();
+            _Timer = new Stopwatch();
         }
 
-        private void Add(bool alt, bool shift, bool ctrl, int x, int y, bool lb, bool ld, bool rb, int wheel, bool lbh, bool rbh, bool mb, bool mbh)
+        private void _Add(bool alt, bool shift, bool ctrl, int x, int y, bool lb, bool ld, bool rb, int wheel, bool lbh, bool rbh, bool mb, bool mbh)
         {
-            x = (int)((float)x * (float)CSettings.iRenderW / (float)CDraw.GetScreenWidth());
-            y = (int)((float)y * (float)CSettings.iRenderH / (float)CDraw.GetScreenHeight());
+            x = (int)(x * (float)CSettings.RenderW / CDraw.GetScreenWidth());
+            y = (int)(y * (float)CSettings.RenderH / CDraw.GetScreenHeight());
 
-            MouseEvent pool = new MouseEvent(ESender.Mouse, alt, shift, ctrl, x, y, lb, ld, rb, -wheel / 120, lbh, rbh, mb, mbh);
+            SMouseEvent pool = new SMouseEvent(ESender.Mouse, alt, shift, ctrl, x, y, lb, ld, rb, -wheel / 120, lbh, rbh, mb, mbh);
 
             lock (_CopyLock)
             {
-                _EventsPool.Add(pool);   
+                _EventsPool.Add(pool);
             }
-            _x = x;
-            _y = y;
+            _X = x;
+            _Y = y;
         }
 
-        private void Del(int index)
+        private void _Del(int index)
         {
             _CurrentPool.RemoveAt(index);
         }
 
-        private void CheckModifiers()
+        private void _CheckModifiers()
         {
             Keys keys = Control.ModifierKeys;
 
-            _ModSHIFT = ((keys & Keys.Shift) == Keys.Shift);
-            _ModALT = ((keys & Keys.Alt) == Keys.Alt);
-            _ModCTRL = ((keys & Keys.Control) == Keys.Control);
+            _ModShift = (keys & Keys.Shift) == Keys.Shift;
+            _ModAlt = (keys & Keys.Alt) == Keys.Alt;
+            _ModCtrl = (keys & Keys.Control) == Keys.Control;
         }
 
         public void MouseMove(MouseEventArgs e)
         {
-            CheckModifiers();
-            Add(_ModALT, _ModSHIFT, _ModCTRL, e.X, e.Y, false, false, false, e.Delta, e.Button == MouseButtons.Left, e.Button == MouseButtons.Right,
+            _CheckModifiers();
+            _Add(_ModAlt, _ModShift, _ModCtrl, e.X, e.Y, false, false, false, e.Delta, e.Button == MouseButtons.Left, e.Button == MouseButtons.Right,
                 false, e.Button == MouseButtons.Middle);
         }
 
         public void MouseWheel(MouseEventArgs e)
         {
-            CheckModifiers();
-            Add(_ModALT, _ModSHIFT, _ModCTRL, e.X, e.Y, false, false, false, e.Delta, e.Button == MouseButtons.Left, e.Button == MouseButtons.Right,
+            _CheckModifiers();
+            _Add(_ModAlt, _ModShift, _ModCtrl, e.X, e.Y, false, false, false, e.Delta, e.Button == MouseButtons.Left, e.Button == MouseButtons.Right,
                 false, e.Button == MouseButtons.Middle);
         }
 
         public void MouseDown(MouseEventArgs e)
         {
-            CheckModifiers();
+            _CheckModifiers();
 
             bool lb = e.Button == MouseButtons.Left;
             bool ld = false;
             if (lb)
             {
-                if (_timer.IsRunning && _timer.ElapsedMilliseconds < 450)
+                if (_Timer.IsRunning && _Timer.ElapsedMilliseconds < 450)
                 {
                     ld = true;
-                    _timer.Reset();
+                    _Timer.Reset();
                 }
                 else
                 {
-                    _timer.Reset();
-                    _timer.Start();
+                    _Timer.Reset();
+                    _Timer.Start();
                 }
             }
             else
-            {
-                _timer.Reset();
-            }
+                _Timer.Reset();
 
-            Add(_ModALT, _ModSHIFT, _ModCTRL, e.X, e.Y, lb, ld, e.Button == MouseButtons.Right, e.Delta, false, false,
+            _Add(_ModAlt, _ModShift, _ModCtrl, e.X, e.Y, lb, ld, e.Button == MouseButtons.Right, e.Delta, false, false,
                 e.Button == MouseButtons.Middle, false);
         }
 
@@ -322,28 +303,26 @@ namespace Vocaluxe.Base
             //Add(_ModALT, _ModSHIFT, _ModCTRL, e.X, e.Y, e.Button == MouseButtons.Left, e.Button == MouseButtons.Right, e.Delta);
         }
 
-        public bool PollEvent(ref MouseEvent MouseEvent)
+        public bool PollEvent(ref SMouseEvent mouseEvent)
         {
             if (_CurrentPool.Count > 0)
             {
-                MouseEvent = _CurrentPool[0];
-                Del(0);
+                mouseEvent = _CurrentPool[0];
+                _Del(0);
                 return true;
             }
-            else return false;
+            else
+                return false;
         }
 
         public void CopyEvents()
         {
             lock (_CopyLock)
             {
-                foreach (MouseEvent e in _EventsPool)
-                {
+                foreach (SMouseEvent e in _EventsPool)
                     _CurrentPool.Add(e);
-                }
                 _EventsPool.Clear();
             }
         }
-
     }
 }

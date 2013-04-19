@@ -1,69 +1,52 @@
-﻿using System;
-using System.Diagnostics;
-using System.Drawing;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
-
 using Vocaluxe.Base;
-using Vocaluxe.Lib.Draw;
-using Vocaluxe.Menu;
-using Vocaluxe.Menu.SongMenu;
+using VocaluxeLib.Menu;
 
 namespace Vocaluxe.Screens
 {
-    class CScreenLoad: CMenu
+    class CScreenLoad : CMenu
     {
         // Version number for theme files. Increment it, if you've changed something on the theme files!
-        const int ScreenVersion = 1;
-        const float WaitTime = 0.5f;    //wait time before starting first video
+        protected override int _ScreenVersion
+        {
+            get { return 1; }
+        }
+        private const float _WaitTime = 0.5f; //wait time before starting first video
 
-        const string TextStatus = "TextStatus";
+        private const string _TextStatus = "TextStatus";
 
-        private readonly string[] IntroVideo = new string[] { "IntroIn", "IntroMid", "IntroOut" };
-        
+        private readonly string[] _IntroVideo = new string[] {"IntroIn", "IntroMid", "IntroOut"};
+
         private Thread _SongLoaderThread;
-        private Stopwatch _timer;
+        private Stopwatch _Timer;
         private bool _SkipIntro;
         private int _CurrentIntroVideoNr;
         private bool _IntroOutPlayed;
-        private VideoPlayer[] _Intros;
+        private CVideoPlayer[] _Intros;
 
         private bool _BGMusicStartet;
-        
-                
-        public CScreenLoad()
-        {
-        }
 
-        protected override void Init()
+        public override void Init()
         {
             base.Init();
 
-            _ThemeName = "ScreenLoad";
-            _ScreenVersion = ScreenVersion;
-            _ThemeTexts = new string[] { TextStatus };
-            _Intros = new VideoPlayer[IntroVideo.Length];
+            _ThemeTexts = new string[] {_TextStatus};
+            _Intros = new CVideoPlayer[_IntroVideo.Length];
             for (int i = 0; i < _Intros.Length; i++)
-            {
-                _Intros[i] = new VideoPlayer();
-            }
-            _timer = new Stopwatch();
+                _Intros[i] = new CVideoPlayer();
+            _Timer = new Stopwatch();
         }
 
-        public override bool HandleInput(KeyEvent KeyEvent)
+        public override bool HandleInput(SKeyEvent keyEvent)
         {
-            base.HandleInput(KeyEvent);
+            base.HandleInput(keyEvent);
 
-            if (KeyEvent.KeyPressed)
-            {
-
-            }
+            if (keyEvent.KeyPressed) {}
             else
             {
-                switch (KeyEvent.Key)
+                switch (keyEvent.Key)
                 {
                     case Keys.Enter:
                     case Keys.Escape:
@@ -76,14 +59,12 @@ namespace Vocaluxe.Screens
             return true;
         }
 
-        public override bool HandleMouse(MouseEvent MouseEvent)
+        public override bool HandleMouse(SMouseEvent mouseEvent)
         {
-            base.HandleMouse(MouseEvent);
+            base.HandleMouse(mouseEvent);
 
-            if (MouseEvent.LB || MouseEvent.RB)
-            {
+            if (mouseEvent.LB || mouseEvent.RB)
                 _SkipIntro = true;
-            }
 
             return true;
         }
@@ -102,13 +83,13 @@ namespace Vocaluxe.Screens
                     CConfig.SaveConfig();
                 }
             }
-            
-            _SongLoaderThread = new Thread(new ThreadStart(CSongs.LoadSongs));
+
+            _SongLoaderThread = new Thread(CSongs.LoadSongs);
             _SongLoaderThread.Name = "SongLoader";
 
-            Texts[htTexts(TextStatus)].Text = CLanguage.Translate("TR_SCREENLOAD_TOTAL") + ": 0 " +
-                CLanguage.Translate("TR_SCREENLOAD_SONGS") + " (0 " +
-                CLanguage.Translate("TR_SCREENLOAD_LOADED") + ")";
+            Texts[_TextStatus].Text = CLanguage.Translate("TR_SCREENLOAD_TOTAL") + ": 0 " +
+                                     CLanguage.Translate("TR_SCREENLOAD_SONGS") + " (0 " +
+                                     CLanguage.Translate("TR_SCREENLOAD_LOADED") + ")";
 
             _SkipIntro = false;
             _CurrentIntroVideoNr = -1;
@@ -117,9 +98,7 @@ namespace Vocaluxe.Screens
             if (CConfig.VideoBackgrounds == EOffOn.TR_CONFIG_ON)
             {
                 for (int i = 0; i < _Intros.Length; i++)
-                {
-                    _Intros[i].Load(IntroVideo[i]);
-                }
+                    _Intros[i].Load(_IntroVideo[i]);
             }
 
             _BGMusicStartet = false;
@@ -132,15 +111,13 @@ namespace Vocaluxe.Screens
             if (CConfig.VideoBackgrounds == EOffOn.TR_CONFIG_ON)
             {
                 for (int i = 0; i < _Intros.Length; i++)
-                {
                     _Intros[i].PreLoad();
-                }
             }
 
             CLog.StartBenchmark(0, "Load Songs Full");
             _SongLoaderThread.IsBackground = true;
             _SongLoaderThread.Start();
-            _timer.Start();
+            _Timer.Start();
 
             if (CConfig.BackgroundMusic == EOffOn.TR_CONFIG_ON &&
                 CConfig.BackgroundMusicSource == EBackgroundMusicSource.TR_CONFIG_NO_OWN_MUSIC && !_BGMusicStartet)
@@ -158,24 +135,22 @@ namespace Vocaluxe.Screens
 
         public override bool UpdateGame()
         {
-            CheckStartIntroVideos();
+            _CheckStartIntroVideos();
 
             if (CSettings.GameState == EGameState.EditTheme)
-                _timer.Stop();
+                _Timer.Stop();
             else
-                _timer.Start();            
+                _Timer.Start();
 
-            bool next = (CConfig.CoverLoading != ECoverLoading.TR_CONFIG_COVERLOADING_ATSTART || CSongs.CoverLoaded);
+            bool next = CConfig.CoverLoading != ECoverLoading.TR_CONFIG_COVERLOADING_ATSTART || CSongs.CoverLoaded;
 
             if ((_IntroOutPlayed || _SkipIntro) && next && CSettings.GameState != EGameState.EditTheme && CSongs.SongsLoaded)
-            {
                 CSettings.GameState = EGameState.Normal;
-            }
 
             if (CSettings.GameState == EGameState.Normal)
                 CGraphics.FadeTo(EScreens.ScreenMain);
 
-            Texts[htTexts(TextStatus)].Text =
+            Texts[_TextStatus].Text =
                 CLanguage.Translate("TR_SCREENLOAD_TOTAL") + ": " + CSongs.NumAllSongs.ToString() + " " +
                 CLanguage.Translate("TR_SCREENLOAD_SONGS") + " (" + CSongs.NumSongsWithCoverLoaded + " " +
                 CLanguage.Translate("TR_SCREENLOAD_LOADED") + ")";
@@ -190,7 +165,7 @@ namespace Vocaluxe.Screens
 
                 _BGMusicStartet = true;
             }
-            
+
             return true;
         }
 
@@ -199,9 +174,7 @@ namespace Vocaluxe.Screens
             DrawBG();
 
             for (int i = 0; i < _Intros.Length; i++)
-            {
                 _Intros[i].Draw();
-            }
 
             DrawFG();
             return true;
@@ -210,13 +183,11 @@ namespace Vocaluxe.Screens
         public override void OnClose()
         {
             base.OnClose();
-            _timer.Stop();
-            _timer.Reset();
+            _Timer.Stop();
+            _Timer.Reset();
 
             for (int i = 0; i < _Intros.Length; i++)
-            {
                 _Intros[i].Close();
-            }
 
             CBackgroundMusic.CanSing = true;
 
@@ -228,7 +199,7 @@ namespace Vocaluxe.Screens
             CLog.StopBenchmark(0, "Init Playlists");
         }
 
-        private void CheckStartIntroVideos()
+        private void _CheckStartIntroVideos()
         {
             if (_IntroOutPlayed)
                 return;
@@ -243,17 +214,20 @@ namespace Vocaluxe.Screens
             {
                 _CurrentIntroVideoNr = 0;
                 _Intros[0].Start();
-            }else if (_CurrentIntroVideoNr == 0 && _Intros[0].IsFinished && CConfig.CoverLoading == ECoverLoading.TR_CONFIG_COVERLOADING_ATSTART)
+            }
+            else if (_CurrentIntroVideoNr == 0 && _Intros[0].IsFinished && CConfig.CoverLoading == ECoverLoading.TR_CONFIG_COVERLOADING_ATSTART)
             {
                 _CurrentIntroVideoNr = 1;
                 _Intros[1].Loop = true;
                 _Intros[1].Start();
-            }else if ((_CurrentIntroVideoNr == 1 && CSongs.CoverLoaded) || 
-                (_CurrentIntroVideoNr == 0 && _Intros[0].IsFinished))
+            }
+            else if ((_CurrentIntroVideoNr == 1 && CSongs.CoverLoaded) ||
+                     (_CurrentIntroVideoNr == 0 && _Intros[0].IsFinished))
             {
                 _CurrentIntroVideoNr = 2;
                 _Intros[2].Start();
-            }else if (_CurrentIntroVideoNr == 2 && _Intros[2].IsFinished)
+            }
+            else if (_CurrentIntroVideoNr == 2 && _Intros[2].IsFinished)
                 _IntroOutPlayed = true;
         }
     }

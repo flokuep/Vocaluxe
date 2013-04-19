@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 
-namespace Vocaluxe.Menu.Animations
+namespace VocaluxeLib.Menu.Animations
 {
     public class CAnimationMoveLinear : CAnimationFramework
     {

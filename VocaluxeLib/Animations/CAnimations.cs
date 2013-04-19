@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Vocaluxe.Menu.Animations
+namespace VocaluxeLib.Menu.Animations
 {
     public static class CAnimations
     {
@@ -71,7 +71,7 @@ namespace Vocaluxe.Menu.Animations
                         float w = am.element.Rect.W + am.anim.getRectChanges().W;
                         float h = am.element.Rect.H + am.anim.getRectChanges().H;
                         float r = am.element.Rect.Rotation + am.anim.getRectChanges().Rotation;
-                        am.element.Rect = new SRectF(x, y, w, h, am.element.Rect.Z, r);
+                        am.element.Rect = new SRectF(x, y, w, h, am.element.Rect.Z);
                     }
                     am.element.Color = am.anim.getColor();
                     am.element.Texture = am.anim.getTexture();

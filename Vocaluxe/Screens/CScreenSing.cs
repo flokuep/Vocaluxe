@@ -3,70 +3,70 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
-
 using Vocaluxe.Base;
-using Vocaluxe.Lib.Draw;
-using Vocaluxe.Menu;
-using Vocaluxe.Menu.SingNotes;
-using Vocaluxe.Menu.SongMenu;
+using VocaluxeLib.Menu;
+using VocaluxeLib.Menu.SingNotes;
+using VocaluxeLib.Menu.SongMenu;
 
 namespace Vocaluxe.Screens
 {
     class CScreenSing : CMenu
     {
         // Version number for theme files. Increment it, if you've changed something on the theme files!
-        const int ScreenVersion = 6;
-
-        struct TimeRect
+        protected override int _ScreenVersion
         {
-            public CStatic rect;
-            public float startBeat;
-            public float endBeat;
+            get { return 6; }
         }
-        
-        private const string TextSongName = "TextSongName";
-        private const string TextTime = "TextTime";
-        private const string TextPause = "TextPause";
-        private const string TextDuetName1 = "TextDuetName1";
-        private const string TextDuetName2 = "TextDuetName2";
-        private string[,] TextScores;
-        private string[,] TextNames;
 
-        private const string StaticSongText = "StaticSongText";
-        private const string StaticLyrics = "StaticLyrics";
-        private const string StaticLyricsDuet = "StaticLyricsDuet";
-        private const string StaticLyricsTop = "StaticLyricsTop";
-        private const string StaticTimeBar = "StaticTimeBar";
-        private const string StaticTimeLine = "StaticTimeLine";
-        private const string StaticTimeLineExpandedNormal = "StaticTimeLineExpandedNormal";
-        private const string StaticTimeLineExpandedHighlighted = "StaticTimeLineExpandedHighlighted";
-        private const string StaticTimePointer = "StaticTimePointer";
-        private const string StaticLyricHelper = "StaticLyricHelper";
-        private const string StaticLyricHelperDuet = "StaticLyricHelperDuet";
-        private const string StaticLyricHelperTop = "StaticLyricHelperTop";
-        private const string StaticPauseBG = "StaticPauseBG";
+        private struct STimeRect
+        {
+            public CStatic Rect;
+            public float StartBeat;
+            public float EndBeat;
+        }
 
-        private string[,] StaticScores;
-        private string[,] StaticAvatars;
+        private const string _TextSongName = "TextSongName";
+        private const string _TextTime = "TextTime";
+        private const string _TextPause = "TextPause";
+        private const string _TextDuetName1 = "TextDuetName1";
+        private const string _TextDuetName2 = "TextDuetName2";
+        private string[,] _TextScores;
+        private string[,] _TextNames;
 
-        private const string ButtonCancel = "ButtonCancel";
-        private const string ButtonContinue = "ButtonContinue";
-        private const string ButtonSkip = "ButtonSkip";
+        private const string _StaticSongText = "StaticSongText";
+        private const string _StaticLyrics = "StaticLyrics";
+        private const string _StaticLyricsDuet = "StaticLyricsDuet";
+        private const string _StaticLyricsTop = "StaticLyricsTop";
+        private const string _StaticTimeBar = "StaticTimeBar";
+        private const string _StaticTimeLine = "StaticTimeLine";
+        private const string _StaticTimeLineExpandedNormal = "StaticTimeLineExpandedNormal";
+        private const string _StaticTimeLineExpandedHighlighted = "StaticTimeLineExpandedHighlighted";
+        private const string _StaticTimePointer = "StaticTimePointer";
+        private const string _StaticLyricHelper = "StaticLyricHelper";
+        private const string _StaticLyricHelperDuet = "StaticLyricHelperDuet";
+        private const string _StaticLyricHelperTop = "StaticLyricHelperTop";
+        private const string _StaticPauseBG = "StaticPauseBG";
 
-        private const string LyricMain = "LyricMain";
-        private const string LyricSub = "LyricSub";
-        private const string LyricMainDuet = "LyricMainDuet";
-        private const string LyricSubDuet = "LyricSubDuet";
-        private const string LyricMainTop = "LyricMainTop";
-        private const string LyricSubTop = "LyricSubTop";
+        private string[,] _StaticScores;
+        private string[,] _StaticAvatars;
 
-        private const string SingBars = "SingBars";
+        private const string _ButtonCancel = "ButtonCancel";
+        private const string _ButtonContinue = "ButtonContinue";
+        private const string _ButtonSkip = "ButtonSkip";
+
+        private const string _LyricMain = "LyricMain";
+        private const string _LyricSub = "LyricSub";
+        private const string _LyricMainDuet = "LyricMainDuet";
+        private const string _LyricSubDuet = "LyricSubDuet";
+        private const string _LyricMainTop = "LyricMainTop";
+        private const string _LyricSubTop = "LyricSubTop";
+
+        private const string _SingBars = "SingBars";
 
         private SRectF _TimeLineRect;
-        private List<TimeRect> _TimeRects;
-        private bool _FadeOut = false;
+        private List<STimeRect> _TimeRects;
+        private bool _FadeOut;
 
         private int _CurrentBeat;
         private int _CurrentStream = -1;
@@ -78,15 +78,15 @@ namespace Vocaluxe.Screens
         private STexture _CurrentWebcamFrameTexture = new STexture(-1);
         private STexture _Background = new STexture(-1);
 
-        private float _CurrentTime = 0f;
-        private float _FinishTime = 0f;
+        private float _CurrentTime;
+        private float _FinishTime;
 
-        private float _TimeToFirstNote = 0f;
-        private float _RemainingTimeToFirstNote = 0f;
-        private float _TimeToFirstNoteDuet = 0f;
-        private float _RemainingTimeToFirstNoteDuet = 0f;
+        private float _TimeToFirstNote;
+        private float _RemainingTimeToFirstNote;
+        private float _TimeToFirstNoteDuet;
+        private float _RemainingTimeToFirstNoteDuet;
 
-        private int[] NoteLines = new int[CSettings.MaxNumPlayer];
+        private readonly int[] _NoteLines = new int[CSettings.MaxNumPlayer];
 
         private Stopwatch _TimerSongText;
         private Stopwatch _TimerDuetText1;
@@ -95,97 +95,90 @@ namespace Vocaluxe.Screens
         private bool _Pause;
         private bool _Webcam;
 
-        public CScreenSing()
-        {
-        }
-
-        protected override void Init()
+        public override void Init()
         {
             base.Init();
 
-            _ThemeName = "ScreenSing";
-            _ScreenVersion = ScreenVersion;
-
             List<string> texts = new List<string>();
-            texts.Add(TextSongName);
-            texts.Add(TextTime);
-            texts.Add(TextPause);
-            texts.Add(TextDuetName1);
-            texts.Add(TextDuetName2);
-            BuildTextStrings(ref texts);
+            texts.Add(_TextSongName);
+            texts.Add(_TextTime);
+            texts.Add(_TextPause);
+            texts.Add(_TextDuetName1);
+            texts.Add(_TextDuetName2);
+            _BuildTextStrings(ref texts);
             _ThemeTexts = texts.ToArray();
 
             List<string> statics = new List<string>();
-            statics.Add(StaticSongText);
-            statics.Add(StaticLyrics);
-            statics.Add(StaticLyricsDuet);
-            statics.Add(StaticLyricsTop);
-            statics.Add(StaticTimeBar);
-            statics.Add(StaticTimeLine);
-            statics.Add(StaticTimeLineExpandedNormal);
-            statics.Add(StaticTimeLineExpandedHighlighted);
-            statics.Add(StaticTimePointer);
-            statics.Add(StaticLyricHelper);
-            statics.Add(StaticLyricHelperDuet);
-            statics.Add(StaticLyricHelperTop);
-            statics.Add(StaticPauseBG);
-            BuildStaticStrings(ref statics);
+            statics.Add(_StaticSongText);
+            statics.Add(_StaticLyrics);
+            statics.Add(_StaticLyricsDuet);
+            statics.Add(_StaticLyricsTop);
+            statics.Add(_StaticTimeBar);
+            statics.Add(_StaticTimeLine);
+            statics.Add(_StaticTimeLineExpandedNormal);
+            statics.Add(_StaticTimeLineExpandedHighlighted);
+            statics.Add(_StaticTimePointer);
+            statics.Add(_StaticLyricHelper);
+            statics.Add(_StaticLyricHelperDuet);
+            statics.Add(_StaticLyricHelperTop);
+            statics.Add(_StaticPauseBG);
+            _BuildStaticStrings(ref statics);
             _ThemeStatics = statics.ToArray();
 
             List<string> buttons = new List<string>();
-            buttons.Add(ButtonCancel);
-            buttons.Add(ButtonContinue);
-            buttons.Add(ButtonSkip);
+            buttons.Add(_ButtonCancel);
+            buttons.Add(_ButtonContinue);
+            buttons.Add(_ButtonSkip);
             _ThemeButtons = buttons.ToArray();
 
-            _ThemeLyrics = new string[] { LyricMain, LyricSub, LyricMainDuet, LyricSubDuet, LyricMainTop, LyricSubTop };
-            _ThemeSingNotes = new string[] { SingBars };
+            _ThemeLyrics = new string[] {_LyricMain, _LyricSub, _LyricMainDuet, _LyricSubDuet, _LyricMainTop, _LyricSubTop};
+            _ThemeSingNotes = new string[] {_SingBars};
 
-            _TimeRects = new List<TimeRect>();
+            _TimeRects = new List<STimeRect>();
             _TimerSongText = new Stopwatch();
             _TimerDuetText1 = new Stopwatch();
             _TimerDuetText2 = new Stopwatch();
         }
 
-        public override void LoadTheme(string XmlPath)
+        public override void LoadTheme(string xmlPath)
         {
-            base.LoadTheme(XmlPath);
+            base.LoadTheme(xmlPath);
 
-            Statics[htStatics(StaticTimeLine)].Visible = false;
-            Statics[htStatics(StaticTimeLineExpandedNormal)].Visible = false;
-            Statics[htStatics(StaticTimeLineExpandedHighlighted)].Visible = false;
-            Statics[htStatics(StaticPauseBG)].Visible = false;
-            Texts[htTexts(TextPause)].Visible = false;
+            Statics[_StaticTimeLine].Visible = false;
+            Statics[_StaticTimeLineExpandedNormal].Visible = false;
+            Statics[_StaticTimeLineExpandedHighlighted].Visible = false;
+            Statics[_StaticPauseBG].Visible = false;
+            Texts[_TextPause].Visible = false;
 
-            Statics[htStatics(StaticPauseBG)].Visible = false;
-            Texts[htTexts(TextPause)].Visible = false;
+            Statics[_StaticPauseBG].Visible = false;
+            Texts[_TextPause].Visible = false;
 
-            Buttons[htButtons(ButtonCancel)].Visible = false;
-            Buttons[htButtons(ButtonContinue)].Visible = false;
+            Buttons[_ButtonCancel].Visible = false;
+            Buttons[_ButtonContinue].Visible = false;
         }
 
-        public override bool HandleInput(KeyEvent KeyEvent)
+        public override bool HandleInput(SKeyEvent keyEvent)
         {
-            base.HandleInput(KeyEvent);
+            base.HandleInput(keyEvent);
 
-            if (KeyEvent.KeyPressed)
+            if (keyEvent.KeyPressed)
             {
                 //
             }
             else
             {
-                switch (KeyEvent.Key)
+                switch (keyEvent.Key)
                 {
                     case Keys.Escape:
-                        TogglePause();
+                        _TogglePause();
                         if (_Pause)
-                            SetInteractionToButton(Buttons[htButtons(ButtonCancel)]);
+                            SetInteractionToButton(Buttons[_ButtonCancel]);
                         break;
 
                     case Keys.P:
-                        TogglePause();
+                        _TogglePause();
                         if (_Pause)
-                            SetInteractionToButton(Buttons[htButtons(ButtonContinue)]);
+                            SetInteractionToButton(Buttons[_ButtonContinue]);
                         break;
 
                     case Keys.T:
@@ -193,9 +186,7 @@ namespace Vocaluxe.Screens
 
                         mode++;
                         if (mode > Enum.GetNames(typeof(ETimerMode)).Length - 1)
-                        {
                             mode = 0;
-                        }
                         CConfig.TimerMode = (ETimerMode)mode;
                         break;
 
@@ -204,18 +195,20 @@ namespace Vocaluxe.Screens
 
                         mode++;
                         if (mode > Enum.GetNames(typeof(EPlayerInfo)).Length - 1)
-                        {
                             mode = 0;
-                        }
                         CConfig.PlayerInfo = (EPlayerInfo)mode;
                         CConfig.SaveConfig();
-                        SetVisibility();
+                        _SetVisibility();
+                        if (CGame.GetSong() != null)
+                            _SetDuetLyricsVisibility(CGame.GetSong().IsDuet); //make sure duet lyrics remain visible
                         break;
 
                     case Keys.S:
-                        if(CGame.NumRounds > CGame.RoundNr)
-                            if(KeyEvent.ModCTRL)
-                                LoadNextSong();
+                        if (CGame.NumRounds > CGame.RoundNr)
+                        {
+                            if (keyEvent.ModCtrl)
+                                _LoadNextSong();
+                        }
                         break;
                     case Keys.W:
                         if (CWebcam.GetDevices().Length > 0)
@@ -228,20 +221,20 @@ namespace Vocaluxe.Screens
                         }
                         break;
                     case Keys.Enter:
-                        if (Buttons[htButtons(ButtonContinue)].Selected && _Pause)
-                            TogglePause();
-                        if (Buttons[htButtons(ButtonCancel)].Selected && _Pause)
-                            Stop();
-                        if (Buttons[htButtons(ButtonSkip)].Selected && _Pause)
+                        if (Buttons[_ButtonContinue].Selected && _Pause)
+                            _TogglePause();
+                        if (Buttons[_ButtonCancel].Selected && _Pause)
+                            _Stop();
+                        if (Buttons[_ButtonSkip].Selected && _Pause)
                         {
-                            LoadNextSong();
-                            TogglePause();
+                            _LoadNextSong();
+                            _TogglePause();
                         }
                         break;
 
                     case Keys.Add:
                     case Keys.PageUp:
-                        if (KeyEvent.ModSHIFT)
+                        if (keyEvent.ModShift)
                         {
                             CConfig.GameMusicVolume = CConfig.GameMusicVolume + 5;
                             if (CConfig.GameMusicVolume > 100)
@@ -253,7 +246,7 @@ namespace Vocaluxe.Screens
 
                     case Keys.Subtract:
                     case Keys.PageDown:
-                        if (KeyEvent.ModSHIFT)
+                        if (keyEvent.ModShift)
                         {
                             CConfig.GameMusicVolume = CConfig.GameMusicVolume - 5;
                             if (CConfig.GameMusicVolume < 0)
@@ -268,29 +261,29 @@ namespace Vocaluxe.Screens
             return true;
         }
 
-        public override bool HandleMouse(MouseEvent MouseEvent)
+        public override bool HandleMouse(SMouseEvent mouseEvent)
         {
-            base.HandleMouse(MouseEvent);
+            base.HandleMouse(mouseEvent);
 
-            if (MouseEvent.RB)
+            if (mouseEvent.RB)
             {
-                TogglePause();
+                _TogglePause();
                 if (_Pause)
-                    SetInteractionToButton(Buttons[htButtons(ButtonContinue)]);
+                    SetInteractionToButton(Buttons[_ButtonContinue]);
             }
 
-            if (MouseEvent.LB && IsMouseOver(MouseEvent) && _Pause)
+            if (mouseEvent.LB && IsMouseOver(mouseEvent) && _Pause)
             {
-                if (Buttons[htButtons(ButtonContinue)].Selected && _Pause)
-                    TogglePause();
+                if (Buttons[_ButtonContinue].Selected && _Pause)
+                    _TogglePause();
 
-                if (Buttons[htButtons(ButtonCancel)].Selected && _Pause)
-                    Stop();
+                if (Buttons[_ButtonCancel].Selected && _Pause)
+                    _Stop();
 
-                if (Buttons[htButtons(ButtonSkip)].Selected && _Pause)
+                if (Buttons[_ButtonSkip].Selected && _Pause)
                 {
-                    LoadNextSong();
-                    TogglePause();
+                    _LoadNextSong();
+                    _TogglePause();
                 }
             }
 
@@ -300,77 +293,75 @@ namespace Vocaluxe.Screens
 
         public override bool UpdateGame()
         {
-            bool Finish = false;
+            bool finish = false;
             if (CSound.IsPlaying(_CurrentStream) || CSound.IsPaused(_CurrentStream))
             {
                 _CurrentTime = CSound.GetPosition(_CurrentStream);
 
                 if (_FinishTime != 0 && _CurrentTime >= _FinishTime)
-                    Finish = true;
+                    finish = true;
             }
             else
-                Finish = true;
+                finish = true;
 
-            if (Finish)
-            {
-                LoadNextSong();
-            }
+            if (finish)
+                _LoadNextSong();
 
-            UpdateSongText();
-            UpdateDuetText();
+            _UpdateSongText();
+            _UpdateDuetText();
             if (_FadeOut)
                 return true;
 
-            UpdateTimeLine();
+            _UpdateTimeLine();
 
             CGame.UpdatePoints(_CurrentTime);
-            UpdateLyrics();
+            _UpdateLyrics();
 
-            float[] Alpha = CalcFadingAlpha();
-            if (Alpha != null)
+            float[] alpha = _CalcFadingAlpha();
+            if (alpha != null)
             {
-                Lyrics[htLyrics(LyricMain)].Alpha = Alpha[0];
-                Lyrics[htLyrics(LyricSub)].Alpha = Alpha[1];
+                Lyrics[_LyricMain].Alpha = alpha[0];
+                Lyrics[_LyricSub].Alpha = alpha[1];
 
-                Lyrics[htLyrics(LyricMainTop)].Alpha = Alpha[0];
-                Lyrics[htLyrics(LyricSubTop)].Alpha = Alpha[1];
+                Lyrics[_LyricMainTop].Alpha = alpha[0];
+                Lyrics[_LyricSubTop].Alpha = alpha[1];
 
-                Statics[htStatics(StaticLyrics)].Alpha = Alpha[0];
-                Statics[htStatics(StaticLyricsTop)].Alpha = Alpha[0];
+                Statics[_StaticLyrics].Alpha = alpha[0];
+                Statics[_StaticLyricsTop].Alpha = alpha[0];
 
-                Statics[htStatics(StaticLyricHelper)].Alpha = Alpha[0];
-                Statics[htStatics(StaticLyricHelperTop)].Alpha = Alpha[0];
+                Statics[_StaticLyricHelper].Alpha = alpha[0];
+                Statics[_StaticLyricHelperTop].Alpha = alpha[0];
 
                 for (int p = 0; p < CGame.NumPlayer; p++)
                 {
-                    SingNotes[htSingNotes(SingBars)].SetAlpha(NoteLines[p], Alpha[CGame.Player[p].LineNr * 2]);
+                    SingNotes[_SingBars].SetAlpha(_NoteLines[p], alpha[CGame.Player[p].LineNr * 2]);
                     if (CConfig.FadePlayerInfo == EFadePlayerInfo.TR_CONFIG_FADEPLAYERINFO_INFO || CConfig.FadePlayerInfo == EFadePlayerInfo.TR_CONFIG_FADEPLAYERINFO_ALL)
                     {
-                        Statics[htStatics(StaticAvatars[p, CGame.NumPlayer - 1])].Alpha = Alpha[CGame.Player[p].LineNr * 2];
-                        Texts[htTexts(TextNames[p, CGame.NumPlayer - 1])].Alpha = Alpha[CGame.Player[p].LineNr * 2];
+                        Statics[_StaticAvatars[p, CGame.NumPlayer - 1]].Alpha = alpha[CGame.Player[p].LineNr * 2];
+                        Texts[_TextNames[p, CGame.NumPlayer - 1]].Alpha = alpha[CGame.Player[p].LineNr * 2];
                     }
                     if (CConfig.FadePlayerInfo == EFadePlayerInfo.TR_CONFIG_FADEPLAYERINFO_ALL)
                     {
-                        Statics[htStatics(StaticScores[p, CGame.NumPlayer - 1])].Alpha = Alpha[CGame.Player[p].LineNr * 2];
-                        Statics[htStatics(StaticAvatars[p, CGame.NumPlayer - 1])].Alpha = Alpha[CGame.Player[p].LineNr * 2];
-                        Texts[htTexts(TextNames[p, CGame.NumPlayer - 1])].Alpha = Alpha[CGame.Player[p].LineNr * 2];
-                        Texts[htTexts(TextScores[p, CGame.NumPlayer - 1])].Alpha = Alpha[CGame.Player[p].LineNr * 2];
+                        Statics[_StaticScores[p, CGame.NumPlayer - 1]].Alpha = alpha[CGame.Player[p].LineNr * 2];
+                        Statics[_StaticAvatars[p, CGame.NumPlayer - 1]].Alpha = alpha[CGame.Player[p].LineNr * 2];
+                        Texts[_TextNames[p, CGame.NumPlayer - 1]].Alpha = alpha[CGame.Player[p].LineNr * 2];
+                        Texts[_TextScores[p, CGame.NumPlayer - 1]].Alpha = alpha[CGame.Player[p].LineNr * 2];
                     }
                 }
 
-                if (Alpha.Length > 2)
+                if (alpha.Length > 2)
                 {
-                    Lyrics[htLyrics(LyricMainDuet)].Alpha = Alpha[0];
-                    Lyrics[htLyrics(LyricSubDuet)].Alpha = Alpha[1];
+                    Lyrics[_LyricMainDuet].Alpha = alpha[0];
+                    Lyrics[_LyricSubDuet].Alpha = alpha[1];
 
-                    Statics[htStatics(StaticLyricsDuet)].Alpha = Alpha[0];
-                    Statics[htStatics(StaticLyricHelperDuet)].Alpha = Alpha[0];
+                    Statics[_StaticLyricsDuet].Alpha = alpha[0];
+                    Statics[_StaticLyricHelperDuet].Alpha = alpha[0];
 
-                    Lyrics[htLyrics(LyricMain)].Alpha = Alpha[2];
-                    Lyrics[htLyrics(LyricSub)].Alpha = Alpha[3];
+                    Lyrics[_LyricMain].Alpha = alpha[2];
+                    Lyrics[_LyricSub].Alpha = alpha[3];
 
-                    Statics[htStatics(StaticLyrics)].Alpha = Alpha[2];
-                    Statics[htStatics(StaticLyricHelper)].Alpha = Alpha[2];
+                    Statics[_StaticLyrics].Alpha = alpha[2];
+                    Statics[_StaticLyricHelper].Alpha = alpha[2];
                 }
             }
 
@@ -378,13 +369,9 @@ namespace Vocaluxe.Screens
             for (int p = 0; p < CGame.NumPlayer; p++)
             {
                 if (CGame.Player[p].Points < 10000)
-                {
-                    Texts[htTexts(TextScores[p, CGame.NumPlayer - 1])].Text = CGame.Player[p].Points.ToString("0000");
-                }
+                    Texts[_TextScores[p, CGame.NumPlayer - 1]].Text = CGame.Player[p].Points.ToString("0000");
                 else
-                {
-                    Texts[htTexts(TextScores[p, CGame.NumPlayer - 1])].Text = CGame.Player[p].Points.ToString("00000");
-                }
+                    Texts[_TextScores[p, CGame.NumPlayer - 1]].Text = CGame.Player[p].Points.ToString("00000");
             }
 
             if (_CurrentVideo != -1 && !_FadeOut && CConfig.VideosInSongs == EOffOn.TR_CONFIG_ON)
@@ -417,28 +404,22 @@ namespace Vocaluxe.Screens
 
             _TimeRects.Clear();
 
-            SingNotes[htSingNotes(SingBars)].Reset();
+            SingNotes[_SingBars].Reset();
             for (int i = 0; i < CSettings.MaxNumPlayer; i++)
-            {
-                NoteLines[i] = -1;
-            }
+                _NoteLines[i] = -1;
 
-            for (int i = 0; i < Lyrics.Length; i++)
-            {
-                Lyrics[i].LyricStyle = CConfig.LyricStyle;
-            }
+            foreach (CLyric lyric in Lyrics)
+                lyric.LyricStyle = CConfig.LyricStyle;
 
             for (int p = 0; p < CGame.NumPlayer; p++)
-            {
-                Statics[htStatics(StaticAvatars[p, CGame.NumPlayer - 1])].Aspect = EAspect.Crop;
-            }
-            SetVisibility();
+                Statics[_StaticAvatars[p, CGame.NumPlayer - 1]].Aspect = EAspect.Crop;
+            _SetVisibility();
 
-            UpdateAvatars();
-            UpdateNames();
+            _UpdateAvatars();
+            _UpdateNames();
 
             CBackgroundMusic.Disabled = true;
-            CloseSong();
+            _CloseSong();
         }
 
         public override void OnShowFinish()
@@ -446,7 +427,7 @@ namespace Vocaluxe.Screens
             base.OnShowFinish();
 
             CGame.Start();
-            LoadNextSong();
+            _LoadNextSong();
             CBackgroundMusic.Disabled = true;
         }
 
@@ -456,34 +437,35 @@ namespace Vocaluxe.Screens
             {
                 if (_CurrentVideo != -1 && CConfig.VideosInSongs == EOffOn.TR_CONFIG_ON && !_Webcam)
                 {
-                    RectangleF bounds = new RectangleF(0, 0, CSettings.iRenderW, CSettings.iRenderH);
-                    RectangleF rect = new RectangleF(0f, 0f, _CurrentVideoTexture.width, _CurrentVideoTexture.height);
+                    RectangleF bounds = new RectangleF(0, 0, CSettings.RenderW, CSettings.RenderH);
+                    RectangleF rect = new RectangleF(0f, 0f, _CurrentVideoTexture.Width, _CurrentVideoTexture.Height);
                     CHelper.SetRect(bounds, ref rect, rect.Width / rect.Height, _VideoAspect);
 
                     CDraw.DrawTexture(_CurrentVideoTexture, new SRectF(rect.X, rect.Y, rect.Width, rect.Height, 0f),
-                        _CurrentVideoTexture.color, new SRectF(bounds.X, bounds.Y, bounds.Width, bounds.Height, 0f), false);
+                                      _CurrentVideoTexture.Color, new SRectF(bounds.X, bounds.Y, bounds.Width, bounds.Height, 0f), false);
                 }
                 else if (_Webcam)
                 {
-                    RectangleF bounds = new RectangleF(0, 0, CSettings.iRenderW, CSettings.iRenderH);
-                    RectangleF rect = new RectangleF(0f, 0f, _CurrentWebcamFrameTexture.width, _CurrentWebcamFrameTexture.height);
+                    RectangleF bounds = new RectangleF(0, 0, CSettings.RenderW, CSettings.RenderH);
+                    RectangleF rect = new RectangleF(0f, 0f, _CurrentWebcamFrameTexture.Width, _CurrentWebcamFrameTexture.Height);
                     CHelper.SetRect(bounds, ref rect, rect.Width / rect.Height, _VideoAspect);
 
                     CDraw.DrawTexture(_CurrentWebcamFrameTexture, new SRectF(rect.X, rect.Y, rect.Width, rect.Height, 0f),
-                        _CurrentVideoTexture.color, new SRectF(bounds.X, bounds.Y, bounds.Width, bounds.Height, 0f), false);
+                                      _CurrentVideoTexture.Color, new SRectF(bounds.X, bounds.Y, bounds.Width, bounds.Height, 0f), false);
                 }
                 else
-                {   // Draw Background
-                    RectangleF bounds = new RectangleF(0, 0, CSettings.iRenderW, CSettings.iRenderH);
-                    RectangleF rect = new RectangleF(0f, 0f, _Background.width, _Background.height);
+                {
+                    // Draw Background
+                    RectangleF bounds = new RectangleF(0, 0, CSettings.RenderW, CSettings.RenderH);
+                    RectangleF rect = new RectangleF(0f, 0f, _Background.Width, _Background.Height);
                     CHelper.SetRect(bounds, ref rect, rect.Width / rect.Height, EAspect.Crop);
 
                     CDraw.DrawTexture(_Background, new SRectF(rect.X, rect.Y, rect.Width, rect.Height, 0f),
-                        _Background.color, new SRectF(bounds.X, bounds.Y, bounds.Width, bounds.Height, 0f), false);
+                                      _Background.Color, new SRectF(bounds.X, bounds.Y, bounds.Width, bounds.Height, 0f), false);
                 }
             }
 
-            base.DrawBG();
+            DrawBG();
 
             foreach (CStatic stat in Statics)
                 stat.Draw();
@@ -494,37 +476,33 @@ namespace Vocaluxe.Screens
             switch (CConfig.TimerLook)
             {
                 case ETimerLook.TR_CONFIG_TIMERLOOK_NORMAL:
-                    CDraw.DrawTexture(Statics[htStatics(StaticTimeLine)].Texture, Statics[htStatics(StaticTimeLine)].Rect, new SColorF(1, 1, 1, 1), _TimeLineRect);
+                    CDraw.DrawTexture(Statics[_StaticTimeLine].Texture, Statics[_StaticTimeLine].Rect, new SColorF(1, 1, 1, 1), _TimeLineRect);
                     break;
                 case ETimerLook.TR_CONFIG_TIMERLOOK_EXPANDED:
                     for (int i = 0; i < _TimeRects.Count; i++)
-                    {
-                        CDraw.DrawTexture(_TimeRects[i].rect.Texture, Statics[htStatics(StaticTimeLine)].Rect, _TimeRects[i].rect.Color, _TimeRects[i].rect.Rect);
-                    }
+                        CDraw.DrawTexture(_TimeRects[i].Rect.Texture, Statics[_StaticTimeLine].Rect, _TimeRects[i].Rect.Color, _TimeRects[i].Rect.Rect);
                     break;
             }
 
-            Lyrics[htLyrics(LyricSub)].Draw(-100);
-            Lyrics[htLyrics(LyricMain)].Draw(CGame.Beat);
+            Lyrics[_LyricSub].Draw(-100);
+            Lyrics[_LyricMain].Draw(CGame.Beat);
 
-            Lyrics[htLyrics(LyricSubDuet)].Draw(-100);
-            Lyrics[htLyrics(LyricMainDuet)].Draw(CGame.Beat);
+            Lyrics[_LyricSubDuet].Draw(-100);
+            Lyrics[_LyricMainDuet].Draw(CGame.Beat);
 
-            Lyrics[htLyrics(LyricSubTop)].Draw(-100);
-            Lyrics[htLyrics(LyricMainTop)].Draw(CGame.Beat);
+            Lyrics[_LyricSubTop].Draw(-100);
+            Lyrics[_LyricMainTop].Draw(CGame.Beat);
 
 
             for (int i = 0; i < CGame.NumPlayer; i++)
-            {
-                SingNotes[htSingNotes(SingBars)].Draw(NoteLines[i], CGame.Player[i].SingLine, i);
-            }
+                SingNotes[_SingBars].Draw(_NoteLines[i], CGame.Player[i].SingLine, i);
 
-            DrawLyricHelper();
+            _DrawLyricHelper();
 
             if (_Pause)
             {
-                Statics[htStatics(StaticPauseBG)].ForceDraw();
-                Texts[htTexts(TextPause)].ForceDraw();
+                Statics[_StaticPauseBG].ForceDraw();
+                Texts[_TextPause].ForceDraw();
 
                 foreach (CButton button in Buttons)
                     button.Draw();
@@ -540,7 +518,7 @@ namespace Vocaluxe.Screens
         {
             base.OnClose();
             CBackgroundMusic.Disabled = false;
-            CloseSong();
+            _CloseSong();
         }
 
         public override void ApplyVolume()
@@ -548,7 +526,7 @@ namespace Vocaluxe.Screens
             CSound.SetStreamVolumeMax(_CurrentStream, CConfig.GameMusicVolume);
         }
 
-        private void CloseSong()
+        private void _CloseSong()
         {
             CSound.FadeAndStop(_CurrentStream, 0f, 0.5f);
             CSound.RecordStop();
@@ -560,27 +538,27 @@ namespace Vocaluxe.Screens
             }
             CDraw.RemoveTexture(ref _Background);
 
-            Lyrics[htLyrics(LyricMain)].Clear();
-            Lyrics[htLyrics(LyricSub)].Clear();
-            Lyrics[htLyrics(LyricMainDuet)].Clear();
-            Lyrics[htLyrics(LyricSubDuet)].Clear();
-            Lyrics[htLyrics(LyricMainTop)].Clear();
-            Lyrics[htLyrics(LyricSubTop)].Clear();
-            Texts[htTexts(TextSongName)].Text = String.Empty;
-            Texts[htTexts(TextDuetName1)].Text = String.Empty;
-            Texts[htTexts(TextDuetName2)].Text = String.Empty;
+            Lyrics[_LyricMain].Clear();
+            Lyrics[_LyricSub].Clear();
+            Lyrics[_LyricMainDuet].Clear();
+            Lyrics[_LyricSubDuet].Clear();
+            Lyrics[_LyricMainTop].Clear();
+            Lyrics[_LyricSubTop].Clear();
+            Texts[_TextSongName].Text = String.Empty;
+            Texts[_TextDuetName1].Text = String.Empty;
+            Texts[_TextDuetName2].Text = String.Empty;
             GC.Collect();
         }
 
-        private void LoadNextSong()
+        private void _LoadNextSong()
         {
-            CloseSong();
+            _CloseSong();
 
             CGame.NextRound();
 
             if (CGame.IsFinished())
             {
-                FinishedSinging();
+                _FinishedSinging();
                 return;
             }
 
@@ -592,14 +570,11 @@ namespace Vocaluxe.Screens
                 return;
             }
 
-            if (!song.NotesLoaded)
-                song.ReadNotes();
-
             string songname = song.Artist + " - " + song.Title;
             int rounds = CGame.GetNumSongs();
             if (rounds > 1)
                 songname += " (" + CGame.RoundNr + "/" + rounds.ToString() + ")";
-            Texts[htTexts(TextSongName)].Text = songname;
+            Texts[_TextSongName].Text = songname;
 
             _CurrentStream = CSound.Load(song.GetMP3(), true);
             CSound.SetStreamVolumeMax(_CurrentStream, CConfig.GameMusicVolume);
@@ -609,20 +584,18 @@ namespace Vocaluxe.Screens
             _FinishTime = song.Finish;
             _TimeToFirstNote = 0f;
             _TimeToFirstNoteDuet = 0f;
-            int[] duet_player = new int[CGame.NumPlayer];
+            int[] duetPlayer = new int[CGame.NumPlayer];
             if (song.IsDuet)
             {
                 //Save duet-assignment before resetting
-                for (int i = 0; i < duet_player.Length; i++)
-                {
-                    duet_player[i] = CGame.Player[i].LineNr;
-                }
+                for (int i = 0; i < duetPlayer.Length; i++)
+                    duetPlayer[i] = CGame.Player[i].LineNr;
             }
             CGame.ResetPlayer();
 
             CDraw.RemoveTexture(ref _CurrentVideoTexture);
 
-            if (song.VideoFileName != String.Empty)
+            if (song.VideoFileName.Length > 0)
             {
                 _CurrentVideo = CVideo.VdLoad(Path.Combine(song.Folder, song.VideoFileName));
                 CVideo.VdSkip(_CurrentVideo, song.Start, song.VideoGap);
@@ -630,16 +603,16 @@ namespace Vocaluxe.Screens
             }
 
             CDraw.RemoveTexture(ref _Background);
-            if (song.BackgroundFileName != String.Empty)
+            if (song.BackgroundFileName.Length > 0)
                 _Background = CDraw.AddTexture(Path.Combine(song.Folder, song.BackgroundFileName));
 
-            SingNotes[htSingNotes(SingBars)].Reset();
+            SingNotes[_SingBars].Reset();
 
-            bool LyricsOnTop = (CGame.NumPlayer != 1) && CConfig.LyricsOnTop == EOffOn.TR_CONFIG_ON;
+
             if (song.IsDuet)
             {
-                Texts[htTexts(TextDuetName1)].Text = song.DuetPart1;
-                Texts[htTexts(TextDuetName2)].Text = song.DuetPart2;
+                Texts[_TextDuetName1].Text = song.DuetPart1;
+                Texts[_TextDuetName2].Text = song.DuetPart2;
                 //More than one song: Player is not assigned to line by user
                 //Otherwise, this is done by CScreenNames
                 if (CGame.GetNumSongs() > 1)
@@ -655,47 +628,27 @@ namespace Vocaluxe.Screens
                 else
                 {
                     for (int i = 0; i < CGame.NumPlayer; i++)
-                    {
-                        CGame.Player[i].LineNr = duet_player[i];
-                    }
+                        CGame.Player[i].LineNr = duetPlayer[i];
                 }
-                Statics[htStatics(StaticLyricsDuet)].Visible = true;
-                Lyrics[htLyrics(LyricMainDuet)].Visible = true;
-                Lyrics[htLyrics(LyricSubDuet)].Visible = true;
-
-                Lyrics[htLyrics(LyricMainTop)].Visible = false;
-                Lyrics[htLyrics(LyricSubTop)].Visible = false;
-                Statics[htStatics(StaticLyricsTop)].Visible = false;
             }
-            else
-            {
-                Statics[htStatics(StaticLyricsDuet)].Visible = false;
-                Lyrics[htLyrics(LyricMainDuet)].Visible = false;
-                Lyrics[htLyrics(LyricSubDuet)].Visible = false;
-
-                Lyrics[htLyrics(LyricMainTop)].Visible = LyricsOnTop;
-                Lyrics[htLyrics(LyricSubTop)].Visible = LyricsOnTop;
-                Statics[htStatics(StaticLyricsTop)].Visible = LyricsOnTop;
-            }
+            _SetDuetLyricsVisibility(song.IsDuet);
 
             for (int p = 0; p < CGame.NumPlayer; p++)
             {
-                NoteLines[p] = SingNotes[htSingNotes(SingBars)].AddPlayer(
-                    SingNotes[htSingNotes(SingBars)].BarPos[p, CGame.NumPlayer - 1],
+                _NoteLines[p] = SingNotes[_SingBars].AddPlayer(
+                    SingNotes[_SingBars].BarPos[p, CGame.NumPlayer - 1],
                     CTheme.GetPlayerColor(p + 1),
                     p);
             }
 
             /*
                 case 4:
-                    NoteLines[0] = SingNotes[htSingNotes(SingBars)].AddPlayer(new SRectF(35f, 100f, 590f, 200f, -0.5f), CTheme.ThemeColors.Player[0]);
-                    NoteLines[1] = SingNotes[htSingNotes(SingBars)].AddPlayer(new SRectF(35f, 350f, 590f, 200f, -0.5f), CTheme.ThemeColors.Player[1]);
-                    NoteLines[2] = SingNotes[htSingNotes(SingBars)].AddPlayer(new SRectF(640f, 100f, 590f, 200f, -0.5f), CTheme.ThemeColors.Player[2]);
-                    NoteLines[3] = SingNotes[htSingNotes(SingBars)].AddPlayer(new SRectF(640f, 350f, 590f, 200f, -0.5f), CTheme.ThemeColors.Player[3]);
+                    NoteLines[0] = SingNotes[SingBars].AddPlayer(new SRectF(35f, 100f, 590f, 200f, -0.5f), CTheme.ThemeColors.Player[0]);
+                    NoteLines[1] = SingNotes[SingBars].AddPlayer(new SRectF(35f, 350f, 590f, 200f, -0.5f), CTheme.ThemeColors.Player[1]);
+                    NoteLines[2] = SingNotes[SingBars].AddPlayer(new SRectF(640f, 100f, 590f, 200f, -0.5f), CTheme.ThemeColors.Player[2]);
+                    NoteLines[3] = SingNotes[SingBars].AddPlayer(new SRectF(640f, 350f, 590f, 200f, -0.5f), CTheme.ThemeColors.Player[3]);
                     break;
             */
-
-
             _TimerSongText.Stop();
             _TimerSongText.Reset();
             _TimerDuetText1.Stop();
@@ -704,32 +657,51 @@ namespace Vocaluxe.Screens
             _TimerDuetText2.Reset();
 
             if (song.Notes.Lines.Length != 2)
-            {
                 _TimerSongText.Start();
-            }
 
-            StartSong();
+            _StartSong();
         }
 
-        private void StartSong()
+        private void _SetDuetLyricsVisibility(bool isDuet)
         {
-            PrepareTimeLine();
+            Statics[_StaticLyricsDuet].Visible = isDuet;
+            Lyrics[_LyricMainDuet].Visible = isDuet;
+            Lyrics[_LyricSubDuet].Visible = isDuet;
+
+            if (isDuet)
+            {
+                Lyrics[_LyricMainTop].Visible = false;
+                Lyrics[_LyricSubTop].Visible = false;
+                Statics[_StaticLyricsTop].Visible = false;
+            }
+            else
+            {
+                bool lyricsOnTop = (CGame.NumPlayer != 1) && CConfig.LyricsOnTop == EOffOn.TR_CONFIG_ON;
+                Lyrics[_LyricMainTop].Visible = lyricsOnTop;
+                Lyrics[_LyricSubTop].Visible = lyricsOnTop;
+                Statics[_StaticLyricsTop].Visible = lyricsOnTop;
+            }
+        }
+
+        private void _StartSong()
+        {
+            _PrepareTimeLine();
             CSound.Play(_CurrentStream);
             CSound.RecordStart();
-            if(_Webcam)
+            if (_Webcam)
                 CWebcam.Start();
         }
 
-        private void Stop()
+        private void _Stop()
         {
             //Need this to set other songs to points-var
-            while(!CGame.IsFinished())
+            while (!CGame.IsFinished())
                 CGame.NextRound();
 
-            FinishedSinging();
+            _FinishedSinging();
         }
 
-        private void FinishedSinging()
+        private void _FinishedSinging()
         {
             _FadeOut = true;
             CParty.FinishedSinging();
@@ -738,29 +710,31 @@ namespace Vocaluxe.Screens
                 CWebcam.Close();
         }
 
-        private int FindCurrentLine(CLines lines, CLine[] line, CSong song)
+        private int _FindCurrentLine(CLines lines, CLine[] line, CSong song)
         {
-            float CurrentTime = _CurrentTime - song.Gap;
+            float currentTime = _CurrentTime - song.Gap;
             //We are only interested in the last matching line, so either do not check further after line[j].StartBeat > _CurrentBeat or go backwards!
             int j = lines.FindPreviousLine(_CurrentBeat);
             for (; j >= 0; j--)
             {
-                float FirstNoteTime = CGame.GetTimeFromBeats(line[j].FirstNoteBeat, song.BPM);
+                float firstNoteTime = CGame.GetTimeFromBeats(line[j].FirstNoteBeat, song.BPM);
                 //Earlist possible line break is 10s before first note
-                if (FirstNoteTime <= CurrentTime + 10f)
+                if (firstNoteTime <= currentTime + 10f)
                 {
                     //First line has no predecessor or line has to be shown
-                    if(j == 0 || FirstNoteTime - CConfig.MinLineBreakTime <= CurrentTime) return j;
-                    float LastNoteTime = CGame.GetTimeFromBeats(line[j-1].LastNoteBeat, song.BPM);
+                    if (j == 0 || firstNoteTime - CConfig.MinLineBreakTime <= currentTime)
+                        return j;
+                    float lastNoteTime = CGame.GetTimeFromBeats(line[j - 1].LastNoteBeat, song.BPM);
                     //No line break if last line is not fully evaluated (with 50% tolerance -> tested so notes are drawn)
-                    if(LastNoteTime + CConfig.MicDelay/1000f * 1.5f >= CurrentTime) return j-1;
+                    if (lastNoteTime + CConfig.MicDelay / 1000f * 1.5f >= currentTime)
+                        return j - 1;
                     return j;
                 }
             }
             return -1;
         }
 
-        private void UpdateLyrics()
+        private void _UpdateLyrics()
         {
             if (_FadeOut)
                 return;
@@ -781,93 +755,94 @@ namespace Vocaluxe.Screens
                 CLine[] line = lines.Line;
 
                 // find current line
-                int nr = FindCurrentLine(lines, line, song);
+                int nr = _FindCurrentLine(lines, line, song);
 
                 if (nr != -1)
                 {
                     for (int j = 0; j < CGame.NumPlayer; j++)
                     {
                         if (CGame.Player[j].LineNr == i)
-                            SingNotes[htSingNotes(SingBars)].AddLine(NoteLines[j], line, nr, j);
+                            SingNotes[_SingBars].AddLine(_NoteLines[j], line, nr, j);
                     }
 
                     if (i == 0 && !song.IsDuet || i == 1 && song.IsDuet)
                     {
-                        Lyrics[htLyrics(LyricMain)].SetLine(line[nr]);
-                        Lyrics[htLyrics(LyricMainTop)].SetLine(line[nr]);
+                        Lyrics[_LyricMain].SetLine(line[nr]);
+                        Lyrics[_LyricMainTop].SetLine(line[nr]);
                         _TimeToFirstNote = CGame.GetTimeFromBeats(line[nr].FirstNoteBeat - line[nr].StartBeat, song.BPM);
                         _RemainingTimeToFirstNote = CGame.GetTimeFromBeats(line[nr].FirstNoteBeat - CGame.GetBeatFromTime(_CurrentTime, song.BPM, song.Gap), song.BPM);
 
                         if (line.Length >= nr + 2)
                         {
-                            Lyrics[htLyrics(LyricSub)].SetLine(line[nr + 1]);
-                            Lyrics[htLyrics(LyricSubTop)].SetLine(line[nr + 1]);
+                            Lyrics[_LyricSub].SetLine(line[nr + 1]);
+                            Lyrics[_LyricSubTop].SetLine(line[nr + 1]);
                         }
                         else
                         {
-                            Lyrics[htLyrics(LyricSub)].Clear();
-                            Lyrics[htLyrics(LyricSubTop)].Clear();
+                            Lyrics[_LyricSub].Clear();
+                            Lyrics[_LyricSubTop].Clear();
                         }
                     }
                     if (i == 0 && song.IsDuet)
                     {
-                        Lyrics[htLyrics(LyricMainDuet)].SetLine(line[nr]);
+                        Lyrics[_LyricMainDuet].SetLine(line[nr]);
                         _TimeToFirstNoteDuet = CGame.GetTimeFromBeats(line[nr].FirstNoteBeat - line[nr].StartBeat, song.BPM);
                         _RemainingTimeToFirstNoteDuet = CGame.GetTimeFromBeats(line[nr].FirstNoteBeat - CGame.GetBeatFromTime(_CurrentTime, song.BPM, song.Gap), song.BPM);
 
                         if (line.Length >= nr + 2)
-                            Lyrics[htLyrics(LyricSubDuet)].SetLine(line[nr + 1]);
+                            Lyrics[_LyricSubDuet].SetLine(line[nr + 1]);
                         else
-                            Lyrics[htLyrics(LyricSubDuet)].Clear();
+                            Lyrics[_LyricSubDuet].Clear();
                     }
                 }
                 else
                 {
                     if (i == 0 && !song.IsDuet || i == 1 && song.IsDuet)
                     {
-                        Lyrics[htLyrics(LyricMain)].Clear();
-                        Lyrics[htLyrics(LyricSub)].Clear();
-                        Lyrics[htLyrics(LyricMainTop)].Clear();
-                        Lyrics[htLyrics(LyricSubTop)].Clear();
+                        Lyrics[_LyricMain].Clear();
+                        Lyrics[_LyricSub].Clear();
+                        Lyrics[_LyricMainTop].Clear();
+                        Lyrics[_LyricSubTop].Clear();
                         _TimeToFirstNote = 0f;
                     }
 
                     if (i == 0 && song.IsDuet)
                     {
-                        Lyrics[htLyrics(LyricMainDuet)].Clear();
-                        Lyrics[htLyrics(LyricSubDuet)].Clear();
+                        Lyrics[_LyricMainDuet].Clear();
+                        Lyrics[_LyricSubDuet].Clear();
                         _TimeToFirstNoteDuet = 0f;
                     }
                 }
             }
         }
 
-        private void TogglePause()
+        private void _TogglePause()
         {
             _Pause = !_Pause;
             if (_Pause)
             {
-                Buttons[htButtons(ButtonCancel)].Visible = true;
-                Buttons[htButtons(ButtonContinue)].Visible = true;
+                Buttons[_ButtonCancel].Visible = true;
+                Buttons[_ButtonContinue].Visible = true;
                 if (CGame.NumRounds > CGame.RoundNr && CGame.NumRounds > 1)
-                    Buttons[htButtons(ButtonSkip)].Visible = true;
+                    Buttons[_ButtonSkip].Visible = true;
                 else
-                    Buttons[htButtons(ButtonSkip)].Visible = false;
-                CSound.Pause(_CurrentStream);               
-            }else
+                    Buttons[_ButtonSkip].Visible = false;
+                CSound.Pause(_CurrentStream);
+            }
+            else
             {
-                Buttons[htButtons(ButtonCancel)].Visible = false;
-                Buttons[htButtons(ButtonContinue)].Visible = false;
-                Buttons[htButtons(ButtonSkip)].Visible = false;
+                Buttons[_ButtonCancel].Visible = false;
+                Buttons[_ButtonContinue].Visible = false;
+                Buttons[_ButtonSkip].Visible = false;
                 CSound.Play(_CurrentStream);
                 CWebcam.Start();
             }
         }
 
-        private void BuildTextStrings(ref List<string> texts)
+        private void _BuildTextStrings(ref List<string> texts)
         {
-            TextScores = new string[CSettings.MaxNumPlayer, CSettings.MaxNumPlayer];
-            TextNames = new string[CSettings.MaxNumPlayer, CSettings.MaxNumPlayer];
+            _TextScores = new string[CSettings.MaxNumPlayer,CSettings.MaxNumPlayer];
+            _TextNames = new string[CSettings.MaxNumPlayer,CSettings.MaxNumPlayer];
 
             for (int numplayer = 0; numplayer < CSettings.MaxNumPlayer; numplayer++)
             {
@@ -876,20 +851,20 @@ namespace Vocaluxe.Screens
                     if (player <= numplayer)
                     {
                         string target = "P" + (player + 1).ToString() + "N" + (numplayer + 1).ToString();
-                        TextScores[player, numplayer] = "TextScore" + target;
-                        TextNames[player, numplayer] = "TextName" + target;
+                        _TextScores[player, numplayer] = "TextScore" + target;
+                        _TextNames[player, numplayer] = "TextName" + target;
 
-                        texts.Add(TextScores[player, numplayer]);
-                        texts.Add(TextNames[player, numplayer]);
+                        texts.Add(_TextScores[player, numplayer]);
+                        texts.Add(_TextNames[player, numplayer]);
                     }
                 }
             }
         }
 
-        private void BuildStaticStrings(ref List<string> statics)
+        private void _BuildStaticStrings(ref List<string> statics)
         {
-            StaticScores = new string[CSettings.MaxNumPlayer, CSettings.MaxNumPlayer];
-            StaticAvatars = new string[CSettings.MaxNumPlayer, CSettings.MaxNumPlayer];
+            _StaticScores = new string[CSettings.MaxNumPlayer,CSettings.MaxNumPlayer];
+            _StaticAvatars = new string[CSettings.MaxNumPlayer,CSettings.MaxNumPlayer];
 
             for (int numplayer = 0; numplayer < CSettings.MaxNumPlayer; numplayer++)
             {
@@ -898,29 +873,29 @@ namespace Vocaluxe.Screens
                     if (player <= numplayer)
                     {
                         string target = "P" + (player + 1).ToString() + "N" + (numplayer + 1).ToString();
-                        StaticScores[player, numplayer] = "StaticScore" + target;
-                        StaticAvatars[player, numplayer] = "StaticAvatar" + target;
+                        _StaticScores[player, numplayer] = "StaticScore" + target;
+                        _StaticAvatars[player, numplayer] = "StaticAvatar" + target;
 
-                        statics.Add(StaticScores[player, numplayer]);
-                        statics.Add(StaticAvatars[player, numplayer]);
+                        statics.Add(_StaticScores[player, numplayer]);
+                        statics.Add(_StaticAvatars[player, numplayer]);
                     }
                 }
             }
         }
 
-        private void SetVisibility()
+        private void _SetVisibility()
         {
-            Statics[htStatics(StaticLyricsDuet)].Visible = false;
-            Statics[htStatics(StaticLyricHelper)].Visible = false;
-            Statics[htStatics(StaticLyricHelperDuet)].Visible = false;
-            Statics[htStatics(StaticLyricHelperTop)].Visible = false;
-            Lyrics[htLyrics(LyricMainDuet)].Visible = false;
-            Lyrics[htLyrics(LyricSubDuet)].Visible = false;
+            Statics[_StaticLyricsDuet].Visible = false;
+            Statics[_StaticLyricHelper].Visible = false;
+            Statics[_StaticLyricHelperDuet].Visible = false;
+            Statics[_StaticLyricHelperTop].Visible = false;
+            Lyrics[_LyricMainDuet].Visible = false;
+            Lyrics[_LyricSubDuet].Visible = false;
 
-            Statics[htStatics(StaticSongText)].Visible = false;
-            Texts[htTexts(TextSongName)].Visible = false;
-            Texts[htTexts(TextDuetName1)].Visible = false;
-            Texts[htTexts(TextDuetName2)].Visible = false;
+            Statics[_StaticSongText].Visible = false;
+            Texts[_TextSongName].Visible = false;
+            Texts[_TextDuetName1].Visible = false;
+            Texts[_TextDuetName2].Visible = false;
 
             for (int numplayer = 0; numplayer < CSettings.MaxNumPlayer; numplayer++)
             {
@@ -928,37 +903,40 @@ namespace Vocaluxe.Screens
                 {
                     if (player <= numplayer)
                     {
-                        Texts[htTexts(TextScores[player, numplayer])].Visible = (numplayer + 1 == CGame.NumPlayer);
-                        Texts[htTexts(TextNames[player, numplayer])].Visible = ((numplayer + 1 == CGame.NumPlayer)
-                             && (CConfig.PlayerInfo == EPlayerInfo.TR_CONFIG_PLAYERINFO_BOTH || CConfig.PlayerInfo == EPlayerInfo.TR_CONFIG_PLAYERINFO_NAME));
-                        Statics[htStatics(StaticScores[player, numplayer])].Visible = (numplayer + 1 == CGame.NumPlayer);
-                        Statics[htStatics(StaticAvatars[player, numplayer])].Visible = ((numplayer + 1 == CGame.NumPlayer)
-                            && (CConfig.PlayerInfo == EPlayerInfo.TR_CONFIG_PLAYERINFO_BOTH || CConfig.PlayerInfo == EPlayerInfo.TR_CONFIG_PLAYERINFO_AVATAR));
+                        Texts[_TextScores[player, numplayer]].Visible = numplayer + 1 == CGame.NumPlayer;
+                        Texts[_TextNames[player, numplayer]].Visible = (numplayer + 1 == CGame.NumPlayer)
+                                                                      &&
+                                                                      (CConfig.PlayerInfo == EPlayerInfo.TR_CONFIG_PLAYERINFO_BOTH ||
+                                                                       CConfig.PlayerInfo == EPlayerInfo.TR_CONFIG_PLAYERINFO_NAME);
+                        Statics[_StaticScores[player, numplayer]].Visible = numplayer + 1 == CGame.NumPlayer;
+                        Statics[_StaticAvatars[player, numplayer]].Visible = (numplayer + 1 == CGame.NumPlayer)
+                                                                            &&
+                                                                            (CConfig.PlayerInfo == EPlayerInfo.TR_CONFIG_PLAYERINFO_BOTH ||
+                                                                             CConfig.PlayerInfo == EPlayerInfo.TR_CONFIG_PLAYERINFO_AVATAR);
                     }
                 }
             }
 
-            Lyrics[htLyrics(LyricMain)].Alpha = 0f;
-            Lyrics[htLyrics(LyricSub)].Alpha = 0f;
+            Lyrics[_LyricMain].Alpha = 0f;
+            Lyrics[_LyricSub].Alpha = 0f;
 
-            Lyrics[htLyrics(LyricMainTop)].Alpha = 0f;
-            Lyrics[htLyrics(LyricSubTop)].Alpha = 0f;
+            Lyrics[_LyricMainTop].Alpha = 0f;
+            Lyrics[_LyricSubTop].Alpha = 0f;
 
-            Statics[htStatics(StaticLyrics)].Alpha = 0f;
-            Statics[htStatics(StaticLyricsTop)].Alpha = 0f;
+            Statics[_StaticLyrics].Alpha = 0f;
+            Statics[_StaticLyricsTop].Alpha = 0f;
 
-            Statics[htStatics(StaticLyricHelper)].Alpha = 0f;
-            Statics[htStatics(StaticLyricHelperTop)].Alpha = 0f;
+            Statics[_StaticLyricHelper].Alpha = 0f;
+            Statics[_StaticLyricHelperTop].Alpha = 0f;
 
-            Lyrics[htLyrics(LyricMainDuet)].Alpha = 0f;
-            Lyrics[htLyrics(LyricSubDuet)].Alpha = 0f;
+            Lyrics[_LyricMainDuet].Alpha = 0f;
+            Lyrics[_LyricSubDuet].Alpha = 0f;
 
-            Statics[htStatics(StaticLyricsDuet)].Alpha = 0f;
-            Statics[htStatics(StaticLyricHelperDuet)].Alpha = 0f;
-
+            Statics[_StaticLyricsDuet].Alpha = 0f;
+            Statics[_StaticLyricHelperDuet].Alpha = 0f;
         }
 
-        private void DrawLyricHelper()
+        private void _DrawLyricHelper()
         {
             if (_FadeOut)
                 return;
@@ -984,29 +962,29 @@ namespace Vocaluxe.Screens
                 if (time > totaltime)
                     time = totaltime;
 
-                SRectF Rect = Statics[htStatics(StaticLyricHelper)].Rect;
-                SColorF Color = new SColorF(
-                    Statics[htStatics(StaticLyricHelper)].Color.R,
-                    Statics[htStatics(StaticLyricHelper)].Color.G,
-                    Statics[htStatics(StaticLyricHelper)].Color.B,
-                    Statics[htStatics(StaticLyricHelper)].Color.A * Statics[htStatics(StaticLyricHelper)].Alpha * alpha);
+                SRectF rect = Statics[_StaticLyricHelper].Rect;
+                SColorF color = new SColorF(
+                    Statics[_StaticLyricHelper].Color.R,
+                    Statics[_StaticLyricHelper].Color.G,
+                    Statics[_StaticLyricHelper].Color.B,
+                    Statics[_StaticLyricHelper].Color.A * Statics[_StaticLyricHelper].Alpha * alpha);
 
-                float distance = Lyrics[htLyrics(LyricMain)].GetCurrentLyricPosX() - Rect.X - Rect.W;
-                CDraw.DrawTexture(Statics[htStatics(StaticLyricHelper)].Texture,
-                    new SRectF(Rect.X + distance * (1f - time / totaltime), Rect.Y, Rect.W, Rect.H, Rect.Z), Color);
+                float distance = Lyrics[_LyricMain].GetCurrentLyricPosX() - rect.X - rect.W;
+                CDraw.DrawTexture(Statics[_StaticLyricHelper].Texture,
+                                  new SRectF(rect.X + distance * (1f - time / totaltime), rect.Y, rect.W, rect.H, rect.Z), color);
 
-                if (Statics[htStatics(StaticLyricsTop)].Visible)
+                if (Statics[_StaticLyricsTop].Visible)
                 {
-                    Rect = Statics[htStatics(StaticLyricHelperTop)].Rect;
-                    Color = new SColorF(
-                        Statics[htStatics(StaticLyricHelperTop)].Color.R,
-                        Statics[htStatics(StaticLyricHelperTop)].Color.G,
-                        Statics[htStatics(StaticLyricHelperTop)].Color.B,
-                        Statics[htStatics(StaticLyricHelperTop)].Color.A * Statics[htStatics(StaticLyricHelper)].Alpha * alpha);
+                    rect = Statics[_StaticLyricHelperTop].Rect;
+                    color = new SColorF(
+                        Statics[_StaticLyricHelperTop].Color.R,
+                        Statics[_StaticLyricHelperTop].Color.G,
+                        Statics[_StaticLyricHelperTop].Color.B,
+                        Statics[_StaticLyricHelperTop].Color.A * Statics[_StaticLyricHelper].Alpha * alpha);
 
-                    distance = Lyrics[htLyrics(LyricMainTop)].GetCurrentLyricPosX() - Rect.X - Rect.W;
-                    CDraw.DrawTexture(Statics[htStatics(StaticLyricHelperTop)].Texture,
-                        new SRectF(Rect.X + distance * (1f - time / totaltime), Rect.Y, Rect.W, Rect.H, Rect.Z), Color);
+                    distance = Lyrics[_LyricMainTop].GetCurrentLyricPosX() - rect.X - rect.W;
+                    CDraw.DrawTexture(Statics[_StaticLyricHelperTop].Texture,
+                                      new SRectF(rect.X + distance * (1f - time / totaltime), rect.Y, rect.W, rect.H, rect.Z), color);
                 }
             }
 
@@ -1023,166 +1001,160 @@ namespace Vocaluxe.Screens
                     if (time > totaltime)
                         time = totaltime;
 
-                    SRectF Rect = Statics[htStatics(StaticLyricHelperDuet)].Rect;
+                    SRectF rect = Statics[_StaticLyricHelperDuet].Rect;
 
-                    SColorF Color = new SColorF(
-                        Statics[htStatics(StaticLyricHelperDuet)].Color.R,
-                        Statics[htStatics(StaticLyricHelperDuet)].Color.G,
-                        Statics[htStatics(StaticLyricHelperDuet)].Color.B,
-                        Statics[htStatics(StaticLyricHelperDuet)].Color.A * Statics[htStatics(StaticLyricHelperDuet)].Alpha * alpha);
+                    SColorF color = new SColorF(
+                        Statics[_StaticLyricHelperDuet].Color.R,
+                        Statics[_StaticLyricHelperDuet].Color.G,
+                        Statics[_StaticLyricHelperDuet].Color.B,
+                        Statics[_StaticLyricHelperDuet].Color.A * Statics[_StaticLyricHelperDuet].Alpha * alpha);
 
-                    float distance = Lyrics[htLyrics(LyricMainDuet)].GetCurrentLyricPosX() - Rect.X - Rect.W;
-                    CDraw.DrawTexture(Statics[htStatics(StaticLyricHelperDuet)].Texture,
-                        new SRectF(Rect.X + distance * (1f - time / totaltime), Rect.Y, Rect.W, Rect.H, Rect.Z),
-                        Color);
+                    float distance = Lyrics[_LyricMainDuet].GetCurrentLyricPosX() - rect.X - rect.W;
+                    CDraw.DrawTexture(Statics[_StaticLyricHelperDuet].Texture,
+                                      new SRectF(rect.X + distance * (1f - time / totaltime), rect.Y, rect.W, rect.H, rect.Z),
+                                      color);
                 }
             }
         }
 
-        private float[] CalcFadingAlpha()
+        private float[] _CalcFadingAlpha()
         {
             float dt = 4f;
             float rt = dt * 0.8f;
 
-            CSong Song = CGame.GetSong();
-            if (Song == null)
+            CSong song = CGame.GetSong();
+            if (song == null)
                 return null;
-            else if (!Song.NotesLoaded)
+            else if (!song.NotesLoaded)
                 return null;
 
-            float[] Alpha = new float[Song.Notes.Lines.Length * 2];
-            float CurrentTime = _CurrentTime - Song.Gap;
+            float[] alpha = new float[song.Notes.Lines.Length * 2];
+            float currentTime = _CurrentTime - song.Gap;
 
-            for (int i = 0; i < Song.Notes.LinesCount; i++)
+            for (int i = 0; i < song.Notes.LinesCount; i++)
             {
-                CLines lines = Song.Notes.GetLines(i);
+                CLines lines = song.Notes.GetLines(i);
                 CLine[] line = lines.Line;
 
                 // find current line for lyric sub fading
-                int CurrentLineSub = FindCurrentLine(lines, line, Song);
+                int currentLineSub = _FindCurrentLine(lines, line, song);
 
                 // find current line for lyric main fading
-                int CurrentLine = 0;
+                int currentLine = 0;
                 for (int j = 0; j < line.Length; j++)
                 {
                     if (line[j].FirstNoteBeat <= _CurrentBeat)
-                    {
-                        CurrentLine = j;
-                    }
+                        currentLine = j;
                 }
 
                 // default values
-                Alpha[i * 2] = 1f;
-                Alpha[i * 2 + 1] = 1f;
+                alpha[i * 2] = 1f;
+                alpha[i * 2 + 1] = 1f;
 
                 // main line alpha
-                if (CurrentLine == 0 && CurrentTime < CGame.GetTimeFromBeats(line[CurrentLine].FirstNoteBeat, Song.BPM))
+                if (currentLine == 0 && currentTime < CGame.GetTimeFromBeats(line[currentLine].FirstNoteBeat, song.BPM))
                 {
                     // first main line and fist note is not reached
                     // => fade in
-                    float diff = CGame.GetTimeFromBeats(line[CurrentLine].FirstNoteBeat, Song.BPM) - CurrentTime;
+                    float diff = CGame.GetTimeFromBeats(line[currentLine].FirstNoteBeat, song.BPM) - currentTime;
                     if (diff > dt)
-                    {
-                        Alpha[i * 2] = 1f - (diff - dt) / rt;
-                    }
+                        alpha[i * 2] = 1f - (diff - dt) / rt;
                 }
-                else if (CurrentLine < line.Length - 1 && CGame.GetTimeFromBeats(line[CurrentLine].LastNoteBeat, Song.BPM) < CurrentTime &&
-                    CGame.GetTimeFromBeats(line[CurrentLine + 1].FirstNoteBeat, Song.BPM) > CurrentTime)
+                else if (currentLine < line.Length - 1 && CGame.GetTimeFromBeats(line[currentLine].LastNoteBeat, song.BPM) < currentTime &&
+                         CGame.GetTimeFromBeats(line[currentLine + 1].FirstNoteBeat, song.BPM) > currentTime)
                 {
                     // current position is between two lines
 
                     // time between the to lines
-                    float diff = CGame.GetTimeFromBeats(line[CurrentLine + 1].FirstNoteBeat, Song.BPM) -
-                        CGame.GetTimeFromBeats(line[CurrentLine].LastNoteBeat, Song.BPM);
+                    float diff = CGame.GetTimeFromBeats(line[currentLine + 1].FirstNoteBeat, song.BPM) -
+                                 CGame.GetTimeFromBeats(line[currentLine].LastNoteBeat, song.BPM);
 
                     // fade only if there is enough time for fading
                     if (diff > 3.3f * dt)
                     {
                         // time elapsed since last line
-                        float last = CurrentTime - CGame.GetTimeFromBeats(line[CurrentLine].LastNoteBeat, Song.BPM);
+                        float last = currentTime - CGame.GetTimeFromBeats(line[currentLine].LastNoteBeat, song.BPM);
 
                         // time to next line
-                        float next = CGame.GetTimeFromBeats(line[CurrentLine + 1].FirstNoteBeat, Song.BPM) - CurrentTime;
+                        float next = CGame.GetTimeFromBeats(line[currentLine + 1].FirstNoteBeat, song.BPM) - currentTime;
 
                         if (last < next)
                         {
                             // fade out
-                            Alpha[i * 2] = 1f - last / rt;
+                            alpha[i * 2] = 1f - last / rt;
                         }
                         else
                         {
                             // fade in if it is time for
                             if (next > dt)
-                                Alpha[i * 2] = 1f - (next - dt) / rt;
+                                alpha[i * 2] = 1f - (next - dt) / rt;
                         }
                     }
                 }
-                else if (CurrentLine == line.Length - 1 && CGame.GetTimeFromBeats(line[CurrentLine].LastNoteBeat, Song.BPM) < CurrentTime)
+                else if (currentLine == line.Length - 1 && CGame.GetTimeFromBeats(line[currentLine].LastNoteBeat, song.BPM) < currentTime)
                 {
                     // last main line and last note was reached
                     // => fade out
-                    float diff = CurrentTime - CGame.GetTimeFromBeats(line[CurrentLine].LastNoteBeat, Song.BPM);
-                    Alpha[i * 2] = 1f - diff / rt;
+                    float diff = currentTime - CGame.GetTimeFromBeats(line[currentLine].LastNoteBeat, song.BPM);
+                    alpha[i * 2] = 1f - diff / rt;
                 }
 
                 // sub
-                if (CurrentLineSub < line.Length - 2)
+                if (currentLineSub < line.Length - 2)
                 {
                     float diff = 0f;
-                    diff = CGame.GetTimeFromBeats(line[CurrentLineSub + 1].FirstNoteBeat, Song.BPM) - CurrentTime;
+                    diff = CGame.GetTimeFromBeats(line[currentLineSub + 1].FirstNoteBeat, song.BPM) - currentTime;
 
                     if (diff > dt)
-                    {
-                        Alpha[i * 2 + 1] = 1f - (diff - dt) / rt;
-                    }
+                        alpha[i * 2 + 1] = 1f - (diff - dt) / rt;
                 }
 
-                if (Alpha[i * 2] < 0f)
-                    Alpha[i * 2] = 0f;
+                if (alpha[i * 2] < 0f)
+                    alpha[i * 2] = 0f;
 
-                if (Alpha[i * 2 + 1] < 0f)
-                    Alpha[i * 2 + 1] = 0f;
+                if (alpha[i * 2 + 1] < 0f)
+                    alpha[i * 2 + 1] = 0f;
             }
 
-            return Alpha;
+            return alpha;
         }
 
-        private void UpdateSongText()
+        private void _UpdateSongText()
         {
-            if (_TimerSongText.IsRunning && !Lyrics[htLyrics(LyricMainDuet)].Visible && !Lyrics[htLyrics(LyricMainTop)].Visible)
+            if (_TimerSongText.IsRunning && !Lyrics[_LyricMainDuet].Visible && !Lyrics[_LyricMainTop].Visible)
             {
                 float t = _TimerSongText.ElapsedMilliseconds / 1000f;
                 if (t < 10f)
                 {
-                    Statics[htStatics(StaticSongText)].Visible = true;
-                    Texts[htTexts(TextSongName)].Visible = true;
+                    Statics[_StaticSongText].Visible = true;
+                    Texts[_TextSongName].Visible = true;
 
                     if (t < 7f)
                     {
-                        Statics[htStatics(StaticSongText)].Color.A = 1f;
-                        Texts[htTexts(TextSongName)].Color.A = 1f;
+                        Statics[_StaticSongText].Color.A = 1f;
+                        Texts[_TextSongName].Color.A = 1f;
                     }
                     else
                     {
-                        Statics[htStatics(StaticSongText)].Color.A = (3f - (t - 7f)) / 3f;
-                        Texts[htTexts(TextSongName)].Color.A = (3f - (t - 7f)) / 3f;
+                        Statics[_StaticSongText].Color.A = (3f - (t - 7f)) / 3f;
+                        Texts[_TextSongName].Color.A = (3f - (t - 7f)) / 3f;
                     }
                 }
                 else
                 {
-                    Statics[htStatics(StaticSongText)].Visible = false;
-                    Texts[htTexts(TextSongName)].Visible = false;
+                    Statics[_StaticSongText].Visible = false;
+                    Texts[_TextSongName].Visible = false;
                     _TimerSongText.Stop();
                 }
             }
             else
             {
-                Statics[htStatics(StaticSongText)].Visible = false;
-                Texts[htTexts(TextSongName)].Visible = false;
+                Statics[_StaticSongText].Visible = false;
+                Texts[_TextSongName].Visible = false;
             }
         }
 
-        private void UpdateDuetText()
+        private void _UpdateDuetText()
         {
             if (CGame.GetSong() != null)
             {
@@ -1192,105 +1164,89 @@ namespace Vocaluxe.Screens
                     float t = _TimerDuetText1.ElapsedMilliseconds / 1000f;
                     if (t < 10f)
                     {
-                        Texts[htTexts(TextDuetName1)].Visible = true;
+                        Texts[_TextDuetName1].Visible = true;
 
                         if (t < 3f)
-                        {
-                            Texts[htTexts(TextDuetName1)].Color.A = (3f - (3f - t)) / 3f;
-                        }
+                            Texts[_TextDuetName1].Color.A = (3f - (3f - t)) / 3f;
                         else if (t < 7f)
-                        {
-                            Texts[htTexts(TextDuetName1)].Color.A = 1f;
-                        }
+                            Texts[_TextDuetName1].Color.A = 1f;
                         else
-                        {
-                            Texts[htTexts(TextDuetName1)].Color.A = (3f - (t - 7f)) / 3f;
-                        }
+                            Texts[_TextDuetName1].Color.A = (3f - (t - 7f)) / 3f;
                     }
                     else
                     {
-                        Texts[htTexts(TextDuetName1)].Visible = false;
+                        Texts[_TextDuetName1].Visible = false;
                         _TimerDuetText1.Stop();
                     }
                 }
-                else if (!_TimerDuetText1.IsRunning && _TimerDuetText1.ElapsedMilliseconds == 0 && Lyrics[htLyrics(LyricMainDuet)].Alpha > 0 && CGame.GetSong().IsDuet)
+                else if (!_TimerDuetText1.IsRunning && _TimerDuetText1.ElapsedMilliseconds == 0 && Lyrics[_LyricMainDuet].Alpha > 0 && CGame.GetSong().IsDuet)
                     _TimerDuetText1.Start();
                 else
-                {
-                    Texts[htTexts(TextDuetName1)].Visible = false;
-                }
+                    Texts[_TextDuetName1].Visible = false;
                 //Timer for second duet-part
                 if (_TimerDuetText2.IsRunning)
                 {
                     float t = _TimerDuetText2.ElapsedMilliseconds / 1000f;
                     if (t < 10f)
                     {
-                        Texts[htTexts(TextDuetName2)].Visible = true;
+                        Texts[_TextDuetName2].Visible = true;
 
                         if (t < 3f)
-                        {
-                            Texts[htTexts(TextDuetName2)].Color.A = (3f - (3f - t)) / 3f;
-                        }
+                            Texts[_TextDuetName2].Color.A = (3f - (3f - t)) / 3f;
                         else if (t < 7f)
-                        {
-                            Texts[htTexts(TextDuetName2)].Color.A = 1f;
-                        }
+                            Texts[_TextDuetName2].Color.A = 1f;
                         else
-                        {
-                            Texts[htTexts(TextDuetName2)].Color.A = (3f - (t - 7f)) / 3f;
-                        }
+                            Texts[_TextDuetName2].Color.A = (3f - (t - 7f)) / 3f;
                     }
                     else
                     {
-                        Texts[htTexts(TextDuetName2)].Visible = false;
+                        Texts[_TextDuetName2].Visible = false;
                         _TimerDuetText2.Stop();
                     }
                 }
-                else if (!_TimerDuetText2.IsRunning && _TimerDuetText2.ElapsedMilliseconds == 0 && Lyrics[htLyrics(LyricMain)].Alpha > 0 && CGame.GetSong().IsDuet)
+                else if (!_TimerDuetText2.IsRunning && _TimerDuetText2.ElapsedMilliseconds == 0 && Lyrics[_LyricMain].Alpha > 0 && CGame.GetSong().IsDuet)
                     _TimerDuetText2.Start();
                 else
-                {
-                    Texts[htTexts(TextDuetName2)].Visible = false;
-                }
+                    Texts[_TextDuetName2].Visible = false;
             }
         }
 
-        private void UpdateTimeLine()
+        private void _UpdateTimeLine()
         {
             CSong song = CGame.GetSong();
 
             if (song == null)
                 return;
 
-            float TotalTime = CSound.GetLength(_CurrentStream);
+            float totalTime = CSound.GetLength(_CurrentStream);
             if (song.Finish != 0)
-                TotalTime = song.Finish;
+                totalTime = song.Finish;
 
-            float RemainingTime = TotalTime - _CurrentTime;
-            TotalTime -= song.Start;
-            float CurrentTime = _CurrentTime - song.Start;
+            float remainingTime = totalTime - _CurrentTime;
+            totalTime -= song.Start;
+            float currentTime = _CurrentTime - song.Start;
 
-            if (TotalTime <= 0f)
+            if (totalTime <= 0f)
                 return;
 
             switch (CConfig.TimerMode)
             {
                 case ETimerMode.TR_CONFIG_TIMERMODE_CURRENT:
-                    int min = (int)Math.Floor(CurrentTime / 60f);
-                    int sec = (int)(CurrentTime - min * 60f);
-                    Texts[htTexts(TextTime)].Text = min.ToString("00") + ":" + sec.ToString("00");
+                    int min = (int)Math.Floor(currentTime / 60f);
+                    int sec = (int)(currentTime - min * 60f);
+                    Texts[_TextTime].Text = min.ToString("00") + ":" + sec.ToString("00");
                     break;
 
                 case ETimerMode.TR_CONFIG_TIMERMODE_REMAINING:
-                    min = (int)Math.Floor(RemainingTime / 60f);
-                    sec = (int)(RemainingTime - min * 60f);
-                    Texts[htTexts(TextTime)].Text = "-" + min.ToString("00") + ":" + sec.ToString("00");
+                    min = (int)Math.Floor(remainingTime / 60f);
+                    sec = (int)(remainingTime - min * 60f);
+                    Texts[_TextTime].Text = "-" + min.ToString("00") + ":" + sec.ToString("00");
                     break;
 
                 case ETimerMode.TR_CONFIG_TIMERMODE_TOTAL:
-                    min = (int)Math.Floor(TotalTime / 60f);
-                    sec = (int)(TotalTime - min * 60f);
-                    Texts[htTexts(TextTime)].Text = "#" + min.ToString("00") + ":" + sec.ToString("00");
+                    min = (int)Math.Floor(totalTime / 60f);
+                    sec = (int)(totalTime - min * 60f);
+                    Texts[_TextTime].Text = "#" + min.ToString("00") + ":" + sec.ToString("00");
                     break;
             }
 
@@ -1298,115 +1254,106 @@ namespace Vocaluxe.Screens
             switch (CConfig.TimerLook)
             {
                 case ETimerLook.TR_CONFIG_TIMERLOOK_NORMAL:
-                    _TimeLineRect.W = Statics[htStatics(StaticTimeLine)].Rect.W * (CurrentTime / TotalTime);
+                    _TimeLineRect.W = Statics[_StaticTimeLine].Rect.W * (currentTime / totalTime);
                     break;
 
                 case ETimerLook.TR_CONFIG_TIMERLOOK_EXPANDED:
-                    CStatic stat = Statics[htStatics(StaticTimeLine)];
-                    int CurrentBeat = CGame.CurrentBeat;
+                    CStatic stat = Statics[_StaticTimeLine];
+                    int currentBeat = CGame.CurrentBeat;
                     for (int i = 0; i < _TimeRects.Count; i++)
                     {
-                        if (CurrentBeat >= _TimeRects[i].startBeat && CurrentBeat <= _TimeRects[i].endBeat)
+                        if (currentBeat >= _TimeRects[i].StartBeat && currentBeat <= _TimeRects[i].EndBeat)
                         {
-                            _TimeRects[i].rect.Texture = Statics[htStatics(StaticTimeLineExpandedHighlighted)].Texture;
-                            _TimeRects[i].rect.Color = Statics[htStatics(StaticTimeLineExpandedHighlighted)].Color;
+                            _TimeRects[i].Rect.Texture = Statics[_StaticTimeLineExpandedHighlighted].Texture;
+                            _TimeRects[i].Rect.Color = Statics[_StaticTimeLineExpandedHighlighted].Color;
                         }
                         else
                         {
-                            _TimeRects[i].rect.Texture = Statics[htStatics(StaticTimeLineExpandedNormal)].Texture;
-                            _TimeRects[i].rect.Color = Statics[htStatics(StaticTimeLineExpandedNormal)].Color;
+                            _TimeRects[i].Rect.Texture = Statics[_StaticTimeLineExpandedNormal].Texture;
+                            _TimeRects[i].Rect.Color = Statics[_StaticTimeLineExpandedNormal].Color;
                         }
-
                     }
-                    Statics[htStatics(StaticTimePointer)].Rect.X = stat.Rect.X + stat.Rect.W * (CurrentTime / TotalTime);
+                    Statics[_StaticTimePointer].Rect.X = stat.Rect.X + stat.Rect.W * (currentTime / totalTime);
                     break;
             }
         }
 
-        private void PrepareTimeLine()
+        private void _PrepareTimeLine()
         {
-            CStatic stat = Statics[htStatics(StaticTimeLine)];
+            CStatic stat = Statics[_StaticTimeLine];
             switch (CConfig.TimerLook)
             {
                 case ETimerLook.TR_CONFIG_TIMERLOOK_NORMAL:
                     _TimeLineRect = new SRectF(stat.Rect.X, stat.Rect.Y, 0f, stat.Rect.H, stat.Rect.Z);
-                    Statics[htStatics(StaticTimePointer)].Visible = false;
+                    Statics[_StaticTimePointer].Visible = false;
                     break;
 
                 case ETimerLook.TR_CONFIG_TIMERLOOK_EXPANDED:
                     _TimeRects.Clear();
-                    Statics[htStatics(StaticTimePointer)].Visible = true;
+                    Statics[_StaticTimePointer].Visible = true;
 
                     CSong song = CGame.GetSong();
 
                     if (song == null)
                         return;
 
-                    float TotalTime = CSound.GetLength(_CurrentStream);
+                    float totalTime = CSound.GetLength(_CurrentStream);
                     if (song.Finish != 0)
-                        TotalTime = song.Finish;
+                        totalTime = song.Finish;
 
-                    TotalTime -= song.Start;
+                    totalTime -= song.Start;
 
-                    if (TotalTime <= 0f)
+                    if (totalTime <= 0f)
                         return;
 
-                    CLines[] Lines = new CLines[song.Notes.Lines.Length];
-                    Lines = song.Notes.Lines;
-                    for (int i = 0; i < Lines.Length; i++)
+                    CLines[] lines = new CLines[song.Notes.Lines.Length];
+                    lines = song.Notes.Lines;
+                    for (int i = 0; i < lines.Length; i++)
                     {
-                        CLine[] Line = Lines[i].Line;
-                        for (int j = 0; j < Line.Length; j++)
+                        CLine[] line = lines[i].Line;
+                        for (int j = 0; j < line.Length; j++)
                         {
-                            if (Line[j].VisibleInTimeLine)
+                            if (line[j].VisibleInTimeLine)
                             {
-                                TimeRect trect = new TimeRect();
-                                trect.startBeat = Line[j].FirstNoteBeat;
-                                trect.endBeat = Line[j].EndBeat;
-                                trect.rect = GetNewStatic(new STexture(-1),
-                                    new SColorF(1f, 1f, 1f, 1f),
-                                    new SRectF(stat.Rect.X + stat.Rect.W * ((CGame.GetTimeFromBeats(trect.startBeat, song.BPM) + song.Gap - song.Start) / TotalTime),
-                                        stat.Rect.Y,
-                                        stat.Rect.W * (CGame.GetTimeFromBeats((trect.endBeat - trect.startBeat), song.BPM) / TotalTime),
-                                        stat.Rect.H,
-                                        stat.Rect.Z));
+                                STimeRect trect = new STimeRect();
+                                trect.StartBeat = line[j].FirstNoteBeat;
+                                trect.EndBeat = line[j].EndBeat;
+                                trect.Rect = GetNewStatic(new STexture(-1),
+                                                          new SColorF(1f, 1f, 1f, 1f),
+                                                          new SRectF(
+                                                              stat.Rect.X + stat.Rect.W * ((CGame.GetTimeFromBeats(trect.StartBeat, song.BPM) + song.Gap - song.Start) / totalTime),
+                                                              stat.Rect.Y,
+                                                              stat.Rect.W * (CGame.GetTimeFromBeats(trect.EndBeat - trect.StartBeat, song.BPM) / totalTime),
+                                                              stat.Rect.H,
+                                                              stat.Rect.Z));
 
                                 _TimeRects.Add(trect);
                             }
                         }
-
                     }
                     break;
             }
         }
 
-        private void UpdateAvatars()
+        private void _UpdateAvatars()
         {
             for (int i = 0; i < CGame.NumPlayer; i++)
             {
-                if (CGame.Player[i].ProfileID > -1)
-                {
-                    Statics[htStatics(StaticAvatars[i, CGame.NumPlayer - 1])].Texture = CProfiles.Profiles[CGame.Player[i].ProfileID].Avatar.Texture;
-                }
+                if (CGame.Player[i].ProfileID > -1 && CProfiles.NumProfiles > CGame.Player[i].ProfileID)
+                    Statics[_StaticAvatars[i, CGame.NumPlayer - 1]].Texture = CProfiles.Profiles[CGame.Player[i].ProfileID].Avatar.Texture;
                 else
-                {
-                    Statics[htStatics(StaticAvatars[i, CGame.NumPlayer - 1])].Visible = false;
-                }
+                    Statics[_StaticAvatars[i, CGame.NumPlayer - 1]].Visible = false;
             }
         }
 
-        private void UpdateNames()
+        private void _UpdateNames()
         {
             for (int i = 0; i < CGame.NumPlayer; i++)
             {
-                if (CGame.Player[i].ProfileID > -1)
-                {
-                    Texts[htTexts(TextNames[i, CGame.NumPlayer - 1])].Text = CProfiles.Profiles[CGame.Player[i].ProfileID].PlayerName;
-                }
+                if (CGame.Player[i].ProfileID > -1 && CProfiles.NumProfiles > CGame.Player[i].ProfileID)
+                    Texts[_TextNames[i, CGame.NumPlayer - 1]].Text = CProfiles.Profiles[CGame.Player[i].ProfileID].PlayerName;
                 else
-                {
-                    Texts[htTexts(TextNames[i, CGame.NumPlayer - 1])].Visible = false;
-                }
+                    Texts[_TextNames[i, CGame.NumPlayer - 1]].Visible = false;
             }
         }
     }

@@ -1,60 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
-
+﻿using System.Windows.Forms;
 using Vocaluxe.Base;
-using Vocaluxe.Menu;
+using VocaluxeLib.Menu;
 
 namespace Vocaluxe.Screens
 {
     class CScreenOptionsLyrics : CMenu
     {
         // Version number for theme files. Increment it, if you've changed something on the theme files!
-        const int ScreenVersion = 1;
-
-        private const string SelectSlideLyricStyle = "SelectSlideLyricStyle";
-        private const string SelectSlideLyricsOnTop = "SelectSlideLyricsOnTop";
-
-        private const string ButtonExit = "ButtonExit";
-
-        public CScreenOptionsLyrics()
+        protected override int _ScreenVersion
         {
+            get { return 1; }
         }
 
-        protected override void Init()
+        private const string _SelectSlideLyricStyle = "SelectSlideLyricStyle";
+        private const string _SelectSlideLyricsOnTop = "SelectSlideLyricsOnTop";
+
+        private const string _ButtonExit = "ButtonExit";
+
+        public override void Init()
         {
             base.Init();
 
-            _ThemeName = "ScreenOptionsLyrics";
-            _ScreenVersion = ScreenVersion;
-
-            _ThemeButtons = new string[] { ButtonExit };
-            _ThemeSelectSlides = new string[] { SelectSlideLyricStyle, SelectSlideLyricsOnTop };
+            _ThemeButtons = new string[] {_ButtonExit};
+            _ThemeSelectSlides = new string[] {_SelectSlideLyricStyle, _SelectSlideLyricsOnTop};
         }
 
-        public override void LoadTheme(string XmlPath)
+        public override void LoadTheme(string xmlPath)
         {
-            base.LoadTheme(XmlPath);
-            SelectSlides[htSelectSlides(SelectSlideLyricStyle)].SetValues<ELyricStyle>((int)CConfig.LyricStyle);
-            SelectSlides[htSelectSlides(SelectSlideLyricsOnTop)].SetValues<EOffOn>((int)CConfig.LyricsOnTop);
+            base.LoadTheme(xmlPath);
+            SelectSlides[_SelectSlideLyricStyle].SetValues<ELyricStyle>((int)CConfig.LyricStyle);
+            SelectSlides[_SelectSlideLyricsOnTop].SetValues<EOffOn>((int)CConfig.LyricsOnTop);
         }
 
-        public override bool HandleInput(KeyEvent KeyEvent)
+        public override bool HandleInput(SKeyEvent keyEvent)
         {
-            base.HandleInput(KeyEvent);
+            base.HandleInput(keyEvent);
 
-            if (KeyEvent.KeyPressed)
-            {
-
-            }
+            if (keyEvent.KeyPressed) {}
             else
             {
-                switch (KeyEvent.Key)
+                switch (keyEvent.Key)
                 {
                     case Keys.Escape:
                     case Keys.Back:
-                        SaveConfig();
+                        _SaveConfig();
                         CGraphics.FadeTo(EScreens.ScreenOptions);
                         break;
 
@@ -64,41 +53,39 @@ namespace Vocaluxe.Screens
                         break;
 
                     case Keys.Enter:
-                        if (Buttons[htButtons(ButtonExit)].Selected)
+                        if (Buttons[_ButtonExit].Selected)
                         {
-                            SaveConfig();
+                            _SaveConfig();
                             CGraphics.FadeTo(EScreens.ScreenOptions);
                         }
                         break;
 
                     case Keys.Left:
-                        SaveConfig();
+                        _SaveConfig();
                         break;
 
                     case Keys.Right:
-                        SaveConfig();
+                        _SaveConfig();
                         break;
                 }
             }
             return true;
         }
 
-        public override bool HandleMouse(MouseEvent MouseEvent)
+        public override bool HandleMouse(SMouseEvent mouseEvent)
         {
-            base.HandleMouse(MouseEvent);
+            base.HandleMouse(mouseEvent);
 
-            if (MouseEvent.RB)
+            if (mouseEvent.RB)
             {
-                SaveConfig();
+                _SaveConfig();
                 CGraphics.FadeTo(EScreens.ScreenOptions);
             }
-            if (MouseEvent.LB && IsMouseOver(MouseEvent))
+            if (mouseEvent.LB && IsMouseOver(mouseEvent))
             {
-                SaveConfig();
-                if (Buttons[htButtons(ButtonExit)].Selected)
-                {
+                _SaveConfig();
+                if (Buttons[_ButtonExit].Selected)
                     CGraphics.FadeTo(EScreens.ScreenOptions);
-                }
             }
             return true;
         }
@@ -114,10 +101,10 @@ namespace Vocaluxe.Screens
             return true;
         }
 
-        private void SaveConfig()
+        private void _SaveConfig()
         {
-            CConfig.LyricsOnTop = (EOffOn)SelectSlides[htSelectSlides(SelectSlideLyricsOnTop)].Selection;
-            CConfig.LyricStyle = (ELyricStyle)SelectSlides[htSelectSlides(SelectSlideLyricStyle)].Selection;
+            CConfig.LyricsOnTop = (EOffOn)SelectSlides[_SelectSlideLyricsOnTop].Selection;
+            CConfig.LyricStyle = (ELyricStyle)SelectSlides[_SelectSlideLyricStyle].Selection;
             CConfig.SaveConfig();
         }
     }

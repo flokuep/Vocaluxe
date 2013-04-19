@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Vocaluxe.Lib.Input;
+﻿using Vocaluxe.Lib.Input;
 using Vocaluxe.Lib.Input.WiiMote;
-using Vocaluxe.Menu;
+using VocaluxeLib.Menu;
 
 namespace Vocaluxe.Base
 {
     static class CInput
     {
-        static IInput _Input;
+        private static IInput _Input;
 
         public static void Init()
         {
@@ -22,6 +18,7 @@ namespace Vocaluxe.Base
         public static void Close()
         {
             _Input.Close();
+            _Input = null;
         }
 
         public static bool Connect()
@@ -44,19 +41,19 @@ namespace Vocaluxe.Base
             _Input.Update();
         }
 
-        public static bool PollKeyEvent(ref KeyEvent KeyEvent)
+        public static bool PollKeyEvent(ref SKeyEvent keyEvent)
         {
-            return _Input.PollKeyEvent(ref KeyEvent);
+            return _Input.PollKeyEvent(ref keyEvent);
         }
 
-        public static bool PollMouseEvent(ref MouseEvent MouseEvent)
+        public static bool PollMouseEvent(ref SMouseEvent mouseEvent)
         {
-            return _Input.PollMouseEvent(ref MouseEvent);
+            return _Input.PollMouseEvent(ref mouseEvent);
         }
 
-        public static void SetRumble(float Duration)
+        public static void SetRumble(float duration)
         {
-            _Input.SetRumble(Duration);
+            _Input.SetRumble(duration);
         }
     }
 }

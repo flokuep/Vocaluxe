@@ -1,33 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Vocaluxe.Lib.Sound.Decoder
+﻿namespace Vocaluxe.Lib.Sound.Decoder
 {
-    abstract class CAudioDecoder: IAudioDecoder
+    abstract class CAudioDecoder : IAudioDecoder
     {
         protected bool _Initialized;
 
-        public virtual void Init()
+        public virtual void Init() {}
+
+        public virtual void Close() {}
+
+        public void Open(string fileName)
         {
+            Open(fileName, false);
         }
 
-        public virtual void Close()
-        {
-        }
+        public virtual void Open(string fileName, bool loop) {}
 
-        public void Open(string FileName)
+        public virtual SFormatInfo GetFormatInfo()
         {
-            Open(FileName, false);
-        }
-
-        public virtual void Open(string FileName, bool Loop)
-        {
-        }
-
-        public virtual FormatInfo GetFormatInfo()
-        {
-            return new FormatInfo();
+            return new SFormatInfo();
         }
 
         public virtual float GetLength()
@@ -35,19 +25,17 @@ namespace Vocaluxe.Lib.Sound.Decoder
             return 0f;
         }
 
-        public virtual void SetPosition(float Time)
-        {
-        }
+        public virtual void SetPosition(float time) {}
 
         public virtual float GetPosition()
         {
             return 0f;
         }
 
-        public virtual void Decode(out byte[] Buffer, out float TimeStamp)
+        public virtual void Decode(out byte[] buffer, out float timeStamp)
         {
-            Buffer = null;
-            TimeStamp = 0f;
+            buffer = null;
+            timeStamp = 0f;
         }
     }
 }

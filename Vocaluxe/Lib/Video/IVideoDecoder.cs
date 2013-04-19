@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Vocaluxe.Lib.Draw;
-using Vocaluxe.Menu;
+using VocaluxeLib.Menu;
 
 namespace Vocaluxe.Lib.Video
 {
-    struct VideoStreams
+    struct SVideoStreams
     {
-        public int handle;
-        public string file;
-        
-        public VideoStreams(int stream)
+        public int Handle;
+        public string File;
+
+        public SVideoStreams(int stream)
         {
-            handle = stream;
-            file = String.Empty;
+            Handle = stream;
+            File = String.Empty;
         }
     }
 
@@ -24,17 +20,19 @@ namespace Vocaluxe.Lib.Video
         bool Init();
         void CloseAll();
 
-        int Load(string VideoFileName);
-        bool Close(int StreamID);
+        int Load(string videoFileName);
+        bool Close(int streamID);
         int GetNumStreams();
 
-        float GetLength(int StreamID);
-        bool GetFrame(int StreamID, ref STexture Frame, float Time, ref float VideoTime);
-        bool Skip(int StreamID, float Start, float Gap);
-        void SetLoop(int StreamID, bool Loop);
-        void Pause(int StreamID);
-        void Resume(int StreamID);
+        float GetLength(int streamID);
+        bool GetFrame(int streamID, ref STexture frame, float time, ref float videoTime);
+        bool Skip(int streamID, float start, float gap);
+        void SetLoop(int streamID, bool loop);
+        void Pause(int streamID);
+        void Resume(int streamID);
 
-        bool Finished(int StreamID);
+        bool Finished(int streamID);
+
+        void Update();
     }
 }

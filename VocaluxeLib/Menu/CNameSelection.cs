@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace Vocaluxe.Menu
+namespace VocaluxeLib.Menu
 {
     struct SThemeNameSelection
     {
@@ -23,15 +21,13 @@ namespace Vocaluxe.Menu
 
     public class CNameSelection : IMenuElement
     {
-        class CTile
+        private class CTile
         {
             public int PlayerNr;
-            public CStatic Avatar;
-            public CText Name;
+            public readonly CStatic Avatar;
+            public readonly CText Name;
 
-            public CTile()
-            {
-            }
+            public CTile() {}
 
             public CTile(CStatic av, CText tex, int pl)
             {
@@ -41,7 +37,7 @@ namespace Vocaluxe.Menu
             }
         }
 
-        private int _PartyModeID;
+        private readonly int _PartyModeID;
         private SThemeNameSelection _Theme;
         private bool _ThemeLoaded;
 
@@ -54,7 +50,7 @@ namespace Vocaluxe.Menu
         public bool Visible = true;
 
         public SRectF Rect;
-        private List<CTile> _Tiles;
+        private readonly List<CTile> _Tiles;
 
         private STexture _TextureEmptyTile;
         private STexture _TextureTileSelected;
@@ -70,43 +66,42 @@ namespace Vocaluxe.Menu
         private int _TileW;
         private int _TileH;
 
-        public int _Offset = 0;
-        private int _actualSelection = -1;
+        public int Offset = 0;
+        private int _ActualSelection = -1;
         public int Selection = -1;
 
-        int _player = -1;
+        private int _Player = -1;
 
-        private List<int> VisibleProfiles;
+        private readonly List<int> _VisibleProfiles;
 
-        private CStatic PlayerSelector;
+        private CStatic _PlayerSelector;
 
-
-        public CNameSelection(int PartyModeID)
+        public CNameSelection(int partyModeID)
         {
-            _PartyModeID = PartyModeID;
+            _PartyModeID = partyModeID;
             _Theme = new SThemeNameSelection();
 
             _Tiles = new List<CTile>();
-            VisibleProfiles = new List<int>();
+            _VisibleProfiles = new List<int>();
         }
 
         public void Init()
         {
-            PrepareTiles();
+            _PrepareTiles();
 
-            PlayerSelector = new CStatic(_PartyModeID);
-            PlayerSelector.Texture = _TextureTileSelected;
-            PlayerSelector.Rect = new SRectF(0, 0, (_TileW + 6), (_TileH + 6), (Rect.Z - 0.5f));
-            PlayerSelector.Visible = false;
+            _PlayerSelector = new CStatic(_PartyModeID);
+            _PlayerSelector.Texture = _TextureTileSelected;
+            _PlayerSelector.Rect = new SRectF(0, 0, _TileW + 6, _TileH + 6, Rect.Z - 0.5f);
+            _PlayerSelector.Visible = false;
 
-            UpdateVisibleProfiles();
+            _UpdateVisibleProfiles();
 
             UpdateList(0);
         }
 
-        public bool LoadTheme(string XmlPath, string ElementName, CXMLReader xmlReader, int SkinIndex)
+        public bool LoadTheme(string xmlPath, string elementName, CXMLReader xmlReader, int skinIndex)
         {
-            string item = XmlPath + "/" + ElementName;
+            string item = xmlPath + "/" + elementName;
             _ThemeLoaded = true;
 
             _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/X", ref Rect.X);
@@ -118,9 +113,7 @@ namespace Vocaluxe.Menu
             _ThemeLoaded &= xmlReader.GetValue(item + "/SkinEmptyTile", ref _Theme.TextureEmptyTileName, String.Empty);
 
             if (xmlReader.GetValue(item + "/ColorEmptyTile", ref _Theme.ColorEmptyTileName, String.Empty))
-            {
-                _ThemeLoaded &= CBase.Theme.GetColor(_Theme.ColorEmptyTileName, SkinIndex, ref ColorEmptyTile);
-            }
+                _ThemeLoaded &= CBase.Theme.GetColor(_Theme.ColorEmptyTileName, skinIndex, out ColorEmptyTile);
             else
             {
                 _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/R", ref ColorEmptyTile.R);
@@ -140,11 +133,9 @@ namespace Vocaluxe.Menu
             _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/Tiles/Name/Space", ref _Theme.NameSpace);
             _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/Tiles/Name/H", ref _Theme.NameHeight);
             _ThemeLoaded &= xmlReader.GetValue(item + "/Tiles/Name/Font", ref _Theme.NameFont, "Normal");
-            _ThemeLoaded &= xmlReader.TryGetEnumValue<EStyle>(item + "/Tiles/Name/Style", ref _Theme.NameStyle);
+            _ThemeLoaded &= xmlReader.TryGetEnumValue(item + "/Tiles/Name/Style", ref _Theme.NameStyle);
             if (xmlReader.GetValue(item + "/Tiles/Name/Color", ref _Theme.NameColorName, String.Empty))
-            {
-                _ThemeLoaded &= CBase.Theme.GetColor(_Theme.NameColorName, SkinIndex, ref _Theme.NameColor);
-            }
+                _ThemeLoaded &= CBase.Theme.GetColor(_Theme.NameColorName, skinIndex, out _Theme.NameColor);
             else
             {
                 if (xmlReader.TryGetFloatValue(item + "/Tiles/Name/R", ref _Theme.NameColor.R))
@@ -158,7 +149,7 @@ namespace Vocaluxe.Menu
 
             if (_ThemeLoaded)
             {
-                _Theme.Name = ElementName;
+                _Theme.Name = elementName;
                 LoadTextures();
             }
             return _ThemeLoaded;
@@ -182,10 +173,8 @@ namespace Vocaluxe.Menu
 
                 writer.WriteComment("<ColorEmptyTile>: Static color from ColorScheme (high priority)");
                 writer.WriteComment("or <R>, <G>, <B>, <A> (lower priority)");
-                if (_Theme.ColorEmptyTileName != String.Empty)
-                {
+                if (_Theme.ColorEmptyTileName.Length > 0)
                     writer.WriteElementString("ColorEmptyTile", _Theme.ColorEmptyTileName);
-                }
                 else
                 {
                     writer.WriteElementString("R", ColorEmptyTile.R.ToString("#0.00"));
@@ -215,10 +204,8 @@ namespace Vocaluxe.Menu
                 writer.WriteComment("<Font>: Text font name");
                 writer.WriteElementString("Font", _Theme.NameFont);
                 writer.WriteComment("<Color>: Text color from ColorScheme (high priority)");
-                if (_Theme.NameColorName != String.Empty)
-                {
+                if (_Theme.NameColorName.Length > 0)
                     writer.WriteElementString("Color", _Theme.NameColorName);
-                }
                 else
                 {
                     writer.WriteElementString("R", _Theme.NameColor.R.ToString("#0.00"));
@@ -249,7 +236,7 @@ namespace Vocaluxe.Menu
             Draw(true);
         }
 
-        public void Draw(bool ForceDraw)
+        public void Draw(bool forceDraw)
         {
             int i = 0;
             foreach (CTile tile in _Tiles)
@@ -257,95 +244,84 @@ namespace Vocaluxe.Menu
                 tile.Avatar.Draw();
                 tile.Name.Draw();
 
-                if (PlayerSelector.Visible)
+                if (_PlayerSelector.Visible)
                 {
                     //Update PlayerSelector-Coords
-                    if (_player > -1 && _actualSelection == i)
+                    if (_Player > -1 && _ActualSelection == i)
                     {
-                        PlayerSelector.Rect.X = tile.Avatar.Rect.X - 3;
-                        PlayerSelector.Rect.Y = tile.Avatar.Rect.Y - 3;
+                        _PlayerSelector.Rect.X = tile.Avatar.Rect.X - 3;
+                        _PlayerSelector.Rect.Y = tile.Avatar.Rect.Y - 3;
                     }
                 }
 
                 i++;
             }
-            if (PlayerSelector.Visible)
+            if (_PlayerSelector.Visible)
             {
                 //Draw PlayerSelector
-                PlayerSelector.Draw();
+                _PlayerSelector.Draw();
             }
         }
 
-        public void HandleInput(KeyEvent kevent)
+        public void HandleInput(SKeyEvent kevent)
         {
             switch (kevent.Key)
             {
                 case Keys.Right:
-                    if (_actualSelection + 1 < _Tiles.Count)
+                    if (_ActualSelection + 1 < _Tiles.Count)
                     {
-                        if (_Tiles[_actualSelection + 1].PlayerNr != -1)
-                        {
-                            _actualSelection++;
-                        }
-                        
+                        if (_Tiles[_ActualSelection + 1].PlayerNr != -1)
+                            _ActualSelection++;
                     }
                     else
                     {
-                        int offset = _Offset;
-                        UpdateList(_Offset + 1);
-                        if (offset != _Offset)
-                        {
-                            _actualSelection = 0;
-                        }
+                        int offset = Offset;
+                        UpdateList(Offset + 1);
+                        if (offset != Offset)
+                            _ActualSelection = 0;
                     }
                     break;
 
                 case Keys.Left:
-                    if (_actualSelection - 1 > -1)
+                    if (_ActualSelection - 1 > -1)
+                        _ActualSelection--;
+                    else if (Offset > 0)
                     {
-                        _actualSelection--;
-                    }
-                    else if (_Offset > 0)
-                    {
-                        UpdateList(_Offset - 1);
-                        _actualSelection = _Tiles.Count-1;
+                        UpdateList(Offset - 1);
+                        _ActualSelection = _Tiles.Count - 1;
                     }
                     break;
 
                 case Keys.Up:
-                    if (_actualSelection - _NumW > -1)
+                    if (_ActualSelection - _NumW > -1)
+                        _ActualSelection -= _NumW;
+                    else if (Offset > 0)
                     {
-                        _actualSelection -= _NumW;
-                    }
-                    else if (_Offset > 0)
-                    {
-                        UpdateList(_Offset - 1);
-                        _actualSelection += _Tiles.Count- _NumW;
+                        UpdateList(Offset - 1);
+                        _ActualSelection += _Tiles.Count - _NumW;
                     }
                     break;
 
                 case Keys.Down:
-                    if (_actualSelection + _NumW < _Tiles.Count)
+                    if (_ActualSelection + _NumW < _Tiles.Count)
                     {
-                        if (_Tiles[_actualSelection + _NumW].PlayerNr != -1)
-                        {
-                            _actualSelection += _NumW;
-                        }
+                        if (_Tiles[_ActualSelection + _NumW].PlayerNr != -1)
+                            _ActualSelection += _NumW;
                     }
                     else
                     {
-                        int offset = _Offset;
-                        UpdateList(_Offset + 1);
-                        if (offset != _Offset)
+                        int offset = Offset;
+                        UpdateList(Offset + 1);
+                        if (offset != Offset)
                         {
-                            _actualSelection = _actualSelection - _Tiles.Count + _NumW;
-                            if (_Tiles[_actualSelection].PlayerNr == -1)
+                            _ActualSelection = _ActualSelection - _Tiles.Count + _NumW;
+                            if (_Tiles[_ActualSelection].PlayerNr == -1)
                             {
-                                for (int i = (_Tiles.Count - 1); i >= 0; i--)
+                                for (int i = _Tiles.Count - 1; i >= 0; i--)
                                 {
                                     if (_Tiles[i].PlayerNr != -1)
                                     {
-                                        _actualSelection = i;
+                                        _ActualSelection = i;
                                         break;
                                     }
                                 }
@@ -355,8 +331,8 @@ namespace Vocaluxe.Menu
                     break;
             }
 
-            if (_Offset * _Tiles.Count + _actualSelection < VisibleProfiles.Count)
-                Selection = VisibleProfiles[_Offset * _Tiles.Count + _actualSelection];
+            if (Offset * _Tiles.Count + _ActualSelection < _VisibleProfiles.Count)
+                Selection = _VisibleProfiles[Offset * _Tiles.Count + _ActualSelection];
             else
                 Selection = -1;
         }
@@ -366,39 +342,35 @@ namespace Vocaluxe.Menu
             //Overwrite player-selection; Same profile, but other player
             if (active && Selection != -1)
             {
-                _player = player;
-                PlayerSelector.Color = CBase.Theme.GetPlayerColor(player);
+                _Player = player;
+                _PlayerSelector.Color = CBase.Theme.GetPlayerColor(player);
             }
-            //Normal activation
+                //Normal activation
             else if (active)
             {
                 Selection = 0;
-                _actualSelection = 0;
-                _player = player;
-                PlayerSelector.Color = CBase.Theme.GetPlayerColor(player);
-                PlayerSelector.Visible = true;
+                _ActualSelection = 0;
+                _Player = player;
+                _PlayerSelector.Color = CBase.Theme.GetPlayerColor(player);
+                _PlayerSelector.Visible = true;
             }
-            //Deactivate
+                //Deactivate
             else
             {
                 Selection = -1;
-                _actualSelection = -1;
-                _player = -1;
-                PlayerSelector.Visible = false;
+                _ActualSelection = -1;
+                _Player = -1;
+                _PlayerSelector.Visible = false;
             }
         }
 
         public void UpdateList()
         {
-            UpdateVisibleProfiles();
-            if (_Tiles.Count * (_Offset + 1) - VisibleProfiles.Count >= _Tiles.Count * _Offset)
-            {
-                UpdateList(_Offset - 1);
-            }
+            _UpdateVisibleProfiles();
+            if (_Tiles.Count * (Offset + 1) - _VisibleProfiles.Count >= _Tiles.Count * Offset)
+                UpdateList(Offset - 1);
             else
-            {
-                UpdateList(_Offset);
-            }
+                UpdateList(Offset);
         }
 
         public void UpdateList(int offset)
@@ -408,12 +380,12 @@ namespace Vocaluxe.Menu
 
             for (int i = 0; i < _Tiles.Count; i++)
             {
-                if ((i + offset * _Tiles.Count) < VisibleProfiles.Count)
+                if ((i + offset * _Tiles.Count) < _VisibleProfiles.Count)
                 {
-                    _Tiles[i].Avatar.Texture = CBase.Profiles.GetProfiles()[VisibleProfiles[i + offset * _Tiles.Count]].Avatar.Texture;
+                    _Tiles[i].Avatar.Texture = CBase.Profiles.GetProfiles()[_VisibleProfiles[i + offset * _Tiles.Count]].Avatar.Texture;
                     _Tiles[i].Avatar.Color = new SColorF(1, 1, 1, 1);
-                    _Tiles[i].Name.Text = CBase.Profiles.GetProfiles()[VisibleProfiles[i + offset * _Tiles.Count]].PlayerName;
-                    _Tiles[i].PlayerNr = VisibleProfiles[i + offset * _Tiles.Count];
+                    _Tiles[i].Name.Text = CBase.Profiles.GetProfiles()[_VisibleProfiles[i + offset * _Tiles.Count]].PlayerName;
+                    _Tiles[i].PlayerNr = _VisibleProfiles[i + offset * _Tiles.Count];
                 }
                 else
                 {
@@ -423,61 +395,53 @@ namespace Vocaluxe.Menu
                     _Tiles[i].PlayerNr = -1;
                 }
             }
-            _Offset = offset;
+            Offset = offset;
         }
 
-        public bool isOverTile(MouseEvent mevent)
+        public bool IsOverTile(SMouseEvent mevent)
         {
             bool isOver = false;
             foreach (CTile tile in _Tiles)
             {
                 if (CHelper.IsInBounds(tile.Avatar.Rect, mevent))
-                {
                     isOver = true;
-                }
             }
             return isOver;
         }
 
-        public int TilePlayerNr(MouseEvent mevent)
+        public int TilePlayerNr(SMouseEvent mevent)
         {
             foreach (CTile tile in _Tiles)
             {
                 if (CHelper.IsInBounds(tile.Avatar.Rect, mevent))
-                {
                     return tile.PlayerNr;
-                }
             }
 
             return -1;
         }
 
-        public CStatic TilePlayerAvatar(MouseEvent mevent)
+        public CStatic TilePlayerAvatar(SMouseEvent mevent)
         {
             foreach (CTile tile in _Tiles)
             {
                 if (CHelper.IsInBounds(tile.Avatar.Rect, mevent))
-                {
                     return tile.Avatar;
-                }
             }
 
             return new CStatic(_PartyModeID);
         }
 
-        public void UnloadTextures()
-        {
-        }
+        public void UnloadTextures() {}
 
         public void LoadTextures()
         {
             _TextureEmptyTile = CBase.Theme.GetSkinTexture(_Theme.TextureEmptyTileName, _PartyModeID);
             _TextureTileSelected = CBase.Theme.GetSkinTexture(_Theme.TextureTileSelectedName, _PartyModeID);
 
-            if (_Theme.ColorEmptyTileName != String.Empty)
+            if (_Theme.ColorEmptyTileName.Length > 0)
                 ColorEmptyTile = CBase.Theme.GetColor(_Theme.ColorEmptyTileName, _PartyModeID);
 
-            if (_Theme.NameColorName != String.Empty)
+            if (_Theme.NameColorName.Length > 0)
                 _Theme.NameColor = CBase.Theme.GetColor(_Theme.NameColorName, _PartyModeID);
         }
 
@@ -486,10 +450,10 @@ namespace Vocaluxe.Menu
             UnloadTextures();
             LoadTextures();
 
-            PrepareTiles();
+            _PrepareTiles();
         }
 
-        private void PrepareTiles()
+        private void _PrepareTiles()
         {
             _Tiles.Clear();
             for (int i = 0; i < _NumH; i++)
@@ -498,35 +462,30 @@ namespace Vocaluxe.Menu
                 {
                     SRectF rect = new SRectF(Rect.X + j * (_TileW + _SpaceW), Rect.Y + i * (_TileH + _SpaceH), _TileW, _TileH, Rect.Z);
                     CStatic tileStatic = new CStatic(_PartyModeID, _TextureEmptyTile, ColorEmptyTile, rect);
-                    CText tileText = new CText(rect.X + rect.W / 2, rect.Y + rect.H + _Theme.NameSpace, rect.Z, _Theme.NameHeight, rect.W, EAlignment.Center, _Theme.NameStyle, _Theme.NameFont, _Theme.NameColor, "");
+                    CText tileText = new CText(rect.X + rect.W / 2, rect.Y + rect.H + _Theme.NameSpace, rect.Z, _Theme.NameHeight, rect.W, EAlignment.Center, _Theme.NameStyle,
+                                               _Theme.NameFont, _Theme.NameColor, "");
                     _Tiles.Add(new CTile(tileStatic, tileText, -1));
                 }
             }
         }
 
-        private void UpdateVisibleProfiles()
+        private void _UpdateVisibleProfiles()
         {
-            VisibleProfiles.Clear();
+            _VisibleProfiles.Clear();
             for (int i = 0; i < CBase.Profiles.GetProfiles().Length; i++)
             {
                 bool visible = false;
                 //Show profile only if active
                 if (CBase.Profiles.GetProfiles()[i].Active == EOffOn.TR_CONFIG_ON)
-                {
                     visible = true;
-                }
                 for (int p = 0; p < CBase.Game.GetNumPlayer(); p++)
                 {
                     //Don't show profile if is selected, but if selected and guest
                     if (CBase.Game.GetPlayer()[p].ProfileID == i && CBase.Profiles.GetProfiles()[i].GuestProfile == EOffOn.TR_CONFIG_OFF)
-                    {
                         visible = false;
-                    }
                 }
                 if (visible)
-                {
-                    VisibleProfiles.Add(i);
-                }
+                    _VisibleProfiles.Add(i);
             }
         }
 
@@ -548,6 +507,5 @@ namespace Vocaluxe.Menu
                 Rect.H = 1;
         }
         #endregion ThemeEdit
-
     }
 }

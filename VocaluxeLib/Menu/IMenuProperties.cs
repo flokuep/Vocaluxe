@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-using Vocaluxe.Menu.Animations;
+using VocaluxeLib.Menu.Animations;
 
-namespace Vocaluxe.Menu
+namespace VocaluxeLib.Menu
 {
     public interface IMenuProperties
     {

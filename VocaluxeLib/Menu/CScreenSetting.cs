@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
 using System.Xml;
 
-namespace Vocaluxe.Menu
+namespace VocaluxeLib.Menu
 {
     enum ESettingType
     {
@@ -23,7 +20,7 @@ namespace Vocaluxe.Menu
 
     public class CScreenSetting : IMenuElement
     {
-        private int _PartyModeID;
+        private readonly int _PartyModeID;
 
         private SScreenSetting _Theme;
         private bool _ThemeLoaded;
@@ -33,9 +30,9 @@ namespace Vocaluxe.Menu
             return _Theme.Name;
         }
 
-        public CScreenSetting(int PartyModeID)
+        public CScreenSetting(int partyModeID)
         {
-            _PartyModeID = PartyModeID;
+            _PartyModeID = partyModeID;
             _Theme = new SScreenSetting();
             _ThemeLoaded = false;
         }
@@ -47,18 +44,16 @@ namespace Vocaluxe.Menu
             _ThemeLoaded = ts._ThemeLoaded;
         }
 
-        public bool LoadTheme(string XmlPath, string ElementName, CXMLReader xmlReader, int SkinIndex)
+        public bool LoadTheme(string xmlPath, string elementName, CXMLReader xmlReader, int skinIndex)
         {
-            string item = XmlPath + "/" + ElementName;
+            string item = xmlPath + "/" + elementName;
             _ThemeLoaded = true;
 
             _ThemeLoaded &= xmlReader.GetValue(item + "/Value", ref _Theme.Value, String.Empty);
-            _ThemeLoaded &= xmlReader.TryGetEnumValue<ESettingType>(item + "/Type", ref _Theme.Type);
+            _ThemeLoaded &= xmlReader.TryGetEnumValue(item + "/Type", ref _Theme.Type);
 
             if (_ThemeLoaded)
-            {
-                _Theme.Name = ElementName;
-            }
+                _Theme.Name = elementName;
             return _ThemeLoaded;
         }
 
@@ -68,7 +63,7 @@ namespace Vocaluxe.Menu
             {
                 writer.WriteStartElement(_Theme.Name);
 
-                writer.WriteComment("<Type>: Type of theme-setting-value: "+ CHelper.ListStrings(Enum.GetNames(typeof(ESettingType))));
+                writer.WriteComment("<Type>: Type of theme-setting-value: " + CHelper.ListStrings(Enum.GetNames(typeof(ESettingType))));
                 writer.WriteElementString("Type", Enum.GetName(typeof(ESettingType), _Theme.Type));
                 writer.WriteComment("<Value>: Value of theme-setting");
                 writer.WriteElementString("Value", _Theme.Value);
@@ -83,39 +78,33 @@ namespace Vocaluxe.Menu
             switch (_Theme.Type)
             {
                 case ESettingType.Int:
-                    return GetIntValue(_Theme.Value);
+                    return _GetIntValue(_Theme.Value);
 
                 case ESettingType.String:
                     return _Theme.Value;
 
                 case ESettingType.Color:
-                    return GetColorValue(_Theme.Value);
+                    return _GetColorValue(_Theme.Value);
 
                 case ESettingType.Texture:
-                    return GetTextureValue(_Theme.Value);
+                    return _GetTextureValue(_Theme.Value);
             }
 
             return null;
         }
 
-        public void UnloadTextures()
-        {
-        }
+        public void UnloadTextures() {}
 
-        public void LoadTextures()
-        {
-        }
+        public void LoadTextures() {}
 
-        public void ReloadTextures()
-        {
-        }
+        public void ReloadTextures() {}
 
         #region Private
-        private int GetIntValue(string _string)
+        private int _GetIntValue(string value)
         {
             try
             {
-                return Convert.ToInt32(_string);
+                return Convert.ToInt32(value);
             }
             catch (Exception)
             {
@@ -123,25 +112,21 @@ namespace Vocaluxe.Menu
             }
         }
 
-        private STexture GetTextureValue(string _string)
+        private STexture _GetTextureValue(string value)
         {
-            return CBase.Theme.GetSkinTexture(_string, _PartyModeID);
+            return CBase.Theme.GetSkinTexture(value, _PartyModeID);
         }
 
-        private SColorF GetColorValue(string _string)
+        private SColorF _GetColorValue(string value)
         {
-            return CBase.Theme.GetColor(_string, _PartyModeID);
+            return CBase.Theme.GetColor(value, _PartyModeID);
         }
         #endregion Private
 
         #region ThemeEdit
-        public void MoveElement(int stepX, int stepY)
-        {
-        }
+        public void MoveElement(int stepX, int stepY) {}
 
-        public void ResizeElement(int stepW, int stepH)
-        {
-        }
+        public void ResizeElement(int stepW, int stepH) {}
         #endregion ThemeEdit
     }
 }

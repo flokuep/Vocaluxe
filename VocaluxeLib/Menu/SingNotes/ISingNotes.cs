@@ -1,25 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace Vocaluxe.Menu.SingNotes
+namespace VocaluxeLib.Menu.SingNotes
 {
-    interface ISingNotes
+    public interface ISingNotes
     {
         void Reset();
-        int AddPlayer(SRectF Rect, SColorF Color, int PlayerNr);
-        void RemovePlayer(int ID);
+        int AddPlayer(SRectF rect, SColorF color, int playerNr);
+        void RemovePlayer(int iD);
 
+        void AddLine(int iD, CLine[] line, int lineNr, int player);
+        void RemoveLine(int iD);
 
-        void AddLine(int ID, CLine[] Line, int LineNr, int Player);
-        void RemoveLine(int ID);
+        void AddNote(int iD, CNote note);
 
-        void AddNote(int ID, CNote Note);
+        void SetAlpha(int iD, float alpha);
+        float GetAlpha(int iD);
 
-        void SetAlpha(int ID, float Alpha);
-        float GetAlpha(int ID);
-
-        void Draw(int ID, int Player);
-        void Draw(int ID, List<CLine> SingLine, int Player);
+        void Draw(int iD, int player);
+        void Draw(int iD, List<CLine> singLine, int player);
     }
 }

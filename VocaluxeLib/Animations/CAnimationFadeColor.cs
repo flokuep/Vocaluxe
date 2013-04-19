@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Vocaluxe.Menu.Animations
+namespace VocaluxeLib.Menu.Animations
 {
     public class CAnimationFadeColor : CAnimationFramework
     {

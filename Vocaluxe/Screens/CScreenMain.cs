@@ -1,61 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
-using System.Windows.Forms;
-
+﻿using System.Windows.Forms;
 using Vocaluxe.Base;
-using Vocaluxe.Lib.Draw;
-using Vocaluxe.Menu;
-
-using Vocaluxe.Lib.Video;
+using VocaluxeLib.Menu;
 
 namespace Vocaluxe.Screens
 {
-    class CScreenMain: CMenu
+    class CScreenMain : CMenu
     {
         // Version number for theme files. Increment it, if you've changed something on the theme files!
-        const int ScreenVersion = 1;
-
-        const string ButtonSing = "ButtonSing";
-        const string ButtonParty = "ButtonParty";
-        const string ButtonOptions = "ButtonOptions";
-        const string ButtonProfiles = "ButtonProfiles";
-        const string ButtonExit = "ButtonExit";
-
-        //CParticleEffect Snowflakes;
-        
-        public CScreenMain()
+        protected override int _ScreenVersion
         {
+            get { return 1; }
         }
 
-        protected override void Init()
+        private const string _ButtonSing = "ButtonSing";
+        private const string _ButtonParty = "ButtonParty";
+        private const string _ButtonOptions = "ButtonOptions";
+        private const string _ButtonProfiles = "ButtonProfiles";
+        private const string _ButtonExit = "ButtonExit";
+
+        //CParticleEffect Snowflakes;
+        public override void Init()
         {
             base.Init();
 
-            _ThemeName = "ScreenMain";
-            _ScreenVersion = ScreenVersion;
-            _ThemeStatics = new string[] { "StaticMenuBar" };
-            _ThemeButtons = new string[] { ButtonSing, ButtonParty, ButtonOptions, ButtonProfiles, ButtonExit };
+            _ThemeStatics = new string[] {"StaticMenuBar"};
+            _ThemeButtons = new string[] {_ButtonSing, _ButtonParty, _ButtonOptions, _ButtonProfiles, _ButtonExit};
         }
 
-        public override void LoadTheme(string XmlPath)
+        public override bool HandleInput(SKeyEvent keyEvent)
         {
-            base.LoadTheme(XmlPath);            
-        }
+            base.HandleInput(keyEvent);
 
-        public override bool HandleInput(KeyEvent KeyEvent)
-        {
-            base.HandleInput(KeyEvent);
-
-            if (KeyEvent.KeyPressed)
-            {
-                
-            }
+            if (keyEvent.KeyPressed) {}
             else
             {
-                switch (KeyEvent.Key)
+                switch (keyEvent.Key)
                 {
                     case Keys.O:
                         CGraphics.FadeTo(EScreens.ScreenOptions);
@@ -74,55 +53,55 @@ namespace Vocaluxe.Screens
                         break;
 
                     case Keys.Enter:
-                        if (Buttons[htButtons(ButtonSing)].Selected)
+                        if (Buttons[_ButtonSing].Selected)
                         {
                             CParty.SetNormalGameMode();
                             CGraphics.FadeTo(EScreens.ScreenSong);
                         }
 
-                        if (Buttons[htButtons(ButtonParty)].Selected)
+                        if (Buttons[_ButtonParty].Selected)
                             CGraphics.FadeTo(EScreens.ScreenParty);
 
-                        if (Buttons[htButtons(ButtonOptions)].Selected)
+                        if (Buttons[_ButtonOptions].Selected)
                             CGraphics.FadeTo(EScreens.ScreenOptions);
 
-                        if (Buttons[htButtons(ButtonProfiles)].Selected)
+                        if (Buttons[_ButtonProfiles].Selected)
                             CGraphics.FadeTo(EScreens.ScreenProfiles);
 
-                        if (Buttons[htButtons(ButtonExit)].Selected)
+                        if (Buttons[_ButtonExit].Selected)
                             return false;
 
                         break;
                 }
-            }            
+            }
             return true;
         }
 
-        public override bool HandleMouse(MouseEvent MouseEvent)
+        public override bool HandleMouse(SMouseEvent mouseEvent)
         {
-            base.HandleMouse(MouseEvent);
+            base.HandleMouse(mouseEvent);
 
-            if (MouseEvent.LB && IsMouseOver(MouseEvent))
+            if (mouseEvent.LB && IsMouseOver(mouseEvent))
             {
-                if (Buttons[htButtons(ButtonSing)].Selected)
+                if (Buttons[_ButtonSing].Selected)
                 {
                     CParty.SetNormalGameMode();
                     CGraphics.FadeTo(EScreens.ScreenSong);
                 }
 
-                if (Buttons[htButtons(ButtonParty)].Selected)
+                if (Buttons[_ButtonParty].Selected)
                     CGraphics.FadeTo(EScreens.ScreenParty);
 
-                if (Buttons[htButtons(ButtonOptions)].Selected)
+                if (Buttons[_ButtonOptions].Selected)
                     CGraphics.FadeTo(EScreens.ScreenOptions);
 
-                if (Buttons[htButtons(ButtonProfiles)].Selected)
+                if (Buttons[_ButtonProfiles].Selected)
                     CGraphics.FadeTo(EScreens.ScreenProfiles);
 
-                if (Buttons[htButtons(ButtonExit)].Selected)
+                if (Buttons[_ButtonExit].Selected)
                     return false;
             }
-            
+
             return true;
         }
 
@@ -141,15 +120,14 @@ namespace Vocaluxe.Screens
 
         public override bool Draw()
         {
-            base.DrawBG();
+            DrawBG();
 
             //if (Snowflakes == null)
             //    Snowflakes = new CParticleEffect(300, new SColorF(1, 1, 1, 1), new SRectF(0, 0, CSettings.iRenderW, 0, 0.5f), "Snowflake", 25, EParticeType.Snow);
 
             //Snowflakes.Update();
             //Snowflakes.Draw();
-
-            base.DrawFG();
+            DrawFG();
 
             if (CSettings.VersionRevision != ERevision.Release)
             {

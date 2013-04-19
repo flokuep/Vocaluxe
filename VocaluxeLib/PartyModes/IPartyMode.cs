@@ -1,65 +1,63 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using VocaluxeLib.Menu;
 
-using Vocaluxe.Menu;
-
-namespace Vocaluxe.PartyModes
+namespace VocaluxeLib.PartyModes
 {
+
     #region Structs
-    public struct ScreenSongOptions
+    public struct SScreenSongOptions
     {
-        public SortingOptions Sorting;
-        public SelectionOptions Selection;
+        public SSortingOptions Sorting;
+        public SSelectionOptions Selection;
     }
 
-    public struct SortingOptions
+    public struct SSortingOptions
     {
         public ESongSorting SongSorting;
         public EOffOn Tabs;
         public EOffOn IgnoreArticles;
         public string SearchString;
         public bool SearchActive;
-        public bool ShowDuetSongs;
+        public EDuetOptions DuetOptions;
     }
 
     /// <summary>
-    /// Configuration of song selection options
+    ///     Configuration of song selection options
     /// </summary>
-    public struct SelectionOptions
+    public struct SSelectionOptions
     {
         /// <summary>
-        /// If != -1, the SongMenu should set the song selection on the provided song index (visible index) if possible
+        ///     If != -1, the SongMenu should set the song selection on the provided song index (visible index) if possible
         /// </summary>
         public int SongIndex;
 
         /// <summary>
-        /// If true, the SongMenu should perform the select random song method
+        ///     If true, the SongMenu should perform the select random song method
         /// </summary>
         public bool SelectNextRandomSong;
 
         /// <summary>
-        /// Choosing song only by random
+        ///     Choosing song only by random
         /// </summary>
         public bool RandomOnly;
 
         /// <summary>
-        /// If true, it is not allowed to go to MainScreen nor open the playlist nor open the song menu
+        ///     If true, it is not allowed to go to MainScreen nor open the playlist nor open the song menu
         /// </summary>
         public bool PartyMode;
 
         /// <summary>
-        /// If true, it is not alled to change or leave the category. It's only valid if Tabs=On.
+        ///     If true, it is not alled to change or leave the category. It's only valid if Tabs=On.
         /// </summary>
         public bool CategoryChangeAllowed;
 
         /// <summary>
-        /// The number of jokers left for each team
+        ///     The number of jokers left for each team
         /// </summary>
         public int[] NumJokers;
 
         /// <summary>
-        /// The Team Name of the teams (:>)
+        ///     The Team Name of the teams (:>)
         /// </summary>
         public string[] TeamNames;
     }
@@ -69,18 +67,18 @@ namespace Vocaluxe.PartyModes
     {
         bool Init();
         void Initialize();
-        void AddScreen(CMenuParty Screen, string ScreenName);
-        void DataFromScreen(string ScreenName, Object Data);
+        void AddScreen(CMenuParty screen, string screenName);
+        void DataFromScreen(string screenName, Object data);
 
         void UpdateGame();
 
-        CMenuParty GetNextPartyScreen(out EScreens AlternativeScreen);
+        CMenuParty GetNextPartyScreen(out EScreens alternativeScreen);
         EScreens GetStartScreen();
         EScreens GetMainScreen();
-        ScreenSongOptions GetScreenSongOptions();
+        SScreenSongOptions GetScreenSongOptions();
 
-        void OnSongChange(int SongIndex, ref ScreenSongOptions ScreenSongOptions);
-        void OnCategoryChange(int CategoryIndex, ref ScreenSongOptions ScreenSongOptions);
+        void OnSongChange(int songIndex, ref SScreenSongOptions screenSongOptions);
+        void OnCategoryChange(int categoryIndex, ref SScreenSongOptions screenSongOptions);
 
         int GetMaxPlayer();
         int GetMinPlayer();
@@ -88,10 +86,10 @@ namespace Vocaluxe.PartyModes
         int GetMinTeams();
         int GetMaxNumRounds();
 
-        void SetSearchString(string SearchString, bool Visible);
+        void SetSearchString(string searchString, bool visible);
 
-        void JokerUsed(int TeamNr);
-        void SongSelected(int SongID);
+        void JokerUsed(int teamNr);
+        void SongSelected(int songID);
         void FinishedSinging();
         void LeavingScore();
         void LeavingHighscore();

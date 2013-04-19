@@ -1,23 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Text;
 using System.Windows.Forms;
-
 using Vocaluxe.Base;
-using Vocaluxe.GameModes;
-using Vocaluxe.Lib.Draw;
-using Vocaluxe.Menu;
-using Vocaluxe.Menu.SongMenu;
-using Vocaluxe.PartyModes;
+using VocaluxeLib.Menu;
+using VocaluxeLib.Menu.SongMenu;
+using VocaluxeLib.PartyModes;
 
 namespace Vocaluxe.Screens
 {
     class CScreenSong : CMenu
     {
-        enum ESongOptionsView
+        private enum ESongOptionsView
         {
             None,
             Song,
@@ -26,249 +19,207 @@ namespace Vocaluxe.Screens
         }
 
         // Version number for theme files. Increment it, if you've changed something on the theme files!
-        const int ScreenVersion = 4;
+        protected override int _ScreenVersion
+        {
+            get { return 5; }
+        }
 
-        private const string TextCategory = "TextCategory";
-        private const string TextSelection = "TextSelection";
-        private const string TextSearchBarTitle = "TextSearchBarTitle";
-        private const string TextSearchBar = "TextSearchBar";
-        private const string TextOptionsTitle = "TextOptionsTitle";
+        private const string _TextCategory = "TextCategory";
+        private const string _TextSelection = "TextSelection";
+        private const string _TextSearchBarTitle = "TextSearchBarTitle";
+        private const string _TextSearchBar = "TextSearchBar";
+        private const string _TextOptionsTitle = "TextOptionsTitle";
 
-        private const string ButtonOpenOptions = "ButtonOpenOptions";
-        private const string ButtonOptionsSing = "ButtonOptionsSing";
-        private const string ButtonOptionsPlaylist = "ButtonOptionsPlaylist";
-        private const string ButtonOptionsClose = "ButtonOptionsClose";
-        private const string ButtonOptionsRandom = "ButtonOptionsRandom";
-        private const string ButtonOptionsRandomCategory = "ButtonOptionsRandomCategory";
-        private const string ButtonOptionsSingAll = "ButtonOptionsSingAll";
-        private const string ButtonOptionsSingAllVisible = "ButtonOptionsSingAllVisible";
-        private const string ButtonOptionsOpenPlaylist = "ButtonOptionsOpenPlaylist";
-        private const string ButtonOptionsRandomMedley = "ButtonOptionsRandomMedley";
-        private const string ButtonOptionsStartMedley = "ButtonOptionsStartMedley";
-        private const string ButtonStart = "ButtonStart";
+        private const string _ButtonOpenOptions = "ButtonOpenOptions";
+        private const string _ButtonOptionsSing = "ButtonOptionsSing";
+        private const string _ButtonOptionsPlaylist = "ButtonOptionsPlaylist";
+        private const string _ButtonOptionsClose = "ButtonOptionsClose";
+        private const string _ButtonOptionsRandom = "ButtonOptionsRandom";
+        private const string _ButtonOptionsRandomCategory = "ButtonOptionsRandomCategory";
+        private const string _ButtonOptionsSingAll = "ButtonOptionsSingAll";
+        private const string _ButtonOptionsSingAllVisible = "ButtonOptionsSingAllVisible";
+        private const string _ButtonOptionsOpenSelectedItem = "ButtonOptionsOpenSelectedItem";
+        private const string _ButtonOptionsRandomMedley = "ButtonOptionsRandomMedley";
+        private const string _ButtonOptionsStartMedley = "ButtonOptionsStartMedley";
+        private const string _ButtonStart = "ButtonStart";
 
-        private const string SelectSlideOptionsMode = "SelectSlideOptionsMode";
-        private const string SelectSlideOptionsPlaylistAdd = "SelectSlideOptionsPlaylistAdd";
-        private const string SelectSlideOptionsPlaylistOpen = "SelectSlideOptionsPlaylistOpen";
-        private const string SelectSlideOptionsNumMedleySongs = "SelectSlideOptionsNumMedleySongs";
+        private const string _SelectSlideOptionsMode = "SelectSlideOptionsMode";
+        private const string _SelectSlideOptionsPlaylistAdd = "SelectSlideOptionsPlaylistAdd";
+        private const string _SelectSlideOptionsPlaylistOpen = "SelectSlideOptionsPlaylistOpen";
+        private const string _SelectSlideOptionsNumMedleySongs = "SelectSlideOptionsNumMedleySongs";
 
-        private const string StaticSearchBar = "StaticSearchBar";
-        private const string StaticOptionsBG = "StaticOptionsBG";
-        private const string SongMenu = "SongMenu";
-        private const string Playlist = "Playlist";
+        private const string _StaticSearchBar = "StaticSearchBar";
+        private const string _StaticOptionsBG = "StaticOptionsBG";
+        private const string _SongMenu = "SongMenu";
+        private const string _Playlist = "Playlist";
 
         private string _SearchText = String.Empty;
-        private bool _SearchActive = false;
+        private bool _SearchActive;
 
-        private List<string> ButtonsJoker = new List<string>();
-        private List<string> TextsPlayer = new List<string>();
-        private bool _SongOptionsActive = false;
-        private bool _PlaylistActive = false;
-        private List<EGameMode> _AvailableGameModes;
-        private ScreenSongOptions _sso;
+        private readonly List<string> _ButtonsJoker = new List<string>();
+        private readonly List<string> _TextsPlayer = new List<string>();
+        private bool _SongOptionsActive;
+        private bool _PlaylistActive;
+        private readonly List<EGameMode> _AvailableGameModes;
+        private SScreenSongOptions _Sso;
 
-        private CStatic DragAndDropCover;
-        private bool DragAndDropActive;
-        private int OldMousePosX;
-        private int OldMousePosY;
+        private CStatic _DragAndDropCover;
+        private bool _DragAndDropActive;
+        private int _OldMousePosX;
+        private int _OldMousePosY;
 
-        private int SelectedSongID;
-        private int SelectedCategoryIndex;
+        private int _SelectedSongID;
+        private int _SelectedCategoryIndex;
 
         public CScreenSong()
         {
             _AvailableGameModes = new List<EGameMode>();
         }
 
-        protected override void Init()
+        public override void Init()
         {
             base.Init();
 
-            ButtonsJoker.Clear();
+            _ButtonsJoker.Clear();
             for (int i = 0; i < CMain.Settings.GetMaxNumPlayer(); i++)
-            {
-                ButtonsJoker.Add("ButtonJoker" + (i + 1));
-            }
+                _ButtonsJoker.Add("ButtonJoker" + (i + 1));
             List<string> blist = new List<string>();
-            blist.AddRange(ButtonsJoker);
-            blist.Add(ButtonOptionsClose);
-            blist.Add(ButtonOptionsPlaylist);
-            blist.Add(ButtonOptionsSing);
-            blist.Add(ButtonOptionsRandom);
-            blist.Add(ButtonOptionsRandomCategory);
-            blist.Add(ButtonOptionsSingAll);
-            blist.Add(ButtonOptionsSingAllVisible);
-            blist.Add(ButtonOptionsOpenPlaylist);
-            blist.Add(ButtonOpenOptions);
-            blist.Add(ButtonStart);
-            blist.Add(ButtonOptionsRandomMedley);
-            blist.Add(ButtonOptionsStartMedley);
+            blist.AddRange(_ButtonsJoker);
+            blist.Add(_ButtonOptionsClose);
+            blist.Add(_ButtonOptionsPlaylist);
+            blist.Add(_ButtonOptionsSing);
+            blist.Add(_ButtonOptionsRandom);
+            blist.Add(_ButtonOptionsRandomCategory);
+            blist.Add(_ButtonOptionsSingAll);
+            blist.Add(_ButtonOptionsSingAllVisible);
+            blist.Add(_ButtonOptionsOpenSelectedItem);
+            blist.Add(_ButtonOpenOptions);
+            blist.Add(_ButtonStart);
+            blist.Add(_ButtonOptionsRandomMedley);
+            blist.Add(_ButtonOptionsStartMedley);
 
-            TextsPlayer.Clear();
+            _TextsPlayer.Clear();
             for (int i = 0; i < CMain.Settings.GetMaxNumPlayer(); i++)
-            {
-                TextsPlayer.Add("TextPlayer" + (i + 1));
-            }
+                _TextsPlayer.Add("TextPlayer" + (i + 1));
             List<string> tlist = new List<string>();
-            tlist.AddRange(TextsPlayer);
-            tlist.Add(TextCategory);
-            tlist.Add(TextSelection);
-            tlist.Add(TextSearchBarTitle);
-            tlist.Add(TextSearchBar);
-            tlist.Add(TextOptionsTitle);
+            tlist.AddRange(_TextsPlayer);
+            tlist.Add(_TextCategory);
+            tlist.Add(_TextSelection);
+            tlist.Add(_TextSearchBarTitle);
+            tlist.Add(_TextSearchBar);
+            tlist.Add(_TextOptionsTitle);
 
-            _ThemeName = "ScreenSong";
-            _ScreenVersion = ScreenVersion;
-            _ThemeStatics = new string[] { StaticSearchBar, StaticOptionsBG };
+            _ThemeStatics = new string[] {_StaticSearchBar, _StaticOptionsBG};
             _ThemeTexts = tlist.ToArray();
             _ThemeButtons = blist.ToArray();
-            _ThemeSelectSlides = new string[] { SelectSlideOptionsMode, SelectSlideOptionsPlaylistAdd, SelectSlideOptionsPlaylistOpen, SelectSlideOptionsNumMedleySongs };
-            _ThemeSongMenus = new string[] { SongMenu };
-            _ThemePlaylists = new string[] { Playlist };
+            _ThemeSelectSlides = new string[] {_SelectSlideOptionsMode, _SelectSlideOptionsPlaylistAdd, _SelectSlideOptionsPlaylistOpen, _SelectSlideOptionsNumMedleySongs};
+            _ThemeSongMenus = new string[] {_SongMenu};
+            _ThemePlaylists = new string[] {_Playlist};
         }
 
-        public override void LoadTheme(string XmlPath)
+        public override void LoadTheme(string xmlPath)
         {
-            base.LoadTheme(XmlPath);
-            SelectSlides[htSelectSlides(SelectSlideOptionsMode)].Visible = false;
-            SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistAdd)].Visible = false;
-            SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistOpen)].Visible = false;
-            SelectSlides[htSelectSlides(SelectSlideOptionsNumMedleySongs)].Visible = false;
-            Buttons[htButtons(ButtonOptionsClose)].Visible = false;
-            Buttons[htButtons(ButtonOptionsSing)].Visible = false;
-            Buttons[htButtons(ButtonOptionsPlaylist)].Visible = false;
-            Buttons[htButtons(ButtonOptionsRandom)].Visible = false;
-            Buttons[htButtons(ButtonOptionsRandomCategory)].Visible = false;
-            Buttons[htButtons(ButtonOptionsSingAll)].Visible = false;
-            Buttons[htButtons(ButtonOptionsSingAllVisible)].Visible = false;
-            Buttons[htButtons(ButtonOptionsOpenPlaylist)].Visible = false;
-            Buttons[htButtons(ButtonOptionsRandomMedley)].Visible = false;
-            Buttons[htButtons(ButtonOptionsStartMedley)].Visible = false;
-            Texts[htTexts(TextOptionsTitle)].Visible = false;
-            Statics[htStatics(StaticOptionsBG)].Visible = false;
-            Playlists[htPlaylists(Playlist)].Visible = false;
+            base.LoadTheme(xmlPath);
+            _ToggleSongOptions(ESongOptionsView.None);
+            Playlists[_Playlist].Visible = false;
 
-            DragAndDropCover = GetNewStatic();
+            _DragAndDropCover = GetNewStatic();
 
-            Playlists[htPlaylists(Playlist)].Init();
+            Playlists[_Playlist].Init();
 
             _AvailableGameModes.Clear();
 
             ApplyVolume();
         }
 
-        public override bool HandleInput(KeyEvent KeyEvent)
+        public override bool HandleInput(SKeyEvent keyEvent)
         {
-            base.HandleInput(KeyEvent);
-            if (KeyEvent.Handled)
+            base.HandleInput(keyEvent);
+            if (keyEvent.Handled)
                 return true;
 
             if (_PlaylistActive)
             {
-                if (!KeyEvent.KeyPressed && KeyEvent.Key == Keys.Tab)
-                {
-                    _PlaylistActive = !_PlaylistActive;
-                    Playlists[htPlaylists(Playlist)].Selected = _PlaylistActive;
-                    SongMenus[htSongMenus(SongMenu)].SetActive(!_PlaylistActive);
-                    return true;
-                }
-
-                Playlists[htPlaylists(Playlist)].HandleInput(KeyEvent);
-
-                if (CPlaylists.NumPlaylists != SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistOpen)].NumValues)
-                    UpdatePlaylistNames();
-
+                Playlists[_Playlist].HandleInput(keyEvent);
                 return true;
             }
 
             if (!_SongOptionsActive)
             {
-                if (KeyEvent.KeyPressed && !Char.IsControl(KeyEvent.Unicode) && KeyEvent.Mod != EModifier.Ctrl)
+                if (keyEvent.KeyPressed && !Char.IsControl(keyEvent.Unicode) && keyEvent.Mod != EModifier.Ctrl)
                 {
                     if (_SearchActive)
-                        ApplyNewSearchFilter(_SearchText + KeyEvent.Unicode);
-                    /*
-                    else if (!Char.IsControl(KeyEvent.Unicode))
+                        _ApplyNewSearchFilter(_SearchText + keyEvent.Unicode);
+                    else
                     {
-                        JumpTo(KeyEvent.Unicode);
+                        _JumpTo(keyEvent.Unicode);
                         return true;
-                    } */
+                    }
                 }
                 else
                 {
-                    SongMenus[htSongMenus(SongMenu)].HandleInput(ref KeyEvent, _sso);
-                    UpdatePartyModeOptions();
+                    SongMenus[_SongMenu].HandleInput(ref keyEvent, _Sso);
+                    _UpdatePartyModeOptions();
 
-                    if (KeyEvent.Handled)
+                    if (keyEvent.Handled)
                         return true;
 
-                    switch (KeyEvent.Key)
+                    switch (keyEvent.Key)
                     {
                         case Keys.Escape:
-                            if ((CSongs.Category < 0 || _sso.Sorting.Tabs == EOffOn.TR_CONFIG_OFF) && !_sso.Selection.PartyMode && !_SearchActive)
+                            if ((CSongs.Category < 0 || _Sso.Sorting.Tabs == EOffOn.TR_CONFIG_OFF) && !_Sso.Selection.PartyMode && !_SearchActive)
                                 CGraphics.FadeTo(EScreens.ScreenMain);
                             if (_SearchActive)
                             {
                                 _SearchActive = false;
                                 _SearchText = String.Empty;
-                                ApplyNewSearchFilter(_SearchText);
+                                _ApplyNewSearchFilter(_SearchText);
                             }
                             break;
 
                         case Keys.Enter:
-                            if (_sso.Selection.RandomOnly && _sso.Selection.NumJokers != null)
+                            if (_Sso.Selection.RandomOnly && _Sso.Selection.NumJokers != null)
                             {
-                                for (int i = 0; i < ButtonsJoker.Count; i++)
+                                for (int i = 0; i < _ButtonsJoker.Count; i++)
                                 {
-                                    if (i < _sso.Selection.NumJokers.Length)
+                                    if (i < _Sso.Selection.NumJokers.Length)
                                     {
-                                        if (Buttons[htButtons(ButtonsJoker[i])].Selected)
+                                        if (Buttons[_ButtonsJoker[i]].Selected)
                                         {
-                                            SelectNextRandom(i);
+                                            _SelectNextRandom(i);
                                             return true;
                                         }
                                     }
                                 }
-                                if (Buttons[htButtons(ButtonStart)].Selected)
-                                {
-                                    HandlePartySongSelection(SongMenus[htSongMenus(SongMenu)].GetSelectedSong());
-                                }
+                                if (Buttons[_ButtonStart].Selected)
+                                    _HandlePartySongSelection(SongMenus[_SongMenu].GetSelectedSong());
                             }
-                            if (CSongs.NumVisibleSongs > 0 && !_sso.Selection.PartyMode)
+                            if (CSongs.NumVisibleSongs > 0 && !_Sso.Selection.PartyMode)
                             {
-                                if (SongMenus[htSongMenus(SongMenu)].GetSelectedSong() != -1 && !_SongOptionsActive)
+                                if (SongMenus[_SongMenu].GetSelectedSong() != -1 && !_SongOptionsActive)
                                 {
-                                    if (!_sso.Selection.PartyMode)
-                                        ToggleSongOptions(ESongOptionsView.Song);
+                                    if (!_Sso.Selection.PartyMode)
+                                        _ToggleSongOptions(ESongOptionsView.Song);
                                 }
                             }
                             break;
 
                         case Keys.Tab:
-                            if (Playlists[htPlaylists(Playlist)].Visible)
+                            if (Playlists[_Playlist].Visible)
                             {
                                 _PlaylistActive = !_PlaylistActive;
-                                Playlists[htPlaylists(Playlist)].Selected = _PlaylistActive;
-                                SongMenus[htSongMenus(SongMenu)].SetActive(!_PlaylistActive);
+                                Playlists[_Playlist].Selected = _PlaylistActive;
+                                SongMenus[_SongMenu].SetActive(!_PlaylistActive);
                             }
                             break;
 
                         case Keys.Back:
-                            if (_SearchText.Length > 0)
-                            {
-                                ApplyNewSearchFilter(_SearchText.Remove(_SearchText.Length - 1));
-                            }
+                            if (_SearchActive && _SearchText.Length > 0)
+                                _ApplyNewSearchFilter(_SearchText.Remove(_SearchText.Length - 1));
 
-                            if ((CSongs.Category < 0 || _sso.Sorting.Tabs == EOffOn.TR_CONFIG_OFF) && !_sso.Selection.PartyMode && !_SearchActive)
-                            {
+                            if ((CSongs.Category < 0 || _Sso.Sorting.Tabs == EOffOn.TR_CONFIG_OFF) && !_Sso.Selection.PartyMode && !_SearchActive)
                                 CGraphics.FadeTo(EScreens.ScreenMain);
-                            }
 
-                            break;
-
-                        case Keys.Space:
-                            if (!_SearchActive && !_sso.Selection.PartyMode)
-                                ToggleSongOptions(ESongOptionsView.General);
                             break;
 
                         case Keys.F3:
@@ -276,151 +227,117 @@ namespace Vocaluxe.Screens
                             {
                                 _SearchActive = false;
                                 _SearchText = String.Empty;
-                                ApplyNewSearchFilter(_SearchText);
+                                _ApplyNewSearchFilter(_SearchText);
                             }
-                            else if (!_sso.Selection.PartyMode)
-                            {
+                            else if (!_Sso.Selection.PartyMode)
                                 _SearchActive = true;
-                            }
                             break;
+                    }
+                    if (!_SearchActive)
+                    {
+                        switch (keyEvent.Key)
+                        {
+                            case Keys.Space:
+                                if (!_Sso.Selection.PartyMode)
+                                    _ToggleSongOptions(ESongOptionsView.General);
+                                break;
 
-                        //TODO: Delete it! ??? Shouldn't we keep this as shortcut?
-                        case Keys.A:
-                            if (!_SearchActive && KeyEvent.Mod == EModifier.None && !_sso.Selection.PartyMode)
-                            {
-                                StartRandomAllSongs();
-                            }
-                            if (KeyEvent.Mod == EModifier.Ctrl && !_sso.Selection.PartyMode)
-                            {
-                                StartRandomVisibleSongs();
-                            }
-                            break;
+                            case Keys.A:
+                                if (keyEvent.Mod == EModifier.Ctrl && !_Sso.Selection.PartyMode)
+                                    _StartRandomAllSongs();
+                                break;
+                            case Keys.V:
+                                if (keyEvent.Mod == EModifier.Ctrl && !_Sso.Selection.PartyMode)
+                                    _StartRandomVisibleSongs();
+                                break;
 
-                        //TODO: Delete that from here and from wiki!
-                        case Keys.F:
-                            if (KeyEvent.Mod == EModifier.Ctrl)
-                            {
-                                if (_SearchActive)
-                                {
-                                    _SearchActive = false;
-                                    _SearchText = String.Empty;
-                                    ApplyNewSearchFilter(_SearchText);
-                                }
-                                else if (!_sso.Selection.PartyMode)
-                                {
-                                    _SearchActive = true;
-                                }
-                            }
-                            break;
+                            case Keys.R:
+                                if (keyEvent.Mod == EModifier.Ctrl && !_Sso.Selection.RandomOnly)
+                                    _SelectNextRandom(-1);
+                                break;
 
-                        //TODO: We need another key for random!
-                        case Keys.R:
-                            if (KeyEvent.Mod == EModifier.Ctrl && !_sso.Selection.RandomOnly)
-                                SelectNextRandom(-1);
-                            break;
+                            case Keys.S:
+                                if (keyEvent.Mod == EModifier.Ctrl && CSongs.NumVisibleSongs > 0 && !_Sso.Selection.PartyMode)
+                                    _StartMedleySong(SongMenus[_SongMenu].GetSelectedSong());
+                                break;
 
-                        //TODO: Delete that!
-                        case Keys.S:
-                            if (!_SearchActive && CSongs.NumVisibleSongs > 0 && !_sso.Selection.PartyMode)
-                            {
-                                StartMedleySong(SongMenus[htSongMenus(SongMenu)].GetSelectedSong());
-                            }
-                            break;
+                            case Keys.D1:
+                                _SelectNextRandom(0);
+                                break;
 
-                        case Keys.D1:
-                            SelectNextRandom(0);
-                            break;
+                            case Keys.D2:
+                                _SelectNextRandom(1);
+                                break;
 
-                        case Keys.D2:
-                            SelectNextRandom(1);
-                            break;
+                            case Keys.D3:
+                                _SelectNextRandom(2);
+                                break;
 
-                        case Keys.D3:
-                            SelectNextRandom(2);
-                            break;
+                            case Keys.D4:
+                                _SelectNextRandom(3);
+                                break;
 
-                        case Keys.D4:
-                            SelectNextRandom(3);
-                            break;
+                            case Keys.D5:
+                                _SelectNextRandom(4);
+                                break;
 
-                        case Keys.D5:
-                            SelectNextRandom(4);
-                            break;
-
-                        case Keys.D6:
-                            SelectNextRandom(5);
-                            break;
-
+                            case Keys.D6:
+                                _SelectNextRandom(5);
+                                break;
+                        }
                     }
                 }
             }
-
             else
             {
-                switch (KeyEvent.Key)
+                switch (keyEvent.Key)
                 {
                     case Keys.Enter:
-                        if (Buttons[htButtons(ButtonOptionsClose)].Selected)
+                        if (Buttons[_ButtonOptionsClose].Selected)
+                            _ToggleSongOptions(ESongOptionsView.None);
+                        else if (Buttons[_ButtonOptionsSing].Selected)
                         {
-                            ToggleSongOptions(ESongOptionsView.None);
+                            _ToggleSongOptions(ESongOptionsView.None);
+                            _StartSong(SongMenus[_SongMenu].GetSelectedSong());
                         }
-                        else if (Buttons[htButtons(ButtonOptionsSing)].Selected)
+                        else if (Buttons[_ButtonOptionsPlaylist].Selected)
                         {
-                            ToggleSongOptions(ESongOptionsView.None);
-                            StartSong(SongMenus[htSongMenus(SongMenu)].GetSelectedSong());
+                            _ToggleSongOptions(ESongOptionsView.None);
+                            _OpenAndAddPlaylistAction();
                         }
-                        else if (Buttons[htButtons(ButtonOptionsPlaylist)].Selected)
+                        else if (Buttons[_ButtonOptionsRandom].Selected)
                         {
-                            ToggleSongOptions(ESongOptionsView.None);
-                            OpenAndAddPlaylistAction();
+                            if (CSongs.IsInCategory)
+                                SongMenus[_SongMenu].SetSelectedSong(CSongs.GetRandomSong());
+                            else
+                                SongMenus[_SongMenu].SetSelectedCategory(CSongs.GetRandomCategory());
                         }
-                        else if (Buttons[htButtons(ButtonOptionsRandom)].Selected)
+                        else if (Buttons[_ButtonOptionsSingAll].Selected)
+                            _StartRandomAllSongs();
+                        else if (Buttons[_ButtonOptionsSingAllVisible].Selected)
+                            _StartRandomVisibleSongs();
+                        else if (Buttons[_ButtonOptionsOpenSelectedItem].Selected)
+                            _HandleSelectButton();
+                        else if (SelectSlides[_SelectSlideOptionsPlaylistOpen].Selected)
+                            _OpenPlaylistAction();
+                        else if (Buttons[_ButtonOptionsRandomMedley].Selected)
+                            _ToggleSongOptions(ESongOptionsView.Medley);
+                        else if (Buttons[_ButtonOptionsStartMedley].Selected)
                         {
-                            if (CSongs.Category != -1)
-                            {
-                                SongMenus[htSongMenus(SongMenu)].SetSelectedSong(CSongs.GetRandomSong());
-                            }
-                        }
-                        else if (Buttons[htButtons(ButtonOptionsRandom)].Selected)
-                        {
-                            if (CSongs.Category == -1)
-                            {
-                                SongMenus[htSongMenus(SongMenu)].SetSelectedCategory(CSongs.GetRandomCategory());
-                            }
-                        }                        
-                        else if (Buttons[htButtons(ButtonOptionsSingAll)].Selected)
-                        {
-                            StartRandomAllSongs();
-                        }
-                        else if (Buttons[htButtons(ButtonOptionsSingAllVisible)].Selected)
-                        {
-                            StartRandomVisibleSongs();
-                        }
-                        else if (Buttons[htButtons(ButtonOptionsOpenPlaylist)].Selected)
-                        {
-                            ToggleSongOptions(ESongOptionsView.None);
-                            OpenPlaylistAction();
-                        }
-                        else if (Buttons[htButtons(ButtonOptionsRandomMedley)].Selected)
-                        {
-                            ToggleSongOptions(ESongOptionsView.Medley);
-                        }
-                        else if (Buttons[htButtons(ButtonOptionsStartMedley)].Selected)
-                        {
-                            ToggleSongOptions(ESongOptionsView.None);
-                            StartRandomMedley(SelectSlides[htSelectSlides(SelectSlideOptionsNumMedleySongs)].Selection + 1, CSongs.Category == -1);
+                            _ToggleSongOptions(ESongOptionsView.None);
+                            _StartRandomMedley(SelectSlides[_SelectSlideOptionsNumMedleySongs].Selection + 1, !CSongs.IsInCategory);
                         }
                         break;
 
                     case Keys.Escape:
                     case Keys.Back:
                     case Keys.Space:
-                        ToggleSongOptions(ESongOptionsView.None);
+                        _ToggleSongOptions(ESongOptionsView.None);
                         break;
                 }
             }
 
-            if (KeyEvent.ModSHIFT && (KeyEvent.Key == Keys.Add || KeyEvent.Key == Keys.PageUp))
+            if (keyEvent.ModShift && (keyEvent.Key == Keys.Add || keyEvent.Key == Keys.PageUp))
             {
                 CConfig.PreviewMusicVolume = CConfig.PreviewMusicVolume + 5;
                 if (CConfig.PreviewMusicVolume > 100)
@@ -428,7 +345,7 @@ namespace Vocaluxe.Screens
                 CConfig.SaveConfig();
                 ApplyVolume();
             }
-            else if (KeyEvent.ModSHIFT && (KeyEvent.Key == Keys.Subtract || KeyEvent.Key == Keys.PageDown))
+            else if (keyEvent.ModShift && (keyEvent.Key == Keys.Subtract || keyEvent.Key == Keys.PageDown))
             {
                 CConfig.PreviewMusicVolume = CConfig.PreviewMusicVolume - 5;
                 if (CConfig.PreviewMusicVolume < 0)
@@ -440,49 +357,45 @@ namespace Vocaluxe.Screens
             return true;
         }
 
-        public override bool HandleMouse(MouseEvent MouseEvent)
+        public override bool HandleMouse(SMouseEvent mouseEvent)
         {
-            base.HandleMouse(MouseEvent);
+            base.HandleMouse(mouseEvent);
 
-            if (DragAndDropActive)
+            if (_DragAndDropActive)
             {
-                DragAndDropCover.Rect.X += MouseEvent.X - OldMousePosX;
-                DragAndDropCover.Rect.Y += MouseEvent.Y - OldMousePosY; 
+                _DragAndDropCover.Rect.X += mouseEvent.X - _OldMousePosX;
+                _DragAndDropCover.Rect.Y += mouseEvent.Y - _OldMousePosY;
             }
-            OldMousePosX = MouseEvent.X;
-            OldMousePosY = MouseEvent.Y;
+            _OldMousePosX = mouseEvent.X;
+            _OldMousePosY = mouseEvent.Y;
 
-            if (Playlists[htPlaylists(Playlist)].Visible && Playlists[htPlaylists(Playlist)].IsMouseOver(MouseEvent))
+            if (Playlists[_Playlist].Visible && Playlists[_Playlist].IsMouseOver(mouseEvent))
             {
                 _PlaylistActive = true;
-                Playlists[htPlaylists(Playlist)].Selected = _PlaylistActive;
-                SongMenus[htSongMenus(SongMenu)].SetActive(!_PlaylistActive);
-                ToggleSongOptions(ESongOptionsView.None);
+                Playlists[_Playlist].Selected = _PlaylistActive;
+                SongMenus[_SongMenu].SetActive(!_PlaylistActive);
+                _ToggleSongOptions(ESongOptionsView.None);
             }
-            else if (CHelper.IsInBounds(SongMenus[htSongMenus(SongMenu)].Rect, MouseEvent.X, MouseEvent.Y))
+            else if (CHelper.IsInBounds(SongMenus[_SongMenu].Rect, mouseEvent.X, mouseEvent.Y))
             {
                 _PlaylistActive = false;
-                Playlists[htPlaylists(Playlist)].Selected = _PlaylistActive;
-                SongMenus[htSongMenus(SongMenu)].SetActive(!_PlaylistActive);
+                Playlists[_Playlist].Selected = _PlaylistActive;
+                SongMenus[_SongMenu].SetActive(!_PlaylistActive);
             }
 
 
-            if (Playlists[htPlaylists(Playlist)].Visible && _PlaylistActive)
+            if (Playlists[_Playlist].Visible && _PlaylistActive)
             {
-                if (Playlists[htPlaylists(Playlist)].HandleMouse(MouseEvent))
-                {
-                    if (CPlaylists.NumPlaylists != SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistOpen)].NumValues)
-                        UpdatePlaylistNames();
+                if (Playlists[_Playlist].HandleMouse(mouseEvent))
                     return true;
-                }
             }
 
 
-            if (MouseEvent.RB)
+            if (mouseEvent.RB)
             {
                 if (_SongOptionsActive)
                 {
-                    ToggleSongOptions(ESongOptionsView.None);
+                    _ToggleSongOptions(ESongOptionsView.None);
                     return true;
                 }
 
@@ -490,135 +403,128 @@ namespace Vocaluxe.Screens
                 {
                     _SearchActive = false;
                     _SearchText = String.Empty;
-                    ApplyNewSearchFilter(_SearchText);
+                    _ApplyNewSearchFilter(_SearchText);
                     return true;
                 }
 
-                if (CSongs.Category < 0 && !_sso.Selection.PartyMode && !_SearchActive)
+                if (CSongs.Category < 0 && !_Sso.Selection.PartyMode && !_SearchActive)
                 {
                     CGraphics.FadeTo(EScreens.ScreenMain);
                     return true;
                 }
             }
 
-            if (MouseEvent.MB && !_sso.Selection.PartyMode)
-            {
-                return SelectNextRandom(-1);
-            }
+            if (mouseEvent.MB && !_Sso.Selection.PartyMode)
+                return _SelectNextRandom(-1);
 
-            if (MouseEvent.LD && !_sso.Selection.PartyMode)
+            if (mouseEvent.LD && !_Sso.Selection.PartyMode)
             {
-                if (CSongs.NumVisibleSongs > 0 && SongMenus[htSongMenus(SongMenu)].GetActualSelection() != -1)
+                //TODO: Causes Bug if you select a song (e.g. with Select random song) and double click a normal button.
+                //E.g. clicking to fast on Select random song starts the next random song. is this OK?
+                if (CSongs.NumVisibleSongs > 0 && SongMenus[_SongMenu].GetActualSelection() != -1)
                 {
-                    ToggleSongOptions(ESongOptionsView.None);
-                    StartVisibleSong(SongMenus[htSongMenus(SongMenu)].GetActualSelection());
+                    _ToggleSongOptions(ESongOptionsView.None);
+                    _StartVisibleSong(SongMenus[_SongMenu].GetActualSelection());
                     return true;
                 }
             }
 
-            SongMenus[htSongMenus(SongMenu)].HandleMouse(ref MouseEvent, _sso);
-            UpdatePartyModeOptions();
+            SongMenus[_SongMenu].HandleMouse(ref mouseEvent, _Sso);
+            _UpdatePartyModeOptions();
 
-            if (MouseEvent.Handled)
+            if (mouseEvent.Handled)
                 return true;
 
-            if (MouseEvent.LB)
+            if (mouseEvent.LB)
             {
-                if (IsMouseOver(MouseEvent))
+                if (IsMouseOver(mouseEvent))
                 {
-                    if (Buttons[htButtons(ButtonOpenOptions)].Selected)
+                    if (Buttons[_ButtonOpenOptions].Selected)
                     {
-                        ToggleSongOptions(ESongOptionsView.General);
+                        _ToggleSongOptions(ESongOptionsView.General);
                         return true;
                     }
-                    
-                    if (Buttons[htButtons(ButtonOptionsClose)].Selected)
+                    else if (Buttons[_ButtonOptionsClose].Selected)
                     {
-                        ToggleSongOptions(ESongOptionsView.None);
+                        _ToggleSongOptions(ESongOptionsView.None);
                         return true;
                     }
-                    
-                    if (Buttons[htButtons(ButtonOptionsSing)].Selected)
+                    else if (Buttons[_ButtonOptionsSing].Selected)
                     {
-                        ToggleSongOptions(ESongOptionsView.None);
-                        StartSong(SongMenus[htSongMenus(SongMenu)].GetSelectedSong());
+                        _ToggleSongOptions(ESongOptionsView.None);
+                        _StartSong(SongMenus[_SongMenu].GetSelectedSong());
                         return true;
                     }
-                    
-                    if (Buttons[htButtons(ButtonOptionsPlaylist)].Selected)
+                    else if (Buttons[_ButtonOptionsPlaylist].Selected)
                     {
-                        ToggleSongOptions(ESongOptionsView.None);
-                        OpenAndAddPlaylistAction();
+                        _ToggleSongOptions(ESongOptionsView.None);
+                        _OpenAndAddPlaylistAction();
                         return true;
                     }
-                    
-                    if (Buttons[htButtons(ButtonOptionsRandom)].Selected)
+                    else if (Buttons[_ButtonOptionsRandom].Selected)
                     {
-                        if (CSongs.Category != -1)
+                        if (CSongs.IsInCategory)
                         {
-                            SongMenus[htSongMenus(SongMenu)].SetSelectedSong(CSongs.GetRandomSong());
+                            SongMenus[_SongMenu].SetSelectedSong(CSongs.GetRandomSong());
                             return true;
                         }
                     }
-                    
-                    if (Buttons[htButtons(ButtonOptionsRandomCategory)].Selected)
+                    else if (Buttons[_ButtonOptionsRandomCategory].Selected)
                     {
-                        if (CSongs.Category == -1)
+                        if (!CSongs.IsInCategory)
                         {
-                            SongMenus[htSongMenus(SongMenu)].SetSelectedCategory(CSongs.GetRandomCategory());
+                            SongMenus[_SongMenu].SetSelectedCategory(CSongs.GetRandomCategory());
                             return true;
                         }
                     }
-                    
-                    if (Buttons[htButtons(ButtonOptionsSingAll)].Selected)
+                    else if (Buttons[_ButtonOptionsSingAll].Selected)
                     {
-                        ToggleSongOptions(ESongOptionsView.None);
-                        StartRandomAllSongs();
+                        _ToggleSongOptions(ESongOptionsView.None);
+                        _StartRandomAllSongs();
                         return true;
                     }
-                    
-                    if (Buttons[htButtons(ButtonOptionsSingAllVisible)].Selected)
+                    else if (Buttons[_ButtonOptionsSingAllVisible].Selected)
                     {
-                        ToggleSongOptions(ESongOptionsView.None);
-                        StartRandomVisibleSongs();
+                        _ToggleSongOptions(ESongOptionsView.None);
+                        _StartRandomVisibleSongs();
                         return true;
                     }
-                                       
-                    if (Buttons[htButtons(ButtonOptionsOpenPlaylist)].Selected)
+                    else if (Buttons[_ButtonOptionsOpenSelectedItem].Selected)
                     {
-                        ToggleSongOptions(ESongOptionsView.None);
-                        OpenPlaylistAction();
+                        _HandleSelectButton();
                         return true;
                     }
-
-                    if (Buttons[htButtons(ButtonOptionsRandomMedley)].Selected)
+                    else if (SelectSlides[_SelectSlideOptionsPlaylistOpen].ValueSelected)
                     {
-                        ToggleSongOptions(ESongOptionsView.Medley);
+                        _OpenPlaylistAction();
                         return true;
                     }
-
-                    if (Buttons[htButtons(ButtonOptionsStartMedley)].Selected)
+                    else if (Buttons[_ButtonOptionsRandomMedley].Selected)
                     {
-                        ToggleSongOptions(ESongOptionsView.None);
-                        StartRandomMedley(SelectSlides[htSelectSlides(SelectSlideOptionsNumMedleySongs)].Selection + 1, CSongs.Category == -1);
+                        _ToggleSongOptions(ESongOptionsView.Medley);
                         return true;
                     }
-
-                    if (_sso.Selection.RandomOnly && _sso.Selection.NumJokers != null)
+                    else if (Buttons[_ButtonOptionsStartMedley].Selected)
                     {
-                        if (Buttons[htButtons(ButtonStart)].Selected)
+                        _ToggleSongOptions(ESongOptionsView.None);
+                        _StartRandomMedley(SelectSlides[_SelectSlideOptionsNumMedleySongs].Selection + 1, !CSongs.IsInCategory);
+                        return true;
+                    }
+                    else if (_Sso.Selection.RandomOnly && _Sso.Selection.NumJokers != null)
+                    {
+                        if (Buttons[_ButtonStart].Selected)
                         {
-                            HandlePartySongSelection(SongMenus[htSongMenus(SongMenu)].GetSelectedSong());
+                            _HandlePartySongSelection(SongMenus[_SongMenu].GetSelectedSong());
                             return true;
                         }
-                            
-                        for (int i = 0; i < ButtonsJoker.Count; i++)
+
+                        for (int i = 0; i < _ButtonsJoker.Count; i++)
                         {
-                            if (i < _sso.Selection.NumJokers.Length)
+                            if (i < _Sso.Selection.NumJokers.Length)
                             {
-                                if (Buttons[htButtons(ButtonsJoker[i])].Selected)
+                                if (Buttons[_ButtonsJoker[i]].Selected)
                                 {
-                                    SelectNextRandom(i);
+                                    _SelectNextRandom(i);
                                     return true;
                                 }
                             }
@@ -626,121 +532,128 @@ namespace Vocaluxe.Screens
                     }
                 }
 
-                if (CSongs.NumVisibleSongs > 0 && SongMenus[htSongMenus(SongMenu)].GetActualSelection() != -1 && !_sso.Selection.PartyMode)
+                if (CSongs.NumVisibleSongs > 0 && SongMenus[_SongMenu].GetActualSelection() != -1 && !_Sso.Selection.PartyMode)
                 {
-                    if (SongMenus[htSongMenus(SongMenu)].GetSelectedSong() != -1 && !_SongOptionsActive)
+                    if (SongMenus[_SongMenu].GetSelectedSong() != -1 && !_SongOptionsActive)
                     {
-                        if (!_sso.Selection.PartyMode)
-                            ToggleSongOptions(ESongOptionsView.Song);
-
+                        _ToggleSongOptions(ESongOptionsView.Song);
                         return true;
                     }
                     else
                     {
-                        ToggleSongOptions(ESongOptionsView.None);
+                        _ToggleSongOptions(ESongOptionsView.None);
                         return true;
                     }
                 }
             }
 
-            if (MouseEvent.LBH)
+            if (mouseEvent.LBH)
             {
-                if (!DragAndDropActive && Playlists[htPlaylists(Playlist)].Visible && CSongs.NumVisibleSongs > 0 && SongMenus[htSongMenus(SongMenu)].GetActualSelection() != -1)
+                if (!_DragAndDropActive && Playlists[_Playlist].Visible && CSongs.NumVisibleSongs > 0 && SongMenus[_SongMenu].GetActualSelection() != -1)
                 {
-                    DragAndDropCover = SongMenus[htSongMenus(SongMenu)].GetSelectedSongCover();
-                    DragAndDropCover.Rect.Z = CSettings.zNear;
-                    Playlists[htPlaylists(Playlist)].DragAndDropSongID = CSongs.VisibleSongs[SongMenus[htSongMenus(SongMenu)].GetActualSelection()].ID;
-                    DragAndDropActive = true;
+                    _DragAndDropCover = SongMenus[_SongMenu].GetSelectedSongCover();
+                    _DragAndDropCover.Rect.Z = CSettings.ZNear;
+                    Playlists[_Playlist].DragAndDropSongID = CSongs.VisibleSongs[SongMenus[_SongMenu].GetActualSelection()].ID;
+                    _DragAndDropActive = true;
                     return true;
                 }
             }
 
 
-            if (!MouseEvent.LBH && DragAndDropActive)
+            if (!mouseEvent.LBH && _DragAndDropActive)
             {
-                DragAndDropActive = false;
-                Playlists[htPlaylists(Playlist)].DragAndDropSongID = -1;
+                _DragAndDropActive = false;
+                Playlists[_Playlist].DragAndDropSongID = -1;
                 return true;
             }
 
             return true;
         }
 
+        private void _HandleSelectButton()
+        {
+            if (CSongs.IsInCategory)
+            {
+                if (!_Sso.Selection.PartyMode)
+                    _ToggleSongOptions(ESongOptionsView.Song);
+            }
+            else if (_Sso.Selection.CategoryChangeAllowed)
+            {
+                _ToggleSongOptions(ESongOptionsView.None);
+                SongMenus[_SongMenu].EnterCurrentCategory();
+            }
+        }
+
         public override void OnShow()
         {
             base.OnShow();
 
-            SelectedSongID = -1;
-            SelectedCategoryIndex = -2;
+            _SelectedSongID = -1;
+            _SelectedCategoryIndex = -2;
 
-            _sso = CParty.GetSongSelectionOptions();
-            CSongs.Sort(_sso.Sorting.SongSorting, _sso.Sorting.Tabs, _sso.Sorting.IgnoreArticles, _sso.Sorting.SearchString, _sso.Sorting.ShowDuetSongs);
-            _SearchActive = _sso.Sorting.SearchActive;
-            _SearchText = _sso.Sorting.SearchString;
+            _Sso = CParty.GetSongSelectionOptions();
+            CSongs.Sort(_Sso.Sorting.SongSorting, _Sso.Sorting.Tabs, _Sso.Sorting.IgnoreArticles, _Sso.Sorting.SearchString, _Sso.Sorting.DuetOptions);
+            _SearchActive = _Sso.Sorting.SearchActive;
+            _SearchText = _Sso.Sorting.SearchString;
 
             CGame.EnterNormalGame();
-            SongMenus[htSongMenus(SongMenu)].OnShow();
+            SongMenus[_SongMenu].OnShow();
 
-            if (_sso.Selection.PartyMode)
+            if (_Sso.Selection.PartyMode)
                 _PlaylistActive = false;
 
-            if (_sso.Selection.PartyMode)
-                ToggleSongOptions(ESongOptionsView.None);
+            if (_Sso.Selection.PartyMode)
+                _ToggleSongOptions(ESongOptionsView.None);
 
-            SongMenus[htSongMenus(SongMenu)].SetActive(!_PlaylistActive);
-            SongMenus[htSongMenus(SongMenu)].SetSmallView(Playlists[htPlaylists(Playlist)].Visible);
-                        
-            if (Playlists[htPlaylists(Playlist)].ActivePlaylistID != -1)
-                Playlists[htPlaylists(Playlist)].LoadPlaylist(Playlists[htPlaylists(Playlist)].ActivePlaylistID);
-            UpdatePlaylistNames();
+            SongMenus[_SongMenu].SetActive(!_PlaylistActive);
+            SongMenus[_SongMenu].SetSmallView(Playlists[_Playlist].Visible);
 
-            DragAndDropActive = false;
-            Playlists[htPlaylists(Playlist)].DragAndDropSongID = -1;
+            if (Playlists[_Playlist].ActivePlaylistID != -1)
+                Playlists[_Playlist].LoadPlaylist(Playlists[_Playlist].ActivePlaylistID);
+
+            _DragAndDropActive = false;
+            Playlists[_Playlist].DragAndDropSongID = -1;
 
             UpdateGame();
         }
 
         public override bool UpdateGame()
         {
-            if (SongMenus[htSongMenus(SongMenu)].IsSmallView())
+            if (SongMenus[_SongMenu].IsSmallView())
                 CheckPlaylist();
 
-            Texts[htTexts(TextCategory)].Text = CSongs.GetCurrentCategoryName();
+            Texts[_TextCategory].Text = CSongs.GetCurrentCategoryName();
 
             if (CSongs.Category > -1 || CConfig.Tabs == EOffOn.TR_CONFIG_OFF)
                 CBackgroundMusic.Disabled = true;
             else
                 CBackgroundMusic.Disabled = false;
 
-            int song = SongMenus[htSongMenus(SongMenu)].GetActualSelection();
+            int song = SongMenus[_SongMenu].GetActualSelection();
             if ((CSongs.Category >= 0 || CConfig.Tabs == EOffOn.TR_CONFIG_OFF) && song >= 0 && song < CSongs.VisibleSongs.Length)
-            {
-                Texts[htTexts(TextSelection)].Text = CSongs.VisibleSongs[song].Artist + " - " + CSongs.VisibleSongs[song].Title;                
-            }
-            else if (CSongs.Category == -1 && song >= 0 && song < CSongs.Categories.Length)
-            {
-                Texts[htTexts(TextSelection)].Text = CSongs.Categories[song].Name;                
-            }
+                Texts[_TextSelection].Text = CSongs.VisibleSongs[song].Artist + " - " + CSongs.VisibleSongs[song].Title;
+            else if (!CSongs.IsInCategory && song >= 0 && song < CSongs.Categories.Length)
+                Texts[_TextSelection].Text = CSongs.Categories[song].Name;
             else
-                Texts[htTexts(TextSelection)].Text = String.Empty;
+                Texts[_TextSelection].Text = String.Empty;
 
-            Texts[htTexts(TextSearchBar)].Text = _SearchText;
+            Texts[_TextSearchBar].Text = _SearchText;
             if (_SearchActive)
             {
-                Texts[htTexts(TextSearchBar)].Text += '|';
+                Texts[_TextSearchBar].Text += '|';
 
-                Texts[htTexts(TextSearchBar)].Visible = true;
-                Texts[htTexts(TextSearchBarTitle)].Visible = true;
-                Statics[htStatics(StaticSearchBar)].Visible = true;
+                Texts[_TextSearchBar].Visible = true;
+                Texts[_TextSearchBarTitle].Visible = true;
+                Statics[_StaticSearchBar].Visible = true;
             }
             else
             {
-                Texts[htTexts(TextSearchBar)].Visible = false;
-                Texts[htTexts(TextSearchBarTitle)].Visible = false;
-                Statics[htStatics(StaticSearchBar)].Visible = false;
+                Texts[_TextSearchBar].Visible = false;
+                Texts[_TextSearchBarTitle].Visible = false;
+                Statics[_StaticSearchBar].Visible = false;
             }
 
-            UpdatePartyModeOptions();
+            _UpdatePartyModeOptions();
 
             return true;
         }
@@ -749,8 +662,8 @@ namespace Vocaluxe.Screens
         {
             base.Draw();
 
-            if (DragAndDropActive)
-                DragAndDropCover.Draw();
+            if (_DragAndDropActive)
+                _DragAndDropCover.Draw();
 
             return true;
         }
@@ -759,146 +672,142 @@ namespace Vocaluxe.Screens
         {
             base.OnClose();
             CBackgroundMusic.Disabled = false;
-            SongMenus[htSongMenus(SongMenu)].OnHide();
+            SongMenus[_SongMenu].OnHide();
         }
 
         public override void ApplyVolume()
         {
-            SongMenus[htSongMenus(SongMenu)].ApplyVolume(CConfig.PreviewMusicVolume);
+            SongMenus[_SongMenu].ApplyVolume(CConfig.PreviewMusicVolume);
         }
 
-        private void HandlePartySongSelection(int SongNr)
+        private void _HandlePartySongSelection(int songNr)
         {
-            if ((CSongs.Category >= 0) && (SongNr >= 0))
+            if ((CSongs.Category >= 0) && (songNr >= 0))
             {
-                CSong song = CSongs.VisibleSongs[SongNr];
+                CSong song = CSongs.VisibleSongs[songNr];
                 if (song != null)
-                {
                     CParty.SongSelected(song.ID);
-                }
             }
         }
 
-        private void UpdatePartyModeOptions()
+        private void _UpdatePartyModeOptions()
         {
-            if (CSongs.Category == -1)
-                SelectedSongID = -1;
+            if (!CSongs.IsInCategory)
+                _SelectedSongID = -1;
 
-            if (SelectedCategoryIndex != CSongs.Category)
+            if (_SelectedCategoryIndex != CSongs.Category)
             {
-                SelectedCategoryIndex = CSongs.Category;
-                CParty.OnCategoryChange(SelectedCategoryIndex, ref _sso);
+                _SelectedCategoryIndex = CSongs.Category;
+                CParty.OnCategoryChange(_SelectedCategoryIndex, ref _Sso);
 
-                if (_sso.Selection.SelectNextRandomSong)
-                    SelectNextRandomSong();
+                if (_Sso.Selection.SelectNextRandomSong)
+                    _SelectNextRandomSong();
 
-                if (_sso.Selection.SongIndex != -1)
-                    SongMenus[htSongMenus(SongMenu)].SetSelectedSong(_sso.Selection.SongIndex);
+                if (_Sso.Selection.SongIndex != -1)
+                    SongMenus[_SongMenu].SetSelectedSong(_Sso.Selection.SongIndex);
             }
 
-            if (SelectedSongID != SongMenus[htSongMenus(SongMenu)].GetSelectedSong() && CSongs.Category > -1)
+            if (_SelectedSongID != SongMenus[_SongMenu].GetSelectedSong() && CSongs.Category > -1)
             {
-                SelectedSongID = SongMenus[htSongMenus(SongMenu)].GetSelectedSong();
-                CParty.OnSongChange(SelectedSongID, ref _sso);
+                _SelectedSongID = SongMenus[_SongMenu].GetSelectedSong();
+                CParty.OnSongChange(_SelectedSongID, ref _Sso);
             }
 
-            _sso = CParty.GetSongSelectionOptions();
- 
+            _Sso = CParty.GetSongSelectionOptions();
 
-            if (_sso.Selection.PartyMode)
+
+            if (_Sso.Selection.PartyMode)
             {
-                CSongs.Sort(_sso.Sorting.SongSorting, _sso.Sorting.Tabs, _sso.Sorting.IgnoreArticles, _sso.Sorting.SearchString, _sso.Sorting.ShowDuetSongs);
-                _SearchActive = _sso.Sorting.SearchActive;
-                _SearchText = _sso.Sorting.SearchString;
+                CSongs.Sort(_Sso.Sorting.SongSorting, _Sso.Sorting.Tabs, _Sso.Sorting.IgnoreArticles, _Sso.Sorting.SearchString, _Sso.Sorting.DuetOptions);
+                _SearchActive = _Sso.Sorting.SearchActive;
+                _SearchText = _Sso.Sorting.SearchString;
 
-                ClosePlaylist();
-                ToggleSongOptions(ESongOptionsView.None);
+                _ClosePlaylist();
+                _ToggleSongOptions(ESongOptionsView.None);
             }
 
-            SongMenus[htSongMenus(SongMenu)].Update(_sso);
+            SongMenus[_SongMenu].Update(_Sso);
 
-            if (_sso.Selection.RandomOnly && _sso.Selection.NumJokers != null)
+            if (_Sso.Selection.RandomOnly && _Sso.Selection.NumJokers != null)
             {
-                Buttons[htButtons(ButtonStart)].Visible = true;
+                Buttons[_ButtonStart].Visible = true;
 
-                if (!SongMenus[htSongMenus(SongMenu)].IsSmallView())
-                    SongMenus[htSongMenus(SongMenu)].SetSmallView(true);
+                if (!SongMenus[_SongMenu].IsSmallView())
+                    SongMenus[_SongMenu].SetSmallView(true);
 
                 for (int i = 0; i < CMain.Settings.GetMaxNumPlayer(); i++)
                 {
-                    if (i < _sso.Selection.NumJokers.Length)
+                    if (i < _Sso.Selection.NumJokers.Length)
                     {
-                        Buttons[htButtons(ButtonsJoker[i])].Visible = true;
-                        Buttons[htButtons(ButtonsJoker[i])].Text.Text = _sso.Selection.NumJokers[i].ToString();
-                        Texts[htTexts(TextsPlayer[i])].Visible = true;
+                        Buttons[_ButtonsJoker[i]].Visible = true;
+                        Buttons[_ButtonsJoker[i]].Text.Text = _Sso.Selection.NumJokers[i].ToString();
+                        Texts[_TextsPlayer[i]].Visible = true;
 
-                        bool NameExists = false;
-                        if (_sso.Selection.TeamNames != null)
+                        bool nameExists = false;
+                        if (_Sso.Selection.TeamNames != null)
                         {
-                            if (_sso.Selection.TeamNames.Length > i)
+                            if (_Sso.Selection.TeamNames.Length > i)
                             {
-                                Texts[htTexts(TextsPlayer[i])].Text = _sso.Selection.TeamNames[i];
-                                NameExists = true;
+                                Texts[_TextsPlayer[i]].Text = _Sso.Selection.TeamNames[i];
+                                nameExists = true;
                             }
                         }
 
-                        if (!NameExists)
-                            Texts[htTexts(TextsPlayer[i])].Text = i.ToString();
+                        if (!nameExists)
+                            Texts[_TextsPlayer[i]].Text = i.ToString();
                     }
                     else
                     {
-                        Buttons[htButtons(ButtonsJoker[i])].Visible = false;
-                        Texts[htTexts(TextsPlayer[i])].Visible = false;
+                        Buttons[_ButtonsJoker[i]].Visible = false;
+                        Texts[_TextsPlayer[i]].Visible = false;
                     }
                 }
             }
             else
             {
-                if (_sso.Selection.PartyMode && SongMenus[htSongMenus(SongMenu)].IsSmallView())
-                    SongMenus[htSongMenus(SongMenu)].SetSmallView(false);
+                if (_Sso.Selection.PartyMode && SongMenus[_SongMenu].IsSmallView())
+                    SongMenus[_SongMenu].SetSmallView(false);
 
                 for (int i = 0; i < CMain.Settings.GetMaxNumPlayer(); i++)
                 {
-                    Buttons[htButtons(ButtonsJoker[i])].Visible = false;
-                    Texts[htTexts(TextsPlayer[i])].Visible = false;
+                    Buttons[_ButtonsJoker[i]].Visible = false;
+                    Texts[_TextsPlayer[i]].Visible = false;
                 }
 
-                Buttons[htButtons(ButtonStart)].Visible = false;
+                Buttons[_ButtonStart].Visible = false;
             }
         }
 
-        private void StartSong(int SongNr)
+        private void _StartSong(int songNr)
         {
-            if ((CSongs.Category >= 0) && (SongNr >= 0))
+            if ((CSongs.Category >= 0) && (songNr >= 0))
             {
                 EGameMode gm;
-                if (_AvailableGameModes.Count >= SelectSlides[htSelectSlides(SelectSlideOptionsMode)].Selection)
-                {
-                    gm = _AvailableGameModes[SelectSlides[htSelectSlides(SelectSlideOptionsMode)].Selection];
-                }
+                if (_AvailableGameModes.Count >= SelectSlides[_SelectSlideOptionsMode].Selection)
+                    gm = _AvailableGameModes[SelectSlides[_SelectSlideOptionsMode].Selection];
                 else
                 {
-                    if (CSongs.VisibleSongs[SongNr].IsDuet)
-                       gm = EGameMode.TR_GAMEMODE_DUET;
+                    if (CSongs.VisibleSongs[songNr].IsDuet)
+                        gm = EGameMode.TR_GAMEMODE_DUET;
                     else
-                       gm = EGameMode.TR_GAMEMODE_NORMAL;
+                        gm = EGameMode.TR_GAMEMODE_NORMAL;
                 }
 
                 CGame.Reset();
                 CGame.ClearSongs();
 
-                CGame.AddVisibleSong(SongNr, gm);
+                CGame.AddVisibleSong(songNr, gm);
 
                 CGraphics.FadeTo(EScreens.ScreenNames);
             }
         }
 
-        private void StartVisibleSong(int SongNr)
+        private void _StartVisibleSong(int songNr)
         {
-            if (CSongs.Category >= 0 && SongNr >= 0 && CSongs.NumVisibleSongs > SongNr)
+            if (CSongs.Category >= 0 && songNr >= 0 && CSongs.NumVisibleSongs > songNr)
             {
                 EGameMode gm;
-                if (CSongs.VisibleSongs[SongNr].IsDuet)
+                if (CSongs.VisibleSongs[songNr].IsDuet)
                     gm = EGameMode.TR_GAMEMODE_DUET;
                 else
                     gm = EGameMode.TR_GAMEMODE_NORMAL;
@@ -906,485 +815,489 @@ namespace Vocaluxe.Screens
                 CGame.Reset();
                 CGame.ClearSongs();
 
-                CGame.AddVisibleSong(SongNr, gm);
+                CGame.AddVisibleSong(songNr, gm);
 
                 CGraphics.FadeTo(EScreens.ScreenNames);
             }
         }
 
-        private void StartMedleySong(int SongNr)
+        private void _StartMedleySong(int songNr)
         {
-            if ((CSongs.Category >= 0) && (SongNr >= 0))
+            if ((CSongs.Category >= 0) && (songNr >= 0))
             {
                 EGameMode gm;
-                if (CSongs.VisibleSongs[SongNr].Medley.Source != EMedleySource.None)
+                if (CSongs.VisibleSongs[songNr].Medley.Source != EMedleySource.None)
                     gm = EGameMode.TR_GAMEMODE_MEDLEY;
                 else
                     return;
 
                 CGame.Reset();
                 CGame.ClearSongs();
-                CGame.AddVisibleSong(SongNr, gm);
+                CGame.AddVisibleSong(songNr, gm);
 
                 CGraphics.FadeTo(EScreens.ScreenNames);
             }
         }
 
-        private void StartRandomAllSongs()
+        private void _StartRandomAllSongs()
         {
             CGame.Reset();
             CGame.ClearSongs();
 
-            List<int> IDs = new List<int>();
+            List<int> iDs = new List<int>();
             for (int i = 0; i < CSongs.AllSongs.Length; i++)
-            {
-                IDs.Add(i);
-            }
+                iDs.Add(i);
 
-            while (IDs.Count > 0)
+            while (iDs.Count > 0)
             {
-                int SongNr = IDs[CGame.Rand.Next(IDs.Count)];
+                int songNr = iDs[CGame.Rand.Next(iDs.Count)];
 
                 EGameMode gm = EGameMode.TR_GAMEMODE_NORMAL;
-                if (CSongs.AllSongs[SongNr].IsDuet)
+                if (CSongs.AllSongs[songNr].IsDuet)
                     gm = EGameMode.TR_GAMEMODE_DUET;
 
-                CGame.AddSong(SongNr, gm);
+                CGame.AddSong(songNr, gm);
 
-                IDs.Remove(SongNr);    
+                iDs.Remove(songNr);
             }
 
             if (CGame.GetNumSongs() > 0)
                 CGraphics.FadeTo(EScreens.ScreenNames);
         }
 
-        private void StartRandomVisibleSongs()
+        private void _StartRandomVisibleSongs()
         {
             CGame.Reset();
             CGame.ClearSongs();
 
-            List<int> IDs = new List<int>();
+            List<int> iDs = new List<int>();
             for (int i = 0; i < CSongs.VisibleSongs.Length; i++)
-            {
-                IDs.Add(CSongs.VisibleSongs[i].ID);
-            }
+                iDs.Add(CSongs.VisibleSongs[i].ID);
 
-            while (IDs.Count > 0)
+            while (iDs.Count > 0)
             {
-                int SongNr = IDs[CGame.Rand.Next(IDs.Count)];
+                int songNr = iDs[CGame.Rand.Next(iDs.Count)];
 
                 EGameMode gm = EGameMode.TR_GAMEMODE_NORMAL;
-                if (CSongs.AllSongs[SongNr].IsDuet)
+                if (CSongs.AllSongs[songNr].IsDuet)
                     gm = EGameMode.TR_GAMEMODE_DUET;
 
-                CGame.AddSong(SongNr, gm);
+                CGame.AddSong(songNr, gm);
 
-                IDs.Remove(SongNr);
+                iDs.Remove(songNr);
             }
 
             if (CGame.GetNumSongs() > 0)
                 CGraphics.FadeTo(EScreens.ScreenNames);
         }
 
-        private void StartRandomMedley(int NumSongs, bool AllSongs)
+        private void _StartRandomMedley(int numSongs, bool allSongs)
         {
             CGame.Reset();
             CGame.ClearSongs();
 
-            List<int> IDs = new List<int>();
-            if (AllSongs)
+            List<int> iDs = new List<int>();
+            if (allSongs)
             {
                 for (int i = 0; i < CSongs.AllSongs.Length; i++)
-                {
-                    IDs.Add(i);
-                }
+                    iDs.Add(i);
             }
             else
             {
                 for (int i = 0; i < CSongs.VisibleSongs.Length; i++)
-                {
-                    IDs.Add(CSongs.VisibleSongs[i].ID);
-                }
+                    iDs.Add(CSongs.VisibleSongs[i].ID);
             }
             int s = 0;
-            while (s < NumSongs && IDs.Count > 0)
+            while (s < numSongs && iDs.Count > 0)
             {
-                int SongNr = IDs[CGame.Rand.Next(IDs.Count)];
+                int songNr = iDs[CGame.Rand.Next(iDs.Count)];
 
-                foreach (EGameMode gm in CSongs.AllSongs[SongNr].AvailableGameModes)
+                foreach (EGameMode gm in CSongs.AllSongs[songNr].AvailableGameModes)
                 {
                     if (gm == EGameMode.TR_GAMEMODE_MEDLEY)
                     {
-                        CGame.AddSong(SongNr, gm);
+                        CGame.AddSong(songNr, gm);
                         s++;
                         break;
                     }
                 }
 
-                IDs.Remove(SongNr);
+                iDs.Remove(songNr);
             }
 
             if (CGame.GetNumSongs() > 0)
                 CGraphics.FadeTo(EScreens.ScreenNames);
         }
 
-        private bool SelectNextRandom(int TeamNr)
-        {           
-            if (TeamNr != -1 && _sso.Selection.RandomOnly && _sso.Selection.NumJokers != null)
+        private bool _SelectNextRandom(int teamNr)
+        {
+            if (teamNr != -1 && _Sso.Selection.RandomOnly && _Sso.Selection.NumJokers != null)
             {
                 bool result = false;
-                if (_sso.Selection.NumJokers.Length > TeamNr)
+                if (_Sso.Selection.NumJokers.Length > teamNr)
                 {
-                    if (_sso.Selection.NumJokers[TeamNr] > 0)
+                    if (_Sso.Selection.NumJokers[teamNr] > 0)
                     {
-                        result = SelectNextRandomSong() || SelectNextRandomCategory();
-                        CParty.JokerUsed(TeamNr);
-                        _sso = CParty.GetSongSelectionOptions();
+                        result = _SelectNextRandomSong() || _SelectNextRandomCategory();
+                        CParty.JokerUsed(teamNr);
+                        _Sso = CParty.GetSongSelectionOptions();
                     }
                 }
                 return result;
             }
 
-            if (TeamNr == -1)
-                return SelectNextRandomSong() || SelectNextRandomCategory();
+            if (teamNr == -1)
+                return _SelectNextRandomSong() || _SelectNextRandomCategory();
 
             return false;
         }
 
-        private bool SelectNextRandomSong()
+        private bool _SelectNextRandomSong()
         {
-            if (CSongs.Category != -1)
+            if (CSongs.IsInCategory)
             {
-                ToggleSongOptions(ESongOptionsView.None);
-                SongMenus[htSongMenus(SongMenu)].SetSelectedSong(CSongs.GetRandomSong());
+                _ToggleSongOptions(ESongOptionsView.None);
+                SongMenus[_SongMenu].SetSelectedSong(CSongs.GetRandomSong());
                 return true;
             }
             return false;
         }
 
-        private bool SelectNextRandomCategory()
+        private bool _SelectNextRandomCategory()
         {
-            if (CSongs.Category == -1)
+            if (!CSongs.IsInCategory)
             {
-                ToggleSongOptions(ESongOptionsView.None);
-                SongMenus[htSongMenus(SongMenu)].SetSelectedCategory(CSongs.GetRandomCategory());
+                _ToggleSongOptions(ESongOptionsView.None);
+                SongMenus[_SongMenu].SetSelectedCategory(CSongs.GetRandomCategory());
                 return true;
             }
             return false;
         }
 
-        private void JumpTo(char Letter)
+        private void _JumpTo(char letter)
         {
-            int song = SongMenus[htSongMenus(SongMenu)].GetSelectedSong();
-            int id = -1;
-            if (song > -1 && song < CSongs.NumVisibleSongs)
+            int start = 0;
+            int curSelected = SongMenus[_SongMenu].GetActualSelection();
+            if (CSongs.IsInCategory)
             {
-                id = CSongs.VisibleSongs[song].ID;
+                //TODO: Check and use sorting method
+                CSong[] songs = CSongs.VisibleSongs;
+                int ct = songs.Length;
+                if (curSelected >= 0 && curSelected < ct - 1)
+                {
+                    CSong currentSong = CSongs.GetVisibleSongByIndex(curSelected);
+                    if (currentSong != null && currentSong.Artist.StartsWith(letter.ToString(), StringComparison.OrdinalIgnoreCase))
+                        start = curSelected + 1;
+                }
+                int visibleID = Array.FindIndex(songs, start, ct - start, element => element.Artist.StartsWith(letter.ToString(), StringComparison.OrdinalIgnoreCase));
+                if (visibleID < 0 && start > 1)
+                    visibleID = Array.FindIndex(songs, 0, start - 1, element => element.Artist.StartsWith(letter.ToString(), StringComparison.OrdinalIgnoreCase));
+                if (visibleID > -1)
+                    SongMenus[_SongMenu].SetSelectedSong(visibleID);
             }
-
-            int visibleID = Array.FindIndex<CSong>(CSongs.VisibleSongs, element => element.Artist.StartsWith(Letter.ToString(), StringComparison.OrdinalIgnoreCase));
-            if (visibleID > -1)
+            else
             {
-                id = visibleID;
-                SongMenus[htSongMenus(SongMenu)].SetSelectedSong(id);
+                CCategory[] categories = CSongs.Categories;
+                int ct = categories.Length;
+                if (curSelected >= 0 && curSelected < ct - 1 && categories[curSelected].Name.StartsWith(letter.ToString(), StringComparison.OrdinalIgnoreCase))
+                    start = curSelected + 1;
+                int visibleID = Array.FindIndex(categories, start, ct - start, element => element.Name.StartsWith(letter.ToString(), StringComparison.OrdinalIgnoreCase));
+                if (visibleID < 0 && start > 1)
+                    visibleID = Array.FindIndex(categories, 0, start - 1, element => element.Name.StartsWith(letter.ToString(), StringComparison.OrdinalIgnoreCase));
+                if (visibleID > -1)
+                    SongMenus[_SongMenu].SetSelectedCategory(visibleID);
             }
         }
 
-        private void ApplyNewSearchFilter(string NewFilterString)
+        private void _ApplyNewSearchFilter(string newFilterString)
         {
-            CParty.SetSearchString(NewFilterString, _SearchActive);
-            _sso = CParty.GetSongSelectionOptions();
-            
+            CParty.SetSearchString(newFilterString, _SearchActive);
+            _Sso = CParty.GetSongSelectionOptions();
+
             bool refresh = false;
-            _SearchText = NewFilterString;
+            _SearchText = newFilterString;
 
-            int SongIndex = SongMenus[htSongMenus(SongMenu)].GetSelectedSong();
-            int SongID = -1;
-            if (SongIndex != -1 && CSongs.NumVisibleSongs > 0 && CSongs.NumVisibleSongs > SongIndex)
-            {
-                SongID = CSongs.VisibleSongs[SongIndex].ID;
-            }
+            int songIndex = SongMenus[_SongMenu].GetSelectedSong();
+            int songID = -1;
+            if (songIndex != -1 && CSongs.NumVisibleSongs > 0 && CSongs.NumVisibleSongs > songIndex)
+                songID = CSongs.VisibleSongs[songIndex].ID;
 
-            if (NewFilterString == String.Empty && _sso.Sorting.Tabs == EOffOn.TR_CONFIG_ON)
+            if (newFilterString.Length == 0 && _Sso.Sorting.Tabs == EOffOn.TR_CONFIG_ON)
             {
                 CSongs.Category = -1;
                 refresh = true;
             }
 
-            if (NewFilterString != String.Empty && CSongs.Category != 0)
+            if (newFilterString.Length > 0 && CSongs.Category != 0)
             {
                 CSongs.Category = 0;
                 refresh = true;
             }
 
-            CSongs.Sort(_sso.Sorting.SongSorting, _sso.Sorting.Tabs, _sso.Sorting.IgnoreArticles, NewFilterString, _sso.Sorting.ShowDuetSongs);
+            CSongs.Sort(_Sso.Sorting.SongSorting, _Sso.Sorting.Tabs, _Sso.Sorting.IgnoreArticles, newFilterString, _Sso.Sorting.DuetOptions);
 
-            if (SongID == -1 || CSongs.NumVisibleSongs == 0 || CSongs.NumVisibleSongs <= SongIndex || CSongs.VisibleSongs[SongIndex].ID != SongID)
+            if (songID == -1 || CSongs.NumVisibleSongs == 0 || CSongs.NumVisibleSongs <= songIndex || CSongs.GetVisibleSongByIndex(songIndex).ID != songID)
                 refresh = true;
 
             if (refresh)
-                SongMenus[htSongMenus(SongMenu)].OnHide();
+                SongMenus[_SongMenu].OnHide();
 
-            SongMenus[htSongMenus(SongMenu)].OnShow();
+            SongMenus[_SongMenu].OnShow();
         }
 
-        private void ToggleSongOptions(ESongOptionsView view)
+        private void _ToggleSongOptions(ESongOptionsView view)
         {
-            _SongOptionsActive = view != ESongOptionsView.None;
+            SelectSlides[_SelectSlideOptionsMode].Visible = false;
+            SelectSlides[_SelectSlideOptionsPlaylistAdd].Visible = false;
+            SelectSlides[_SelectSlideOptionsPlaylistOpen].Visible = false;
+            SelectSlides[_SelectSlideOptionsNumMedleySongs].Visible = false;
+            Buttons[_ButtonOptionsClose].Visible = false;
+            Buttons[_ButtonOptionsSing].Visible = false;
+            Buttons[_ButtonOptionsPlaylist].Visible = false;
+            Buttons[_ButtonOptionsRandom].Visible = false;
+            Buttons[_ButtonOptionsRandomCategory].Visible = false;
+            Buttons[_ButtonOptionsSingAll].Visible = false;
+            Buttons[_ButtonOptionsSingAllVisible].Visible = false;
+            Buttons[_ButtonOptionsOpenSelectedItem].Visible = false;
+            Buttons[_ButtonOptionsRandomMedley].Visible = false;
+            Buttons[_ButtonOptionsStartMedley].Visible = false;
+            Texts[_TextOptionsTitle].Visible = false;
+            Statics[_StaticOptionsBG].Visible = false;
+            Buttons[_ButtonOpenOptions].Visible = true;
 
-            SelectSlides[htSelectSlides(SelectSlideOptionsMode)].Visible = false;
-            SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistAdd)].Visible = false;
-            SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistOpen)].Visible = false;
-            SelectSlides[htSelectSlides(SelectSlideOptionsNumMedleySongs)].Visible = false;
-            Buttons[htButtons(ButtonOptionsClose)].Visible = false;
-            Buttons[htButtons(ButtonOptionsSing)].Visible = false;
-            Buttons[htButtons(ButtonOptionsPlaylist)].Visible = false;
-            Buttons[htButtons(ButtonOptionsRandom)].Visible = false;
-            Buttons[htButtons(ButtonOptionsRandomCategory)].Visible = false;
-            Buttons[htButtons(ButtonOptionsSingAll)].Visible = false;
-            Buttons[htButtons(ButtonOptionsSingAllVisible)].Visible = false;
-            Buttons[htButtons(ButtonOptionsOpenPlaylist)].Visible = false;
-            Buttons[htButtons(ButtonOptionsRandomMedley)].Visible = false;
-            Buttons[htButtons(ButtonOptionsStartMedley)].Visible = false;
-            Texts[htTexts(TextOptionsTitle)].Visible = false;
-            Statics[htStatics(StaticOptionsBG)].Visible = false;
-            Buttons[htButtons(ButtonOpenOptions)].Visible = true;
+            _SongOptionsActive = view != ESongOptionsView.None;
 
             if (_SongOptionsActive)
             {
+                //Has to be done here otherwhise changed playlist names will not appear until OnShow is called!
+                _UpdatePlaylistNames();
+
+                Texts[_TextOptionsTitle].Visible = true;
+                Buttons[_ButtonOptionsClose].Visible = true;
+                Statics[_StaticOptionsBG].Visible = true;
+                Buttons[_ButtonOpenOptions].Visible = false;
                 if (view == ESongOptionsView.Song)
-                {
-                    EGameMode LastMode = EGameMode.TR_GAMEMODE_NORMAL;
-                    if (_AvailableGameModes.Count > 0)
-                        LastMode = _AvailableGameModes[SelectSlides[htSelectSlides(SelectSlideOptionsMode)].Selection];
-                    SetInteractionToButton(Buttons[htButtons(ButtonOptionsSing)]);
-                    _AvailableGameModes.Clear();
-                    SelectSlides[htSelectSlides(SelectSlideOptionsMode)].Clear();
-                    if (!CSongs.VisibleSongs[SongMenus[htSongMenus(SongMenu)].GetSelectedSong()].IsDuet)
-                    {
-                        SelectSlides[htSelectSlides(SelectSlideOptionsMode)].AddValue(Enum.GetName(typeof(EGameMode), EGameMode.TR_GAMEMODE_NORMAL));
-                        _AvailableGameModes.Add(EGameMode.TR_GAMEMODE_NORMAL);
-                        SelectSlides[htSelectSlides(SelectSlideOptionsMode)].AddValue(Enum.GetName(typeof(EGameMode), EGameMode.TR_GAMEMODE_SHORTSONG));
-                        _AvailableGameModes.Add(EGameMode.TR_GAMEMODE_SHORTSONG);
-                    }
-                    if (CSongs.VisibleSongs[SongMenus[htSongMenus(SongMenu)].GetSelectedSong()].IsDuet)
-                    {
-                        SelectSlides[htSelectSlides(SelectSlideOptionsMode)].AddValue(Enum.GetName(typeof(EGameMode), EGameMode.TR_GAMEMODE_DUET));
-                        _AvailableGameModes.Add(EGameMode.TR_GAMEMODE_DUET);
-                    }
-                    if (CSongs.VisibleSongs[SongMenus[htSongMenus(SongMenu)].GetSelectedSong()].Medley.Source != EMedleySource.None)
-                    {
-                        SelectSlides[htSelectSlides(SelectSlideOptionsMode)].AddValue(Enum.GetName(typeof(EGameMode), EGameMode.TR_GAMEMODE_MEDLEY));
-                        _AvailableGameModes.Add(EGameMode.TR_GAMEMODE_MEDLEY);
-                    }
-                    //Set SelectSlide-Selection to last selected game-mode if possible
-                    for (int i = 0; i < _AvailableGameModes.Count; i++)
-                    {
-                        if (_AvailableGameModes[i] == LastMode)
-                            SelectSlides[htSelectSlides(SelectSlideOptionsMode)].SetSelectionByValueIndex(i);
-                    }
-                    SelectSlides[htSelectSlides(SelectSlideOptionsMode)].Visible = true;
-                    SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistAdd)].Visible = true;
-                    Buttons[htButtons(ButtonOptionsSing)].Visible = true;
-                    Buttons[htButtons(ButtonOptionsPlaylist)].Visible = true;
-                    SetInteractionToButton(Buttons[htButtons(ButtonOptionsSing)]);
-                }
+                    _ShowSongOptionsSong();
                 else if (view == ESongOptionsView.General)
-                {
-                    Buttons[htButtons(ButtonOptionsRandom)].Visible = CSongs.Category != -1;
-                    Buttons[htButtons(ButtonOptionsRandomCategory)].Visible = CSongs.Category == -1;
-                    Buttons[htButtons(ButtonOptionsSingAll)].Visible = true;
-                    Buttons[htButtons(ButtonOptionsSingAllVisible)].Visible = CSongs.Category != -1;
-
-                    if (SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistOpen)].NumValues > 0)
-                    {
-                        Buttons[htButtons(ButtonOptionsOpenPlaylist)].Visible = true;
-                        SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistOpen)].Visible = true;
-                        SetInteractionToButton(Buttons[htButtons(ButtonOptionsOpenPlaylist)]);
-                    }
-                    else
-                    {
-                        Buttons[htButtons(ButtonOptionsOpenPlaylist)].Visible = false;
-                        SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistOpen)].Visible = false;
-
-                        if (Buttons[htButtons(ButtonOptionsRandom)].Visible)
-                            SetInteractionToButton(Buttons[htButtons(ButtonOptionsRandom)]);
-                        else
-                            SetInteractionToButton(Buttons[htButtons(ButtonOptionsSingAll)]);
-                    }
-                    Buttons[htButtons(ButtonOptionsRandomMedley)].Visible = true;
-                    if(Buttons[htButtons(ButtonOptionsRandom)].Visible)
-                        SetInteractionToButton(Buttons[htButtons(ButtonOptionsRandom)]);
-                    else
-                        SetInteractionToButton(Buttons[htButtons(ButtonOptionsRandomCategory)]);
-                }
+                    _ShowSongOptionsGeneral();
                 else if (view == ESongOptionsView.Medley)
-                {
-                    Buttons[htButtons(ButtonOptionsStartMedley)].Visible = true;
-                    SelectSlides[htSelectSlides(SelectSlideOptionsNumMedleySongs)].Visible = true;
-                    SelectSlides[htSelectSlides(SelectSlideOptionsNumMedleySongs)].Clear();
-                    if (CSongs.Category != -1)
-                    {
-                        for (int i = 1; i <= CSongs.VisibleSongs.Length; i++)
-                        {
-                            SelectSlides[htSelectSlides(SelectSlideOptionsNumMedleySongs)].AddValue(i.ToString());
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 1; i <= CSongs.AllSongs.Length; i++)
-                        {
-                            SelectSlides[htSelectSlides(SelectSlideOptionsNumMedleySongs)].AddValue(i.ToString());
-                        }
-                    }
-                    if (SelectSlides[htSelectSlides(SelectSlideOptionsNumMedleySongs)].NumValues >= 5)
-                        SelectSlides[htSelectSlides(SelectSlideOptionsNumMedleySongs)].SetSelectionByValueIndex(4);
-                    else
-                        SelectSlides[htSelectSlides(SelectSlideOptionsNumMedleySongs)].SetSelectionByValueIndex(SelectSlides[htSelectSlides(SelectSlideOptionsNumMedleySongs)].NumValues - 1);
-                    SetInteractionToButton(Buttons[htButtons(ButtonOptionsStartMedley)]);
-                    
-                }
-                Texts[htTexts(TextOptionsTitle)].Visible = true;
-                Buttons[htButtons(ButtonOptionsClose)].Visible = true;
-                Statics[htStatics(StaticOptionsBG)].Visible = true;
-                Buttons[htButtons(ButtonOpenOptions)].Visible = false;
+                    _ShowSongOptionsMedley();
             }
+        }
+
+        private void _ShowSongOptionsSong()
+        {
+            EGameMode lastMode = EGameMode.TR_GAMEMODE_NORMAL;
+            if (_AvailableGameModes.Count > 0)
+                lastMode = _AvailableGameModes[SelectSlides[_SelectSlideOptionsMode].Selection];
+            SetInteractionToButton(Buttons[_ButtonOptionsSing]);
+            _AvailableGameModes.Clear();
+            SelectSlides[_SelectSlideOptionsMode].Clear();
+            if (CSongs.VisibleSongs[SongMenus[_SongMenu].GetSelectedSong()].IsDuet)
+            {
+                SelectSlides[_SelectSlideOptionsMode].AddValue(Enum.GetName(typeof(EGameMode), EGameMode.TR_GAMEMODE_DUET));
+                _AvailableGameModes.Add(EGameMode.TR_GAMEMODE_DUET);
+            }
+            else
+            {
+                SelectSlides[_SelectSlideOptionsMode].AddValue(Enum.GetName(typeof(EGameMode), EGameMode.TR_GAMEMODE_NORMAL));
+                _AvailableGameModes.Add(EGameMode.TR_GAMEMODE_NORMAL);
+                SelectSlides[_SelectSlideOptionsMode].AddValue(Enum.GetName(typeof(EGameMode), EGameMode.TR_GAMEMODE_SHORTSONG));
+                _AvailableGameModes.Add(EGameMode.TR_GAMEMODE_SHORTSONG);
+            }
+            if (CSongs.VisibleSongs[SongMenus[_SongMenu].GetSelectedSong()].Medley.Source != EMedleySource.None)
+            {
+                SelectSlides[_SelectSlideOptionsMode].AddValue(Enum.GetName(typeof(EGameMode), EGameMode.TR_GAMEMODE_MEDLEY));
+                _AvailableGameModes.Add(EGameMode.TR_GAMEMODE_MEDLEY);
+            }
+            //Set SelectSlide-Selection to last selected game-mode if possible
+            for (int i = 0; i < _AvailableGameModes.Count; i++)
+            {
+                if (_AvailableGameModes[i] == lastMode)
+                    SelectSlides[_SelectSlideOptionsMode].SetSelectionByValueIndex(i);
+            }
+            SelectSlides[_SelectSlideOptionsMode].Visible = true;
+            SelectSlides[_SelectSlideOptionsPlaylistAdd].Visible = true;
+            Buttons[_ButtonOptionsSing].Visible = true;
+            Buttons[_ButtonOptionsPlaylist].Visible = true;
+            SetInteractionToButton(Buttons[_ButtonOptionsSing]);
+        }
+
+        private void _ShowSongOptionsGeneral()
+        {
+            if (CSongs.IsInCategory)
+            {
+                Buttons[_ButtonOptionsRandom].Visible = true;
+                Buttons[_ButtonOptionsSingAllVisible].Visible = true;
+            }
+            else
+                Buttons[_ButtonOptionsRandomCategory].Visible = true;
+            Buttons[_ButtonOptionsSingAll].Visible = true;
+            Buttons[_ButtonOptionsRandomMedley].Visible = true;
+            Buttons[_ButtonOptionsOpenSelectedItem].Visible = true;
+
+            if (SelectSlides[_SelectSlideOptionsPlaylistOpen].NumValues > 0)
+                SelectSlides[_SelectSlideOptionsPlaylistOpen].Visible = true;
+
+            if (Buttons[_ButtonOptionsRandom].Visible)
+                SetInteractionToButton(Buttons[_ButtonOptionsRandom]);
+            else
+                SetInteractionToButton(Buttons[_ButtonOptionsRandomCategory]);
+        }
+
+        private void _ShowSongOptionsMedley()
+        {
+            Buttons[_ButtonOptionsStartMedley].Visible = true;
+            SelectSlides[_SelectSlideOptionsNumMedleySongs].Visible = true;
+            SelectSlides[_SelectSlideOptionsNumMedleySongs].Clear();
+            if (CSongs.IsInCategory)
+            {
+                for (int i = 1; i <= CSongs.VisibleSongs.Length; i++)
+                    SelectSlides[_SelectSlideOptionsNumMedleySongs].AddValue(i.ToString());
+            }
+            else
+            {
+                for (int i = 1; i <= CSongs.AllSongs.Length; i++)
+                    SelectSlides[_SelectSlideOptionsNumMedleySongs].AddValue(i.ToString());
+            }
+            if (SelectSlides[_SelectSlideOptionsNumMedleySongs].NumValues >= 5)
+                SelectSlides[_SelectSlideOptionsNumMedleySongs].SetSelectionByValueIndex(4);
+            else
+                SelectSlides[_SelectSlideOptionsNumMedleySongs].SetSelectionByValueIndex(SelectSlides[_SelectSlideOptionsNumMedleySongs].NumValues - 1);
+            SetInteractionToButton(Buttons[_ButtonOptionsStartMedley]);
         }
 
         #region Playlist Actions
         public void CheckPlaylist()
         {
-            if (Playlists[htPlaylists(Playlist)].ActivePlaylistID == -1 && _PlaylistActive)
-                ClosePlaylist();
+            if (Playlists[_Playlist].ActivePlaylistID == -1 && _PlaylistActive)
+                _ClosePlaylist();
         }
 
-        private void OpenPlaylist(int PlaylistID)
+        private void _OpenPlaylist(int playlistID)
         {
-            if (CPlaylists.Playlists.Length > PlaylistID && PlaylistID > -1)
+            if (CPlaylists.Playlists.Length > playlistID && playlistID > -1)
             {
-                Playlists[htPlaylists(Playlist)].LoadPlaylist(PlaylistID);
-                SongMenus[htSongMenus(SongMenu)].SetSmallView(true);
-                Playlists[htPlaylists(Playlist)].Visible = true;
+                Playlists[_Playlist].LoadPlaylist(playlistID);
+                SongMenus[_SongMenu].SetSmallView(true);
+                Playlists[_Playlist].Visible = true;
             }
         }
 
-        private void ClosePlaylist()
+        private void _ClosePlaylist()
         {
-            if (Playlists[htPlaylists(Playlist)].Visible || _PlaylistActive)
+            if (Playlists[_Playlist].Visible || _PlaylistActive)
             {
-                SongMenus[htSongMenus(SongMenu)].SetSmallView(false);
+                SongMenus[_SongMenu].SetSmallView(false);
                 _PlaylistActive = false;
-                Playlists[htPlaylists(Playlist)].Selected = _PlaylistActive;
-                SongMenus[htSongMenus(SongMenu)].SetActive(!_PlaylistActive);
-                Playlists[htPlaylists(Playlist)].ClosePlaylist();
+                Playlists[_Playlist].Selected = _PlaylistActive;
+                SongMenus[_SongMenu].SetActive(!_PlaylistActive);
+                Playlists[_Playlist].ClosePlaylist();
             }
         }
 
-        private void UpdatePlaylistNames()
+        private void _UpdatePlaylistNames()
         {
-            SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistAdd)].Clear();
-            SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistAdd)].AddValue("TR_SCREENSONG_NEWPLAYLIST");
-            SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistAdd)].AddValues(CPlaylists.PlaylistNames);
-            SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistOpen)].Clear();
-            SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistOpen)].AddValues(CPlaylists.PlaylistNames);
+            SelectSlides[_SelectSlideOptionsPlaylistAdd].Clear();
+            SelectSlides[_SelectSlideOptionsPlaylistAdd].AddValue("TR_SCREENSONG_NEWPLAYLIST");
+            SelectSlides[_SelectSlideOptionsPlaylistAdd].AddValues(CPlaylists.PlaylistNames);
+            SelectSlides[_SelectSlideOptionsPlaylistOpen].Clear();
+            SelectSlides[_SelectSlideOptionsPlaylistOpen].AddValues(CPlaylists.PlaylistNames);
         }
 
-        private void OpenPlaylistAction()
+        private void _OpenPlaylistAction()
         {
             //Open a playlist
-            if (Playlists[htPlaylists(Playlist)].ActivePlaylistID != (SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistOpen)].Selection))
+            if (Playlists[_Playlist].ActivePlaylistID != SelectSlides[_SelectSlideOptionsPlaylistOpen].Selection)
             {
-                Playlists[htPlaylists(Playlist)].ActivePlaylistID = SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistOpen)].Selection;
-                SetSelectSlidePlaylistToCurrentPlaylist();
+                Playlists[_Playlist].ActivePlaylistID = SelectSlides[_SelectSlideOptionsPlaylistOpen].Selection;
+                _SetSelectSlidePlaylistToCurrentPlaylist();
 
                 //Open playlist
-                OpenPlaylist(Playlists[htPlaylists(Playlist)].ActivePlaylistID);
+                _OpenPlaylist(Playlists[_Playlist].ActivePlaylistID);
             }
         }
 
-        private void OpenAndAddPlaylistAction()
+        private void _OpenAndAddPlaylistAction()
         {
             //Open an existing playlist and add song
-            if (Playlists[htPlaylists(Playlist)].ActivePlaylistID != (SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistAdd)].Selection - 1) && (SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistAdd)].Selection - 1) != -1)
+            if (Playlists[_Playlist].ActivePlaylistID != (SelectSlides[_SelectSlideOptionsPlaylistAdd].Selection - 1) &&
+                (SelectSlides[_SelectSlideOptionsPlaylistAdd].Selection - 1) != -1)
             {
                 //Check selected game-mode
                 EGameMode gm;
-                if (_AvailableGameModes.Count >= SelectSlides[htSelectSlides(SelectSlideOptionsMode)].Selection)
-                    gm = _AvailableGameModes[SelectSlides[htSelectSlides(SelectSlideOptionsMode)].Selection];
+                if (_AvailableGameModes.Count >= SelectSlides[_SelectSlideOptionsMode].Selection)
+                    gm = _AvailableGameModes[SelectSlides[_SelectSlideOptionsMode].Selection];
+                else if (CSongs.VisibleSongs[SongMenus[_SongMenu].GetSelectedSong()].IsDuet)
+                    gm = EGameMode.TR_GAMEMODE_DUET;
                 else
-                    if (CSongs.VisibleSongs[SongMenus[htSongMenus(SongMenu)].GetSelectedSong()].IsDuet)
-                        gm = EGameMode.TR_GAMEMODE_DUET;
-                    else
-                        gm = EGameMode.TR_GAMEMODE_NORMAL;
-                
+                    gm = EGameMode.TR_GAMEMODE_NORMAL;
+
                 //Check if Playlist really exists
-                if (SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistAdd)].Selection - 1 >= 0)
+                if (SelectSlides[_SelectSlideOptionsPlaylistAdd].Selection - 1 >= 0)
                 {
-                    Playlists[htPlaylists(Playlist)].ActivePlaylistID = SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistAdd)].Selection - 1;
+                    Playlists[_Playlist].ActivePlaylistID = SelectSlides[_SelectSlideOptionsPlaylistAdd].Selection - 1;
 
                     //Add song to playlist
-                    CPlaylists.Playlists[Playlists[htPlaylists(Playlist)].ActivePlaylistID].AddSong(CSongs.VisibleSongs[SongMenus[htSongMenus(SongMenu)].GetSelectedSong()].ID, gm);
+                    CPlaylists.Playlists[Playlists[_Playlist].ActivePlaylistID].AddSong(CSongs.VisibleSongs[SongMenus[_SongMenu].GetSelectedSong()].ID, gm);
 
                     //Open playlist
-                    OpenPlaylist(Playlists[htPlaylists(Playlist)].ActivePlaylistID);
+                    _OpenPlaylist(Playlists[_Playlist].ActivePlaylistID);
 
-                    SetSelectSlidePlaylistToCurrentPlaylist();
-                    Playlists[htPlaylists(Playlist)].ScrollToBottom();
+                    _SetSelectSlidePlaylistToCurrentPlaylist();
+                    Playlists[_Playlist].ScrollToBottom();
                 }
             }
-            //Create a new playlist and add song
-            else if ((SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistAdd)].Selection - 1) == -1)
+                //Create a new playlist and add song
+            else if ((SelectSlides[_SelectSlideOptionsPlaylistAdd].Selection - 1) == -1)
             {
                 //Check selected game-mode
                 EGameMode gm;
-                if (_AvailableGameModes.Count >= SelectSlides[htSelectSlides(SelectSlideOptionsMode)].Selection)
-                    gm = _AvailableGameModes[SelectSlides[htSelectSlides(SelectSlideOptionsMode)].Selection];
+                if (_AvailableGameModes.Count >= SelectSlides[_SelectSlideOptionsMode].Selection)
+                    gm = _AvailableGameModes[SelectSlides[_SelectSlideOptionsMode].Selection];
+                else if (CSongs.VisibleSongs[SongMenus[_SongMenu].GetSelectedSong()].IsDuet)
+                    gm = EGameMode.TR_GAMEMODE_DUET;
                 else
-                    if (CSongs.VisibleSongs[SongMenus[htSongMenus(SongMenu)].GetSelectedSong()].IsDuet)
-                        gm = EGameMode.TR_GAMEMODE_DUET;
-                    else
-                        gm = EGameMode.TR_GAMEMODE_NORMAL;
-                
+                    gm = EGameMode.TR_GAMEMODE_NORMAL;
+
                 //Create new playlist
-                Playlists[htPlaylists(Playlist)].ActivePlaylistID = CPlaylists.NewPlaylist();
-                
+                Playlists[_Playlist].ActivePlaylistID = CPlaylists.NewPlaylist();
+
                 //Add song to playlist
-                CPlaylists.Playlists[Playlists[htPlaylists(Playlist)].ActivePlaylistID].AddSong(CSongs.VisibleSongs[SongMenus[htSongMenus(SongMenu)].GetSelectedSong()].ID, gm);
-                
+                CPlaylists.Playlists[Playlists[_Playlist].ActivePlaylistID].AddSong(CSongs.VisibleSongs[SongMenus[_SongMenu].GetSelectedSong()].ID, gm);
+
                 //Open playlist
-                OpenPlaylist(Playlists[htPlaylists(Playlist)].ActivePlaylistID);
-                
+                _OpenPlaylist(Playlists[_Playlist].ActivePlaylistID);
+
                 //Add new playlist to select-slide
-                SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistAdd)].AddValue(CPlaylists.Playlists[Playlists[htPlaylists(Playlist)].ActivePlaylistID].PlaylistName);
-                SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistOpen)].AddValue(CPlaylists.Playlists[Playlists[htPlaylists(Playlist)].ActivePlaylistID].PlaylistName);
+                SelectSlides[_SelectSlideOptionsPlaylistAdd].AddValue(CPlaylists.Playlists[Playlists[_Playlist].ActivePlaylistID].PlaylistName);
+                SelectSlides[_SelectSlideOptionsPlaylistOpen].AddValue(CPlaylists.Playlists[Playlists[_Playlist].ActivePlaylistID].PlaylistName);
 
-                SetSelectSlidePlaylistToCurrentPlaylist();
-
+                _SetSelectSlidePlaylistToCurrentPlaylist();
             }
-            //Add song to loaded playlist
+                //Add song to loaded playlist
             else
             {
                 //Check selected game-mode
                 EGameMode gm;
-                if (_AvailableGameModes.Count >= SelectSlides[htSelectSlides(SelectSlideOptionsMode)].Selection)
-                    gm = _AvailableGameModes[SelectSlides[htSelectSlides(SelectSlideOptionsMode)].Selection];
+                if (_AvailableGameModes.Count >= SelectSlides[_SelectSlideOptionsMode].Selection)
+                    gm = _AvailableGameModes[SelectSlides[_SelectSlideOptionsMode].Selection];
+                else if (CSongs.VisibleSongs[SongMenus[_SongMenu].GetSelectedSong()].IsDuet)
+                    gm = EGameMode.TR_GAMEMODE_DUET;
                 else
-                    if (CSongs.VisibleSongs[SongMenus[htSongMenus(SongMenu)].GetSelectedSong()].IsDuet)
-                        gm = EGameMode.TR_GAMEMODE_DUET;
-                    else
-                        gm = EGameMode.TR_GAMEMODE_NORMAL;
-                CPlaylists.Playlists[Playlists[htPlaylists(Playlist)].ActivePlaylistID].AddSong(CSongs.VisibleSongs[SongMenus[htSongMenus(SongMenu)].GetSelectedSong()].ID, gm);
-                Playlists[htPlaylists(Playlist)].UpdatePlaylist();
-                Playlists[htPlaylists(Playlist)].ScrollToBottom();
+                    gm = EGameMode.TR_GAMEMODE_NORMAL;
+                CPlaylists.Playlists[Playlists[_Playlist].ActivePlaylistID].AddSong(CSongs.VisibleSongs[SongMenus[_SongMenu].GetSelectedSong()].ID, gm);
+                Playlists[_Playlist].UpdatePlaylist();
+                Playlists[_Playlist].ScrollToBottom();
             }
         }
 
-        private void SetSelectSlidePlaylistToCurrentPlaylist()
+        private void _SetSelectSlidePlaylistToCurrentPlaylist()
         {
-            if (Playlists[htPlaylists(Playlist)].ActivePlaylistID > -1)
-                SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistAdd)].Selection = Playlists[htPlaylists(Playlist)].ActivePlaylistID + 1;
+            if (Playlists[_Playlist].ActivePlaylistID > -1)
+                SelectSlides[_SelectSlideOptionsPlaylistAdd].Selection = Playlists[_Playlist].ActivePlaylistID + 1;
             else
-                SelectSlides[htSelectSlides(SelectSlideOptionsPlaylistAdd)].Selection = 0;
+                SelectSlides[_SelectSlideOptionsPlaylistAdd].Selection = 0;
         }
         #endregion Playlist Actions
     }

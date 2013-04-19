@@ -1,89 +1,59 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
-
+﻿using System.Windows.Forms;
 using Vocaluxe.Base;
-using Vocaluxe.Lib.Draw;
-using Vocaluxe.Menu;
-
+using VocaluxeLib.Menu;
 
 namespace Vocaluxe.Screens
 {
     class CScreenOptionsGame : CMenu
     {
         // Version number for theme files. Increment it, if you've changed something on the theme files!
-        const int ScreenVersion = 1;
-
-        private const string SelectSlideLanguage = "SelectSlideLanguage";
-        private const string SelectSlideDebugLevel = "SelectSlideDebugLevel";
-        private const string SelectSlideSongMenu = "SelectSlideSongMenu";
-        private const string SelectSlideSongSorting = "SelectSlideSongSorting";
-        private const string SelectSlideTabs = "SelectSlideTabs";
-        private const string SelectSlideTimerMode = "SelectSlideTimerMode";
-
-        private const string ButtonExit = "ButtonExit";
-
-        private ESongSorting _SongSortingOld;
-        private EOffOn _TabsOld;
-        private string _LanguageOld;
-        private string[] _Languages;
-        private int _CurrentLang = -1;
-
-        public CScreenOptionsGame()
+        protected override int _ScreenVersion
         {
+            get { return 1; }
         }
 
-        protected override void Init()
+        private const string _SelectSlideLanguage = "SelectSlideLanguage";
+        private const string _SelectSlideDebugLevel = "SelectSlideDebugLevel";
+        private const string _SelectSlideSongMenu = "SelectSlideSongMenu";
+        private const string _SelectSlideSongSorting = "SelectSlideSongSorting";
+        private const string _SelectSlideTabs = "SelectSlideTabs";
+        private const string _SelectSlideTimerMode = "SelectSlideTimerMode";
+
+        private const string _ButtonExit = "ButtonExit";
+
+        public override void Init()
         {
             base.Init();
 
-            _ThemeName = "ScreenOptionsGame";
-            _ScreenVersion = ScreenVersion;
-            _ThemeButtons = new string[] { ButtonExit };
-            _ThemeSelectSlides = new string[] { SelectSlideLanguage, SelectSlideDebugLevel, SelectSlideSongMenu, SelectSlideSongSorting, SelectSlideTabs, SelectSlideTimerMode };
-
-            _Languages = CLanguage.GetLanguages().ToArray();
-
-            for (int i = 0; i < _Languages.Length; i++)
-            {
-                if (_Languages[i] == CConfig.Language)
-                {
-                    _CurrentLang = i;
-                }
-            }
+            _ThemeButtons = new string[] {_ButtonExit};
+            _ThemeSelectSlides = new string[] {_SelectSlideLanguage, _SelectSlideDebugLevel, _SelectSlideSongMenu, _SelectSlideSongSorting, _SelectSlideTabs, _SelectSlideTimerMode};
         }
 
-        public override void LoadTheme(string XmlPath)
+        public override void LoadTheme(string xmlPath)
         {
-            base.LoadTheme(XmlPath);
+            base.LoadTheme(xmlPath);
 
-            SelectSlides[htSelectSlides(SelectSlideLanguage)].AddValues(_Languages);
-            SelectSlides[htSelectSlides(SelectSlideLanguage)].Selection = _CurrentLang;
+            SelectSlides[_SelectSlideLanguage].AddValues(CLanguage.GetLanguageNames());
+            SelectSlides[_SelectSlideLanguage].Selection = CLanguage.LanguageId;
 
-            SelectSlides[htSelectSlides(SelectSlideDebugLevel)].SetValues<EDebugLevel>((int)CConfig.DebugLevel);
-            SelectSlides[htSelectSlides(SelectSlideSongMenu)].SetValues<ESongMenu>((int)CConfig.SongMenu);
-            SelectSlides[htSelectSlides(SelectSlideSongSorting)].SetValues<ESongSorting>((int)CConfig.SongSorting);
-            SelectSlides[htSelectSlides(SelectSlideTabs)].SetValues<EOffOn>((int)CConfig.Tabs);
-            SelectSlides[htSelectSlides(SelectSlideTimerMode)].SetValues<ETimerMode>((int)CConfig.TimerMode);
-            
+            SelectSlides[_SelectSlideDebugLevel].SetValues<EDebugLevel>((int)CConfig.DebugLevel);
+            SelectSlides[_SelectSlideSongMenu].SetValues<ESongMenu>((int)CConfig.SongMenu);
+            SelectSlides[_SelectSlideSongSorting].SetValues<ESongSorting>((int)CConfig.SongSorting);
+            SelectSlides[_SelectSlideTabs].SetValues<EOffOn>((int)CConfig.Tabs);
+            SelectSlides[_SelectSlideTimerMode].SetValues<ETimerMode>((int)CConfig.TimerMode);
         }
 
-        public override bool HandleInput(KeyEvent KeyEvent)
+        public override bool HandleInput(SKeyEvent keyEvent)
         {
-            base.HandleInput(KeyEvent);
-            
-            if (KeyEvent.KeyPressed)
-            {
+            base.HandleInput(keyEvent);
 
-            }
-            else
+            if (!keyEvent.KeyPressed)
             {
-                switch (KeyEvent.Key)
+                switch (keyEvent.Key)
                 {
                     case Keys.Escape:
                     case Keys.Back:
-                        SaveConfig();
+                        _SaveConfig();
                         CGraphics.FadeTo(EScreens.ScreenOptions);
                         break;
 
@@ -93,53 +63,42 @@ namespace Vocaluxe.Screens
                         break;
 
                     case Keys.Enter:
-                        if (Buttons[htButtons(ButtonExit)].Selected)
+                        if (Buttons[_ButtonExit].Selected)
                         {
-                            SaveConfig();
+                            _SaveConfig();
                             CGraphics.FadeTo(EScreens.ScreenOptions);
-                        }                        
+                        }
                         break;
-                        
+
                     case Keys.Left:
-                        SaveConfig();
+                        _SaveConfig();
                         break;
 
                     case Keys.Right:
-                        SaveConfig();
+                        _SaveConfig();
                         break;
                 }
             }
             return true;
         }
 
-        public override bool HandleMouse(MouseEvent MouseEvent)
+        public override bool HandleMouse(SMouseEvent mouseEvent)
         {
-            base.HandleMouse(MouseEvent);
+            base.HandleMouse(mouseEvent);
 
-            if (MouseEvent.RB)
+            if (mouseEvent.RB)
             {
-                SaveConfig();
+                _SaveConfig();
                 CGraphics.FadeTo(EScreens.ScreenOptions);
             }
 
-            if (MouseEvent.LB && IsMouseOver(MouseEvent))
+            if (mouseEvent.LB && IsMouseOver(mouseEvent))
             {
-                SaveConfig();
-                if (Buttons[htButtons(ButtonExit)].Selected)
-                {
+                _SaveConfig();
+                if (Buttons[_ButtonExit].Selected)
                     CGraphics.FadeTo(EScreens.ScreenOptions);
-                }
             }
             return true;
-        }
-
-        public override void OnShow()
-        {
-            base.OnShow();
-
-            _SongSortingOld = CConfig.SongSorting;
-            _TabsOld = CConfig.Tabs;
-            _LanguageOld = CConfig.Language;
         }
 
         public override bool UpdateGame()
@@ -153,28 +112,20 @@ namespace Vocaluxe.Screens
             return true;
         }
 
-        private void SaveConfig()
+        private void _SaveConfig()
         {
-            CConfig.Language = _Languages[SelectSlides[htSelectSlides(SelectSlideLanguage)].Selection];
-            CConfig.DebugLevel = (EDebugLevel)SelectSlides[htSelectSlides(SelectSlideDebugLevel)].Selection;
-            CConfig.SongMenu = (ESongMenu)SelectSlides[htSelectSlides(SelectSlideSongMenu)].Selection;
-            CConfig.SongSorting = (ESongSorting)SelectSlides[htSelectSlides(SelectSlideSongSorting)].Selection;
-            CConfig.Tabs = (EOffOn)SelectSlides[htSelectSlides(SelectSlideTabs)].Selection;
-            CConfig.TimerMode = (ETimerMode)SelectSlides[htSelectSlides(SelectSlideTimerMode)].Selection;
+            CLanguage.LanguageId = SelectSlides[_SelectSlideLanguage].Selection;
+            CConfig.Language = CLanguage.GetLanguageName(CLanguage.LanguageId);
+            CConfig.DebugLevel = (EDebugLevel)SelectSlides[_SelectSlideDebugLevel].Selection;
+            CConfig.SongMenu = (ESongMenu)SelectSlides[_SelectSlideSongMenu].Selection;
+            CConfig.SongSorting = (ESongSorting)SelectSlides[_SelectSlideSongSorting].Selection;
+            CConfig.Tabs = (EOffOn)SelectSlides[_SelectSlideTabs].Selection;
+            CConfig.TimerMode = (ETimerMode)SelectSlides[_SelectSlideTimerMode].Selection;
 
             CConfig.SaveConfig();
 
-            if (_SongSortingOld != CConfig.SongSorting || _TabsOld != CConfig.Tabs || _LanguageOld != CConfig.Language)
-            {
-                CSongs.Sort(CConfig.SongSorting, CConfig.Tabs, CConfig.IgnoreArticles, String.Empty);
-                CSongs.Category = -1;
-            }
-
-            CLanguage.SetLanguage(CConfig.Language);
-
-            _SongSortingOld = CConfig.SongSorting;
-            _TabsOld = CConfig.Tabs;
-            _LanguageOld = CConfig.Language;
+            CSongs.Sorter.SongSorting = CConfig.SongSorting;
+            CSongs.Categorizer.Tabs = CConfig.Tabs;
         }
     }
 }
