@@ -29,6 +29,7 @@ namespace VocaluxeLib.Menu.Animations
         None, //Couldn't choosen by theme-designer
         OnVisible,
         Visible,
+        AfterVisible,
         OnSelected,
         Selected,
         AfterSelected

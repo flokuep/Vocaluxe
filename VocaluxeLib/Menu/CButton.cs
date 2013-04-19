@@ -108,9 +108,9 @@ namespace VocaluxeLib.Menu
             set 
             {
                 if (value)
-                    Event = EAnimationEvent.Visible;
+                    CAnimations.SetOnVisibleAnim(this);
                 else
-                    Event = EAnimationEvent.None;
+                    CAnimations.SetAfterVisibleAnim(this);
 
                 _Visible = value; 
             }

@@ -53,6 +53,10 @@ namespace VocaluxeLib.Menu.Animations
                             am.element.Event = EAnimationEvent.Selected;
                             am.anim.ResetValues();
                         }
+                        else
+                        {
+                            am.element.Event = EAnimationEvent.None;
+                        }
                     }
                     else if (am.element.Event == EAnimationEvent.OnVisible && am.anim.isDrawn())
                     {
@@ -60,6 +64,22 @@ namespace VocaluxeLib.Menu.Animations
                         {
                             am.element.Event = EAnimationEvent.Visible;
                             am.anim.ResetValues();
+                        }
+                        else
+                        {
+                            am.element.Event = EAnimationEvent.None;
+                        }
+                    }
+                    else if (am.element.Event == EAnimationEvent.AfterVisible && am.anim.isDrawn())
+                    {
+                        if (AnimAvailable(am.element, EAnimationEvent.AfterVisible))
+                        {
+                            am.element.Event = EAnimationEvent.AfterVisible;
+                            am.anim.ResetValues();
+                        }
+                        else
+                        {
+                            am.element.Event = EAnimationEvent.None;
                         }
                     }
 
@@ -96,6 +116,22 @@ namespace VocaluxeLib.Menu.Animations
                 e.Event = EAnimationEvent.AfterSelected;
             else if (AnimAvailable(e, EAnimationEvent.Visible))
                 e.Event = EAnimationEvent.Visible;
+            else
+                e.Event = EAnimationEvent.None;
+        }
+
+        public static void SetOnVisibleAnim(IMenuProperties e)
+        {
+            if (AnimAvailable(e, EAnimationEvent.OnVisible))
+                e.Event = EAnimationEvent.OnVisible;
+            else if (AnimAvailable(e, EAnimationEvent.Visible))
+                e.Event = EAnimationEvent.Visible;
+        }
+
+        public static void SetAfterVisibleAnim(IMenuProperties e)
+        {
+            if (AnimAvailable(e, EAnimationEvent.AfterVisible))
+                e.Event = EAnimationEvent.AfterVisible;
             else
                 e.Event = EAnimationEvent.None;
         }
