@@ -110,14 +110,14 @@ namespace VocaluxeLib.Menu.Animations
         public override void StartAnimation()
         {
             base.StartAnimation();
-            if (AnimationDrawn && Repeat != EAnimationRepeat.OnlyReset)
+            if (AnimationFromStart && Repeat != EAnimationRepeat.OnlyReset)
                 _CurrentRect = OriginalRect;
-            else if (AnimationDrawn && Repeat == EAnimationRepeat.OnlyReset)
+            else if (AnimationFromStart && Repeat == EAnimationRepeat.OnlyReset)
             {
                 _CurrentRect = _FinalRect;
                 ResetMode = true;
             }
-            else if (!AnimationDrawn && Repeat == EAnimationRepeat.OnlyReset)
+            else if (!AnimationFromStart && Repeat == EAnimationRepeat.OnlyReset)
             {
                 ResetMode = true;
             }

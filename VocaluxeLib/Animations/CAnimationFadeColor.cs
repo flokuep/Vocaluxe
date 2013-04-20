@@ -58,15 +58,22 @@ namespace VocaluxeLib.Menu.Animations
         {
             base.StartAnimation();
 
-            if(AnimationFromStart)
+            if (AnimationFromStart && Repeat != EAnimationRepeat.OnlyReset)
                 _CurrentColor = _StartColor;
+            else if (AnimationFromStart && Repeat == EAnimationRepeat.OnlyReset)
+            {
+                _CurrentColor = _EndColor;
+                ResetMode = true;
+            }
+            else if (!AnimationFromStart && Repeat == EAnimationRepeat.OnlyReset)
+                ResetMode = true;
         }
 
         public override SColorF getColor()
         {
             if (AnimationDrawn && Repeat == EAnimationRepeat.None)
                 return _EndColor;
-            else if (AnimationDrawn && Repeat == EAnimationRepeat.Reset)
+            else if (AnimationDrawn && (Repeat == EAnimationRepeat.Reset  || Repeat == EAnimationRepeat.OnlyReset))
                 return _StartColor;
             else
                 return _CurrentColor;
@@ -128,6 +135,7 @@ namespace VocaluxeLib.Menu.Animations
                             StopAnimation();
                         break;
 
+                    case EAnimationRepeat.OnlyReset:
                     case EAnimationRepeat.None:
                         StopAnimation();
                         break;

@@ -72,8 +72,17 @@ namespace VocaluxeLib.Menu.Animations
         {
             base.StartAnimation();
 
-            if(AnimationDrawn)
+            if (AnimationFromStart && Repeat != EAnimationRepeat.OnlyReset)
                 _CurrentRect = OriginalRect;
+            else if (AnimationFromStart && Repeat == EAnimationRepeat.OnlyReset)
+            {
+                _CurrentRect = _FinalRect;
+                ResetMode = true;
+            }
+            else if (!AnimationFromStart && Repeat == EAnimationRepeat.OnlyReset)
+            {
+                ResetMode = true;
+            }
         }
 
         public override void Update()
@@ -120,6 +129,7 @@ namespace VocaluxeLib.Menu.Animations
                             StopAnimation();
                         break;
 
+                    case EAnimationRepeat.OnlyReset:
                     case EAnimationRepeat.None:
                         StopAnimation();
                         break;
