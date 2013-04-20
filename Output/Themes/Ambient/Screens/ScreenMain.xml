@@ -87,20 +87,24 @@
       </SReflection>
       <Animation1>
 		<Event>OnSelected</Event>
-	    <Type>FadeColor</Type>
-	    <Time>300,00</Time>
-	    <Repeat>None</Repeat>
-	    <StartColor>ButtonColor</StartColor>  
-	    <EndColor>ButtonSColor</EndColor>
+        <Type>Resize</Type>
+        <Time>2000,00</Time>
+        <Repeat>None</Repeat>
+        <Position>Center</Position>
+        <Order>HeightFirst</Order>
+        <W>200</W>
+        <H>100</H> 
       </Animation1>
-      <Animation2>
-		<Event>AfterSelected</Event>
-	    <Type>FadeColor</Type>
-	    <Time>1000,00</Time>
-	    <Repeat>None</Repeat>
-	    <StartColor>ButtonSColor</StartColor>  
-	    <EndColor>ButtonColor</EndColor>
-      </Animation2>
+	  <Animation2>
+		<Event>AfterSelected</Event>  
+        <Type>Resize</Type>
+        <Time>2000,00</Time>
+        <Repeat>OnlyReset</Repeat>
+        <Position>Center</Position>
+        <Order>HeightFirst</Order>
+        <W>200</W>
+        <H>100</H>      
+      </Animation2> 
     </ButtonSing>
     <ButtonParty>
       <!--<Skin>: Texture name-->

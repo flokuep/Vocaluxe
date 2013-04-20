@@ -19,6 +19,7 @@ namespace VocaluxeLib.Menu.Animations
     public enum EAnimationRepeat
     {
         None,
+        OnlyReset,
         Reset,
         Repeat,
         RepeatWithReset
@@ -91,7 +92,7 @@ namespace VocaluxeLib.Menu.Animations
         public virtual void StopAnimation()
         {
             Timer.Stop();
-            if(Repeat == EAnimationRepeat.None || Repeat == EAnimationRepeat.Reset)
+            if(Repeat == EAnimationRepeat.None || Repeat == EAnimationRepeat.Reset || Repeat == EAnimationRepeat.OnlyReset)
                 AnimationDrawn = true;
         }
 
