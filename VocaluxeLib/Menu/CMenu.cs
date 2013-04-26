@@ -24,9 +24,9 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using VocaluxeLib.Animations;
 using VocaluxeLib.Menu.SingNotes;
 using VocaluxeLib.Menu.SongMenu;
-using VocaluxeLib.Menu.Animations;
 
 namespace VocaluxeLib.Menu
 {

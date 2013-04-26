@@ -1,22 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using System.Xml;
-using System.Xml.XPath;
-using VocaluxeLib.Animations;
+﻿#region license
+// /*
+//     This file is part of Vocaluxe.
+// 
+//     Vocaluxe is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     Vocaluxe is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
+//  */
+#endregion
 
-namespace VocaluxeLib.Menu.Animations
+using System.Xml;
+using VocaluxeLib.Menu;
+
+namespace VocaluxeLib.Animations
 {
     public class CAnimation : IAnimation
     {
         private IAnimation _Animation;
-        private int _PartyModeID;
+        private readonly int _PartyModeID;
 
-        public CAnimation(EAnimationType Type, int PartyModeID)
+        public CAnimation(EAnimationType type, int partyModeID)
         {
-            _PartyModeID = PartyModeID;
-            setAnimation(Type);
+            _PartyModeID = partyModeID;
+            SetAnimation(type);
         }
 
         public void Init()
@@ -64,59 +78,59 @@ namespace VocaluxeLib.Menu.Animations
             _Animation.Update();
         }
 
-        public void setRect(SRectF rect)
+        public void SetRect(SRectF rect)
         {
-            _Animation.setRect(rect);
+            _Animation.SetRect(rect);
         }
 
-        public SRectF getRect()
+        public SRectF GetRect()
         {
-            return _Animation.getRect();
+            return _Animation.GetRect();
         }
 
-        public SRectF getRectChanges()
+        public SRectF GetRectChanges()
         {
-            return _Animation.getRectChanges();
+            return _Animation.GetRectChanges();
         }
 
-        public void setColor(SColorF color)
+        public void SetColor(SColorF color)
         {
-            _Animation.setColor(color);
+            _Animation.SetColor(color);
         }
 
-        public SColorF getColor()
+        public SColorF GetColor()
         {
-            return _Animation.getColor();
+            return _Animation.GetColor();
         }
 
-        public void setTexture(ref STexture texture)
+        public void SetTexture(ref STexture texture)
         {
-            _Animation.setTexture(ref texture);
+            _Animation.SetTexture(ref texture);
         }
 
-        public STexture getTexture()
+        public STexture GetTexture()
         {
-            return _Animation.getTexture();
+            return _Animation.GetTexture();
         }
 
-        public void SetCurrentValues(SRectF rect, SColorF color, STexture texture)
+        public void SetCurrentValues(SRectF rect, SColorF color)
         {
-            _Animation.SetCurrentValues(rect, color, texture);
+            _Animation.SetCurrentValues(rect, color);
         }
 
-        public EAnimationEvent getEvent()
+        public EAnimationEvent GetEvent()
         {
-            return _Animation.getEvent();
+            return _Animation.GetEvent();
         }
 
-        public bool isDrawn()
+        public bool IsDrawn()
         {
-            return _Animation.isDrawn();
+            return _Animation.IsDrawn();
         }
 
-        public void setAnimation(EAnimationType Type)
+        public void SetAnimation(EAnimationType type)
         {
-            switch (Type)
+            switch (type)
             {
                 case EAnimationType.Resize:
                     _Animation = new CAnimationResize(_PartyModeID);

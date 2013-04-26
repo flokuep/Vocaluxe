@@ -23,7 +23,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using Vocaluxe.Screens;
-using VocaluxeLib.Menu.Animations;
+using VocaluxeLib.Animations;
 using VocaluxeLib.Menu;
 using VocaluxeLib.PartyModes;
 

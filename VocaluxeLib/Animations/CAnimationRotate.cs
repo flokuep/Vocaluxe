@@ -1,11 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using System.Xml;
-using System.Xml.XPath;
+﻿#region license
+// /*
+//     This file is part of Vocaluxe.
+// 
+//     Vocaluxe is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     Vocaluxe is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
+//  */
+#endregion
 
-namespace VocaluxeLib.Menu.Animations
+using VocaluxeLib.Menu;
+
+namespace VocaluxeLib.Animations
 {
     public class CAnimationRotate : CAnimationFramework
     {
@@ -13,10 +27,8 @@ namespace VocaluxeLib.Menu.Animations
         private SRectF _FinalRect;
         private SRectF _CurrentRect;
 
-        public CAnimationRotate(int PartyModeID)
-            : base(PartyModeID)
-        {
-        }
+        public CAnimationRotate(int partyModeID)
+            : base(partyModeID) {}
 
         public override void Init()
         {
@@ -25,20 +37,20 @@ namespace VocaluxeLib.Menu.Animations
 
         public override bool LoadAnimation(string item, CXMLReader xmlReader)
         {
-            _AnimationLoaded = true;
+            AnimationLoaded = true;
 
             //Load normal animation-options
-            _AnimationLoaded &= base.LoadAnimation(item, xmlReader);
+            AnimationLoaded &= base.LoadAnimation(item, xmlReader);
 
             //Load specific animation-options
-            _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/Time", ref Time);
-            _AnimationLoaded &= xmlReader.TryGetEnumValue<EAnimationRepeat>(item + "/Repeat", ref Repeat);
-            _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/Degree", ref _Degree);
+            AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/Time", ref Time);
+            AnimationLoaded &= xmlReader.TryGetEnumValue(item + "/Repeat", ref Repeat);
+            AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/Degree", ref _Degree);
 
-            return _AnimationLoaded;
+            return AnimationLoaded;
         }
 
-        public override void setRect(SRectF rect)
+        public override void SetRect(SRectF rect)
         {
             OriginalRect = rect;
 
@@ -46,17 +58,16 @@ namespace VocaluxeLib.Menu.Animations
             _FinalRect.Rotation = OriginalRect.Rotation + _Degree;
         }
 
-        public override SRectF getRect()
+        public override SRectF GetRect()
         {
             if (AnimationDrawn && Repeat == EAnimationRepeat.None)
                 return _FinalRect;
-            else if (AnimationDrawn && Repeat == EAnimationRepeat.Reset)
+            if (AnimationDrawn && Repeat == EAnimationRepeat.Reset)
                 return OriginalRect;
-            else
-                return _CurrentRect;
+            return _CurrentRect;
         }
 
-        public override void SetCurrentValues(SRectF rect, SColorF color, STexture texture)
+        public override void SetCurrentValues(SRectF rect, SColorF color)
         {
             _CurrentRect = rect;
         }
@@ -73,9 +84,7 @@ namespace VocaluxeLib.Menu.Animations
                 ResetMode = true;
             }
             else if (!AnimationFromStart && Repeat == EAnimationRepeat.OnlyReset)
-            {
                 ResetMode = true;
-            }
         }
 
         public override void Update()

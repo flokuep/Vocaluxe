@@ -26,7 +26,7 @@ namespace Vocaluxe.Lib.Sound
     class CGstreamerAudio : IPlayback
     {
         //static float LastPosition;
-        private CGstreamerAudioWrapper.LogCallback _LogCallback;
+        private readonly CGstreamerAudioWrapper.LogCallback _LogCallback;
 
         #region log
         private void _LogHandler(string text)

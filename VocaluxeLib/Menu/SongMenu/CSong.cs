@@ -159,10 +159,7 @@ namespace VocaluxeLib.Menu.SongMenu
 
         public STexture CoverTextureBig
         {
-            get
-            {
-                return _CoverBigLoaded ? _CoverTextureBig : _CoverTextureSmall;
-            }
+            get { return _CoverBigLoaded ? _CoverTextureBig : _CoverTextureSmall; }
             set
             {
                 _CoverTextureBig = value;

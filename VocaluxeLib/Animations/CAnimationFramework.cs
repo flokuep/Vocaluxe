@@ -1,12 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using System.Xml;
-using System.Xml.XPath;
-using VocaluxeLib.Animations;
+﻿#region license
+// /*
+//     This file is part of Vocaluxe.
+// 
+//     Vocaluxe is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     Vocaluxe is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
+//  */
+#endregion
 
-namespace VocaluxeLib.Menu.Animations
+using System.Diagnostics;
+using System.Xml;
+using VocaluxeLib.Menu;
+
+namespace VocaluxeLib.Animations
 {
     public enum EAnimationType
     {
@@ -39,7 +54,7 @@ namespace VocaluxeLib.Menu.Animations
 
     public abstract class CAnimationFramework : IAnimation
     {
-        public bool _AnimationLoaded;
+        public bool AnimationLoaded;
 
         public EAnimationType Type;
         public EAnimationRepeat Repeat;
@@ -59,9 +74,9 @@ namespace VocaluxeLib.Menu.Animations
 
         protected int _PartyModeID;
 
-        public CAnimationFramework(int PartyModeID)
+        public CAnimationFramework(int partyModeID)
         {
-            _PartyModeID = PartyModeID;
+            _PartyModeID = partyModeID;
             Init();
         }
 
@@ -69,14 +84,14 @@ namespace VocaluxeLib.Menu.Animations
 
         public virtual bool LoadAnimation(string item, CXMLReader xmlReader)
         {
-            _AnimationLoaded = true;
+            AnimationLoaded = true;
 
-            _AnimationLoaded &= xmlReader.TryGetEnumValue<EAnimationEvent>(item + "/Event", ref Event);
+            AnimationLoaded &= xmlReader.TryGetEnumValue(item + "/Event", ref Event);
 
-            if (_AnimationLoaded)
-                _AnimationLoaded = Event != EAnimationEvent.None;
+            if (AnimationLoaded)
+                AnimationLoaded = Event != EAnimationEvent.None;
 
-            return _AnimationLoaded;
+            return AnimationLoaded;
         }
 
         public virtual bool SaveAnimation(XmlWriter writer)
@@ -120,59 +135,59 @@ namespace VocaluxeLib.Menu.Animations
             return Timer.IsRunning || (AnimationDrawn && Repeat == EAnimationRepeat.None);
         }
 
-        public virtual void setRect(SRectF rect)
+        public virtual void SetRect(SRectF rect)
         {
             OriginalRect = rect;
             LastRect = rect;
         }
 
-        public virtual SRectF getRect()
+        public virtual SRectF GetRect()
         {
             return OriginalRect;
         }
 
-        public virtual SRectF getRectChanges()
+        public virtual SRectF GetRectChanges()
         {
             SRectF changes = new SRectF();
-            changes.X = getRect().X - LastRect.X;
-            changes.Y = getRect().Y - LastRect.Y;
-            changes.W = getRect().W - LastRect.W;
-            changes.H = getRect().H - LastRect.H;
-            changes.Rotation = getRect().Rotation - LastRect.Rotation;
+            changes.X = GetRect().X - LastRect.X;
+            changes.Y = GetRect().Y - LastRect.Y;
+            changes.W = GetRect().W - LastRect.W;
+            changes.H = GetRect().H - LastRect.H;
+            changes.Rotation = GetRect().Rotation - LastRect.Rotation;
             return changes;
         }
 
-        public virtual void setColor(SColorF color)
+        public virtual void SetColor(SColorF color)
         {
             OriginalColor = color;
         }
 
-        public virtual SColorF getColor()
+        public virtual SColorF GetColor()
         {
             return OriginalColor;
         }
 
-        public virtual void setTexture(ref STexture texture)
+        public virtual void SetTexture(ref STexture texture)
         {
             OriginalTexture = texture;
         }
 
-        public virtual STexture getTexture()
+        public virtual STexture GetTexture()
         {
             return OriginalTexture;
         }
 
-        public virtual EAnimationEvent getEvent()
+        public virtual EAnimationEvent GetEvent()
         {
             return Event;
         }
 
-        public virtual bool isDrawn()
+        public virtual bool IsDrawn()
         {
             return AnimationDrawn;
         }
 
-        public abstract void SetCurrentValues(SRectF rect, SColorF color, STexture texture);
+        public abstract void SetCurrentValues(SRectF rect, SColorF color);
 
         public abstract void Update();
     }

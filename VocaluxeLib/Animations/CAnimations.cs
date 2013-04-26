@@ -1,14 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿#region license
+// /*
+//     This file is part of Vocaluxe.
+// 
+//     Vocaluxe is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     Vocaluxe is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
+//  */
+#endregion
 
-namespace VocaluxeLib.Menu.Animations
+using System.Collections.Generic;
+using VocaluxeLib.Menu;
+
+namespace VocaluxeLib.Animations
 {
     public static class CAnimations
     {
-        struct SAnimationMenu {
-            public IMenuProperties element;
-            public CAnimation anim;
+        private struct SAnimationMenu
+        {
+            public readonly IMenuProperties element;
+            public readonly CAnimation anim;
 
             public SAnimationMenu(IMenuProperties e, CAnimation a)
             {
@@ -17,7 +36,7 @@ namespace VocaluxeLib.Menu.Animations
             }
         }
 
-        private static List<SAnimationMenu> Elements = new List<SAnimationMenu>();
+        private static readonly List<SAnimationMenu> Elements = new List<SAnimationMenu>();
 
         public static void Add(IMenuProperties e, CAnimation anim)
         {
@@ -28,35 +47,35 @@ namespace VocaluxeLib.Menu.Animations
         {
             foreach (SAnimationMenu am in Elements)
             {
-                if (am.element.Event == am.anim.getEvent())
+                if (am.element.Event == am.anim.GetEvent())
                 {
-                    if (!am.anim.AnimationActive() && !am.anim.isDrawn())
+                    if (!am.anim.AnimationActive() && !am.anim.IsDrawn())
                     {
-                        am.anim.SetCurrentValues(am.element.Rect, am.element.Color, am.element.Texture);
+                        am.anim.SetCurrentValues(am.element.Rect, am.element.Color);
                         am.anim.StartAnimation();
                     }
-                    else if (am.element.Event == EAnimationEvent.AfterSelected && am.anim.isDrawn())
+                    else if (am.element.Event == EAnimationEvent.AfterSelected && am.anim.IsDrawn())
                     {
                         if (AnimAvailable(am.element, EAnimationEvent.Visible))
                             am.element.Event = EAnimationEvent.Visible;
                         else
                             am.element.Event = EAnimationEvent.None;
                     }
-                    else if (am.element.Event == EAnimationEvent.OnSelected && am.anim.isDrawn())
+                    else if (am.element.Event == EAnimationEvent.OnSelected && am.anim.IsDrawn())
                     {
                         if (AnimAvailable(am.element, EAnimationEvent.Selected))
                             am.element.Event = EAnimationEvent.Selected;
                         else
                             am.element.Event = EAnimationEvent.None;
                     }
-                    else if (am.element.Event == EAnimationEvent.OnVisible && am.anim.isDrawn())
+                    else if (am.element.Event == EAnimationEvent.OnVisible && am.anim.IsDrawn())
                     {
                         if (AnimAvailable(am.element, EAnimationEvent.Visible))
                             am.element.Event = EAnimationEvent.Visible;
                         else
                             am.element.Event = EAnimationEvent.None;
                     }
-                    else if (am.element.Event == EAnimationEvent.AfterVisible && am.anim.isDrawn())
+                    else if (am.element.Event == EAnimationEvent.AfterVisible && am.anim.IsDrawn())
                     {
                         if (AnimAvailable(am.element, EAnimationEvent.AfterVisible))
                             am.element.Event = EAnimationEvent.AfterVisible;
@@ -64,22 +83,20 @@ namespace VocaluxeLib.Menu.Animations
                             am.element.Event = EAnimationEvent.None;
                     }
 
-                    if (!am.anim.isDrawn())
+                    if (!am.anim.IsDrawn())
                     {
                         am.anim.Update();
-                        float x = am.element.Rect.X + am.anim.getRectChanges().X;
-                        float y = am.element.Rect.Y + am.anim.getRectChanges().Y;
-                        float w = am.element.Rect.W + am.anim.getRectChanges().W;
-                        float h = am.element.Rect.H + am.anim.getRectChanges().H;
-                        float r = am.element.Rect.Rotation + am.anim.getRectChanges().Rotation;
+                        float x = am.element.Rect.X + am.anim.GetRectChanges().X;
+                        float y = am.element.Rect.Y + am.anim.GetRectChanges().Y;
+                        float w = am.element.Rect.W + am.anim.GetRectChanges().W;
+                        float h = am.element.Rect.H + am.anim.GetRectChanges().H;
                         am.element.Rect = new SRectF(x, y, w, h, am.element.Rect.Z);
                     }
-                    am.element.Color = am.anim.getColor();
-                    am.element.Texture = am.anim.getTexture();
+                    am.element.Color = am.anim.GetColor();
+                    am.element.Texture = am.anim.GetTexture();
                 }
-                else
-                    if (am.anim.AnimationActive())
-                        am.anim.StopAnimation();
+                else if (am.anim.AnimationActive())
+                    am.anim.StopAnimation();
             }
         }
 
@@ -150,14 +167,14 @@ namespace VocaluxeLib.Menu.Animations
         {
             bool fromStart = true;
             if (GetCurrentAnimation(e) != null)
-            {
                 fromStart = !GetCurrentAnimation(e).AnimationActive();
-            }
             foreach (SAnimationMenu am in Elements)
             {
                 if (am.element == e)
-                    if (am.anim.getEvent() == ev)
+                {
+                    if (am.anim.GetEvent() == ev)
                         am.anim.ResetValues(fromStart);
+                }
             }
         }
 
@@ -166,8 +183,10 @@ namespace VocaluxeLib.Menu.Animations
             foreach (SAnimationMenu am in Elements)
             {
                 if (am.element == e)
-                    if (am.anim.getEvent() == ev)
+                {
+                    if (am.anim.GetEvent() == ev)
                         return true;
+                }
             }
             return false;
         }

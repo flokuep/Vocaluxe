@@ -1,17 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Drawing;
+﻿#region license
+// /*
+//     This file is part of Vocaluxe.
+// 
+//     Vocaluxe is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     Vocaluxe is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
+//  */
+#endregion
 
-namespace VocaluxeLib.Menu.Animations
+using System;
+using VocaluxeLib.Menu;
+
+namespace VocaluxeLib.Animations
 {
     public class CAnimationVideo : CAnimationFramework
     {
         private string _VideoName;
         private STexture _VideoTexture;
 
-        public CAnimationVideo(int PartyModeID)
-            : base(PartyModeID) {}
+        public CAnimationVideo(int partyModeID)
+            : base(partyModeID) {}
 
         public override void Init()
         {
@@ -21,19 +38,19 @@ namespace VocaluxeLib.Menu.Animations
 
         public override bool LoadAnimation(string item, CXMLReader xmlReader)
         {
-            _AnimationLoaded = true;
-            _AnimationLoaded &= base.LoadAnimation(item, xmlReader);
-            _AnimationLoaded &= xmlReader.GetValue(item + "/Video", out _VideoName, String.Empty);
+            AnimationLoaded = true;
+            AnimationLoaded &= base.LoadAnimation(item, xmlReader);
+            AnimationLoaded &= xmlReader.GetValue(item + "/Video", out _VideoName, String.Empty);
 
-            return _AnimationLoaded;
+            return AnimationLoaded;
         }
 
-        public override STexture getTexture()
+        public override STexture GetTexture()
         {
             return _VideoTexture;
         }
 
-        public override void SetCurrentValues(SRectF rect, SColorF color, STexture texture) {}
+        public override void SetCurrentValues(SRectF rect, SColorF color) {}
 
         public override void Update()
         {

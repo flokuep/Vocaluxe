@@ -412,10 +412,12 @@ namespace VocaluxeLib.PartyModes.TicTacToe
             {
                 if (i < _GameData.NumFields)
                 {
-                    _Fields[i].Button.Rect.W = _FieldSize;
-                    _Fields[i].Button.Rect.H = _FieldSize;
-                    _Fields[i].Button.Rect.X = x;
-                    _Fields[i].Button.Rect.Y = y;
+                    SRectF rect = _Fields[i].Button.Rect;
+                    rect.W = _FieldSize;
+                    rect.H = _FieldSize;
+                    rect.X = x;
+                    rect.Y = y;
+                    _Fields[i].Button.Rect = rect;
                     _Fields[i].Button.Visible = true;
                     _Fields[i].Button.Enabled = true;
                     column++;

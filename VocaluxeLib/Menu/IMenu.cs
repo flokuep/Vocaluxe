@@ -316,7 +316,7 @@ namespace VocaluxeLib.Menu
         void DeletePlaylist(int playlistID);
         void SavePlaylist(int playlistID);
         int GetNumPlaylists();
-   
+
         void AddPlaylistSong(int playlistID, int songID);
         void AddPlaylistSong(int playlistID, int songID, EGameMode gameMode);
         void InsertPlaylistSong(int playlistID, int positionIndex, int songID, EGameMode gameMode);

@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using VocaluxeLib.Menu;
-using VocaluxeLib.Menu.Animations;
 
 namespace VocaluxeLib.PartyModes.TicTacToe
 {
@@ -350,8 +349,10 @@ namespace VocaluxeLib.PartyModes.TicTacToe
             for (int i = 1; i <= _PartyMode.GetMaxPlayer(); i++)
             {
                 CButton b = GetNewButton(_Buttons[_ButtonPlayerDestination]);
-                b.Rect.X = _PlayerDestinationButtonsFirstX + column * (b.Rect.W + _PlayerDestinationButtonsSpaceH);
-                b.Rect.Y = _PlayerDestinationButtonsFirstY + row * (b.Rect.H + _PlayerDestinationButtonsSpaceW);
+                SRectF rect = b.Rect;
+                rect.X = _PlayerDestinationButtonsFirstX + column * (b.Rect.W + _PlayerDestinationButtonsSpaceH);
+                rect.Y = _PlayerDestinationButtonsFirstY + row * (b.Rect.H + _PlayerDestinationButtonsSpaceW);
+                b.Rect = rect;
                 _PlayerDestinationButtons.Add(b);
                 column++;
                 if (column >= _PlayerDestinationButtonsNumH)
@@ -374,8 +375,10 @@ namespace VocaluxeLib.PartyModes.TicTacToe
             for (int i = 1; i <= _PlayerChooseButtonsNumH * _PlayerChooseButtonsNumW; i++)
             {
                 CButton b = GetNewButton(_Buttons[_ButtonPlayerChoose]);
-                b.Rect.X = _PlayerChooseButtonsFirstX + column * (b.Rect.W + _PlayerChooseButtonsSpaceH);
-                b.Rect.Y = _PlayerChooseButtonsFirstY + row * (b.Rect.H + _PlayerChooseButtonsSpaceW);
+                SRectF rect = b.Rect;
+                rect.X = _PlayerChooseButtonsFirstX + column * (b.Rect.W + _PlayerChooseButtonsSpaceH);
+                rect.Y = _PlayerChooseButtonsFirstY + row * (b.Rect.H + _PlayerChooseButtonsSpaceW);
+                b.Rect = rect;
                 CPlayerChooseButton pcb = new CPlayerChooseButton {Button = b, ProfileID = -1};
                 _PlayerChooseButtons.Add(pcb);
                 column++;

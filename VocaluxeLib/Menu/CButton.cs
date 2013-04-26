@@ -20,7 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using VocaluxeLib.Menu.Animations;
+using VocaluxeLib.Animations;
 
 namespace VocaluxeLib.Menu
 {
@@ -271,7 +271,7 @@ namespace VocaluxeLib.Menu
             {
                 Animation = true;
                 EAnimationType type = new EAnimationType();
-                _ThemeLoaded &= xmlReader.TryGetEnumValue<EAnimationType>(item + "/Animation" + i.ToString() + "/Type", ref type);
+                _ThemeLoaded &= xmlReader.TryGetEnumValue(item + "/Animation" + i.ToString() + "/Type", ref type);
                 CAnimation anim = new CAnimation(type, _PartyModeID);
                 _Animations.Add(anim);
                 i++;
@@ -297,9 +297,9 @@ namespace VocaluxeLib.Menu
                 {
                     foreach (CAnimation anim in _Animations)
                     {
-                        anim.setColor(Color);
-                        anim.setRect(Rect);
-                        anim.setTexture(ref _Texture);
+                        anim.SetColor(Color);
+                        anim.SetRect(Rect);
+                        anim.SetTexture(ref _Texture);
                         CAnimations.Add(this, anim);
                     }
                 }
