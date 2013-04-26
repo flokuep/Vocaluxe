@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
 using System.Drawing;
 
 namespace VocaluxeLib.Menu.Animations
 {
     public class CAnimationVideo : CAnimationFramework
     {
-        string _VideoName;
-        STexture _VideoTexture;
+        private string _VideoName;
+        private STexture _VideoTexture;
 
         public CAnimationVideo(int PartyModeID)
-            : base(PartyModeID)
-        {
-        }
+            : base(PartyModeID) {}
 
         public override void Init()
         {
@@ -26,7 +23,7 @@ namespace VocaluxeLib.Menu.Animations
         {
             _AnimationLoaded = true;
             _AnimationLoaded &= base.LoadAnimation(item, xmlReader);
-            _AnimationLoaded &= xmlReader.GetValue(item + "/Video", ref _VideoName, String.Empty);
+            _AnimationLoaded &= xmlReader.GetValue(item + "/Video", out _VideoName, String.Empty);
 
             return _AnimationLoaded;
         }
@@ -36,9 +33,7 @@ namespace VocaluxeLib.Menu.Animations
             return _VideoTexture;
         }
 
-        public override void SetCurrentValues(SRectF rect, SColorF color, STexture texture)
-        {
-        }
+        public override void SetCurrentValues(SRectF rect, SColorF color, STexture texture) {}
 
         public override void Update()
         {

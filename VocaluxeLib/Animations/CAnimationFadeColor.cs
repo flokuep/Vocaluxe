@@ -14,9 +14,7 @@ namespace VocaluxeLib.Menu.Animations
         private SColorF _EndColor;
 
         public CAnimationFadeColor(int PartyModeID)
-            :base(PartyModeID)
-        {
-        }
+            : base(PartyModeID) {}
 
         public override void Init()
         {
@@ -28,11 +26,9 @@ namespace VocaluxeLib.Menu.Animations
             _AnimationLoaded = true;
             _AnimationLoaded &= base.LoadAnimation(item, xmlReader);
             _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/Time", ref Time);
-            _AnimationLoaded &= xmlReader.TryGetEnumValue<EAnimationRepeat>(item + "/Repeat", ref Repeat);
-            if (xmlReader.GetValue(item + "/StartColor", ref _StartColorName, String.Empty))
-            {
+            _AnimationLoaded &= xmlReader.TryGetEnumValue(item + "/Repeat", ref Repeat);
+            if (xmlReader.GetValue(item + "/StartColor", out _StartColorName, String.Empty))
                 _StartColor = CBase.Theme.GetColor(_StartColorName, _PartyModeID);
-            }
             else
             {
                 _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/StartR", ref _StartColor.R);
@@ -40,10 +36,8 @@ namespace VocaluxeLib.Menu.Animations
                 _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/StartB", ref _StartColor.B);
                 _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/StartA", ref _StartColor.A);
             }
-            if (xmlReader.GetValue(item + "/EndColor", ref _EndColorName, String.Empty))
-            {
+            if (xmlReader.GetValue(item + "/EndColor", out _EndColorName, String.Empty))
                 _EndColor = CBase.Theme.GetColor(_EndColorName, _PartyModeID);
-            }
             else
             {
                 _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/EndR", ref _EndColor.R);
@@ -73,7 +67,7 @@ namespace VocaluxeLib.Menu.Animations
         {
             if (AnimationDrawn && Repeat == EAnimationRepeat.None)
                 return _EndColor;
-            else if (AnimationDrawn && (Repeat == EAnimationRepeat.Reset  || Repeat == EAnimationRepeat.OnlyReset))
+            else if (AnimationDrawn && (Repeat == EAnimationRepeat.Reset || Repeat == EAnimationRepeat.OnlyReset))
                 return _StartColor;
             else
                 return _CurrentColor;

@@ -4,10 +4,11 @@ using System.Diagnostics;
 using System.Text;
 using System.Xml;
 using System.Xml.XPath;
+using VocaluxeLib.Animations;
 
 namespace VocaluxeLib.Menu.Animations
 {
-    public class CAnimation:IAnimation
+    public class CAnimation : IAnimation
     {
         private IAnimation _Animation;
         private int _PartyModeID;

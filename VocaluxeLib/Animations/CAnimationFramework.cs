@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Xml;
 using System.Xml.XPath;
+using VocaluxeLib.Animations;
 
 namespace VocaluxeLib.Menu.Animations
 {
@@ -36,7 +37,7 @@ namespace VocaluxeLib.Menu.Animations
         AfterSelected
     }
 
-    public abstract class CAnimationFramework:IAnimation
+    public abstract class CAnimationFramework : IAnimation
     {
         public bool _AnimationLoaded;
 
@@ -47,7 +48,7 @@ namespace VocaluxeLib.Menu.Animations
         public SRectF OriginalRect;
         public SRectF LastRect;
         public SColorF OriginalColor;
-        public  STexture OriginalTexture;
+        public STexture OriginalTexture;
 
         public float Time;
 
@@ -92,7 +93,7 @@ namespace VocaluxeLib.Menu.Animations
         public virtual void StopAnimation()
         {
             Timer.Stop();
-            if(Repeat == EAnimationRepeat.None || Repeat == EAnimationRepeat.Reset || Repeat == EAnimationRepeat.OnlyReset)
+            if (Repeat == EAnimationRepeat.None || Repeat == EAnimationRepeat.Reset || Repeat == EAnimationRepeat.OnlyReset)
                 AnimationDrawn = true;
         }
 
