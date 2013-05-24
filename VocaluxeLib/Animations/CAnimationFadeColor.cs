@@ -1,8 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿#region license
+// /*
+//     This file is part of Vocaluxe.
+// 
+//     Vocaluxe is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     Vocaluxe is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
+//  */
+#endregion
 
-namespace VocaluxeLib.Menu.Animations
+using System;
+using VocaluxeLib.Menu;
+
+namespace VocaluxeLib.Animations
 {
     public class CAnimationFadeColor : CAnimationFramework
     {
@@ -13,10 +31,8 @@ namespace VocaluxeLib.Menu.Animations
         private SColorF _StartColor;
         private SColorF _EndColor;
 
-        public CAnimationFadeColor(int PartyModeID)
-            :base(PartyModeID)
-        {
-        }
+        public CAnimationFadeColor(int partyModeID)
+            : base(partyModeID) {}
 
         public override void Init()
         {
@@ -25,33 +41,29 @@ namespace VocaluxeLib.Menu.Animations
 
         public override bool LoadAnimation(string item, CXMLReader xmlReader)
         {
-            _AnimationLoaded = true;
-            _AnimationLoaded &= base.LoadAnimation(item, xmlReader);
-            _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/Time", ref Time);
-            _AnimationLoaded &= xmlReader.TryGetEnumValue<EAnimationRepeat>(item + "/Repeat", ref Repeat);
-            if (xmlReader.GetValue(item + "/StartColor", ref _StartColorName, String.Empty))
-            {
+            AnimationLoaded = true;
+            AnimationLoaded &= base.LoadAnimation(item, xmlReader);
+            AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/Time", ref Time);
+            AnimationLoaded &= xmlReader.TryGetEnumValue(item + "/Repeat", ref Repeat);
+            if (xmlReader.GetValue(item + "/StartColor", out _StartColorName, String.Empty))
                 _StartColor = CBase.Theme.GetColor(_StartColorName, _PartyModeID);
-            }
             else
             {
-                _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/StartR", ref _StartColor.R);
-                _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/StartG", ref _StartColor.G);
-                _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/StartB", ref _StartColor.B);
-                _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/StartA", ref _StartColor.A);
+                AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/StartR", ref _StartColor.R);
+                AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/StartG", ref _StartColor.G);
+                AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/StartB", ref _StartColor.B);
+                AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/StartA", ref _StartColor.A);
             }
-            if (xmlReader.GetValue(item + "/EndColor", ref _EndColorName, String.Empty))
-            {
+            if (xmlReader.GetValue(item + "/EndColor", out _EndColorName, String.Empty))
                 _EndColor = CBase.Theme.GetColor(_EndColorName, _PartyModeID);
-            }
             else
             {
-                _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/EndR", ref _EndColor.R);
-                _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/EndG", ref _EndColor.G);
-                _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/EndB", ref _EndColor.B);
-                _AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/EndA", ref _EndColor.A);
+                AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/EndR", ref _EndColor.R);
+                AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/EndG", ref _EndColor.G);
+                AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/EndB", ref _EndColor.B);
+                AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/EndA", ref _EndColor.A);
             }
-            return _AnimationLoaded;
+            return AnimationLoaded;
         }
 
         public override void StartAnimation()
@@ -69,17 +81,16 @@ namespace VocaluxeLib.Menu.Animations
                 ResetMode = true;
         }
 
-        public override SColorF getColor()
+        public override SColorF GetColor()
         {
             if (AnimationDrawn && Repeat == EAnimationRepeat.None)
                 return _EndColor;
-            else if (AnimationDrawn && (Repeat == EAnimationRepeat.Reset  || Repeat == EAnimationRepeat.OnlyReset))
+            if (AnimationDrawn && (Repeat == EAnimationRepeat.Reset || Repeat == EAnimationRepeat.OnlyReset))
                 return _StartColor;
-            else
-                return _CurrentColor;
+            return _CurrentColor;
         }
 
-        public override void SetCurrentValues(SRectF rect, SColorF color, STexture texture)
+        public override void SetCurrentValues(SRectF rect, SColorF color)
         {
             _CurrentColor = color;
         }
