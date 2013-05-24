@@ -19,13 +19,14 @@
 
 using System;
 using VocaluxeLib.Menu;
+using VocaluxeLib.Draw;
 
 namespace VocaluxeLib.Animations
 {
     public class CAnimationVideo : CAnimationFramework
     {
         private string _VideoName;
-        private STexture _VideoTexture;
+        private CTexture _VideoTexture;
 
         public CAnimationVideo(int partyModeID)
             : base(partyModeID) {}
@@ -45,7 +46,7 @@ namespace VocaluxeLib.Animations
             return AnimationLoaded;
         }
 
-        public override STexture GetTexture()
+        public override CTexture GetTexture()
         {
             return _VideoTexture;
         }

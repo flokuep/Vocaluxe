@@ -55,11 +55,11 @@ namespace VocaluxeLib.Menu
             set { _Color = value; }
         }
 
-        public STexture SelTexture;
+        public CTexture SelTexture;
         public SColorF SelColor;
 
-        private STexture _Texture;
-        public STexture Texture
+        private CTexture _Texture;
+        public CTexture Texture
         {
             get { return _Texture; }
             set { _Texture = value; }
@@ -149,8 +149,6 @@ namespace VocaluxeLib.Menu
             Color = new SColorF();
             SelColor = new SColorF();
 
-            Texture = new STexture();
-            SelTexture = new STexture();
             _IsSelText = false;
 
             Text = new CText(_PartyModeID);

@@ -19,6 +19,7 @@
 
 using System.Xml;
 using VocaluxeLib.Menu;
+using VocaluxeLib.Draw;
 
 namespace VocaluxeLib.Animations
 {
@@ -103,12 +104,12 @@ namespace VocaluxeLib.Animations
             return _Animation.GetColor();
         }
 
-        public void SetTexture(ref STexture texture)
+        public void SetTexture(ref CTexture texture)
         {
             _Animation.SetTexture(ref texture);
         }
 
-        public STexture GetTexture()
+        public CTexture GetTexture()
         {
             return _Animation.GetTexture();
         }

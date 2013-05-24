@@ -20,6 +20,7 @@
 using System.Diagnostics;
 using System.Xml;
 using VocaluxeLib.Menu;
+using VocaluxeLib.Draw;
 
 namespace VocaluxeLib.Animations
 {
@@ -63,7 +64,7 @@ namespace VocaluxeLib.Animations
         public SRectF OriginalRect;
         public SRectF LastRect;
         public SColorF OriginalColor;
-        public STexture OriginalTexture;
+        public CTexture OriginalTexture;
 
         public float Time;
 
@@ -167,12 +168,12 @@ namespace VocaluxeLib.Animations
             return OriginalColor;
         }
 
-        public virtual void SetTexture(ref STexture texture)
+        public virtual void SetTexture(ref CTexture texture)
         {
             OriginalTexture = texture;
         }
 
-        public virtual STexture GetTexture()
+        public virtual CTexture GetTexture()
         {
             return OriginalTexture;
         }

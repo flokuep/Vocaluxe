@@ -27,6 +27,7 @@ using Vocaluxe.Screens;
 using VocaluxeLib.Animations;
 using VocaluxeLib.Menu;
 using VocaluxeLib.PartyModes;
+using VocaluxeLib;
 
 namespace Vocaluxe.Base
 {

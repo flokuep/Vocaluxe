@@ -19,6 +19,7 @@
 
 using System.Xml;
 using VocaluxeLib.Menu;
+using VocaluxeLib.Draw;
 
 namespace VocaluxeLib.Animations
 {
@@ -33,8 +34,8 @@ namespace VocaluxeLib.Animations
         SRectF GetRectChanges();
         void SetColor(SColorF color);
         SColorF GetColor();
-        void SetTexture(ref STexture texture);
-        STexture GetTexture();
+        void SetTexture(ref CTexture texture);
+        CTexture GetTexture();
         void SetCurrentValues(SRectF rect, SColorF color);
         EAnimationEvent GetEvent();
         bool IsDrawn();

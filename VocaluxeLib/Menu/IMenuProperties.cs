@@ -18,6 +18,7 @@
 #endregion
 
 using VocaluxeLib.Animations;
+using VocaluxeLib.Draw;
 
 namespace VocaluxeLib.Menu
 {
@@ -29,7 +30,7 @@ namespace VocaluxeLib.Menu
 
         SColorF Color { get; set; }
 
-        STexture Texture { get; set; }
+        CTexture Texture { get; set; }
 
         EAnimationEvent Event { get; set; }
     }
