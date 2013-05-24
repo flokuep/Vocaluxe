@@ -23,8 +23,9 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using Vocaluxe.Base;
+using VocaluxeLib;
 using VocaluxeLib.Menu;
-using VocaluxeLib.Menu.SongMenu;
+using VocaluxeLib.Songs;
 
 namespace Vocaluxe.Lib.Playlist
 {
@@ -62,7 +63,9 @@ namespace Vocaluxe.Lib.Playlist
             if (PlaylistFile == "")
             {
                 string filename = string.Empty;
+                // ReSharper disable LoopCanBeConvertedToQuery
                 foreach (char chr in PlaylistName)
+                    // ReSharper restore LoopCanBeConvertedToQuery
                 {
                     if (char.IsLetter(chr))
                         filename += chr.ToString();
@@ -155,9 +158,8 @@ namespace Vocaluxe.Lib.Playlist
                     xmlReader.TryGetEnumValue("//root/Songs/" + song + "/GameMode", ref gm);
 
                     CPlaylistSong playlistSong = new CPlaylistSong {SongID = -1};
-                    CSong[] allSongs = CSongs.AllSongs;
 
-                    foreach (CSong curSong in allSongs)
+                    foreach (CSong curSong in CSongs.AllSongs)
                     {
                         if (curSong.Artist != artist || curSong.Title != title)
                             continue;

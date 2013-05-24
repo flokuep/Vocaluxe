@@ -20,9 +20,9 @@
 using System;
 using System.Collections.Generic;
 using Vocaluxe.SongQueue;
-using VocaluxeLib.Menu;
-using VocaluxeLib.Menu.SingNotes;
-using VocaluxeLib.Menu.SongMenu;
+using VocaluxeLib;
+using VocaluxeLib.Game;
+using VocaluxeLib.Songs;
 
 namespace Vocaluxe.Base
 {
@@ -68,8 +68,6 @@ namespace Vocaluxe.Base
             _SongQueue.Init();
             Players = new SPlayer[CSettings.MaxNumPlayer];
             ResetPlayer();
-
-            CConfig.UsePlayers();
         }
 
         public static EGameMode GameMode
@@ -247,7 +245,7 @@ namespace Vocaluxe.Base
 
                     CNote[] notes = lines[line].Notes;
                     int note = lines[line].FindPreviousNote(beat);
-                    if (notes[note].EndBeat < beat)
+                    if (note >= 0 && notes[note].EndBeat < beat)
                         note = -1;
 
                     if (note >= 0)

@@ -22,8 +22,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Vocaluxe.Base;
+using VocaluxeLib;
+using VocaluxeLib.Game;
 using VocaluxeLib.Menu;
-using VocaluxeLib.Menu.SongMenu;
+using VocaluxeLib.Songs;
 
 namespace Vocaluxe.Screens
 {
@@ -332,7 +334,7 @@ namespace Vocaluxe.Screens
                                                                                 _Statics[_StaticPointsBar[p, CGame.NumPlayer - 1]].Rect.H;
                 }
                 if (CProfiles.IsProfileIDValid(players[p].ProfileID))
-                    _Statics[_StaticAvatar[p, CGame.NumPlayer - 1]].Texture = CProfiles.Profiles[players[p].ProfileID].Avatar.Texture;
+                    _Statics[_StaticAvatar[p, CGame.NumPlayer - 1]].Texture = CProfiles.GetAvatarTextureFromProfile(players[p].ProfileID);
             }
 
             if (CConfig.ScoreAnimationTime < 1)
@@ -367,7 +369,7 @@ namespace Vocaluxe.Screens
                         _Statics[_StaticPointsBarBG[player, numplayer]].Visible = numplayer + 1 == CGame.NumPlayer;
                         _Statics[_StaticAvatar[player, numplayer]].Visible = numplayer + 1 == CGame.NumPlayer;
 
-                        _Statics[_StaticAvatar[player, numplayer]].Texture = new STexture(-1);
+                        _Statics[_StaticAvatar[player, numplayer]].Texture = null;
                     }
                 }
             }

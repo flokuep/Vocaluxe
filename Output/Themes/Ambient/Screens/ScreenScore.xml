@@ -1206,11 +1206,11 @@
     <Text1>
       <!--<X>, <Y>: Text position-->
       <X>60</X>
-      <Y>48</Y>
+      <Y>50</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -1220,7 +1220,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Left</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1235,11 +1235,11 @@
     <TextSong>
       <!--<X>, <Y>: Text position-->
       <X>640</X>
-      <Y>48</Y>
+      <Y>50</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -1249,7 +1249,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1278,7 +1278,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1293,11 +1293,11 @@
     <TextScoreP1N1>
       <!--<X>, <Y>: Text position-->
       <X>640</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -1307,7 +1307,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1322,11 +1322,11 @@
     <TextRatingP1N1>
       <!--<X>, <Y>: Text position-->
       <X>640</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -1336,7 +1336,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1365,7 +1365,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1394,7 +1394,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1409,11 +1409,11 @@
     <TextScoreP1N2>
       <!--<X>, <Y>: Text position-->
       <X>432</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -1423,7 +1423,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1438,11 +1438,11 @@
     <TextRatingP1N2>
       <!--<X>, <Y>: Text position-->
       <X>432</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -1452,7 +1452,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1481,7 +1481,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1510,7 +1510,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1525,11 +1525,11 @@
     <TextScoreP2N2>
       <!--<X>, <Y>: Text position-->
       <X>848</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -1539,7 +1539,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1554,11 +1554,11 @@
     <TextRatingP2N2>
       <!--<X>, <Y>: Text position-->
       <X>848</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -1568,7 +1568,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1597,7 +1597,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1626,7 +1626,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1641,11 +1641,11 @@
     <TextScoreP1N3>
       <!--<X>, <Y>: Text position-->
       <X>318</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -1655,7 +1655,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1670,11 +1670,11 @@
     <TextRatingP1N3>
       <!--<X>, <Y>: Text position-->
       <X>318</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -1684,7 +1684,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1713,7 +1713,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1742,7 +1742,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1757,11 +1757,11 @@
     <TextScoreP2N3>
       <!--<X>, <Y>: Text position-->
       <X>640</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -1771,7 +1771,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1786,11 +1786,11 @@
     <TextRatingP2N3>
       <!--<X>, <Y>: Text position-->
       <X>640</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -1800,7 +1800,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1829,7 +1829,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1858,7 +1858,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1873,11 +1873,11 @@
     <TextScoreP3N3>
       <!--<X>, <Y>: Text position-->
       <X>962</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -1887,7 +1887,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1902,11 +1902,11 @@
     <TextRatingP3N3>
       <!--<X>, <Y>: Text position-->
       <X>962</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -1916,7 +1916,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1945,7 +1945,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1974,7 +1974,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1989,11 +1989,11 @@
     <TextScoreP1N4>
       <!--<X>, <Y>: Text position-->
       <X>270</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -2003,7 +2003,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2018,11 +2018,11 @@
     <TextRatingP1N4>
       <!--<X>, <Y>: Text position-->
       <X>270</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -2033,7 +2033,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2062,7 +2062,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2091,7 +2091,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2106,11 +2106,11 @@
     <TextScoreP2N4>
       <!--<X>, <Y>: Text position-->
       <X>502</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -2120,7 +2120,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2135,11 +2135,11 @@
     <TextRatingP2N4>
       <!--<X>, <Y>: Text position-->
       <X>502</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -2150,7 +2150,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2179,7 +2179,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2208,7 +2208,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2223,11 +2223,11 @@
     <TextScoreP3N4>
       <!--<X>, <Y>: Text position-->
       <X>734</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -2237,7 +2237,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2252,11 +2252,11 @@
     <TextRatingP3N4>
       <!--<X>, <Y>: Text position-->
       <X>734</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -2267,7 +2267,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2296,7 +2296,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2325,7 +2325,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2340,11 +2340,11 @@
     <TextScoreP4N4>
       <!--<X>, <Y>: Text position-->
       <X>966</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -2354,7 +2354,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2369,11 +2369,11 @@
     <TextRatingP4N4>
       <!--<X>, <Y>: Text position-->
       <X>966</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -2384,7 +2384,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2413,7 +2413,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2443,7 +2443,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2458,11 +2458,11 @@
     <TextScoreP1N5>
       <!--<X>, <Y>: Text position-->
       <X>224</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -2473,7 +2473,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2488,11 +2488,11 @@
     <TextRatingP1N5>
       <!--<X>, <Y>: Text position-->
       <X>224</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -2503,7 +2503,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2533,7 +2533,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2563,7 +2563,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2578,11 +2578,11 @@
     <TextScoreP2N5>
       <!--<X>, <Y>: Text position-->
       <X>432</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -2593,7 +2593,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2608,11 +2608,11 @@
     <TextRatingP2N5>
       <!--<X>, <Y>: Text position-->
       <X>432</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -2623,7 +2623,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2653,7 +2653,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2683,7 +2683,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2698,11 +2698,11 @@
     <TextScoreP3N5>
       <!--<X>, <Y>: Text position-->
       <X>640</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -2713,7 +2713,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2728,11 +2728,11 @@
     <TextRatingP3N5>
       <!--<X>, <Y>: Text position-->
       <X>640</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -2743,7 +2743,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2773,7 +2773,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2803,7 +2803,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2818,11 +2818,11 @@
     <TextScoreP4N5>
       <!--<X>, <Y>: Text position-->
       <X>848</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -2833,7 +2833,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2848,11 +2848,11 @@
     <TextRatingP4N5>
       <!--<X>, <Y>: Text position-->
       <X>848</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -2863,7 +2863,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2893,7 +2893,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2923,7 +2923,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2938,11 +2938,11 @@
     <TextScoreP5N5>
       <!--<X>, <Y>: Text position-->
       <X>1056</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -2953,7 +2953,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2968,11 +2968,11 @@
     <TextRatingP5N5>
       <!--<X>, <Y>: Text position-->
       <X>1056</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -2983,7 +2983,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3013,7 +3013,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3043,7 +3043,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3058,11 +3058,11 @@
     <TextScoreP1N6>
       <!--<X>, <Y>: Text position-->
       <X>125</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -3073,7 +3073,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3088,11 +3088,11 @@
     <TextRatingP1N6>
       <!--<X>, <Y>: Text position-->
       <X>125</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -3103,7 +3103,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3133,7 +3133,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3163,7 +3163,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3178,11 +3178,11 @@
     <TextScoreP2N6>
       <!--<X>, <Y>: Text position-->
       <X>333</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -3193,7 +3193,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3208,11 +3208,11 @@
     <TextRatingP2N6>
       <!--<X>, <Y>: Text position-->
       <X>333</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -3223,7 +3223,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3253,7 +3253,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3283,7 +3283,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3298,11 +3298,11 @@
     <TextScoreP3N6>
       <!--<X>, <Y>: Text position-->
       <X>541</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -3313,7 +3313,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3328,11 +3328,11 @@
     <TextRatingP3N6>
       <!--<X>, <Y>: Text position-->
       <X>541</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -3343,7 +3343,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3373,7 +3373,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3403,7 +3403,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3418,11 +3418,11 @@
     <TextScoreP4N6>
       <!--<X>, <Y>: Text position-->
       <X>749</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -3433,7 +3433,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3448,11 +3448,11 @@
     <TextRatingP4N6>
       <!--<X>, <Y>: Text position-->
       <X>749</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -3463,7 +3463,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3493,7 +3493,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3523,7 +3523,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3538,11 +3538,11 @@
     <TextScoreP5N6>
       <!--<X>, <Y>: Text position-->
       <X>957</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -3553,7 +3553,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3568,11 +3568,11 @@
     <TextRatingP5N6>
       <!--<X>, <Y>: Text position-->
       <X>957</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -3583,7 +3583,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3613,7 +3613,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3643,7 +3643,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3658,11 +3658,11 @@
     <TextScoreP6N6>
       <!--<X>, <Y>: Text position-->
       <X>1165</X>
-      <Y>140</Y>
+      <Y>142</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -3673,7 +3673,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3688,11 +3688,11 @@
     <TextRatingP6N6>
       <!--<X>, <Y>: Text position-->
       <X>1165</X>
-      <Y>105</Y>
+      <Y>107</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>160</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -3703,7 +3703,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -3733,7 +3733,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>

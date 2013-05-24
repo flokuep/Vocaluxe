@@ -35,8 +35,9 @@ using SQLiteCommand = Mono.Data.Sqlite.SqliteCommand;
 using SQLiteDataReader = Mono.Data.Sqlite.SqliteDataReader;
 #endif
 using Community.CsharpSqlite;
-using VocaluxeLib.Menu;
-using VocaluxeLib.Menu.SongMenu;
+using VocaluxeLib;
+using VocaluxeLib.Songs;
+using VocaluxeLib.Draw;
 
 namespace Vocaluxe.Base
 {
@@ -708,17 +709,9 @@ namespace Vocaluxe.Base
                     }
 
                     //This is a USDX 1.01 DB
-                    if (!dateExists)
-                    {
-                        command.CommandText =
-                            "INSERT INTO Scores (SongID, PlayerName, Score, LineNr, Date, Medley, Duet, Difficulty) SELECT SongID, Player, Score, '0', '0', '0', '0', Difficulty from US_Scores";
-                    }
-                    else
-                    {
-                        // This is a CMD 1.01 DB
-                        command.CommandText =
-                            "INSERT INTO Scores (SongID, PlayerName, Score, LineNr, Date, Medley, Duet, Difficulty) SELECT SongID, Player, Score, '0', Date, '0', '0', Difficulty from US_Scores";
-                    }
+                    command.CommandText = !dateExists
+                                              ? "INSERT INTO Scores (SongID, PlayerName, Score, LineNr, Date, Medley, Duet, Difficulty) SELECT SongID, Player, Score, '0', '0', '0', '0', Difficulty from US_Scores"
+                                              : "INSERT INTO Scores (SongID, PlayerName, Score, LineNr, Date, Medley, Duet, Difficulty) SELECT SongID, Player, Score, '0', Date, '0', '0', Difficulty from US_Scores";
                     command.ExecuteNonQuery();
 
                     command.CommandText = "INSERT INTO Songs SELECT ID, Artist, Title, TimesPlayed from US_Songs";
@@ -763,7 +756,9 @@ namespace Vocaluxe.Base
 
                         stmt = new Sqlite3.Vdbe();
 
+                        // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
                         if (!dateExists)
+                            // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
                             res = Sqlite3.sqlite3_prepare_v2(oldDB, "SELECT id, PlayerName FROM Scores", -1, ref stmt, 0);
                         else
                             res = Sqlite3.sqlite3_prepare_v2(oldDB, "SELECT id, PlayerName, Date FROM Scores", -1, ref stmt, 0);
@@ -918,7 +913,7 @@ namespace Vocaluxe.Base
         #endregion Highscores
 
         #region Cover
-        public static bool GetCover(string coverPath, ref STexture tex, int maxSize)
+        public static bool GetCover(string coverPath, ref CTexture tex, int maxSize)
         {
             if (!File.Exists(coverPath))
             {
@@ -956,7 +951,7 @@ namespace Vocaluxe.Base
                         reader.Read();
                         byte[] data = _GetBytes(reader);
                         reader.Dispose();
-                        tex = CDraw.QuequeTexture(w, h, ref data);
+                        tex = CDraw.EnqueueTexture(w, h, data);
                         return true;
                     }
                 }
@@ -1006,7 +1001,7 @@ namespace Vocaluxe.Base
                         origin.Dispose();
                     }
 
-                    tex = CDraw.QuequeTexture(w, h, ref data);
+                    tex = CDraw.EnqueueTexture(w, h, data);
 
                     command.CommandText = "INSERT INTO Cover (Path, width, height) VALUES (@path, @w, @h)";
                     command.Parameters.Add("@w", DbType.Int32).Value = w;
@@ -1147,7 +1142,7 @@ namespace Vocaluxe.Base
         #endregion Cover
 
         #region CreditsRessources
-        public static bool GetCreditsRessource(string fileName, ref STexture tex)
+        public static bool GetCreditsRessource(string fileName, ref CTexture tex)
         {
             bool result = false;
 
@@ -1186,7 +1181,7 @@ namespace Vocaluxe.Base
                             result = true;
                             reader.Read();
                             byte[] data = _GetBytes(reader);
-                            tex = CDraw.AddTexture(w, h, ref data);
+                            tex = CDraw.AddTexture(w, h, data);
                             /*using (Bitmap bmp = new Bitmap(w, h))
                             {
                                 BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);

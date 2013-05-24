@@ -19,7 +19,7 @@
 
 using System;
 
-namespace VocaluxeLib.Menu
+namespace VocaluxeLib
 {
 
     #region Inputs
@@ -91,16 +91,6 @@ namespace VocaluxeLib.Menu
         X8 = 8,
         X16 = 16,
         X32 = 32
-    }
-
-    public enum EColorDepth
-    {
-        // ReSharper disable UnusedMember.Global
-        Bit8 = 8,
-        Bit16 = 16,
-        Bit24 = 24,
-        Bit32 = 32
-        // ReSharper restore UnusedMember.Global
     }
 
     public enum ETextureQuality
@@ -279,6 +269,16 @@ namespace VocaluxeLib.Menu
         TR_CONFIG_FADEPLAYERINFO_ALL,
         TR_CONFIG_FADEPLAYERINFO_INFO,
         TR_CONFIG_FADEPLAYERINFO_OFF
+        // ReSharper restore InconsistentNaming
+    }
+
+    public enum ELyricsPosition
+    {
+        // ReSharper disable InconsistentNaming
+        TR_CONFIG_LYRICSPOSITION_BOTTOM,
+        TR_CONFIG_LYRICSPOSITION_TOP,
+        TR_CONFIG_LYRICSPOSITION_BOTH,
+        TR_CONFIG_LYRICSPOSITION_DYNAMIC
         // ReSharper restore InconsistentNaming
     }
 

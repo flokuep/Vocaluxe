@@ -20,9 +20,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
-using VocaluxeLib.Menu;
+using VocaluxeLib;
 
 namespace Vocaluxe.Base
 {
@@ -168,12 +169,7 @@ namespace Vocaluxe.Base
             List<string> files = new List<string>();
             files.AddRange(CHelper.ListFiles(path, "*.xml", true, true));
 
-            foreach (string file in files)
-            {
-                if (!_LoadPartyLanguageFile(partyModeID, file))
-                    return false;
-            }
-            return true;
+            return files.All(file => _LoadPartyLanguageFile(partyModeID, file));
         }
 
         private static bool _LoadLanguageEntries(CXMLReader xmlReader, out Dictionary<string, string> texts)

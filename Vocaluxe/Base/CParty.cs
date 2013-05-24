@@ -22,6 +22,7 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using VocaluxeLib;
 using VocaluxeLib.Menu;
 using VocaluxeLib.PartyModes;
 
@@ -301,6 +302,7 @@ namespace Vocaluxe.Base
                 return pm;
             }
             pm.PartyMode.Initialize();
+            pm.PartyMode.SetFolder(Path.Combine(Directory.GetCurrentDirectory(), Path.Combine(CSettings.FolderPartyModes, pm.Folder)));
 
             if (!CTheme.AddTheme(Path.Combine(Directory.GetCurrentDirectory(), Path.Combine(Path.Combine(CSettings.FolderPartyModes, pm.Folder), "Theme.xml")), pm.PartyModeID))
                 return pm;

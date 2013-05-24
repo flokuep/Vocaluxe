@@ -152,6 +152,10 @@
       <HintPath>..\Output\AForge.Video.DirectShow.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="ClientServerLib">
+      <HintPath>..\ClientServerLib\ClientServerLib\bin\ClientServerLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Community.CsharpSqlite">
       <HintPath>..\Output\Community.CsharpSqlite.dll</HintPath>
     </Reference>
@@ -174,11 +178,12 @@
     <Compile Include="Base\CBackgroundMusic.cs" />
     <Compile Include="Base\CConfig.cs" />
     <Compile Include="Base\CCover.cs" />
+    <Compile Include="Base\CCursor.cs" />
     <Compile Include="Base\CDataBase.cs" />
     <Compile Include="Base\CDraw.cs" />
-    <Compile Include="Base\CFont.cs" />
+    <Compile Include="Base\Fonts\CFont.cs" />
     <Compile Include="Base\CGame.cs" />
-    <Compile Include="Base\CInput.cs" />
+    <Compile Include="Base\CController.cs" />
     <Compile Include="Base\CLanguage.cs" />
     <Compile Include="Base\CLog.cs" />
     <Compile Include="Base\CMain.cs" />
@@ -195,11 +200,16 @@
     <Compile Include="Base\CTheme.cs" />
     <Compile Include="Base\CVideo.cs" />
     <Compile Include="Base\CWebcam.cs" />
+    <Compile Include="Base\Fonts\CFonts.cs" />
+    <Compile Include="Base\Fonts\CGlyph.cs" />
+    <Compile Include="Base\Server\CClientHandler.cs" />
+    <Compile Include="Base\Server\CVocaluxeServer.cs" />
     <Compile Include="CSplashScreen.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GameModes\CGameMode.cs" />
     <Compile Include="GameModes\CGameModes.cs" />
+    <Compile Include="Lib\Input\CControllerFramework.cs" />
     <Compile Include="SongQueue\CSongQueue.cs" />
     <Compile Include="GameModes\IGameMode.cs" />
     <Compile Include="SongQueue\ISongQueue.cs" />
@@ -215,7 +225,7 @@
     </Compile>
     <Compile Include="Lib\Draw\IDraw.cs" />
     <Compile Include="Lib\Input\CHIDAPI.cs" />
-    <Compile Include="Lib\Input\IInput.cs" />
+    <Compile Include="Lib\Input\IController.cs" />
     <Compile Include="Lib\Input\WiiMote\CWiiMote.cs" />
     <Compile Include="Lib\Input\WiiMote\WiiMoteLib.cs" />
     <Compile Include="Lib\Playlist\CPlaylistFile.cs" />

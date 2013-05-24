@@ -29,102 +29,6 @@
       <!--   <Space>: Reflection Space-->
       <!--   <Height>: Reflection Height-->
     </Static1>
-    <StaticPlayer1>
-      <!--<Skin>: Texture name-->
-      <Skin>PlayerSelector</Skin>
-      <!--<X>, <Y>, <Z>, <W>, <H>: Static position, width and height-->
-      <X>15</X>
-      <Y>100</Y>
-      <Z>-2,00</Z>
-      <W>118</W>
-      <H>118</H>
-      <!--<Color>: Static color from ColorScheme (high priority)-->
-      <!--or <R>, <G>, <B>, <A> (lower priority)-->
-      <Color>Player1</Color>
-      <!--<Reflection> If exists:-->
-      <!--   <Space>: Reflection Space-->
-      <!--   <Height>: Reflection Height-->
-    </StaticPlayer1>
-    <StaticPlayer2>
-      <!--<Skin>: Texture name-->
-      <Skin>PlayerSelector</Skin>
-      <!--<X>, <Y>, <Z>, <W>, <H>: Static position, width and height-->
-      <X>15</X>
-      <Y>255</Y>
-      <Z>-2,00</Z>
-      <W>118</W>
-      <H>118</H>
-      <!--<Color>: Static color from ColorScheme (high priority)-->
-      <!--or <R>, <G>, <B>, <A> (lower priority)-->
-      <Color>Player2</Color>
-      <!--<Reflection> If exists:-->
-      <!--   <Space>: Reflection Space-->
-      <!--   <Height>: Reflection Height-->
-    </StaticPlayer2>
-    <StaticPlayer3>
-      <!--<Skin>: Texture name-->
-      <Skin>PlayerSelector</Skin>
-      <!--<X>, <Y>, <Z>, <W>, <H>: Static position, width and height-->
-      <X>15</X>
-      <Y>410</Y>
-      <Z>-2,00</Z>
-      <W>118</W>
-      <H>118</H>
-      <!--<Color>: Static color from ColorScheme (high priority)-->
-      <!--or <R>, <G>, <B>, <A> (lower priority)-->
-      <Color>Player3</Color>
-      <!--<Reflection> If exists:-->
-      <!--   <Space>: Reflection Space-->
-      <!--   <Height>: Reflection Height-->
-    </StaticPlayer3>
-    <StaticPlayer4>
-      <!--<Skin>: Texture name-->
-      <Skin>PlayerSelector</Skin>
-      <!--<X>, <Y>, <Z>, <W>, <H>: Static position, width and height-->
-      <X>1147</X>
-      <Y>100</Y>
-      <Z>-2,00</Z>
-      <W>118</W>
-      <H>118</H>
-      <!--<Color>: Static color from ColorScheme (high priority)-->
-      <!--or <R>, <G>, <B>, <A> (lower priority)-->
-      <Color>Player4</Color>
-      <!--<Reflection> If exists:-->
-      <!--   <Space>: Reflection Space-->
-      <!--   <Height>: Reflection Height-->
-    </StaticPlayer4>
-    <StaticPlayer5>
-      <!--<Skin>: Texture name-->
-      <Skin>PlayerSelector</Skin>
-      <!--<X>, <Y>, <Z>, <W>, <H>: Static position, width and height-->
-      <X>1147</X>
-      <Y>255</Y>
-      <Z>-2,00</Z>
-      <W>118</W>
-      <H>118</H>
-      <!--<Color>: Static color from ColorScheme (high priority)-->
-      <!--or <R>, <G>, <B>, <A> (lower priority)-->
-      <Color>Player5</Color>
-      <!--<Reflection> If exists:-->
-      <!--   <Space>: Reflection Space-->
-      <!--   <Height>: Reflection Height-->
-    </StaticPlayer5>
-    <StaticPlayer6>
-      <!--<Skin>: Texture name-->
-      <Skin>PlayerSelector</Skin>
-      <!--<X>, <Y>, <Z>, <W>, <H>: Static position, width and height-->
-      <X>1147</X>
-      <Y>410</Y>
-      <Z>-2,00</Z>
-      <W>118</W>
-      <H>118</H>
-      <!--<Color>: Static color from ColorScheme (high priority)-->
-      <!--or <R>, <G>, <B>, <A> (lower priority)-->
-      <Color>Player6</Color>
-      <!--<Reflection> If exists:-->
-      <!--   <Space>: Reflection Space-->
-      <!--   <Height>: Reflection Height-->
-    </StaticPlayer6>
     <StaticPlayerAvatar1>
       <!--<Skin>: Texture name-->
       <Skin>Invisible</Skin>
@@ -221,6 +125,102 @@
       <!--   <Space>: Reflection Space-->
       <!--   <Height>: Reflection Height-->
     </StaticPlayerAvatar6>
+    <StaticPlayer1>
+      <!--<Skin>: Texture name-->
+      <Skin>PlayerSelector</Skin>
+      <!--<X>, <Y>, <Z>, <W>, <H>: Static position, width and height-->
+      <X>15</X>
+      <Y>100</Y>
+      <Z>-2,00</Z>
+      <W>118</W>
+      <H>118</H>
+      <!--<Color>: Static color from ColorScheme (high priority)-->
+      <!--or <R>, <G>, <B>, <A> (lower priority)-->
+      <Color>Player1</Color>
+      <!--<Reflection> If exists:-->
+      <!--   <Space>: Reflection Space-->
+      <!--   <Height>: Reflection Height-->
+    </StaticPlayer1>
+    <StaticPlayer2>
+      <!--<Skin>: Texture name-->
+      <Skin>PlayerSelector</Skin>
+      <!--<X>, <Y>, <Z>, <W>, <H>: Static position, width and height-->
+      <X>15</X>
+      <Y>255</Y>
+      <Z>-2,00</Z>
+      <W>118</W>
+      <H>118</H>
+      <!--<Color>: Static color from ColorScheme (high priority)-->
+      <!--or <R>, <G>, <B>, <A> (lower priority)-->
+      <Color>Player2</Color>
+      <!--<Reflection> If exists:-->
+      <!--   <Space>: Reflection Space-->
+      <!--   <Height>: Reflection Height-->
+    </StaticPlayer2>
+    <StaticPlayer3>
+      <!--<Skin>: Texture name-->
+      <Skin>PlayerSelector</Skin>
+      <!--<X>, <Y>, <Z>, <W>, <H>: Static position, width and height-->
+      <X>15</X>
+      <Y>410</Y>
+      <Z>-2,00</Z>
+      <W>118</W>
+      <H>118</H>
+      <!--<Color>: Static color from ColorScheme (high priority)-->
+      <!--or <R>, <G>, <B>, <A> (lower priority)-->
+      <Color>Player3</Color>
+      <!--<Reflection> If exists:-->
+      <!--   <Space>: Reflection Space-->
+      <!--   <Height>: Reflection Height-->
+    </StaticPlayer3>
+    <StaticPlayer4>
+      <!--<Skin>: Texture name-->
+      <Skin>PlayerSelector</Skin>
+      <!--<X>, <Y>, <Z>, <W>, <H>: Static position, width and height-->
+      <X>1147</X>
+      <Y>100</Y>
+      <Z>-2,00</Z>
+      <W>118</W>
+      <H>118</H>
+      <!--<Color>: Static color from ColorScheme (high priority)-->
+      <!--or <R>, <G>, <B>, <A> (lower priority)-->
+      <Color>Player4</Color>
+      <!--<Reflection> If exists:-->
+      <!--   <Space>: Reflection Space-->
+      <!--   <Height>: Reflection Height-->
+    </StaticPlayer4>
+    <StaticPlayer5>
+      <!--<Skin>: Texture name-->
+      <Skin>PlayerSelector</Skin>
+      <!--<X>, <Y>, <Z>, <W>, <H>: Static position, width and height-->
+      <X>1147</X>
+      <Y>255</Y>
+      <Z>-2,00</Z>
+      <W>118</W>
+      <H>118</H>
+      <!--<Color>: Static color from ColorScheme (high priority)-->
+      <!--or <R>, <G>, <B>, <A> (lower priority)-->
+      <Color>Player5</Color>
+      <!--<Reflection> If exists:-->
+      <!--   <Space>: Reflection Space-->
+      <!--   <Height>: Reflection Height-->
+    </StaticPlayer5>
+    <StaticPlayer6>
+      <!--<Skin>: Texture name-->
+      <Skin>PlayerSelector</Skin>
+      <!--<X>, <Y>, <Z>, <W>, <H>: Static position, width and height-->
+      <X>1147</X>
+      <Y>410</Y>
+      <Z>-2,00</Z>
+      <W>118</W>
+      <H>118</H>
+      <!--<Color>: Static color from ColorScheme (high priority)-->
+      <!--or <R>, <G>, <B>, <A> (lower priority)-->
+      <Color>Player6</Color>
+      <!--<Reflection> If exists:-->
+      <!--   <Space>: Reflection Space-->
+      <!--   <Height>: Reflection Height-->
+    </StaticPlayer6>
     <StaticWarningMics>
       <!--<Skin>: Texture name-->
       <Skin>Invisible</Skin>
@@ -256,11 +256,11 @@
     <Text1>
       <!--<X>, <Y>: Text position-->
       <X>640</X>
-      <Y>48</Y>
+      <Y>50</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -270,7 +270,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -285,11 +285,11 @@
     <TextWarningMics>
       <!--<X>, <Y>: Text position-->
       <X>640</X>
-      <Y>615</Y>
+      <Y>617</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>970</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -300,7 +300,7 @@
       <SColor>TextWarningColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -315,11 +315,11 @@
     <TextWarningProfiles>
       <!--<X>, <Y>: Text position-->
       <X>640</X>
-      <Y>650</Y>
+      <Y>652</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>970</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -330,7 +330,7 @@
       <SColor>TextWarningColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -359,7 +359,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -388,7 +388,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -417,7 +417,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -446,7 +446,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -475,7 +475,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -504,7 +504,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -536,9 +536,9 @@
       <Text>
         <!--<X>, <Y>: Text position-->
         <X>75</X>
-        <Y>10</Y>
+        <Y>12</Y>
         <!--<H>: Text height-->
-        <H>32</H>
+        <H>27</H>
         <!--<MaxW>: Maximum text width (if exists)-->
         <MaxW>142</MaxW>
         <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -549,7 +549,7 @@
         <SColor>ButtonTextSColor</SColor>
         <!--<Align>: Text align horizontal: Left, Center, Right-->
         <Align>Center</Align>
-        <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+        <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
         <HAlign>Center</HAlign>
         <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
         <Style>Bold</Style>
@@ -593,9 +593,9 @@
       <Text>
         <!--<X>, <Y>: Text position-->
         <X>75</X>
-        <Y>10</Y>
+        <Y>12</Y>
         <!--<H>: Text height-->
-        <H>32</H>
+        <H>27</H>
         <!--<MaxW>: Maximum text width (if exists)-->
         <MaxW>142</MaxW>
         <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -606,7 +606,7 @@
         <SColor>ButtonTextSColor</SColor>
         <!--<Align>: Text align horizontal: Left, Center, Right-->
         <Align>Center</Align>
-        <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+        <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
         <HAlign>Center</HAlign>
         <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
         <Style>Bold</Style>
@@ -685,7 +685,7 @@
       <!--or <TextSR>, <TextSG>, <TextSB>, <TextSA> (lower priority)-->
       <TextSColor>TextSColor</TextSColor>
       <!--<TextH>: Text height-->
-      <TextH>32,00</TextH>
+      <TextH>27,00</TextH>
       <!--<TextRelativeX>: Text relative x-position-->
       <!--<TextRelativeY>: Text relative y-position-->
       <!--<TextMaxW>: Maximum text width (if exists)-->
@@ -1138,7 +1138,7 @@
           <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
           <Style>Bold</Style>
           <!--<H>: Text height-->
-          <H>20</H>
+          <H>17</H>
         </Name>
       </Tiles>
     </NameSelection>

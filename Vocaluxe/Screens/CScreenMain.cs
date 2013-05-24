@@ -19,6 +19,7 @@
 
 using System.Windows.Forms;
 using Vocaluxe.Base;
+using VocaluxeLib;
 using VocaluxeLib.Menu;
 
 namespace Vocaluxe.Screens
@@ -37,6 +38,8 @@ namespace Vocaluxe.Screens
         private const string _ButtonProfiles = "ButtonProfiles";
         private const string _ButtonExit = "ButtonExit";
 
+        private CText _ReleaseText;
+
         //CParticleEffect Snowflakes;
         public override void Init()
         {
@@ -44,6 +47,13 @@ namespace Vocaluxe.Screens
 
             _ThemeStatics = new string[] {"StaticMenuBar"};
             _ThemeButtons = new string[] {_ButtonSing, _ButtonParty, _ButtonOptions, _ButtonProfiles, _ButtonExit};
+        }
+
+        public override void LoadTheme(string xmlPath)
+        {
+            base.LoadTheme(xmlPath);
+
+            _ReleaseText = GetNewText(10, 690, -1, 15, -1, EAlignment.Left, EStyle.Normal, "Normal", new SColorF(1f, 1f, 1f, 1f), CSettings.GetFullVersionText());
         }
 
         public override bool HandleInput(SKeyEvent keyEvent)
@@ -154,11 +164,7 @@ namespace Vocaluxe.Screens
             // ReSharper disable ConditionIsAlwaysTrueOrFalse
             if (CSettings.VersionRevision != ERevision.Release)
                 // ReSharper restore ConditionIsAlwaysTrueOrFalse
-            {
-                CFonts.SetFont("Normal");
-                CFonts.Style = EStyle.Normal;
-                CDraw.DrawText(CSettings.GetFullVersionText(), 10, 680, 40);
-            }
+                _ReleaseText.Draw();
 
             return true;
         }

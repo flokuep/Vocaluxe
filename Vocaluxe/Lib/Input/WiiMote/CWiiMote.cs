@@ -23,11 +23,11 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using Vocaluxe.Base;
-using VocaluxeLib.Menu;
+using VocaluxeLib;
 
 namespace Vocaluxe.Lib.Input.WiiMote
 {
-    class CWiiMote : IInput, IDisposable
+    class CWiiMote : IController, IDisposable
     {
         private CWiiMoteLib _WiiMote;
 

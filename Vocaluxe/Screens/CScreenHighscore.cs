@@ -22,8 +22,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Vocaluxe.Base;
+using VocaluxeLib;
+using VocaluxeLib.Game;
 using VocaluxeLib.Menu;
-using VocaluxeLib.Menu.SongMenu;
+using VocaluxeLib.Songs;
 
 namespace Vocaluxe.Screens
 {
@@ -255,7 +257,7 @@ namespace Vocaluxe.Screens
             if (points.NumRounds > 1)
                 _Texts[_TextSongName].Text += " (" + (_Round + 1) + "/" + points.NumRounds + ")";
 
-            switch (CGame.GetGameMode(_Round))
+            switch (CGame.GetGameMode(_Round + 1))
             {
                 case EGameMode.TR_GAMEMODE_NORMAL:
                     _Texts[_TextSongMode].Text = "TR_GAMEMODE_NORMAL";

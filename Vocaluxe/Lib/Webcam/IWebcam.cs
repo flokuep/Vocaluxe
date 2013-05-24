@@ -19,7 +19,7 @@
 
 using System.Collections.Generic;
 using System.Drawing;
-using VocaluxeLib.Menu;
+using VocaluxeLib.Draw;
 
 namespace Vocaluxe.Lib.Webcam
 {
@@ -54,11 +54,12 @@ namespace Vocaluxe.Lib.Webcam
         void Stop();
         void Close();
 
-        bool GetFrame(ref STexture frame);
+        bool GetFrame(ref CTexture frame);
         Bitmap GetBitmap();
         SWebcamConfig GetConfig();
         SWebcamDevice[] GetDevices();
         bool IsDeviceAvailable();
+        bool IsCapturing();
 
         bool Select(SWebcamConfig webcamConfig);
     }

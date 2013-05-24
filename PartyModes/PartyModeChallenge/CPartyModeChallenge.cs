@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using VocaluxeLib.Menu;
+using VocaluxeLib.Profile;
 
 [assembly: ComVisible(false)]
 
@@ -308,7 +309,7 @@ namespace VocaluxeLib.PartyModes.Challenge
                     _Screens.TryGetValue("CPartyScreenChallengeMain", out screen);
                     if (screen != null)
                     {
-                        CBase.Songs.ResetPartySongSung();
+                        CBase.Songs.ResetSongSung();
                         _ToScreenMain.ResultTable = new List<CResultTableRow>();
                         _GameData.ResultTable = new List<CResultTableRow>();
                         _GameData.Rounds = new CChallengeRounds(_GameData.NumRounds, _GameData.NumPlayer, _GameData.NumPlayerAtOnce);
@@ -532,7 +533,7 @@ namespace VocaluxeLib.PartyModes.Challenge
 
         private void _SetTeamNames()
         {
-            SProfile[] profiles = CBase.Profiles.GetProfiles();
+            CProfile[] profiles = CBase.Profiles.GetProfiles();
 
             if (profiles == null)
             {

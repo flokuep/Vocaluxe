@@ -19,10 +19,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
-using VocaluxeLib.Menu.SingNotes;
+using VocaluxeLib.Songs;
 
-namespace VocaluxeLib.Menu
+namespace VocaluxeLib
 {
 
     #region Drawing
@@ -47,6 +48,11 @@ namespace VocaluxeLib.Menu
             G = color.G;
             B = color.B;
             A = color.A;
+        }
+
+        public Color AsColor()
+        {
+            return Color.FromArgb((int)(A * 255), (int)(R * 255), (int)(G * 255), (int)(B * 255));
         }
     }
 
@@ -92,45 +98,6 @@ namespace VocaluxeLib.Menu
         public int X;
         public int Y;
         public int Z;
-    }
-
-    public struct STexture
-    {
-        public int Index;
-        public int PBO;
-        public int ID;
-
-        public string TexturePath;
-
-        public float Width;
-        public float Height;
-        public SRectF Rect;
-
-        public float W2; //power of 2 width
-        public float H2; //power of 2 height
-        public float WidthRatio;
-        public float HeightRatio;
-
-        public SColorF Color;
-
-        public STexture(int index)
-        {
-            Index = index;
-            PBO = 0;
-            ID = -1;
-            TexturePath = String.Empty;
-
-            Width = 1f;
-            Height = 1f;
-            Rect = new SRectF(0f, 0f, 1f, 1f, 0f);
-
-            W2 = 2f;
-            H2 = 2f;
-            WidthRatio = 0.5f;
-            HeightRatio = 0.5f;
-
-            Color = new SColorF(1f, 1f, 1f, 1f);
-        }
     }
     #endregion Drawing
 
@@ -210,33 +177,6 @@ namespace VocaluxeLib.Menu
         }
     }
     #endregion Inputs
-
-    #region Profiles
-    public struct SProfile
-    {
-        public string PlayerName;
-        public string ProfileFile;
-
-        public EGameDifficulty Difficulty;
-        public SAvatar Avatar;
-        public EOffOn GuestProfile;
-        public EOffOn Active;
-    }
-
-    public struct SAvatar
-    {
-        public string FileName;
-        public STexture Texture;
-
-        // ReSharper disable UnusedParameter.Local
-        public SAvatar(int dummy)
-            // ReSharper restore UnusedParameter.Local
-        {
-            FileName = String.Empty;
-            Texture = new STexture(-1);
-        }
-    }
-    #endregion Profiles
 
     #region Game
     public struct SPlayer

@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using VocaluxeLib.Menu;
+using VocaluxeLib.Profile;
 
 [assembly: ComVisible(false)]
 
@@ -374,7 +375,7 @@ namespace VocaluxeLib.PartyModes.TicTacToe
                     if (screen != null)
                     {
                         _GameData.Team = _GameData.Team == 1 ? 0 : 1;
-                        CBase.Songs.ResetPartySongSung();
+                        CBase.Songs.ResetSongSung();
                         _GameData.CurrentRoundNr = 1;
                         _ToScreenMain.CurrentRoundNr = 1;
                         _ToScreenMain.NumFields = _GameData.NumFields;
@@ -542,8 +543,8 @@ namespace VocaluxeLib.PartyModes.TicTacToe
                         List<int> ids1 = new List<int>();
                         List<int> ids2 = new List<int>();
                         //Add IDs to team-list
-                        while (_GameData.PlayerTeam1.Count < _GameData.NumFields + _GameData.NumJokerRetry[0] && ids1.Count == 0 &&
-                               _GameData.PlayerTeam2.Count < _GameData.NumFields + _GameData.NumJokerRetry[1] && ids2.Count == 0)
+                        while (_GameData.PlayerTeam1.Count < _GameData.NumFields + _GameData.NumJokerRetry[0] &&
+                               _GameData.PlayerTeam2.Count < _GameData.NumFields + _GameData.NumJokerRetry[1] )
                         {
                             if (ids1.Count == 0)
                             {
@@ -556,11 +557,9 @@ namespace VocaluxeLib.PartyModes.TicTacToe
                                     ids2.Add(i);
                             }
                             int num;
-                            int random;
                             if (_GameData.PlayerTeam1.Count < _GameData.NumFields + _GameData.NumJokerRetry[0])
                             {
-                                random = CBase.Game.GetRandom((ids1.Count - 1) * 10);
-                                num = (int)Math.Round((double)random / 10);
+                                num = CBase.Game.GetRandom(ids1.Count);
                                 if (num >= ids1.Count)
                                     num = ids1.Count - 1;
                                 _GameData.PlayerTeam1.Add(ids1[num]);
@@ -568,8 +567,7 @@ namespace VocaluxeLib.PartyModes.TicTacToe
                             }
                             if (_GameData.PlayerTeam2.Count < _GameData.NumFields + _GameData.NumJokerRetry[1])
                             {
-                                random = CBase.Game.GetRandom((ids2.Count - 1) * 20);
-                                num = (int)Math.Round((double)random / 20);
+                                num = CBase.Game.GetRandom(ids2.Count);
                                 if (num >= ids2.Count)
                                     num = ids2.Count - 1;
                                 _GameData.PlayerTeam2.Add(ids2[num]);
@@ -592,8 +590,7 @@ namespace VocaluxeLib.PartyModes.TicTacToe
                             }
                             if (_GameData.PlayerTeam1.Count < _GameData.NumFields + _GameData.NumJokerRetry[0])
                             {
-                                int random = CBase.Game.GetRandom((ids.Count - 1) * 10);
-                                int num = (int)Math.Round((double)random / 10);
+                                int num = CBase.Game.GetRandom(ids.Count);
                                 if (num >= ids.Count)
                                     num = ids.Count - 1;
                                 _GameData.PlayerTeam1.Add(ids[num]);
@@ -616,8 +613,7 @@ namespace VocaluxeLib.PartyModes.TicTacToe
                             }
                             if (_GameData.PlayerTeam2.Count < _GameData.NumFields + _GameData.NumJokerRetry[1])
                             {
-                                int random = CBase.Game.GetRandom((ids.Count - 1) * 20);
-                                int num = (int)Math.Round((double)random / 20);
+                                int num = CBase.Game.GetRandom(ids.Count);
                                 if (num >= ids.Count)
                                     num = ids.Count - 1;
                                 _GameData.PlayerTeam2.Add(ids[num]);
@@ -657,7 +653,9 @@ namespace VocaluxeLib.PartyModes.TicTacToe
                         for (int i = 0; i < CBase.Playlist.GetPlaylistSongCount(_GameData.PlaylistID); i++)
                         {
                             int id = CBase.Playlist.GetPlaylistSong(_GameData.PlaylistID, i).SongID;
+                            // ReSharper disable LoopCanBeConvertedToQuery
                             foreach (EGameMode mode in CBase.Songs.GetSongByID(id).AvailableGameModes)
+                                // ReSharper restore LoopCanBeConvertedToQuery
                             {
                                 if (mode == gm)
                                     songs.Add(id);
@@ -668,7 +666,9 @@ namespace VocaluxeLib.PartyModes.TicTacToe
                     case ESongSource.TR_ALLSONGS:
                         for (int i = 0; i < CBase.Songs.GetNumSongs(); i++)
                         {
+                            // ReSharper disable LoopCanBeConvertedToQuery
                             foreach (EGameMode mode in CBase.Songs.GetSongByID(i).AvailableGameModes)
+                                // ReSharper restore LoopCanBeConvertedToQuery
                             {
                                 if (mode == gm)
                                     songs.Add(i);
@@ -680,7 +680,9 @@ namespace VocaluxeLib.PartyModes.TicTacToe
                         CBase.Songs.SetCategory(_GameData.CategoryID);
                         for (int i = 0; i < CBase.Songs.NumSongsInCategory(_GameData.CategoryID); i++)
                         {
+                            // ReSharper disable LoopCanBeConvertedToQuery
                             foreach (EGameMode mode in CBase.Songs.GetVisibleSong(i).AvailableGameModes)
+                                // ReSharper restore LoopCanBeConvertedToQuery
                             {
                                 if (mode == gm)
                                     songs.Add(CBase.Songs.GetVisibleSong(i).ID);
@@ -725,7 +727,7 @@ namespace VocaluxeLib.PartyModes.TicTacToe
             if (players.Length < 2)
                 return;
 
-            SProfile[] profiles = CBase.Profiles.GetProfiles();
+            CProfile[] profiles = CBase.Profiles.GetProfiles();
             CRound r = _GameData.Rounds[roundNr];
             bool isDuet = CBase.Songs.GetSongByID(r.SongID).IsDuet;
 

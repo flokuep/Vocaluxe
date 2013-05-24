@@ -20,121 +20,375 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Xml;
-using VocaluxeLib.Menu;
+using VocaluxeLib;
+using VocaluxeLib.Profile;
+using VocaluxeLib.Draw;
 
 namespace Vocaluxe.Base
 {
+    [Flags]
+    public enum EProfileChangedFlags
+    {
+        None = 1,
+        Avatar = 2,
+        Profile = 4
+    }
+
+    public delegate void ProfileChangedCallback(EProfileChangedFlags typeChanged);
+
     static class CProfiles
     {
-        private static readonly XmlWriterSettings _Settings = new XmlWriterSettings();
-        private static List<SProfile> _Profiles;
-        private static readonly List<SAvatar> _Avatars = new List<SAvatar>();
-
-        public static SProfile[] Profiles
+        #region enums and structs
+        private enum EAction
         {
-            get { return _Profiles.ToArray(); }
+            LoadProfiles,
+            LoadAvatars,
+            AddProfile,
+            EditProfile,
+            DeleteProfile,
+            AddAvatar,
+            EditAvatar
         }
 
+        private struct SChange
+        {
+            public CProfile Profile;
+            public CAvatar Avatar;
+            public EAction Action;
+            public int ProfileID;
+        }
+        #endregion enums and structs
+
+        #region private vars
+        private static Dictionary<int, CProfile> _Profiles;
+        private static Queue<int> _ProfileIDs;
+
+        private static Dictionary<int, CAvatar> _Avatars;
+        private static Queue<int> _AvatarIDs;
+
+        private static readonly Queue<SChange> _Queue = new Queue<SChange>();
+        private static readonly Object _QueueMutex = new Object();
+
+        private static readonly List<ProfileChangedCallback> _ProfileChangedCallbacks = new List<ProfileChangedCallback>();
+        private static bool _ProfilesChanged;
+        private static bool _AvatarsChanged;
+        #endregion private vars
+
+        #region properties
         public static int NumProfiles
         {
             get { return _Profiles.Count; }
-        }
-
-        public static SAvatar[] Avatars
-        {
-            get { return _Avatars.ToArray(); }
         }
 
         public static int NumAvatars
         {
             get { return _Avatars.Count; }
         }
+        #endregion properties
 
+        #region public methods
         public static void Init()
         {
-            _Settings.Indent = true;
-            _Settings.Encoding = Encoding.UTF8;
-            _Settings.ConformanceLevel = ConformanceLevel.Document;
+            _Avatars = new Dictionary<int, CAvatar>();
+            _AvatarIDs = new Queue<int>(1000);
+            for (int i = 0; i < 1000; i++)
+                _AvatarIDs.Enqueue(i);
 
-            LoadAvatars();
+            _Profiles = new Dictionary<int, CProfile>();
+            _ProfileIDs = new Queue<int>(100);
+            for (int i = 0; i < 100; i++)
+                _ProfileIDs.Enqueue(i);
+
             LoadProfiles();
         }
 
+        public static void Update()
+        {
+            lock (_QueueMutex)
+            {
+                while (_Queue.Count > 0)
+                {
+                    SChange change = _Queue.Dequeue();
+                    switch (change.Action)
+                    {
+                        case EAction.LoadProfiles:
+                            _LoadProfiles();
+                            _ProfilesChanged = true;
+                            _AvatarsChanged = true;
+                            break;
+
+                        case EAction.LoadAvatars:
+                            _LoadAvatars();
+                            _AvatarsChanged = true;
+                            break;
+
+                        case EAction.AddProfile:
+                            if (change.Profile == null)
+                                break;
+
+                            change.Profile.ID = _ProfileIDs.Dequeue();
+                            change.Profile.Avatar = _GetAvatar(change.Profile.AvatarFileName);
+                            change.Profile.SaveProfile();
+                            _Profiles.Add(change.Profile.ID, change.Profile);
+
+                            _ProfilesChanged = true;
+                            break;
+
+                        case EAction.EditProfile:
+                            if (change.Profile == null)
+                                break;
+
+                            if (!IsProfileIDValid(change.Profile.ID))
+                                return;
+
+                            _Profiles[change.Profile.ID] = change.Profile;
+                            _ProfilesChanged = true;
+                            break;
+
+                        case EAction.DeleteProfile:
+                            if (!IsProfileIDValid(change.ProfileID))
+                                break;
+
+                            _DeleteProfile(change.ProfileID);
+                            _ProfilesChanged = true;
+                            break;
+
+                        case EAction.AddAvatar:
+                            if (change.Avatar == null)
+                                break;
+
+                            change.Avatar.ID = _AvatarIDs.Dequeue();
+                            _Avatars.Add(change.Avatar.ID, change.Avatar);
+                            _AvatarsChanged = true;
+                            break;
+
+                        case EAction.EditAvatar:
+                            if (change.Avatar == null)
+                                break;
+
+                            if (!IsAvatarIDValid(change.Avatar.ID))
+                                return;
+
+                            _Avatars[change.Avatar.ID] = change.Avatar;
+                            _AvatarsChanged = true;
+                            break;
+                    }
+                }
+            }
+
+            if (_ProfileChangedCallbacks.Count == 0)
+                return;
+
+            EProfileChangedFlags flags = EProfileChangedFlags.None;
+
+            if (_AvatarsChanged)
+                flags = EProfileChangedFlags.Avatar;
+
+            if (_ProfilesChanged)
+                flags |= EProfileChangedFlags.Profile;
+
+            if (flags != EProfileChangedFlags.None)
+            {
+                int index = 0;
+                while (index < _ProfileChangedCallbacks.Count)
+                {
+                    try
+                    {
+                        _ProfileChangedCallbacks[index](flags);
+                    }
+                    catch (Exception)
+                    {
+                        _ProfileChangedCallbacks.RemoveAt(index);
+                    }
+                    index++;
+                }
+            }
+            _AvatarsChanged = false;
+            _ProfilesChanged = false;
+        }
+
+        public static void AddProfileChangedCallback(ProfileChangedCallback notification)
+        {
+            _ProfileChangedCallbacks.Add(notification);
+        }
+
+        public static void LoadProfiles()
+        {
+            SChange change = new SChange {Action = EAction.LoadProfiles};
+
+            lock (_QueueMutex)
+            {
+                _Queue.Enqueue(change);
+            }
+        }
+
+        public static void LoadAvatars()
+        {
+            SChange change = new SChange {Action = EAction.LoadAvatars};
+
+            lock (_QueueMutex)
+            {
+                _Queue.Enqueue(change);
+            }
+        }
+
+        public static void AddProfile(CProfile newProfile)
+        {
+            if (newProfile == null)
+                return;
+
+            SChange change = new SChange {Action = EAction.AddProfile, Profile = newProfile};
+
+            lock (_QueueMutex)
+            {
+                _Queue.Enqueue(change);
+            }
+        }
+
+        public static void EditProfile(CProfile editProfile)
+        {
+            if (editProfile == null)
+                return;
+
+            SChange change = new SChange {Action = EAction.EditProfile, Profile = editProfile};
+
+            lock (_QueueMutex)
+            {
+                _Queue.Enqueue(change);
+            }
+        }
+
+        public static void DeleteProfile(int profileID)
+        {
+            if (!IsProfileIDValid(profileID))
+                return;
+
+            SChange change = new SChange {Action = EAction.DeleteProfile, ProfileID = profileID};
+
+            lock (_QueueMutex)
+            {
+                _Queue.Enqueue(change);
+            }
+        }
+
+        public static void AddAvatar(CAvatar newAvatar)
+        {
+            if (newAvatar == null)
+                return;
+
+            SChange change = new SChange {Action = EAction.AddAvatar, Avatar = newAvatar};
+
+            lock (_QueueMutex)
+            {
+                _Queue.Enqueue(change);
+            }
+        }
+
+        public static void EditAvatar(CAvatar editAvatar)
+        {
+            if (editAvatar == null)
+                return;
+
+            SChange change = new SChange {Action = EAction.EditAvatar, Avatar = editAvatar};
+
+            lock (_QueueMutex)
+            {
+                _Queue.Enqueue(change);
+            }
+        }
+
+        public static CProfile[] GetProfiles()
+        {
+            if (_Profiles.Count == 0)
+                return null;
+
+            List<CProfile> list = new List<CProfile>(_Profiles.Values);
+            list.Sort(_CompareByPlayerName);
+            return list.ToArray();
+        }
+
+        public static IEnumerable<CAvatar> GetAvatars()
+        {
+            if (_Avatars.Count == 0)
+                return null;
+
+            CAvatar[] result = new CAvatar[_Avatars.Count];
+            _Avatars.Values.CopyTo(result, 0);
+
+            return result;
+        }
+
+        public static int NewProfile(string fileName = "")
+        {
+            CProfile profile = new CProfile
+                {
+                    FileName = fileName != "" ? Path.Combine(CSettings.FolderProfiles, fileName) : String.Empty
+                };
+
+            if (File.Exists(profile.FileName))
+                return -1;
+
+            profile.ID = _ProfileIDs.Dequeue();
+            _Profiles.Add(profile.ID, profile);
+            _ProfilesChanged = true;
+            return profile.ID;
+        }
+
+        public static int NewAvatar(string fileName)
+        {
+            CAvatar avatar = new CAvatar(-1);
+            if (!avatar.LoadFromFile(fileName))
+                return -1;
+
+            avatar.ID = _AvatarIDs.Dequeue();
+            _Avatars.Add(avatar.ID, avatar);
+            _AvatarsChanged = true;
+            return avatar.ID;
+        }
+
+        public static void SaveProfiles()
+        {
+            foreach (int id in _Profiles.Keys)
+                _Profiles[id].SaveProfile();
+        }
+
+        public static bool IsProfileIDValid(int profileID)
+        {
+            return _Profiles.ContainsKey(profileID);
+        }
+
+        public static bool IsAvatarIDValid(int avatarID)
+        {
+            return _Avatars.ContainsKey(avatarID);
+        }
+        #endregion public methods
+
+        #region profile properties
         public static string GetPlayerName(int profileID, int playerNum = 0)
         {
             if (IsProfileIDValid(profileID))
                 return _Profiles[profileID].PlayerName;
+
             string playerName = CLanguage.Translate("TR_SCREENNAMES_PLAYER");
             if (playerNum > 0)
                 playerName += " " + playerNum;
             return playerName;
         }
 
-        public static int NewProfile(string fileName = "")
+        public static void SetPlayerName(int profileID, string playerName)
         {
-            SProfile profile = new SProfile
-                {
-                    PlayerName = String.Empty,
-                    Difficulty = EGameDifficulty.TR_CONFIG_EASY,
-                    Avatar = new SAvatar(-1),
-                    GuestProfile = EOffOn.TR_CONFIG_OFF,
-                    Active = EOffOn.TR_CONFIG_ON,
-                    ProfileFile = fileName != "" ? Path.Combine(CSettings.FolderProfiles, fileName) : String.Empty
-                };
+            if (!IsProfileIDValid(profileID))
+                return;
 
-            if (File.Exists(profile.ProfileFile))
-                return -1;
-
-            _Profiles.Add(profile);
-            return _Profiles.Count - 1;
+            _Profiles[profileID].PlayerName = playerName;
         }
 
-        public static void SaveProfiles()
+        public static string GetProfileFileName(int profileID)
         {
-            for (int i = 0; i < _Profiles.Count; i++)
-                _SaveProfile(i);
-            LoadProfiles();
-        }
+            if (!IsProfileIDValid(profileID))
+                return String.Empty;
 
-        public static void LoadProfiles()
-        {
-            _Profiles = new List<SProfile>();
-            List<string> files = new List<string>();
-            files.AddRange(CHelper.ListFiles(CSettings.FolderProfiles, "*.xml", true, true));
-
-            foreach (string file in files)
-                _LoadProfile(file);
-
-            _SortProfilesByName();
-        }
-
-        public static void LoadAvatars()
-        {
-            for (int i = 0; i < _Avatars.Count; i++)
-            {
-                STexture texture = _Avatars[i].Texture;
-                CDraw.RemoveTexture(ref texture);
-            }
-            _Avatars.Clear();
-
-            List<string> files = new List<string>();
-            files.AddRange(CHelper.ListFiles(CSettings.FolderProfiles, "*.png", true, true));
-            files.AddRange(CHelper.ListFiles(CSettings.FolderProfiles, "*.jpg", true, true));
-            files.AddRange(CHelper.ListFiles(CSettings.FolderProfiles, "*.jpeg", true, true));
-            files.AddRange(CHelper.ListFiles(CSettings.FolderProfiles, "*.bmp", true, true));
-
-            foreach (string file in files)
-            {
-                STexture tex = CDraw.AddTexture(file);
-
-                if (tex.Index != -1)
-                {
-                    SAvatar avatar = new SAvatar {Texture = tex, FileName = Path.GetFileName(file)};
-                    _Avatars.Add(avatar);
-                }
-            }
+            return Path.GetFileName(_Profiles[profileID].FileName);
         }
 
         public static string AddGetPlayerName(int profileID, char chr)
@@ -142,11 +396,8 @@ namespace Vocaluxe.Base
             if (!IsProfileIDValid(profileID))
                 return String.Empty;
 
-            SProfile profile = _Profiles[profileID];
-            profile.PlayerName += chr;
-            _Profiles[profileID] = profile;
-
-            return profile.PlayerName;
+            _Profiles[profileID].PlayerName += chr;
+            return _Profiles[profileID].PlayerName;
         }
 
         public static string GetDeleteCharInPlayerName(int profileID)
@@ -154,17 +405,11 @@ namespace Vocaluxe.Base
             if (!IsProfileIDValid(profileID))
                 return String.Empty;
 
-            SProfile profile = _Profiles[profileID];
-            if (profile.PlayerName != "")
+            CProfile profile = _Profiles[profileID];
+            if (!String.IsNullOrEmpty(profile.PlayerName))
                 profile.PlayerName = profile.PlayerName.Remove(profile.PlayerName.Length - 1);
-            _Profiles[profileID] = profile;
 
             return profile.PlayerName;
-        }
-
-        public static bool IsProfileIDValid(int profileID)
-        {
-            return profileID >= 0 && profileID < _Profiles.Count;
         }
 
         public static EGameDifficulty GetDifficulty(int profileID)
@@ -177,9 +422,7 @@ namespace Vocaluxe.Base
             if (!IsProfileIDValid(profileID))
                 return;
 
-            SProfile profile = _Profiles[profileID];
-            profile.Difficulty = difficulty;
-            _Profiles[profileID] = profile;
+            _Profiles[profileID].Difficulty = difficulty;
         }
 
         public static EOffOn GetGuestProfile(int profileID)
@@ -187,28 +430,25 @@ namespace Vocaluxe.Base
             return IsProfileIDValid(profileID) ? _Profiles[profileID].GuestProfile : EOffOn.TR_CONFIG_OFF;
         }
 
-        public static EOffOn GetActive(int profileID)
-        {
-            return IsProfileIDValid(profileID) ? _Profiles[profileID].Active : EOffOn.TR_CONFIG_OFF;
-        }
-
         public static void SetGuestProfile(int profileID, EOffOn option)
         {
             if (!IsProfileIDValid(profileID))
                 return;
 
-            SProfile profile = _Profiles[profileID];
-            profile.GuestProfile = option;
-            _Profiles[profileID] = profile;
+            _Profiles[profileID].GuestProfile = option;
+        }
+
+        public static EOffOn GetActive(int profileID)
+        {
+            return IsProfileIDValid(profileID) ? _Profiles[profileID].Active : EOffOn.TR_CONFIG_OFF;
         }
 
         public static void SetActive(int profileID, EOffOn option)
         {
             if (!IsProfileIDValid(profileID))
                 return;
-            SProfile profile = _Profiles[profileID];
-            profile.Active = option;
-            _Profiles[profileID] = profile;
+
+            _Profiles[profileID].Active = option;
         }
 
         public static bool IsGuestProfile(int profileID)
@@ -226,49 +466,148 @@ namespace Vocaluxe.Base
             return _Profiles[profileID].Active == EOffOn.TR_CONFIG_ON;
         }
 
-        public static void SetAvatar(int profileID, int avatarNr)
+        public static void SetAvatar(int profileID, int avatarID)
         {
-            if (!IsProfileIDValid(profileID) || avatarNr < 0 || avatarNr >= _Avatars.Count)
+            if (!IsProfileIDValid(profileID) || !IsAvatarIDValid(avatarID))
                 return;
 
-            SProfile profile = _Profiles[profileID];
-            profile.Avatar = _Avatars[avatarNr];
-            _Profiles[profileID] = profile;
+            _Profiles[profileID].Avatar = _Avatars[avatarID];
         }
 
-        public static int GetAvatarNr(int profileID)
+        public static int GetAvatarID(int profileID)
         {
             if (!IsProfileIDValid(profileID))
-                return 0;
+                return -1;
 
-            for (int i = 0; i < _Avatars.Count; i++)
+            return _Profiles[profileID].Avatar.ID;
+        }
+        #endregion profile properties
+
+        #region avatar texture
+        public static CTexture GetAvatarTexture(int avatarID)
+        {
+            if (!IsAvatarIDValid(avatarID))
+                return null;
+
+            return _Avatars[avatarID].Texture;
+        }
+
+        public static CTexture GetAvatarTextureFromProfile(int profileID)
+        {
+            if (!IsProfileIDValid(profileID))
+                return null;
+
+            return _Profiles[profileID].Avatar.Texture;
+        }
+        #endregion avatar texture
+
+        #region private methods
+        private static void _LoadProfiles()
+        {
+            _LoadAvatars();
+
+            List<string> knownFiles = new List<string>();
+            if (_Profiles.Count > 0)
             {
-                if (_Profiles[profileID].Avatar.FileName == _Avatars[i].FileName)
-                    return i;
+                int[] ids = new int[_Profiles.Keys.Count];
+                _Profiles.Keys.CopyTo(ids, 0);
+                foreach (int id in ids)
+                {
+                    if (_Profiles[id].LoadProfile())
+                    {
+                        _Profiles[id].Avatar = _GetAvatar(_Profiles[id].AvatarFileName);
+                        knownFiles.Add(Path.GetFileName(_Profiles[id].FileName));
+                    }
+                    else
+                        _Profiles.Remove(id);
+                }
             }
 
-            return 0;
+            List<string> files = new List<string>();
+            files.AddRange(CHelper.ListFiles(CSettings.FolderProfiles, "*.xml", true, true));
+
+            foreach (string file in files)
+            {
+                if (knownFiles.Contains(Path.GetFileName(file)))
+                    continue;
+
+                CProfile profile = new CProfile
+                    {
+                        FileName = Path.Combine(CSettings.FolderProfiles, file)
+                    };
+
+                if (profile.LoadProfile())
+                {
+                    profile.Avatar = _GetAvatar(profile.AvatarFileName);
+                    profile.ID = _ProfileIDs.Dequeue();
+                    _Profiles.Add(profile.ID, profile);
+                }
+            }
+            _ProfilesChanged = true;
         }
 
-        public static void DeleteProfile(int profileID)
+        private static void _LoadAvatars()
+        {
+            List<string> knownFiles = new List<string>();
+            if (_Avatars.Count > 0)
+            {
+                int[] ids = new int[_Avatars.Keys.Count];
+                _Avatars.Keys.CopyTo(ids, 0);
+                foreach (int id in ids)
+                {
+                    if (_Avatars[id].Reload())
+                        knownFiles.Add(Path.GetFileName(_Avatars[id].FileName));
+                    else
+                        _Avatars.Remove(id);
+                }
+            }
+
+            List<string> files = new List<string>();
+            files.AddRange(CHelper.ListFiles(CSettings.FolderProfiles, "*.png", true, true));
+            files.AddRange(CHelper.ListFiles(CSettings.FolderProfiles, "*.jpg", true, true));
+            files.AddRange(CHelper.ListFiles(CSettings.FolderProfiles, "*.jpeg", true, true));
+            files.AddRange(CHelper.ListFiles(CSettings.FolderProfiles, "*.bmp", true, true));
+
+            foreach (string file in files)
+            {
+                if (knownFiles.Contains(Path.GetFileName(file)))
+                    continue;
+
+                CAvatar avatar = new CAvatar(-1);
+                if (avatar.LoadFromFile(file))
+                {
+                    avatar.ID = _AvatarIDs.Dequeue();
+                    _Avatars.Add(avatar.ID, avatar);
+                }
+            }
+            _ProfilesChanged = true;
+        }
+
+        private static void _DeleteProfile(int profileID)
         {
             if (!IsProfileIDValid(profileID))
                 return;
-            if (_Profiles[profileID].ProfileFile == "")
+
+            if (_Profiles[profileID].FileName == "")
+            {
+                _RemoveProfile(profileID);
                 return;
+            }
+
             try
             {
                 //Check if profile saved in config
                 for (int i = 0; i < CConfig.Players.Length; i++)
                 {
-                    if (CConfig.Players[i] == _Profiles[profileID].ProfileFile)
+                    if (CConfig.Players[i] == _Profiles[profileID].FileName)
                     {
                         CConfig.Players[i] = string.Empty;
                         CConfig.SaveConfig();
                     }
                 }
-                File.Delete(_Profiles[profileID].ProfileFile);
-                _Profiles.RemoveAt(profileID);
+                File.Delete(_Profiles[profileID].FileName);
+                _RemoveProfile(profileID);
+
                 //Check if profile is selected in game
                 for (int i = 0; i < CGame.Players.Length; i++)
                 {
@@ -280,125 +619,35 @@ namespace Vocaluxe.Base
             }
             catch (Exception)
             {
-                CLog.LogError("Can't delete Profile File " + _Profiles[profileID].ProfileFile + ".xml");
+                CLog.LogError("Can't delete Profile File " + _Profiles[profileID].FileName + ".xml");
             }
+            _ProfilesChanged = true;
         }
 
-        private static void _SortProfilesByName()
-        {
-            _Profiles.Sort(_CompareByPlayerName);
-        }
-
-        private static int _CompareByPlayerName(SProfile a, SProfile b)
-        {
-            return String.CompareOrdinal(a.PlayerName, b.PlayerName);
-        }
-
-        #region private methods
-        private static SAvatar _GetAvatar(string fileName)
-        {
-            foreach (SAvatar avatar in _Avatars)
-            {
-                if (fileName == avatar.FileName)
-                    return avatar;
-            }
-            return new SAvatar(-1);
-        }
-
-        private static void _SaveProfile(int profileID)
+        private static void _RemoveProfile(int profileID)
         {
             if (!IsProfileIDValid(profileID))
                 return;
 
-            if (_Profiles[profileID].ProfileFile == "")
-            {
-                string filename = string.Empty;
-                foreach (char chr in _Profiles[profileID].PlayerName)
-                {
-                    if (char.IsLetter(chr))
-                        filename += chr.ToString();
-                }
-
-                if (filename == "")
-                    filename = "1";
-
-                int i = 0;
-                while (File.Exists(Path.Combine(CSettings.FolderProfiles, filename + ".xml")))
-                {
-                    i++;
-                    if (!File.Exists(Path.Combine(CSettings.FolderProfiles, filename + i + ".xml")))
-                        filename += i;
-                }
-
-                SProfile profile = _Profiles[profileID];
-                profile.ProfileFile = Path.Combine(CSettings.FolderProfiles, filename + ".xml");
-                _Profiles[profileID] = profile;
-            }
-
-            XmlWriter writer;
-            try
-            {
-                writer = XmlWriter.Create(_Profiles[profileID].ProfileFile, _Settings);
-            }
-            catch (Exception e)
-            {
-                CLog.LogError("Error creating/opening Profile File " + _Profiles[profileID].ProfileFile + ": " + e.Message);
-                return;
-            }
-            try
-            {
-                writer.WriteStartDocument();
-                writer.WriteStartElement("root");
-
-                writer.WriteStartElement("Info");
-                writer.WriteElementString("PlayerName", _Profiles[profileID].PlayerName);
-                writer.WriteElementString("Difficulty", Enum.GetName(typeof(EGameDifficulty), _Profiles[profileID].Difficulty));
-                writer.WriteElementString("Avatar", _Profiles[profileID].Avatar.FileName);
-                writer.WriteElementString("GuestProfile", Enum.GetName(typeof(EOffOn), _Profiles[profileID].GuestProfile));
-                writer.WriteElementString("Active", Enum.GetName(typeof(EOffOn), _Profiles[profileID].Active));
-                writer.WriteEndElement();
-
-                writer.WriteEndElement(); //end of root
-                writer.WriteEndDocument();
-
-                writer.Flush();
-            }
-            finally
-            {
-                writer.Close();
-            }
+            _Profiles.Remove(profileID);
+            _ProfilesChanged = true;
         }
 
-        private static void _LoadProfile(string fileName)
+        private static int _CompareByPlayerName(CProfile a, CProfile b)
         {
-            SProfile profile = new SProfile {ProfileFile = Path.Combine(CSettings.FolderProfiles, fileName)};
+            return String.CompareOrdinal(a.PlayerName, b.PlayerName);
+        }
 
-            CXMLReader xmlReader = CXMLReader.OpenFile(profile.ProfileFile);
-            if (xmlReader == null)
-                return;
+        private static CAvatar _GetAvatar(string fileName)
+        {
+            string name = Path.GetFileName(fileName);
 
-            string value = String.Empty;
-            if (xmlReader.GetValue("//root/Info/PlayerName", out value, value))
+            foreach (int id in _Avatars.Keys)
             {
-                profile.PlayerName = value;
-
-                profile.Difficulty = EGameDifficulty.TR_CONFIG_EASY;
-                xmlReader.TryGetEnumValue("//root/Info/Difficulty", ref profile.Difficulty);
-
-                profile.Avatar = new SAvatar(-1);
-                if (xmlReader.GetValue("//root/Info/Avatar", out value, value))
-                    profile.Avatar = _GetAvatar(value);
-
-                profile.GuestProfile = EOffOn.TR_CONFIG_OFF;
-                xmlReader.TryGetEnumValue("//root/Info/GuestProfile", ref profile.GuestProfile);
-
-                profile.Active = EOffOn.TR_CONFIG_ON;
-                xmlReader.TryGetEnumValue("//root/Info/Active", ref profile.Active);
-
-                _Profiles.Add(profile);
+                if (Path.GetFileName(_Avatars[id].FileName) == name)
+                    return _Avatars[id];
             }
-            else
-                CLog.LogError("Can't find PlayerName in Profile File: " + fileName);
+            return new CAvatar(-1);
         }
         #endregion private methods
     }

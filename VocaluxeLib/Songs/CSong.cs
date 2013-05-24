@@ -20,12 +20,26 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using VocaluxeLib.Menu.SingNotes;
+using VocaluxeLib.Draw;
 
-namespace VocaluxeLib.Menu.SongMenu
+namespace VocaluxeLib.Songs
 {
+    public class CSongPointer
+    {
+        public readonly int SongID;
+        public string SortString;
+        public bool IsSung;
+
+        public CSongPointer(int id, string sortString)
+        {
+            SongID = id;
+            SortString = sortString;
+        }
+    }
+
     [Flags]
     enum EHeaderFlags
     {
@@ -40,56 +54,9 @@ namespace VocaluxeLib.Menu.SongMenu
 
     public enum EMedleySource
     {
-        None,
+        None = 0,
         Calculated,
         Tag
-    }
-
-    public class CCategory
-    {
-        public readonly string Name;
-        private STexture _CoverTextureSmall = new STexture(-1);
-        private STexture _CoverTextureBig = new STexture(-1);
-        private bool _CoverBigLoaded;
-
-        public CCategory(string name)
-        {
-            Name = name;
-        }
-
-        public STexture CoverTextureSmall
-        {
-            get { return _CoverTextureSmall; }
-
-            set { _CoverTextureSmall = value; }
-        }
-
-        public STexture CoverTextureBig
-        {
-            get { return _CoverBigLoaded ? _CoverTextureBig : _CoverTextureSmall; }
-            set
-            {
-                if (value.Index != -1)
-                {
-                    _CoverTextureBig = value;
-                    _CoverBigLoaded = true;
-                }
-            }
-        }
-
-        public CCategory(string name, STexture coverSmall, STexture coverBig)
-        {
-            Name = name;
-            CoverTextureSmall = coverSmall;
-            CoverTextureBig = coverBig;
-        }
-
-        public CCategory(CCategory cat)
-        {
-            Name = cat.Name;
-            CoverTextureSmall = cat.CoverTextureSmall;
-            CoverTextureBig = cat.CoverTextureBig;
-        }
     }
 
     public struct SMedley
@@ -99,27 +66,14 @@ namespace VocaluxeLib.Menu.SongMenu
         public int EndBeat;
         public float FadeInTime;
         public float FadeOutTime;
-
-        // ReSharper disable UnusedParameter.Local
-        public SMedley(int dummy)
-            // ReSharper restore UnusedParameter.Local
-        {
-            Source = EMedleySource.None;
-            StartBeat = 0;
-            EndBeat = 0;
-            FadeInTime = 0f;
-            FadeOutTime = 0f;
-        }
     }
 
     public class CSong
     {
-        private bool _CoverSmallLoaded;
-        private bool _CoverBigLoaded;
-        private STexture _CoverTextureSmall = new STexture(-1);
-        private STexture _CoverTextureBig = new STexture(-1);
+        private CTexture _CoverTextureSmall;
+        private CTexture _CoverTextureBig;
 
-        public SMedley Medley = new SMedley(0);
+        public SMedley Medley;
 
         public bool CalculateMedley = true;
         public float PreviewStart;
@@ -141,30 +95,22 @@ namespace VocaluxeLib.Menu.SongMenu
 
         public bool NotesLoaded { get; private set; }
 
-        public STexture CoverTextureSmall
+        public CTexture CoverTextureSmall
         {
             get
             {
-                if (!_CoverSmallLoaded)
+                if (_CoverTextureSmall == null)
                     LoadSmallCover();
                 return _CoverTextureSmall;
             }
 
-            set
-            {
-                _CoverTextureSmall = value;
-                _CoverSmallLoaded = true;
-            }
+            set { _CoverTextureSmall = value; }
         }
 
-        public STexture CoverTextureBig
+        public CTexture CoverTextureBig
         {
-            get { return _CoverBigLoaded ? _CoverTextureBig : _CoverTextureSmall; }
-            set
-            {
-                _CoverTextureBig = value;
-                _CoverBigLoaded = true;
-            }
+            get { return _CoverTextureBig ?? _CoverTextureSmall; }
+            set { _CoverTextureBig = value; }
         }
 
         public string Title = String.Empty;
@@ -259,8 +205,6 @@ namespace VocaluxeLib.Menu.SongMenu
             VideoFileName = song.VideoFileName;
 
             VideoAspect = song.VideoAspect;
-            _CoverSmallLoaded = song._CoverSmallLoaded;
-            _CoverBigLoaded = song._CoverBigLoaded;
             NotesLoaded = song.NotesLoaded;
 
             Artist = song.Artist;
@@ -795,7 +739,7 @@ namespace VocaluxeLib.Menu.SongMenu
 
         public void LoadSmallCover()
         {
-            if (_CoverSmallLoaded)
+            if (_CoverTextureSmall != null)
                 return;
             if (CoverFileName != "")
             {
@@ -804,8 +748,6 @@ namespace VocaluxeLib.Menu.SongMenu
             }
             else
                 _CoverTextureSmall = CBase.Cover.GetNoCover();
-
-            _CoverSmallLoaded = true;
         }
 
         private void _CheckFiles()
@@ -864,9 +806,7 @@ namespace VocaluxeLib.Menu.SongMenu
                 return null;
 
             // build sentences list
-            List<string> sentences = new List<string>();
-            foreach (CLine line in voice.Lines)
-                sentences.Add(line.Points != 0 ? line.Lyrics : String.Empty);
+            List<string> sentences = voice.Lines.Select(line => line.Points != 0 ? line.Lyrics : String.Empty).ToList();
 
             // find equal sentences series
             List<SSeries> series = new List<SSeries>();

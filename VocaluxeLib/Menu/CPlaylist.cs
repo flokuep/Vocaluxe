@@ -21,7 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml;
-using VocaluxeLib.Menu.SongMenu;
+using VocaluxeLib.Songs;
 
 namespace VocaluxeLib.Menu
 {
@@ -372,7 +372,7 @@ namespace VocaluxeLib.Menu
 
                 writer.WriteComment("<ColorBackground>: Button color from ColorScheme (high priority)");
                 writer.WriteComment("or <BackgroundR>, <BackgroundG>, <BackgroundB>, <BackgroundA> (lower priority)");
-                if (_Theme.ColorBackgroundName != "")
+                if (!String.IsNullOrEmpty(_Theme.ColorBackgroundName))
                     writer.WriteElementString("ColorBackground", _Theme.ColorBackgroundName);
                 else
                 {
@@ -384,7 +384,7 @@ namespace VocaluxeLib.Menu
 
                 writer.WriteComment("<SColorBackground>: Selected paylist-entry color from ColorScheme (high priority)");
                 writer.WriteComment("or <SBackgroundR>, <SBackgroundG>, <SBackgroundB>, <SBackgroundA> (lower priority)");
-                if (_Theme.SelColorBackgroundName != "")
+                if (!String.IsNullOrEmpty(_Theme.SelColorBackgroundName))
                     writer.WriteElementString("SColorBackground", _Theme.SelColorBackgroundName);
                 else
                 {
@@ -463,10 +463,10 @@ namespace VocaluxeLib.Menu
 
         public void LoadTextures()
         {
-            if (_Theme.ColorBackgroundName != "")
+            if (!String.IsNullOrEmpty(_Theme.ColorBackgroundName))
                 BackgroundColor = CBase.Theme.GetColor(_Theme.ColorBackgroundName, _PartyModeID);
 
-            if (_Theme.SelColorBackgroundName != "")
+            if (!String.IsNullOrEmpty(_Theme.SelColorBackgroundName))
                 BackgroundSelColor = CBase.Theme.GetColor(_Theme.SelColorBackgroundName, _PartyModeID);
 
             _Theme.Text1.LoadTextures();
@@ -517,7 +517,7 @@ namespace VocaluxeLib.Menu
                                 break;
                             case Keys.Delete:
                             case Keys.Back:
-                                if (_Theme.ButtonPlaylistName.Text.Text != "")
+                                if (!String.IsNullOrEmpty(_Theme.ButtonPlaylistName.Text.Text))
                                     _Theme.ButtonPlaylistName.Text.Text = _Theme.ButtonPlaylistName.Text.Text.Remove(_Theme.ButtonPlaylistName.Text.Text.Length - 1);
                                 break;
                         }
@@ -1138,8 +1138,8 @@ namespace VocaluxeLib.Menu
         {
             if (playlistID > -1 && playlistID < CBase.Playlist.GetNumPlaylists())
             {
-                _Theme.ButtonPlaylistName.Text.Text = CBase.Playlist.GetPlaylistName(ActivePlaylistID);
                 ActivePlaylistID = playlistID;
+                _Theme.ButtonPlaylistName.Text.Text = CBase.Playlist.GetPlaylistName(ActivePlaylistID);
                 _PlaylistElementContents.Clear();
                 for (int i = 0; i < CBase.Playlist.GetPlaylistSongCount(ActivePlaylistID); i++)
                 {
@@ -1219,7 +1219,7 @@ namespace VocaluxeLib.Menu
                         CPlaylistElementContent pec = _PlaylistElementContents[Offset + i];
                         CSong song = CBase.Songs.GetSongByID(pec.SongID);
                         _PlaylistElements[i].Cover.Texture = song.CoverTextureSmall;
-                        string t1 = _Theme.Text1.Text.Replace("%a", song.Artist).Replace("%t", song.Title);
+                        string t1 = CBase.Language.Translate(_Theme.Text1.Text).Replace("%a", song.Artist).Replace("%t", song.Title);
                         _PlaylistElements[i].Text1.Text = /*(Offset + i + 1) + ") " + */ t1; //TODO: Add text field for the number
                         _PlaylistElements[i].SelectSlide.Clear();
                         for (int g = 0; g < pec.Modes.Length; g++)

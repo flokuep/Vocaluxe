@@ -29,7 +29,7 @@ namespace Vocaluxe.Lib.Sound
         private readonly CGstreamerAudioWrapper.LogCallback _LogCallback;
 
         #region log
-        private void _LogHandler(string text)
+        private static void _LogHandler(string text)
         {
             CLog.LogError(text);
         }

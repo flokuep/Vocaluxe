@@ -18,14 +18,14 @@
 #endregion
 
 using Vocaluxe.Base;
-using VocaluxeLib.Menu.SongMenu;
+using VocaluxeLib.Songs;
 
 namespace Vocaluxe.GameModes
 {
     abstract class CGameMode : IGameMode
     {
         private CSong _LastSong;
-        private int _LastSongID;
+        private int _LastSongID = -1;
 
         public CSong GetSong(int songID)
         {

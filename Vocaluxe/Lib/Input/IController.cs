@@ -20,7 +20,7 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
-using VocaluxeLib.Menu;
+using VocaluxeLib;
 
 namespace Vocaluxe.Lib.Input
 {
@@ -32,7 +32,7 @@ namespace Vocaluxe.Lib.Input
         ScrollUp
     }
 
-    interface IInput
+    interface IController
     {
         void Init();
         void Close();

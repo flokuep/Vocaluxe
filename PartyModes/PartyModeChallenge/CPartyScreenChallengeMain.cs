@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using VocaluxeLib.Menu;
+using VocaluxeLib.Profile;
 
 namespace VocaluxeLib.PartyModes.Challenge
 {
@@ -379,7 +380,7 @@ namespace VocaluxeLib.PartyModes.Challenge
             if (_GameState.CurrentRoundNr <= _GameState.Combs.Count)
             {
                 _Texts[_TextNextPlayerMessage].Visible = true;
-                SProfile[] profiles = CBase.Profiles.GetProfiles();
+                CProfile[] profiles = CBase.Profiles.GetProfiles();
                 for (int i = 0; i < _GameState.NumPlayerAtOnce; i++)
                 {
                     int pid = _GameState.Combs[_GameState.CurrentRoundNr - 1].Player[i];
@@ -491,7 +492,7 @@ namespace VocaluxeLib.PartyModes.Challenge
 
         private void _UpdateRoundsTable()
         {
-            SProfile[] profile = CBase.Profiles.GetProfiles();
+            CProfile[] profile = CBase.Profiles.GetProfiles();
             for (int i = 0; i < _RoundsTable.Count; i++)
             {
                 for (int p = 0; p < _RoundsTable[i].TextPlayer.Count; p++)
@@ -504,7 +505,9 @@ namespace VocaluxeLib.PartyModes.Challenge
                         _RoundsTable[i].Number.Text = (i + 1 + _RoundsTableOffset) + ")";
                         int pID = _GameState.ProfileIDs[_GameState.Combs[i + _RoundsTableOffset].Player[p]];
                         _RoundsTable[i].TextPlayer[p].Text = profile[pID].PlayerName;
+                        // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
                         if ((_GameState.CurrentRoundNr - 1) > i + _RoundsTableOffset)
+                            // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
                             _RoundsTable[i].TextScores[p].Text = _GameState.Results[i + _RoundsTableOffset, p].ToString();
                         else
                             _RoundsTable[i].TextScores[p].Text = "";
@@ -583,7 +586,7 @@ namespace VocaluxeLib.PartyModes.Challenge
 
         private void _UpdatePlayerTable()
         {
-            SProfile[] profiles = CBase.Profiles.GetProfiles();
+            CProfile[] profiles = CBase.Profiles.GetProfiles();
 
             for (int i = 0; i < _PlayerTable.Count; i++)
             {
@@ -655,7 +658,7 @@ namespace VocaluxeLib.PartyModes.Challenge
         private string _GetPlayerWinString()
         {
             string s = "";
-            SProfile[] profiles = CBase.Profiles.GetProfiles();
+            CProfile[] profiles = CBase.Profiles.GetProfiles();
 
             for (int i = 0; i < _GameState.ResultTable.Count; i++)
             {

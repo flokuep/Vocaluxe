@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -27,7 +28,8 @@ using System.Windows.Forms;
 using System.Xml;
 using Vocaluxe.Lib.Sound;
 using Vocaluxe.Lib.Webcam;
-using VocaluxeLib.Menu;
+using VocaluxeLib;
+using VocaluxeLib.Profile;
 
 namespace Vocaluxe.Base
 {
@@ -52,7 +54,6 @@ namespace Vocaluxe.Base
         public static int ScreenH = 576;
 
         public static EAntiAliasingModes AAMode = EAntiAliasingModes.X0;
-        public static EColorDepth ColorDepth = EColorDepth.Bit32;
 
         public static EOffOn VSync = EOffOn.TR_CONFIG_ON;
         public static EOffOn FullScreen = EOffOn.TR_CONFIG_ON;
@@ -94,7 +95,7 @@ namespace Vocaluxe.Base
         public static int NumPlayer = 2;
         public static EOffOn Tabs = EOffOn.TR_CONFIG_OFF;
         public static string Language = "English";
-        public static EOffOn LyricsOnTop = EOffOn.TR_CONFIG_OFF;
+        public static ELyricsPosition LyricsPosition = ELyricsPosition.TR_CONFIG_LYRICSPOSITION_BOTTOM;
         public static readonly string[] Players = new string[CSettings.MaxNumPlayer];
 
         public static float MinLineBreakTime = 0.1f; //Minimum time to show the text before it is (to be) sung (if possible)
@@ -111,6 +112,12 @@ namespace Vocaluxe.Base
         public static int MicDelay = 300; //[ms]
         public static EWebcamLib WebcamLib = EWebcamLib.OpenCV;
         public static SWebcamConfig WebcamConfig;
+
+        // Server
+        public static EOffOn ServerActive = EOffOn.TR_CONFIG_OFF;
+        public static EOffOn ServerEncryption = EOffOn.TR_CONFIG_OFF;
+        public static int ServerPort = 3000;
+        public static string ServerPassword = "vocaluxe";
 
         //Lists to save parameters and values
         private static readonly List<string> _Params = new List<string>();
@@ -166,7 +173,6 @@ namespace Vocaluxe.Base
             xmlReader.TryGetIntValue("//root/Graphics/ScreenW", ref ScreenW);
             xmlReader.TryGetIntValue("//root/Graphics/ScreenH", ref ScreenH);
             xmlReader.TryGetEnumValue("//root/Graphics/AAMode", ref AAMode);
-            xmlReader.TryGetEnumValue("//root/Graphics/Colors", ref ColorDepth);
             xmlReader.TryGetFloatValue("//root/Graphics/MaxFPS", ref MaxFPS);
             xmlReader.TryGetEnumValue("//root/Graphics/VSync", ref VSync);
             xmlReader.TryGetEnumValue("//root/Graphics/FullScreen", ref FullScreen);
@@ -223,7 +229,7 @@ namespace Vocaluxe.Base
             xmlReader.TryGetIntValue("//root/Game/NumPlayer", ref NumPlayer);
             xmlReader.TryGetEnumValue("//root/Game/Tabs", ref Tabs);
             xmlReader.GetValue("//root/Game/Language", out Language, Language);
-            xmlReader.TryGetEnumValue("//root/Game/LyricsOnTop", ref LyricsOnTop);
+            xmlReader.TryGetEnumValue("//root/Game/LyricsPosition", ref LyricsPosition);
             xmlReader.TryGetFloatValue("//root/Game/MinLineBreakTime", ref MinLineBreakTime);
 
             if ((ScoreAnimationTime > 0 && ScoreAnimationTime < 1) || ScoreAnimationTime < 0)
@@ -268,13 +274,22 @@ namespace Vocaluxe.Base
                 MicConfig[p - 1] = new SMicConfig(0);
                 xmlReader.GetValue("//root/Record/MicConfig" + p + "/DeviceName", out MicConfig[p - 1].DeviceName, String.Empty);
                 xmlReader.GetValue("//root/Record/MicConfig" + p + "/DeviceDriver", out MicConfig[p - 1].DeviceDriver, String.Empty);
-                xmlReader.GetValue("//root/Record/MicConfig" + p + "/InputName", out MicConfig[p - 1].InputName, String.Empty);
                 xmlReader.TryGetIntValue("//root/Record/MicConfig" + p + "/Channel", ref MicConfig[p - 1].Channel);
             }
 
             xmlReader.TryGetIntValueRange("//root/Record/MicDelay", ref MicDelay, 0, 500);
             MicDelay = (int)(20 * Math.Round(MicDelay / 20.0));
             #endregion Record
+
+            #region Server
+            xmlReader.TryGetEnumValue("//root/Server/ServerActive", ref ServerActive);
+            xmlReader.TryGetEnumValue("//root/Server/ServerEncryption", ref ServerEncryption);
+            xmlReader.TryGetIntValue("//root/Server/ServerPort", ref ServerPort);
+            if (ServerPort < 1 || ServerPort > 65535)
+                ServerPort = 3000;
+
+            xmlReader.GetValue("//root/Server/ServerPassword", out ServerPassword, ServerPassword);
+            #endregion Server
         }
 
         public static bool SaveConfig()
@@ -330,9 +345,6 @@ namespace Vocaluxe.Base
                 writer.WriteComment("AAMode: " + CHelper.ListStrings(Enum.GetNames(typeof(EAntiAliasingModes))));
                 writer.WriteElementString("AAMode", Enum.GetName(typeof(EAntiAliasingModes), AAMode));
 
-                writer.WriteComment("Colors: " + CHelper.ListStrings(Enum.GetNames(typeof(EColorDepth))));
-                writer.WriteElementString("Colors", Enum.GetName(typeof(EColorDepth), ColorDepth));
-
                 writer.WriteComment("MaxFPS should be between 1..200");
                 writer.WriteElementString("MaxFPS", MaxFPS.ToString("#"));
 
@@ -360,25 +372,25 @@ namespace Vocaluxe.Base
                 writer.WriteComment("Name of cover-theme");
                 writer.WriteElementString("Cover", CoverTheme);
 
-                writer.WriteComment("Draw note-lines:" + CHelper.ListStrings(Enum.GetNames(typeof(EOffOn))));
+                writer.WriteComment("Draw note-lines: " + CHelper.ListStrings(Enum.GetNames(typeof(EOffOn))));
                 writer.WriteElementString("DrawNoteLines", Enum.GetName(typeof(EOffOn), DrawNoteLines));
 
-                writer.WriteComment("Draw tone-helper:" + CHelper.ListStrings(Enum.GetNames(typeof(EOffOn))));
+                writer.WriteComment("Draw tone-helper: " + CHelper.ListStrings(Enum.GetNames(typeof(EOffOn))));
                 writer.WriteElementString("DrawToneHelper", Enum.GetName(typeof(EOffOn), DrawToneHelper));
 
-                writer.WriteComment("Look of timer:" + CHelper.ListStrings(Enum.GetNames(typeof(ETimerLook))));
+                writer.WriteComment("Look of timer: " + CHelper.ListStrings(Enum.GetNames(typeof(ETimerLook))));
                 writer.WriteElementString("TimerLook", Enum.GetName(typeof(ETimerLook), TimerLook));
 
-                writer.WriteComment("Information about players on SingScreen:" + CHelper.ListStrings(Enum.GetNames(typeof(EPlayerInfo))));
+                writer.WriteComment("Information about players on SingScreen: " + CHelper.ListStrings(Enum.GetNames(typeof(EPlayerInfo))));
                 writer.WriteElementString("PlayerInfo", Enum.GetName(typeof(EPlayerInfo), PlayerInfo));
 
-                writer.WriteComment("Fade player-information with lyrics and notebars:" + CHelper.ListStrings(Enum.GetNames(typeof(EFadePlayerInfo))));
+                writer.WriteComment("Fade player-information with lyrics and notebars: " + CHelper.ListStrings(Enum.GetNames(typeof(EFadePlayerInfo))));
                 writer.WriteElementString("FadePlayerInfo", Enum.GetName(typeof(EFadePlayerInfo), FadePlayerInfo));
 
-                writer.WriteComment("Cover Loading:" + CHelper.ListStrings(Enum.GetNames(typeof(ECoverLoading))));
+                writer.WriteComment("Cover Loading: " + CHelper.ListStrings(Enum.GetNames(typeof(ECoverLoading))));
                 writer.WriteElementString("CoverLoading", Enum.GetName(typeof(ECoverLoading), CoverLoading));
 
-                writer.WriteComment("Lyric Style:" + CHelper.ListStrings(Enum.GetNames(typeof(ELyricStyle))));
+                writer.WriteComment("Lyric Style: " + CHelper.ListStrings(Enum.GetNames(typeof(ELyricStyle))));
                 writer.WriteElementString("LyricStyle", Enum.GetName(typeof(ELyricStyle), LyricStyle));
 
                 writer.WriteEndElement();
@@ -399,19 +411,17 @@ namespace Vocaluxe.Base
                 writer.WriteComment("AudioLatency from -500 to 500 ms");
                 writer.WriteElementString("AudioLatency", AudioLatency.ToString());
 
-                writer.WriteComment("Background Music");
+                writer.WriteComment("Background Music: " + CHelper.ListStrings(Enum.GetNames(typeof(EOffOn))));
                 writer.WriteElementString("BackgroundMusic", Enum.GetName(typeof(EOffOn), BackgroundMusic));
 
                 writer.WriteComment("Background Music Volume from 0 to 100");
                 writer.WriteElementString("BackgroundMusicVolume", BackgroundMusicVolume.ToString());
 
-                writer.WriteComment("Background Music Source");
+                writer.WriteComment("Background Music Source: " + CHelper.ListStrings(Enum.GetNames(typeof(EBackgroundMusicSource))));
                 writer.WriteElementString("BackgroundMusicSource", Enum.GetName(typeof(EBackgroundMusicSource), BackgroundMusicSource));
-                writer.WriteComment("Background Music use start-tag of songs");
-                writer.WriteElementString("BackgroundMusicUseStart", Enum.GetName(typeof(EOffOn), BackgroundMusicUseStart));
 
-                writer.WriteComment("Preview Volume from 0 to 100");
-                writer.WriteElementString("PreviewMusicVolume", PreviewMusicVolume.ToString());
+                writer.WriteComment("Background Music use start-tag of songs: " + CHelper.ListStrings(Enum.GetNames(typeof(EOffOn))));
+                writer.WriteElementString("BackgroundMusicUseStart", Enum.GetName(typeof(EOffOn), BackgroundMusicUseStart));
 
                 writer.WriteComment("Preview Volume from 0 to 100");
                 writer.WriteElementString("PreviewMusicVolume", PreviewMusicVolume.ToString());
@@ -466,8 +476,8 @@ namespace Vocaluxe.Base
                 writer.WriteComment("Order songs in tabs: " + CHelper.ListStrings(Enum.GetNames(typeof(EOffOn))));
                 writer.WriteElementString("Tabs", Enum.GetName(typeof(EOffOn), Tabs));
 
-                writer.WriteComment("Lyrics also on Top of screen: " + CHelper.ListStrings(Enum.GetNames(typeof(EOffOn))));
-                writer.WriteElementString("LyricsOnTop", Enum.GetName(typeof(EOffOn), LyricsOnTop));
+                writer.WriteComment("Position if lyrics on screen: " + CHelper.ListStrings(Enum.GetNames(typeof(ELyricsPosition))));
+                writer.WriteElementString("LyricsPosition", Enum.GetName(typeof(ELyricsPosition), LyricsPosition));
 
                 writer.WriteComment("MinLineBreakTime: Value >= 0 in s. Minimum time the text is shown before it is to be sung");
                 writer.WriteElementString("MinLineBreakTime", MinLineBreakTime.ToString());
@@ -519,13 +529,12 @@ namespace Vocaluxe.Base
 
                 for (int p = 1; p <= CSettings.MaxNumPlayer; p++)
                 {
-                    if (MicConfig[p - 1].DeviceName != "" && MicConfig[p - 1].InputName != "" && MicConfig[p - 1].Channel > 0)
+                    if (MicConfig[p - 1].DeviceName != "" && MicConfig[p - 1].Channel > 0)
                     {
                         writer.WriteStartElement("MicConfig" + p);
 
                         writer.WriteElementString("DeviceName", MicConfig[p - 1].DeviceName);
                         writer.WriteElementString("DeviceDriver", MicConfig[p - 1].DeviceDriver);
-                        writer.WriteElementString("InputName", MicConfig[p - 1].InputName);
                         writer.WriteElementString("Channel", MicConfig[p - 1].Channel.ToString());
 
                         writer.WriteEndElement();
@@ -537,6 +546,24 @@ namespace Vocaluxe.Base
 
                 writer.WriteEndElement();
                 #endregion Record
+
+                #region Server
+                writer.WriteStartElement("Server");
+
+                writer.WriteComment("Server On/Off: " + CHelper.ListStrings(Enum.GetNames(typeof(EOffOn))));
+                writer.WriteElementString("ServerActive", Enum.GetName(typeof(EOffOn), ServerActive));
+
+                writer.WriteComment("Server Encryption On/Off: " + CHelper.ListStrings(Enum.GetNames(typeof(EOffOn))));
+                writer.WriteElementString("ServerEncryption", Enum.GetName(typeof(EOffOn), ServerEncryption));
+
+                writer.WriteComment("Server Port (default: 3000) [1..65535]");
+                writer.WriteElementString("ServerPort", ServerPort.ToString());
+
+                writer.WriteComment("Server Password (default: vocaluxe)");
+                writer.WriteElementString("ServerPassword", ServerPassword);
+
+                writer.WriteEndElement();
+                #endregion Server
 
                 // End of File
                 writer.WriteEndElement(); //end of root
@@ -568,19 +595,11 @@ namespace Vocaluxe.Base
         /// <returns></returns>
         public static bool IsMicConfig()
         {
-            SRecordDevice[] devices = CSound.RecordGetDevices();
+            ReadOnlyCollection<CRecordDevice> devices = CSound.RecordGetDevices();
             if (devices == null)
                 return false;
 
-            for (int dev = 0; dev < devices.Length; dev++)
-            {
-                for (int inp = 0; inp < devices[dev].Inputs.Count; inp++)
-                {
-                    if (devices[dev].Inputs[inp].PlayerChannel1 != 0 || devices[dev].Inputs[inp].PlayerChannel2 != 0)
-                        return true;
-                }
-            }
-            return false;
+            return devices.Any(t => t.PlayerChannel1 != 0 || t.PlayerChannel2 != 0);
         }
 
         /// <summary>
@@ -590,19 +609,11 @@ namespace Vocaluxe.Base
         /// <returns></returns>
         public static bool IsMicConfig(int player)
         {
-            SRecordDevice[] devices = CSound.RecordGetDevices();
+            ReadOnlyCollection<CRecordDevice> devices = CSound.RecordGetDevices();
             if (devices == null)
                 return false;
 
-            for (int dev = 0; dev < devices.Length; dev++)
-            {
-                for (int inp = 0; inp < devices[dev].Inputs.Count; inp++)
-                {
-                    if (devices[dev].Inputs[inp].PlayerChannel1 == player || devices[dev].Inputs[inp].PlayerChannel2 == player)
-                        return true;
-                }
-            }
-            return false;
+            return devices.Any(t => t.PlayerChannel1 == player || t.PlayerChannel2 == player);
         }
 
         public static int GetMaxNumMics()
@@ -625,65 +636,53 @@ namespace Vocaluxe.Base
         {
             //Look for (usb-)mic
             //SRecordDevice[] Devices = new SRecordDevice[CSound.RecordGetDevices().Length];
-            SRecordDevice[] devices = CSound.RecordGetDevices();
+            ReadOnlyCollection<CRecordDevice> devices = CSound.RecordGetDevices();
             if (devices == null)
                 return false;
 
-            for (int dev = 0; dev < devices.Length; dev++)
+            foreach (CRecordDevice device in devices)
             {
                 //Has Device some signal-names in name -> This could be a (usb-)mic
-                if (Regex.IsMatch(devices[dev].Name, "Usb|Wireless", RegexOptions.IgnoreCase))
+                if (Regex.IsMatch(device.Name, "Usb|Wireless", RegexOptions.IgnoreCase))
                 {
-                    //Check if there are inputs.
-                    if (devices[dev].Inputs.Count >= 1)
+                    //Check if there is one or more channels
+                    if (device.Channels >= 2)
                     {
-                        //Check if there is one or more channels
-                        if (devices[dev].Inputs[0].Channels >= 2)
-                        {
-                            //Set this device to player 1
-                            MicConfig[0].DeviceName = devices[dev].Name;
-                            MicConfig[0].DeviceDriver = devices[dev].Driver;
-                            MicConfig[0].InputName = devices[dev].Inputs[0].Name;
-                            MicConfig[0].Channel = 1;
-                            //Set this device to player 2
-                            MicConfig[1].DeviceName = devices[dev].Name;
-                            MicConfig[1].DeviceDriver = devices[dev].Driver;
-                            MicConfig[1].InputName = devices[dev].Inputs[0].Name;
-                            MicConfig[1].Channel = 2;
+                        //Set this device to player 1
+                        MicConfig[0].DeviceName = device.Name;
+                        MicConfig[0].DeviceDriver = device.Driver;
+                        MicConfig[0].Channel = 1;
+                        //Set this device to player 2
+                        MicConfig[1].DeviceName = device.Name;
+                        MicConfig[1].DeviceDriver = device.Driver;
+                        MicConfig[1].Channel = 2;
 
-                            return true;
-                        }
+                        return true;
                     }
                 }
             }
             //If no usb-mics found -> Look for Devices with "mic" or "mik" 
-            for (int dev = 0; dev < devices.Length; dev++)
+            foreach (CRecordDevice device in devices)
             {
                 //Has Device some signal-names in name -> This could be a mic
-                if (Regex.IsMatch(devices[dev].Name, "Mic|Mik", RegexOptions.IgnoreCase))
+                if (Regex.IsMatch(device.Name, "Mic|Mik", RegexOptions.IgnoreCase))
                 {
-                    //Check if there are inputs.
-                    if (devices[dev].Inputs.Count >= 1)
+                    //Check if there is one or more channels
+                    if (device.Channels >= 1)
                     {
-                        //Check if there is one or more channels
-                        if (devices[dev].Inputs[0].Channels >= 1)
+                        //Set this device to player 1
+                        MicConfig[0].DeviceName = device.Name;
+                        MicConfig[0].DeviceDriver = device.Driver;
+                        MicConfig[0].Channel = 1;
+
+                        if (device.Channels >= 2)
                         {
-                            //Set this device to player 1
-                            MicConfig[0].DeviceName = devices[dev].Name;
-                            MicConfig[0].DeviceDriver = devices[dev].Driver;
-                            MicConfig[0].InputName = devices[dev].Inputs[0].Name;
-                            MicConfig[0].Channel = 1;
+                            //Set this device to player 2
+                            MicConfig[1].DeviceName = device.Name;
+                            MicConfig[1].DeviceDriver = device.Driver;
+                            MicConfig[1].Channel = 2;
 
-                            if (devices[dev].Inputs[0].Channels >= 2)
-                            {
-                                //Set this device to player 2
-                                MicConfig[1].DeviceName = devices[dev].Name;
-                                MicConfig[1].DeviceDriver = devices[dev].Driver;
-                                MicConfig[1].InputName = devices[dev].Inputs[0].Name;
-                                MicConfig[1].Channel = 2;
-
-                                return true;
-                            }
+                            return true;
                         }
                     }
                 }
@@ -833,17 +832,20 @@ namespace Vocaluxe.Base
         /// </summary>
         public static void UsePlayers()
         {
+            CProfile[] profiles = CProfiles.GetProfiles();
+
             for (int j = 0; j < CSettings.MaxNumPlayer; j++)
             {
                 CGame.Players[j].ProfileID = -1;
-                if (Players[j] == "")
+                if (Players[j] == "" || profiles == null)
                     continue;
-                for (int i = 0; i < CProfiles.Profiles.Length; i++)
+
+                foreach (CProfile profile in profiles)
                 {
-                    if (Path.GetFileName(CProfiles.Profiles[i].ProfileFile) == Players[j] && CProfiles.Profiles[i].Active == EOffOn.TR_CONFIG_ON)
+                    if (Path.GetFileName(profile.FileName) == Players[j] && profile.Active == EOffOn.TR_CONFIG_ON)
                     {
                         //Update Game-infos with player
-                        CGame.Players[j].ProfileID = i;
+                        CGame.Players[j].ProfileID = profile.ID;
                     }
                 }
             }

@@ -17,9 +17,10 @@
 //  */
 #endregion
 
-using System;
 using System.Windows.Forms;
 using Vocaluxe.Base;
+using Vocaluxe.Base.Fonts;
+using VocaluxeLib;
 using VocaluxeLib.Menu;
 
 namespace Vocaluxe.Screens
@@ -180,12 +181,7 @@ namespace Vocaluxe.Screens
             CConfig.SaveConfig();
 
             if (_OldCoverTheme != _SelectSlides[_SelectSlideCover].Selection)
-            {
                 CCover.ReloadCover();
-                CSongs.Filter.SearchString = String.Empty;
-                CSongs.Sorter.SetOptions(CConfig.SongSorting, CConfig.IgnoreArticles);
-                CSongs.Categorizer.Tabs = CConfig.Tabs;
-            }
 
             if (_OldTheme != _SelectSlides[_SelectSlideTheme].Selection)
             {

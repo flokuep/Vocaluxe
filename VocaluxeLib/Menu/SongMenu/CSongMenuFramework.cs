@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
+using VocaluxeLib.Draw;
 using VocaluxeLib.PartyModes;
 
 namespace VocaluxeLib.Menu.SongMenu
@@ -104,7 +105,7 @@ namespace VocaluxeLib.Menu.SongMenu
         private readonly List<int> _Streams = new List<int>();
         private int _Actsong = -1;
         private int _Actsongstream = -1;
-        protected STexture _Vidtex = new STexture(-1);
+        protected CTexture _Vidtex;
 
         protected bool _Initialized;
         protected int _LastKnownNumSongs;
@@ -237,6 +238,7 @@ namespace VocaluxeLib.Menu.SongMenu
         protected CSongMenuFramework(int partyModeID)
         {
             _PartyModeID = partyModeID;
+            _Video = -1;
             _Theme = new SThemeSongMenu
                 {
                     SongMenuTileBoard =
@@ -252,8 +254,6 @@ namespace VocaluxeLib.Menu.SongMenu
                             StaticMedleyTagIcon = new CStatic(_PartyModeID)
                         }
                 };
-
-            _ThemeLoaded = false;
         }
 
         public string GetThemeName()
@@ -352,7 +352,7 @@ namespace VocaluxeLib.Menu.SongMenu
 
                 writer.WriteComment("<Color>: Tile color from ColorScheme (high priority)");
                 writer.WriteComment("or <R>, <G>, <B>, <A> (lower priority)");
-                if (_Theme.ColorName != "")
+                if (!String.IsNullOrEmpty(_Theme.ColorName))
                     writer.WriteElementString("Color", _Theme.ColorName);
                 else
                 {
@@ -439,19 +439,21 @@ namespace VocaluxeLib.Menu.SongMenu
             if (_Actsong != _PreviewSelected)
                 _SelectSong(_PreviewSelected);
 
-            if (_Streams.Count > 0 && _Video != -1)
+            if (_Streams.Count <= 0 || _Video == -1)
+                return;
+
+            if (CBase.Video.IsFinished(_Video) || CBase.Sound.IsFinished(_Actsongstream))
             {
-                if (CBase.Video.IsFinished(_Video) || CBase.Sound.IsFinished(_Actsongstream))
-                {
-                    CBase.Video.Close(_Video);
-                    _Video = -1;
-                    return;
-                }
+                CBase.Video.Close(_Video);
+                _Video = -1;
+                return;
+            }
 
-                float time = CBase.Sound.GetPosition(_Actsongstream);
+            float time = CBase.Sound.GetPosition(_Actsongstream);
 
-                float vtime;
-                CBase.Video.GetFrame(_Video, ref _Vidtex, time, out vtime);
+            float vtime;
+            if (CBase.Video.GetFrame(_Video, ref _Vidtex, time, out vtime))
+            {
                 if (_VideoFadeTimer.ElapsedMilliseconds <= 3000L)
                     _Vidtex.Color.A = _VideoFadeTimer.ElapsedMilliseconds / 3000f;
                 else
@@ -465,7 +467,8 @@ namespace VocaluxeLib.Menu.SongMenu
         public virtual void OnShow()
         {
             _Actsongstream = -1;
-            _Vidtex = new STexture(-1);
+            _Vidtex = null;
+            ApplyVolume(CBase.Config.GetPreviewMusicVolume());
         }
 
         public virtual void OnHide()
@@ -547,7 +550,7 @@ namespace VocaluxeLib.Menu.SongMenu
         {
             Init();
 
-            if (_Theme.ColorName != "")
+            if (!String.IsNullOrEmpty(_Theme.ColorName))
                 _Color = CBase.Theme.GetColor(_Theme.ColorName, _PartyModeID);
         }
 
@@ -561,7 +564,7 @@ namespace VocaluxeLib.Menu.SongMenu
         {
             if (!_Initialized)
                 return false;
-            if (CBase.Songs.GetCurrentCategoryIndex() >= 0 || _PreviewSelected < 0 || _PreviewSelected >= CBase.Songs.GetNumCategories())
+            if (CBase.Songs.IsInCategory() || _PreviewSelected < 0 || _PreviewSelected >= CBase.Songs.GetNumCategories())
                 return false;
             _EnterCategory(_PreviewSelected);
             return true;
@@ -584,7 +587,7 @@ namespace VocaluxeLib.Menu.SongMenu
             if (!_Initialized)
                 return;
 
-            if (CBase.Songs.GetCurrentCategoryIndex() == -1)
+            if (!CBase.Songs.IsInCategory())
                 return;
 
             _Reset();
@@ -598,7 +601,7 @@ namespace VocaluxeLib.Menu.SongMenu
 
         protected void _SelectSong(int nr)
         {
-            if (CBase.Songs.GetCurrentCategoryIndex() >= 0 && (CBase.Songs.GetNumVisibleSongs() > 0) && (nr >= 0) && ((_Actsong != nr) || (_Streams.Count == 0)))
+            if (CBase.Songs.IsInCategory() && (CBase.Songs.GetNumSongsVisible() > 0) && (nr >= 0) && ((_Actsong != nr) || (_Streams.Count == 0)))
             {
                 _Streams.ForEach(soundStream => CBase.Sound.FadeAndStop(soundStream, 0f, 1f));
                 _Streams.Clear();
@@ -609,7 +612,7 @@ namespace VocaluxeLib.Menu.SongMenu
                 CBase.Drawing.RemoveTexture(ref _Vidtex);
 
                 _Actsong = nr;
-                if (_Actsong >= CBase.Songs.GetNumVisibleSongs())
+                if (_Actsong >= CBase.Songs.GetNumSongsVisible())
                     _Actsong = 0;
 
 
