@@ -199,6 +199,133 @@ namespace VocaluxeLib.Menu
 
         public int DragAndDropSongID = -1;
 
+        private bool _OptionsSingingAllowed = true;
+        private bool _OptionsChangeNameAllowed = true;
+        private bool _OptionsChangeOrderAllowed = true;
+        private bool _OptionsChangeGameModeAllowed = true;
+        private bool _OptionsRemovingSongAllowed = true;
+        private bool _OptionsDeletingAllowed = true;
+        private bool _OptionsSavingAllowed = true;
+        private bool _OptionsGameModeVisible = true;
+        private bool _OptionsClosingAllowed = true;
+
+        public bool OptionsSingingAllowed
+        {
+            set 
+            { 
+                if(value != _OptionsSingingAllowed)
+                {
+                    _OptionsSingingAllowed = value;
+                    _ApplyOptions();
+                }
+            }
+            get { return _OptionsSingingAllowed; }
+        }
+
+        public bool OptionsChangeNameAllowed
+        {
+            set
+            {
+                if (value != _OptionsChangeNameAllowed)
+                {
+                    _OptionsChangeNameAllowed = value;
+                    _ApplyOptions();
+                }
+            }
+            get { return _OptionsChangeNameAllowed; }
+        }
+
+        public bool OptionsChangeOrderAllowed
+        {
+            set
+            {
+                if (value != _OptionsChangeOrderAllowed)
+                {
+                    _OptionsChangeOrderAllowed = value;
+                    _ApplyOptions();
+                }
+            }
+            get { return _OptionsChangeOrderAllowed; }
+        }
+
+        public bool OptionsChangeGameModeAllowed
+        {
+            set
+            {
+                if (value != _OptionsChangeGameModeAllowed)
+                {
+                    _OptionsChangeGameModeAllowed = value;
+                    _ApplyOptions();
+                }
+            }
+            get { return _OptionsChangeGameModeAllowed; }
+        }
+
+        public bool OptionsRemovingSongAllowed
+        {
+            set
+            {
+                if (value != _OptionsRemovingSongAllowed)
+                {
+                    _OptionsRemovingSongAllowed = value;
+                    _ApplyOptions();
+                }
+            }
+            get { return _OptionsRemovingSongAllowed; }
+        }
+
+        public bool OptionsDeletingAllowed
+        {
+            set
+            {
+                if (value != _OptionsDeletingAllowed)
+                {
+                    _OptionsDeletingAllowed = value;
+                    _ApplyOptions();
+                }
+            }
+            get { return _OptionsDeletingAllowed; }
+        }
+
+        public bool OptionsSavingAllowed
+        {
+            set
+            {
+                if (value != _OptionsSavingAllowed)
+                {
+                    _OptionsSavingAllowed = value;
+                    _ApplyOptions();
+                }
+            }
+            get { return _OptionsSavingAllowed; }
+        }
+
+        public bool OptionsGameModeVisible
+        {
+            set
+            {
+                if (value != _OptionsGameModeVisible)
+                {
+                    _OptionsGameModeVisible = value;
+                    _ApplyOptions();
+                }
+            }
+            get { return _OptionsGameModeVisible; }
+        }
+
+        public bool OptionsClosingAllowed
+        {
+            set
+            {
+                if (value != _OptionsClosingAllowed)
+                {
+                    _OptionsClosingAllowed = value;
+                    _ApplyOptions();
+                }
+            }
+            get { return _OptionsClosingAllowed; }
+        }
+
         //private static
         public CPlaylist(int partyModeID)
         {
@@ -602,19 +729,22 @@ namespace VocaluxeLib.Menu
                             break;
 
                         case Keys.Delete:
-                            CBase.Playlist.DeletePlaylistSong(ActivePlaylistID, _PlaylistElements[CurrentPlaylistElement].Content);
-                            UpdatePlaylist();
+                            if (_OptionsRemovingSongAllowed)
+                            {
+                                CBase.Playlist.DeletePlaylistSong(ActivePlaylistID, _PlaylistElements[CurrentPlaylistElement].Content);
+                                UpdatePlaylist();
 
-                            if (Offset > 0)
-                                Offset--;
+                                if (Offset > 0)
+                                    Offset--;
 
-                            Update();
+                                Update();
 
-                            if (_PlaylistElementContents.Count - 1 < CurrentPlaylistElement)
-                                CurrentPlaylistElement = _PlaylistElementContents.Count - 1;
+                                if (_PlaylistElementContents.Count - 1 < CurrentPlaylistElement)
+                                    CurrentPlaylistElement = _PlaylistElementContents.Count - 1;
 
-                            if (CurrentPlaylistElement != -1)
-                                _Interactions.SetInteractionToSelectSlide(_PlaylistElements[CurrentPlaylistElement].SelectSlide);
+                                if (CurrentPlaylistElement != -1)
+                                    _Interactions.SetInteractionToSelectSlide(_PlaylistElements[CurrentPlaylistElement].SelectSlide);
+                            }
                             break;
 
                         case Keys.Back:
@@ -622,11 +752,12 @@ namespace VocaluxeLib.Menu
                             break;
 
                         case Keys.Enter:
-                            _StartPlaylistSong(CurrentPlaylistElement);
+                            if(_OptionsSingingAllowed)
+                                _StartPlaylistSong(CurrentPlaylistElement);
                             break;
 
                         case Keys.Add: //move the selected song up
-                            if (_PlaylistElementContents.Count > 1 && (CurrentPlaylistElement > 0 || Offset > 0))
+                            if (_PlaylistElementContents.Count > 1 && (CurrentPlaylistElement > 0 || Offset > 0) && _OptionsChangeOrderAllowed)
                             {
                                 CBase.Playlist.MovePlaylistSongUp(ActivePlaylistID, CurrentPlaylistElement + Offset);
                                 UpdatePlaylist();
@@ -655,7 +786,7 @@ namespace VocaluxeLib.Menu
                             break;
 
                         case Keys.Subtract: //move the selected song down
-                            if (_PlaylistElementContents.Count > 1 && CurrentPlaylistElement + Offset < _PlaylistElementContents.Count - 1)
+                            if (_PlaylistElementContents.Count > 1 && CurrentPlaylistElement + Offset < _PlaylistElementContents.Count - 1 && _OptionsChangeOrderAllowed)
                             {
                                 CBase.Playlist.MovePlaylistSongDown(ActivePlaylistID, CurrentPlaylistElement + Offset);
                                 UpdatePlaylist();
@@ -772,7 +903,7 @@ namespace VocaluxeLib.Menu
                             CBase.Playlist.DeletePlaylist(ActivePlaylistID);
                             ClosePlaylist();
                         }
-                        else if (_Theme.ButtonPlaylistName.Selected)
+                        else if (_Theme.ButtonPlaylistName.Selected && _OptionsChangeNameAllowed)
                         {
                             if (EditMode != EEditMode.PlaylistName)
                             {
@@ -933,7 +1064,7 @@ namespace VocaluxeLib.Menu
                                 ClosePlaylist();
                                 return true;
                             }
-                            if (_Theme.ButtonPlaylistName.Selected)
+                            if (_Theme.ButtonPlaylistName.Selected && _OptionsChangeNameAllowed)
                             {
                                 EditMode = EEditMode.PlaylistName;
                                 _Theme.ButtonPlaylistName.EditMode = true;
@@ -942,11 +1073,11 @@ namespace VocaluxeLib.Menu
                         }
 
                         //Start selected song with double click
-                        if (mouseEvent.LD && CurrentPlaylistElement != -1)
+                        if (mouseEvent.LD && CurrentPlaylistElement != -1 && _OptionsSingingAllowed)
                             _StartPlaylistSong(CurrentPlaylistElement);
 
                         //Change order with holding LB
-                        if (mouseEvent.LBH && CurrentPlaylistElement != -1 && _PlaylistElementContents.Count > 0 && DragAndDropSongID == -1)
+                        if (mouseEvent.LBH && CurrentPlaylistElement != -1 && _PlaylistElementContents.Count > 0 && DragAndDropSongID == -1 && _OptionsChangeOrderAllowed)
                         {
                             _ChangeOrderSource = CurrentPlaylistElement + Offset;
 
@@ -1203,6 +1334,15 @@ namespace VocaluxeLib.Menu
                 CBase.Graphics.FadeTo(EScreens.ScreenNames);
         }
 
+        private void _ApplyOptions()
+        {
+            _Theme.ButtonPlaylistDelete.Visible = _OptionsDeletingAllowed;
+            _Theme.ButtonPlaylistSave.Visible = _OptionsSavingAllowed;
+            _Theme.ButtonPlaylistSing.Visible = _OptionsSingingAllowed;
+            _Theme.ButtonPlaylistClose.Visible = _OptionsClosingAllowed;
+            Update();
+        }
+
         public void Update()
         {
             if (ActivePlaylistID > -1 && ActivePlaylistID < CBase.Playlist.GetNumPlaylists())
@@ -1214,7 +1354,7 @@ namespace VocaluxeLib.Menu
                         _PlaylistElements[i].Content = Offset + i;
                         _PlaylistElements[i].Background.Visible = true;
                         _PlaylistElements[i].Cover.Visible = true;
-                        _PlaylistElements[i].SelectSlide.Visible = true;
+                        _PlaylistElements[i].SelectSlide.Visible = _OptionsGameModeVisible;
                         _PlaylistElements[i].Text1.Visible = true;
                         CPlaylistElementContent pec = _PlaylistElementContents[Offset + i];
                         CSong song = CBase.Songs.GetSongByID(pec.SongID);
