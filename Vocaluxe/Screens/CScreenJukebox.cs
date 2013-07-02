@@ -54,6 +54,7 @@ namespace Vocaluxe.Screens
             CGraphics.HidePopup(EPopupScreens.PopupPlayerControl);
             _OldBGSetting = CConfig.VideosToBackground;
             CConfig.VideosToBackground = EOffOn.TR_CONFIG_ON;
+            CBackgroundMusic.VideoEnabled = true;
             _UpdatePlayerVisibility(1f);
         }
 
@@ -62,6 +63,7 @@ namespace Vocaluxe.Screens
             base.OnClose();
 
             CConfig.VideosToBackground = _OldBGSetting;
+            CBackgroundMusic.VideoEnabled = CConfig.VideosToBackground == EOffOn.TR_CONFIG_ON;
         }
 
 
