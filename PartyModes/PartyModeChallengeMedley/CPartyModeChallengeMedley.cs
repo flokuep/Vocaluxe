@@ -1,8 +1,30 @@
+#region license
+// /*
+//     This file is part of Vocaluxe.
+// 
+//     Vocaluxe is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     Vocaluxe is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
+//  */
+#endregion
+
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
+using VocaluxeLib.Game;
 using VocaluxeLib.Menu;
-using VocaluxeLib.Menu.SongMenu;
+using VocaluxeLib.Songs;
+using VocaluxeLib.Profile;
 
 [assembly: ComVisible(false)]
 
@@ -40,17 +62,15 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
         public int Position;
         public int PlayerID;
         public int NumPlayed;
-        public int NumRounds;
         public int NumWon;
         public int NumSingPoints;
         public int NumGamePoints;
 
         public int CompareTo(object obj)
         {
-            if (obj is CResultTableRow)
+            CResultTableRow row = obj as CResultTableRow;
+            if (row != null)
             {
-                CResultTableRow row = (CResultTableRow)obj;
-
                 int res = row.NumGamePoints.CompareTo(NumGamePoints);
                 if (res == 0)
                 {
@@ -84,7 +104,6 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
     public struct SFromScreenNames
     {
         public bool FadeToConfig;
-        public bool FadeToMain;
         public List<int> ProfileIDs;
     }
 
@@ -164,27 +183,17 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
             _ToScreenNames = new SDataToScreenNames();
             _ToScreenMain = new SDataToScreenMain();
 
-            _GameData = new SData();
-            _GameData.NumPlayer = 4;
-            _GameData.NumPlayerAtOnce = 2;
-            _GameData.NumRounds = 2;
-            _GameData.CurrentRoundNr = 1;
-            _GameData.ProfileIDs = new List<int>();
-            _GameData.CatSongIndices = null;
-            _GameData.Results = null;
+            _GameData = new SData {NumPlayer = 4, NumPlayerAtOnce = 2, NumRounds = 2, CurrentRoundNr = 1, ProfileIDs = new List<int>(), CatSongIndices = null, Results = null};
         }
 
         public override bool Init()
         {
             _Stage = EStage.NotStarted;
 
-            _ScreenSongOptions.Sorting.IgnoreArticles = CBase.Config.GetIgnoreArticles();
-            _ScreenSongOptions.Sorting.SongSorting = CBase.Config.GetSongSorting();
+            _ScreenSongOptions.Sorting.IgnoreArticles = EOffOn.TR_CONFIG_OFF;
+            _ScreenSongOptions.Sorting.SongSorting = ESongSorting.TR_CONFIG_NONE;
             _ScreenSongOptions.Sorting.Tabs = EOffOn.TR_CONFIG_OFF;
             _ScreenSongOptions.Selection.SongIndex = -1;
-
-            if (CBase.Config.GetTabs() == EOffOn.TR_CONFIG_ON && _ScreenSongOptions.Sorting.SongSorting != ESongSorting.TR_CONFIG_NONE)
-                _ScreenSongOptions.Sorting.Tabs = EOffOn.TR_CONFIG_ON;
 
             _ToScreenMain.ResultTable = new List<CResultTableRow>();
             _GameData.ResultTable = new List<CResultTableRow>();
@@ -197,7 +206,7 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
 
         public override void DataFromScreen(string screenName, Object data)
         {
-            SDataFromScreen dataFrom = new SDataFromScreen();
+            SDataFromScreen dataFrom;
             switch (screenName)
             {
                 case "PartyScreenChallengeMedleyConfig":
@@ -304,7 +313,7 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
                     _Screens.TryGetValue("CPartyScreenChallengeMedleyMain", out screen);
                     if (screen != null)
                     {
-                        CBase.Songs.ResetPartySongSung();
+                        CBase.Songs.ResetSongSung();
                         _ToScreenMain.ResultTable = new List<CResultTableRow>();
                         _GameData.ResultTable = new List<CResultTableRow>();
                         _GameData.Rounds = new CChallengeRounds(_GameData.NumRounds, _GameData.NumPlayer, _GameData.NumPlayerAtOnce);
@@ -357,10 +366,11 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
             return _ScreenSongOptions;
         }
 
+        // ReSharper disable RedundantAssignment
         public override void OnSongChange(int songIndex, ref SScreenSongOptions screenSongOptions)
+            // ReSharper restore RedundantAssignment
         {
-            if (_ScreenSongOptions.Selection.SongIndex != -1)
-                _ScreenSongOptions.Selection.SongIndex = -1;
+            _ScreenSongOptions.Selection.SongIndex = -1;
 
             if (_ScreenSongOptions.Selection.SelectNextRandomSong && songIndex != -1)
             {
@@ -377,7 +387,9 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
             screenSongOptions = _ScreenSongOptions;
         }
 
+        // ReSharper disable RedundantAssignment
         public override void OnCategoryChange(int categoryIndex, ref SScreenSongOptions screenSongOptions)
+            // ReSharper restore RedundantAssignment
         {
             if (_GameData.CatSongIndices != null && categoryIndex != -1)
             {
@@ -470,61 +482,51 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
 
             #region PlayerNames
             CBase.Game.SetNumPlayer(_GameData.NumPlayerAtOnce);
-            SPlayer[] player = CBase.Game.GetPlayer();
-            if (player == null)
+            SPlayer[] players = CBase.Game.GetPlayers();
+            if (players == null)
                 return false;
 
-            if (player.Length < _GameData.NumPlayerAtOnce)
+            if (players.Length < _GameData.NumPlayerAtOnce)
                 return false;
 
-            SProfile[] profiles = CBase.Profiles.GetProfiles();
             CCombination c = _GameData.Rounds.GetRound(_GameData.CurrentRoundNr - 1);
 
             for (int i = 0; i < _GameData.NumPlayerAtOnce; i++)
             {
-                //default values
-                player[i].Name = "foobar";
-                player[i].Difficulty = EGameDifficulty.TR_CONFIG_EASY;
-                player[i].ProfileID = -1;
-
                 //try to fill with the right data
                 if (c != null)
-                {
-                    if (_GameData.ProfileIDs[c.Player[i]] < profiles.Length)
-                    {
-                        player[i].Name = profiles[_GameData.ProfileIDs[c.Player[i]]].PlayerName;
-                        player[i].Difficulty = profiles[_GameData.ProfileIDs[c.Player[i]]].Difficulty;
-                        player[i].ProfileID = _GameData.ProfileIDs[c.Player[i]];
-                    }
-                }
+                    players[i].ProfileID = _GameData.ProfileIDs[c.Player[i]];
+                else
+                    players[i].ProfileID = -1;
             }
             #endregion PlayerNames
 
-            #region SongQueque            
-            if (CBase.Songs.GetNumVisibleSongs() < _NumSongs)
-                CBase.Songs.ResetPartySongSung();
+            #region SongQueue            
+            if (CBase.Songs.GetNumSongsVisible() < _NumSongs)
+                CBase.Songs.ResetSongSung();
 
-            EGameMode gm = EGameMode.TR_GAMEMODE_MEDLEY;
-            List<int> iDs = new List<int>();
+            List<int> ids = new List<int>();
 
-            CSong[] visSongs = CBase.Songs.GetSongsNotSung();
-            if (visSongs == null)
+            ReadOnlyCollection<CSong> visibleSongs = CBase.Songs.GetVisibleSongs();
+            if (visibleSongs.Count == 0)
             {
                 CBase.Log.LogError("CPartyChallengeMedleyMode Error: There are no songs!");
                 CBase.Graphics.FadeTo(EScreens.ScreenParty);
                 return false;
             }
 
-            for (int i = 0; i < visSongs.Length; i++)
+            // ReSharper disable LoopCanBeConvertedToQuery
+            foreach (CSong song in visibleSongs)
             {
-                foreach (EGameMode mode in visSongs[i].AvailableGameModes)
+                foreach (EGameMode mode in song.AvailableGameModes)
                 {
                     if (mode == EGameMode.TR_GAMEMODE_MEDLEY)
-                        iDs.Add(visSongs[i].ID);
+                        ids.Add(song.ID);
                 }
             }
+            // ReSharper restore LoopCanBeConvertedToQuery
 
-            if (iDs.Count == 0)
+            if (ids.Count == 0)
             {
                 CBase.Log.LogError("CPartyChallengeMedleyMode Error: There are no medley songs!");
                 CBase.Graphics.FadeTo(EScreens.ScreenParty);
@@ -532,16 +534,16 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
             }
 
             int s = 0;
-            while (s < _NumSongs && iDs.Count > 0)
+            while (s < _NumSongs && ids.Count > 0)
             {
-                int songID = iDs[CBase.Game.GetRandom(iDs.Count)];
-                CBase.Game.AddSong(songID, gm);
+                int songID = ids[CBase.Game.GetRandom(ids.Count)];
+                CBase.Game.AddSong(songID, EGameMode.TR_GAMEMODE_MEDLEY);
                 CBase.Songs.AddPartySongSung(songID);
-                iDs.Remove(songID);
+                ids.Remove(songID);
                 s++;
             }
             return true;
-            #endregion SongQueque
+            #endregion SongQueue
         }
 
         private void _SetNumJokers()
@@ -579,7 +581,7 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
 
         private void _SetTeamNames()
         {
-            SProfile[] profiles = CBase.Profiles.GetProfiles();
+            CProfile[] profiles = CBase.Profiles.GetProfiles();
 
             if (profiles == null)
             {
@@ -616,13 +618,7 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
             {
                 for (int i = 0; i < _GameData.NumPlayer; i++)
                 {
-                    CResultTableRow row = new CResultTableRow();
-                    row.PlayerID = _GameData.ProfileIDs[i];
-                    row.NumPlayed = 0;
-                    row.NumRounds = 0;
-                    row.NumWon = 0;
-                    row.NumSingPoints = 0;
-                    row.NumGamePoints = 0;
+                    CResultTableRow row = new CResultTableRow {PlayerID = _GameData.ProfileIDs[i], NumPlayed = 0, NumWon = 0, NumSingPoints = 0, NumGamePoints = 0};
                     _GameData.ResultTable.Add(row);
                 }
 
@@ -682,7 +678,6 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
 
                         row.NumPlayed++;
                         row.NumWon += points[i].Won;
-                        row.NumRounds += 1;
                         row.NumSingPoints += points[i].SingPoints;
                         row.NumGamePoints += points[i].GamePoints;
 
@@ -697,13 +692,13 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
             int pos = 1;
             int lastPoints = 0;
             int lastSingPoints = 0;
-            for (int i = 0; i < _GameData.ResultTable.Count; i++)
+            foreach (CResultTableRow resultRow in _GameData.ResultTable)
             {
-                if (lastPoints > _GameData.ResultTable[i].NumGamePoints || lastSingPoints > _GameData.ResultTable[i].NumSingPoints)
+                if (lastPoints > resultRow.NumGamePoints || lastSingPoints > resultRow.NumSingPoints)
                     pos++;
-                _GameData.ResultTable[i].Position = pos;
-                lastPoints = _GameData.ResultTable[i].NumGamePoints;
-                lastSingPoints = _GameData.ResultTable[i].NumSingPoints;
+                resultRow.Position = pos;
+                lastPoints = resultRow.NumGamePoints;
+                lastSingPoints = resultRow.NumSingPoints;
             }
         }
 
@@ -712,15 +707,11 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
             List<SStats> result = new List<SStats>();
             for (int i = 0; i < _GameData.NumPlayerAtOnce; i++)
             {
-                SStats stat = new SStats();
-                stat.ProfileID = results[i].ProfileID;
-                stat.SingPoints = (int)Math.Round(results[i].Points);
-                stat.Won = 0;
-                stat.GamePoints = 0;
+                SStats stat = new SStats {ProfileID = results[i].ProfileID, SingPoints = (int)Math.Round(results[i].Points), Won = 0, GamePoints = 0};
                 result.Add(stat);
             }
 
-            result.Sort(delegate(SStats s1, SStats s2) { return s1.SingPoints.CompareTo(s2.SingPoints); });
+            result.Sort((s1, s2) => s1.SingPoints.CompareTo(s2.SingPoints));
 
             int current = result[result.Count - 1].SingPoints;
             int points = result.Count;

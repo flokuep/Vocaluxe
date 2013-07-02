@@ -37,11 +37,11 @@
     <TextCurrentSong>
       <!--<X>, <Y>: Text position-->
       <X>410</X>
-      <Y>4</Y>
+      <Y>8</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>580</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -52,7 +52,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Left</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -97,7 +97,7 @@
         <SColor>ButtonTextSColor</SColor>
         <!--<Align>: Text align horizontal: Left, Center, Right-->
         <Align>Center</Align>
-        <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+        <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
         <HAlign>Center</HAlign>
         <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
         <Style>Bold</Style>
@@ -146,7 +146,7 @@
         <SColor>ButtonTextSColor</SColor>
         <!--<Align>: Text align horizontal: Left, Center, Right-->
         <Align>Center</Align>
-        <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+        <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
         <HAlign>Center</HAlign>
         <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
         <Style>Bold</Style>
@@ -195,7 +195,7 @@
         <SColor>ButtonTextSColor</SColor>
         <!--<Align>: Text align horizontal: Left, Center, Right-->
         <Align>Center</Align>
-        <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+        <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
         <HAlign>Center</HAlign>
         <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
         <Style>Bold</Style>
@@ -244,7 +244,7 @@
         <SColor>ButtonTextSColor</SColor>
         <!--<Align>: Text align horizontal: Left, Center, Right-->
         <Align>Center</Align>
-        <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+        <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
         <HAlign>Center</HAlign>
         <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
         <Style>Bold</Style>
@@ -293,7 +293,7 @@
         <SColor>ButtonTextSColor</SColor>
         <!--<Align>: Text align horizontal: Left, Center, Right-->
         <Align>Center</Align>
-        <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+        <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
         <HAlign>Center</HAlign>
         <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
         <Style>Bold</Style>
@@ -342,7 +342,7 @@
         <SColor>ButtonTextSColor</SColor>
         <!--<Align>: Text align horizontal: Left, Center, Right-->
         <Align>Center</Align>
-        <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+        <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
         <HAlign>Center</HAlign>
         <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
         <Style>Bold</Style>
@@ -391,7 +391,7 @@
         <SColor>ButtonTextSColor</SColor>
         <!--<Align>: Text align horizontal: Left, Center, Right-->
         <Align>Center</Align>
-        <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+        <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
         <HAlign>Center</HAlign>
         <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
         <Style>Bold</Style>
@@ -440,7 +440,7 @@
         <SColor>ButtonTextSColor</SColor>
         <!--<Align>: Text align horizontal: Left, Center, Right-->
         <Align>Center</Align>
-        <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+        <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
         <HAlign>Center</HAlign>
         <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
         <Style>Bold</Style>

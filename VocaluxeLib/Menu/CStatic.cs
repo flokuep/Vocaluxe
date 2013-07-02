@@ -1,6 +1,26 @@
-﻿using System;
+﻿#region license
+// /*
+//     This file is part of Vocaluxe.
+// 
+//     Vocaluxe is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     Vocaluxe is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
+//  */
+#endregion
+
+using System;
 using System.Drawing;
 using System.Xml;
+using VocaluxeLib.Draw;
 
 namespace VocaluxeLib.Menu
 {
@@ -23,16 +43,10 @@ namespace VocaluxeLib.Menu
             return _Theme.Name;
         }
 
-        private STexture _Texture;
-        public STexture Texture
+        private CTexture _Texture;
+        public CTexture Texture
         {
-            get
-            {
-                if (_Texture.Index != -1)
-                    return _Texture;
-                else
-                    return CBase.Theme.GetSkinTexture(_Theme.TextureName, _PartyModeID);
-            }
+            get { return _Texture ?? CBase.Theme.GetSkinTexture(_Theme.TextureName, _PartyModeID); }
 
             set { _Texture = value; }
         }
@@ -45,35 +59,20 @@ namespace VocaluxeLib.Menu
         public float ReflectionHeight;
 
         public bool Selected;
-        public bool Visible;
+        public bool Visible = true;
 
-        public float Alpha;
+        public float Alpha = 1;
 
         public EAspect Aspect = EAspect.Stretch;
 
         public CStatic(int partyModeID)
         {
             _PartyModeID = partyModeID;
-            _Theme = new SThemeStatic();
-            _ThemeLoaded = false;
-
-            _Texture = new STexture(-1);
-            Color = new SColorF();
-            Rect = new SRectF();
-            Reflection = false;
-            ReflectionSpace = 0f;
-            ReflectionHeight = 0f;
-
-            Selected = false;
-            Alpha = 1f;
-            Visible = true;
         }
 
         public CStatic(CStatic s)
         {
             _PartyModeID = s._PartyModeID;
-            _Theme = new SThemeStatic();
-            _ThemeLoaded = false;
 
             _Texture = s.Texture;
             Color = new SColorF(s.Color);
@@ -87,41 +86,21 @@ namespace VocaluxeLib.Menu
             Visible = s.Visible;
         }
 
-        public CStatic(int partyModeID, STexture texture, SColorF color, SRectF rect)
+        public CStatic(int partyModeID, CTexture texture, SColorF color, SRectF rect)
         {
             _PartyModeID = partyModeID;
-            _Theme = new SThemeStatic();
-            _ThemeLoaded = false;
 
             _Texture = texture;
             Color = color;
             Rect = rect;
-            Reflection = false;
-            ReflectionSpace = 0f;
-            ReflectionHeight = 0f;
-
-            Selected = false;
-            Alpha = 1f;
-            Visible = true;
         }
 
         public CStatic(int partyModeID, string textureSkinName, SColorF color, SRectF rect)
         {
             _PartyModeID = partyModeID;
-            _Theme = new SThemeStatic();
             _Theme.TextureName = textureSkinName;
-            _ThemeLoaded = false;
-
-            _Texture = new STexture(-1);
             Color = color;
             Rect = rect;
-            Reflection = false;
-            ReflectionSpace = 0f;
-            ReflectionHeight = 0f;
-
-            Selected = false;
-            Alpha = 1f;
-            Visible = true;
         }
 
         public bool LoadTheme(string xmlPath, string elementName, CXMLReader xmlReader, int skinIndex)
@@ -129,7 +108,7 @@ namespace VocaluxeLib.Menu
             string item = xmlPath + "/" + elementName;
             _ThemeLoaded = true;
 
-            _ThemeLoaded &= xmlReader.GetValue(item + "/Skin", ref _Theme.TextureName, String.Empty);
+            _ThemeLoaded &= xmlReader.GetValue(item + "/Skin", out _Theme.TextureName, String.Empty);
 
             _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/X", ref Rect.X);
             _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/Y", ref Rect.Y);
@@ -137,7 +116,7 @@ namespace VocaluxeLib.Menu
             _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/W", ref Rect.W);
             _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/H", ref Rect.H);
 
-            if (xmlReader.GetValue(item + "/Color", ref _Theme.ColorName, String.Empty))
+            if (xmlReader.GetValue(item + "/Color", out _Theme.ColorName, String.Empty))
                 _ThemeLoaded &= CBase.Theme.GetColor(_Theme.ColorName, skinIndex, out Color);
             else
             {
@@ -182,7 +161,7 @@ namespace VocaluxeLib.Menu
 
                 writer.WriteComment("<Color>: Static color from ColorScheme (high priority)");
                 writer.WriteComment("or <R>, <G>, <B>, <A> (lower priority)");
-                if (_Theme.ColorName.Length > 0)
+                if (!String.IsNullOrEmpty(_Theme.ColorName))
                     writer.WriteElementString("Color", _Theme.ColorName);
                 else
                 {
@@ -209,33 +188,26 @@ namespace VocaluxeLib.Menu
             return false;
         }
 
-        public void Draw()
+        public void Draw(bool forceDraw = false)
         {
-            Draw(1f, Rect.Z, Aspect, false);
+            Draw(1f, Rect.Z, Aspect, forceDraw);
         }
 
         public void Draw(EAspect aspect)
         {
-            Draw(1f, Rect.Z, aspect, false);
+            Draw(1f, Rect.Z, aspect);
         }
 
         public void Draw(float scale, EAspect aspect)
         {
-            Draw(scale, Rect.Z, aspect, false);
+            Draw(scale, Rect.Z, aspect);
         }
 
-        public void ForceDraw()
+        public void Draw(float scale, float z, EAspect aspect, bool forceDraw = false)
         {
-            Draw(1f, Rect.Z, Aspect, true);
-        }
-
-        public void Draw(float scale, float z, EAspect aspect, bool forceDraw)
-        {
-            STexture texture;
-            if (_Texture.Index != -1)
-                texture = _Texture;
-            else
-                texture = CBase.Theme.GetSkinTexture(_Theme.TextureName, _PartyModeID);
+            CTexture texture = Texture;
+            if (texture == null)
+                texture = new CTexture((int)Rect.W, (int)Rect.H);
 
             SRectF bounds = new SRectF(
                 Rect.X - Rect.W * (scale - 1f),
@@ -249,8 +221,8 @@ namespace VocaluxeLib.Menu
             if (aspect != EAspect.Stretch)
             {
                 RectangleF bounds2 = new RectangleF(bounds.X, bounds.Y, bounds.W, bounds.H);
-                RectangleF rect2 = new RectangleF(0f, 0f, texture.Width, texture.Height);
-                CHelper.SetRect(bounds2, ref rect2, texture.Width / texture.Height, aspect);
+                RectangleF rect2;
+                CHelper.SetRect(bounds2, out rect2, texture.OrigAspect, aspect);
 
                 rect.X = rect2.X;
                 rect.Y = rect2.Y;
@@ -274,7 +246,7 @@ namespace VocaluxeLib.Menu
 
         public void LoadTextures()
         {
-            if (_Theme.ColorName.Length > 0)
+            if (!String.IsNullOrEmpty(_Theme.ColorName))
                 Color = CBase.Theme.GetColor(_Theme.ColorName, _PartyModeID);
         }
 

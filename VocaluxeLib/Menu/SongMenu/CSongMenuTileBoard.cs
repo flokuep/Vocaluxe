@@ -1,8 +1,30 @@
-﻿using System;
+﻿#region license
+// /*
+//     This file is part of Vocaluxe.
+// 
+//     Vocaluxe is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     Vocaluxe is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
+//  */
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
+using VocaluxeLib.Draw;
 using VocaluxeLib.PartyModes;
+using VocaluxeLib.Songs;
 
 namespace VocaluxeLib.Menu.SongMenu
 {
@@ -17,8 +39,8 @@ namespace VocaluxeLib.Menu.SongMenu
         private CStatic _MedleyCalcIcon;
         private CStatic _MedleyTagIcon;
 
-        private STexture _CoverBigTexture;
-        private STexture _CoverTexture;
+        private CTexture _CoverBigTexture;
+        private CTexture _CoverTexture;
 
         private CText _Artist;
         private CText _Title;
@@ -109,7 +131,7 @@ namespace VocaluxeLib.Menu.SongMenu
 
         public override void OnShow()
         {
-            if (CBase.Songs.GetTabs() == EOffOn.TR_CONFIG_OFF && CBase.Songs.GetNumCategories() > 0 && CBase.Songs.GetCurrentCategoryIndex() == -1)
+            if (CBase.Songs.GetTabs() == EOffOn.TR_CONFIG_OFF && CBase.Songs.GetNumCategories() > 0 && !CBase.Songs.IsInCategory())
                 _EnterCategory(0);
             _ActualSelection = -1;
             _Locked = -1;
@@ -118,7 +140,6 @@ namespace VocaluxeLib.Menu.SongMenu
             //AfterCategoryChange();
             SetSelectedSong(_ActSong);
             _AfterCategoryChange();
-            CBase.Songs.UpdateRandomSongList();
 
             int actcat = _PreviewSelected;
             if ((CBase.Songs.GetNumCategories() > 0) && (actcat < 0))
@@ -135,7 +156,7 @@ namespace VocaluxeLib.Menu.SongMenu
                 _MedleyTagIcon.Visible = false;
             }
 
-            if (CBase.Songs.GetNumVisibleSongs() == 0 && CBase.Songs.GetSearchFilter().Length > 0)
+            if (CBase.Songs.GetNumSongsVisible() == 0 && CBase.Songs.GetSearchFilter() != "")
             {
                 _CoverBig.Texture = _CoverBigTexture;
                 _Artist.Text = String.Empty;
@@ -161,15 +182,7 @@ namespace VocaluxeLib.Menu.SongMenu
                       keyEvent.Key == Keys.PageDown || keyEvent.Key == Keys.PageUp))
                     return;
 
-                bool sel = false;
-                foreach (CStatic tile in _Tiles)
-                {
-                    if (tile.Selected)
-                    {
-                        sel = true;
-                        break;
-                    }
-                }
+                bool sel = _Tiles.Any(tile => tile.Selected);
 
                 if ((_Locked == -1 || !sel) &&
                     (keyEvent.Key != Keys.Escape && keyEvent.Key != Keys.Back && keyEvent.Key != Keys.PageUp && keyEvent.Key != Keys.PageDown))
@@ -190,7 +203,7 @@ namespace VocaluxeLib.Menu.SongMenu
                     switch (keyEvent.Key)
                     {
                         case Keys.Enter:
-                            if (CBase.Songs.GetCurrentCategoryIndex() < 0)
+                            if (!CBase.Songs.IsInCategory())
                             {
                                 _EnterCategory(_PreviewSelected);
                                 keyEvent.Handled = true;
@@ -201,7 +214,7 @@ namespace VocaluxeLib.Menu.SongMenu
 
                         case Keys.Escape:
                         case Keys.Back:
-                            if (CBase.Songs.GetCurrentCategoryIndex() > -1 && CBase.Songs.GetTabs() == EOffOn.TR_CONFIG_ON && songOptions.Selection.CategoryChangeAllowed)
+                            if (CBase.Songs.IsInCategory() && CBase.Songs.GetTabs() == EOffOn.TR_CONFIG_ON && songOptions.Selection.CategoryChangeAllowed)
                             {
                                 _ShowCategories();
                                 keyEvent.Handled = true;
@@ -223,7 +236,7 @@ namespace VocaluxeLib.Menu.SongMenu
                             break;
 
                         case Keys.Left:
-                            if (_Locked > 0 && (!songOptions.Selection.RandomOnly || songOptions.Selection.CategoryChangeAllowed && CBase.Songs.GetCurrentCategoryIndex() < 0))
+                            if (_Locked > 0 && (!songOptions.Selection.RandomOnly || songOptions.Selection.CategoryChangeAllowed && !CBase.Songs.IsInCategory()))
                             {
                                 _Locked--;
                                 _UpdateList();
@@ -231,7 +244,7 @@ namespace VocaluxeLib.Menu.SongMenu
                             break;
 
                         case Keys.Right:
-                            if (CBase.Songs.GetCurrentCategoryIndex() < 0 && songOptions.Selection.CategoryChangeAllowed)
+                            if (!CBase.Songs.IsInCategory() && songOptions.Selection.CategoryChangeAllowed)
                             {
                                 if (_Locked < CBase.Songs.GetNumCategories() - 1)
                                 {
@@ -241,7 +254,7 @@ namespace VocaluxeLib.Menu.SongMenu
                             }
                             else
                             {
-                                if (CBase.Songs.GetCurrentCategoryIndex() != -1 && _Locked < CBase.Songs.GetNumVisibleSongs() - 1 && !songOptions.Selection.RandomOnly)
+                                if (CBase.Songs.IsInCategory() && _Locked < CBase.Songs.GetNumSongsVisible() - 1 && !songOptions.Selection.RandomOnly)
                                 {
                                     _Locked++;
                                     _UpdateList();
@@ -257,7 +270,7 @@ namespace VocaluxeLib.Menu.SongMenu
                             }
 
                             if (_Locked > _NumW - 1 &&
-                                (!songOptions.Selection.RandomOnly || songOptions.Selection.CategoryChangeAllowed && CBase.Songs.GetCurrentCategoryIndex() < 0))
+                                (!songOptions.Selection.RandomOnly || songOptions.Selection.CategoryChangeAllowed && !CBase.Songs.IsInCategory()))
                             {
                                 _Locked -= _NumW;
                                 _UpdateList();
@@ -271,7 +284,7 @@ namespace VocaluxeLib.Menu.SongMenu
                                 break;
                             }
 
-                            if (CBase.Songs.GetCurrentCategoryIndex() < 0 && songOptions.Selection.CategoryChangeAllowed)
+                            if (!CBase.Songs.IsInCategory() && songOptions.Selection.CategoryChangeAllowed)
                             {
                                 if (_Locked < CBase.Songs.GetNumCategories() - _NumW)
                                 {
@@ -279,7 +292,7 @@ namespace VocaluxeLib.Menu.SongMenu
                                     _UpdateList();
                                 }
                             }
-                            else if (_Locked < CBase.Songs.GetNumVisibleSongs() - _NumW && !songOptions.Selection.RandomOnly)
+                            else if (_Locked < CBase.Songs.GetNumSongsVisible() - _NumW && !songOptions.Selection.RandomOnly)
                             {
                                 _Locked += _NumW;
                                 _UpdateList();
@@ -307,13 +320,13 @@ namespace VocaluxeLib.Menu.SongMenu
             bool sel = false;
             int lastselection = _ActualSelection;
 
-            if (!songOptions.Selection.RandomOnly || CBase.Songs.GetCurrentCategoryIndex() < 0 && songOptions.Selection.CategoryChangeAllowed)
+            if (!songOptions.Selection.RandomOnly || !CBase.Songs.IsInCategory() && songOptions.Selection.CategoryChangeAllowed)
             {
                 foreach (CStatic tile in _Tiles)
                 {
-                    if ((tile.Texture.Index != _CoverTexture.Index) && CHelper.IsInBounds(tile.Rect, mouseEvent) && !sel)
+                    if (tile.Texture != _CoverTexture && CHelper.IsInBounds(tile.Rect, mouseEvent) && !sel)
                     {
-                        if (mouseEvent.LB || CBase.Songs.GetCurrentCategoryIndex() == -1)
+                        if (mouseEvent.LB || !CBase.Songs.IsInCategory())
                         {
                             if (_PreviewSelected == i + _Offset)
                                 _Locked = _PreviewSelected;
@@ -336,30 +349,30 @@ namespace VocaluxeLib.Menu.SongMenu
                 sel = true;
 
             if (mouseEvent.Sender == ESender.WiiMote && _ActualSelection != lastselection && _ActualSelection != -1)
-                CBase.Input.SetRumble(0.050f);
+                CBase.Controller.SetRumble(0.050f);
 
             if (!sel)
                 _ActualSelection = -1;
 
-            if (mouseEvent.RB && (CBase.Songs.GetNumCategories() > 0) && CBase.Songs.GetCurrentCategoryIndex() >= 0 && CBase.Songs.GetTabs() == EOffOn.TR_CONFIG_ON &&
+            if (mouseEvent.RB && (CBase.Songs.GetNumCategories() > 0) && CBase.Songs.IsInCategory() && CBase.Songs.GetTabs() == EOffOn.TR_CONFIG_ON &&
                 songOptions.Selection.CategoryChangeAllowed)
             {
                 _ShowCategories();
                 mouseEvent.Handled = true;
                 return;
             }
-            else if (mouseEvent.RB && CBase.Songs.GetTabs() == EOffOn.TR_CONFIG_OFF && !songOptions.Selection.PartyMode)
+            if (mouseEvent.RB && CBase.Songs.GetTabs() == EOffOn.TR_CONFIG_OFF && !songOptions.Selection.PartyMode)
                 CBase.Graphics.FadeTo(EScreens.ScreenMain);
             else if (_PreviewSelected != -1 && mouseEvent.LB && CBase.Songs.GetCurrentCategoryIndex() != -1 && !songOptions.Selection.PartyMode)
             {
                 if (CHelper.IsInBounds(_CoverBig.Rect, mouseEvent) || CHelper.IsInBounds(_TextBG.Rect, mouseEvent))
                     _Locked = _PreviewSelected;
             }
-            else if (mouseEvent.LB && (CBase.Songs.GetCurrentCategoryIndex() == -1))
+            else if (mouseEvent.LB && (!CBase.Songs.IsInCategory()))
             {
                 foreach (CStatic tile in _Tiles)
                 {
-                    if ((tile.Texture.Index != _CoverTexture.Index) && CHelper.IsInBounds(tile.Rect, mouseEvent))
+                    if (tile.Texture != _CoverTexture && CHelper.IsInBounds(tile.Rect, mouseEvent))
                     {
                         _EnterCategory(_PreviewSelected);
                         mouseEvent.Handled = true;
@@ -369,7 +382,7 @@ namespace VocaluxeLib.Menu.SongMenu
             }
 
             if (mouseEvent.Wheel != 0 && CHelper.IsInBounds(_ScrollRect, mouseEvent) &&
-                (!songOptions.Selection.RandomOnly || CBase.Songs.GetCurrentCategoryIndex() < 0 && songOptions.Selection.CategoryChangeAllowed))
+                (!songOptions.Selection.RandomOnly || !CBase.Songs.IsInCategory() && songOptions.Selection.CategoryChangeAllowed))
                 _UpdateList(_Offset + _NumW * mouseEvent.Wheel);
         }
 
@@ -378,20 +391,22 @@ namespace VocaluxeLib.Menu.SongMenu
             foreach (CStatic tile in _Tiles)
             {
                 if (tile.Selected && _Active)
-                    tile.Draw(1.2f, tile.Rect.Z - 0.1f, EAspect.Crop, false);
+                    tile.Draw(1.2f, tile.Rect.Z - 0.1f, EAspect.Crop);
                 else
                 {
-                    if (tile.Texture.Index != _CoverTexture.Index)
-                        tile.Draw(1f, tile.Rect.Z, EAspect.Crop, false);
+                    // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
+                    if (tile.Texture != _CoverTexture)
+                        // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
+                        tile.Draw(1f, tile.Rect.Z, EAspect.Crop);
                     else
-                        tile.Draw(1f, tile.Rect.Z, EAspect.Stretch, false);
+                        tile.Draw(1f, tile.Rect.Z, EAspect.Stretch);
                 }
             }
 
-            if (CBase.Songs.GetCurrentCategoryIndex() >= 0)
+            if (CBase.Songs.IsInCategory())
             {
                 int actsong = _PreviewSelected;
-                if ((CBase.Songs.GetNumVisibleSongs() > actsong) && (actsong >= 0))
+                if ((CBase.Songs.GetNumSongsVisible() > actsong) && (actsong >= 0))
                 {
                     CSong song = CBase.Songs.GetVisibleSong(actsong);
 
@@ -399,12 +414,12 @@ namespace VocaluxeLib.Menu.SongMenu
                     _Artist.Text = song.Artist;
                     _Title.Text = song.Title;
                     _DuetIcon.Visible = song.IsDuet;
-                    _VideoIcon.Visible = song.VideoFileName.Length > 0;
+                    _VideoIcon.Visible = song.VideoFileName != "";
                     _MedleyCalcIcon.Visible = song.Medley.Source == EMedleySource.Calculated;
                     _MedleyTagIcon.Visible = song.Medley.Source == EMedleySource.Tag;
 
                     float time = CBase.Sound.GetLength(_SongStream);
-                    if (song.Finish != 0)
+                    if (Math.Abs(song.Finish) > 0.001)
                         time = song.Finish;
 
                     time -= song.Start;
@@ -422,7 +437,9 @@ namespace VocaluxeLib.Menu.SongMenu
                     _Artist.Text = CBase.Songs.GetCategory(actcat).Name;
 
                     int num = CBase.Songs.NumSongsInCategory(actcat);
+                    // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
                     if (num != 1)
+                        // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
                         _Title.Text = CBase.Language.Translate("TR_SCREENSONG_NUMSONGS").Replace("%v", num.ToString());
                     else
                         _Title.Text = CBase.Language.Translate("TR_SCREENSONG_NUMSONG").Replace("%v", num.ToString());
@@ -437,18 +454,17 @@ namespace VocaluxeLib.Menu.SongMenu
 
             _TextBG.Draw();
 
-
-            if (_Vidtex.Index != -1 && _Video != -1)
+            if (_Vidtex != null && _Video != -1)
             {
                 if (_Vidtex.Color.A < 1)
                     _CoverBig.Draw(1f, EAspect.Crop);
                 RectangleF bounds = new RectangleF(_CoverBig.Rect.X, _CoverBig.Rect.Y, _CoverBig.Rect.W, _CoverBig.Rect.H);
-                RectangleF rect = new RectangleF(0f, 0f, _Vidtex.Width, _Vidtex.Height);
-                CHelper.SetRect(bounds, ref rect, rect.Width / rect.Height, EAspect.Crop);
+                RectangleF rect;
+                CHelper.SetRect(bounds, out rect, _Vidtex.OrigAspect, EAspect.Crop);
                 SRectF vidRect = new SRectF(rect.X, rect.Y, rect.Width, rect.Height, _CoverBig.Rect.Z);
                 SRectF vidRectBounds = new SRectF(bounds.X, bounds.Y, bounds.Width, bounds.Height, 0f);
 
-                CBase.Drawing.DrawTexture(_Vidtex, vidRect, _Vidtex.Color, vidRectBounds, false);
+                CBase.Drawing.DrawTexture(_Vidtex, vidRect, _Vidtex.Color, vidRectBounds);
                 CBase.Drawing.DrawTextureReflection(_Vidtex, vidRect, _Vidtex.Color, vidRectBounds, _CoverBig.ReflectionSpace, _CoverBig.ReflectionHeight);
             }
             else
@@ -469,6 +485,15 @@ namespace VocaluxeLib.Menu.SongMenu
             return _Locked;
         }
 
+        public override bool IsMouseOverActualSelection(SMouseEvent mEvent)
+        {
+            CStatic selCov = GetSelectedSongCover();
+            if (selCov.Texture == null)
+                return false;
+            SRectF rect = new SRectF(selCov.Rect.X - selCov.Rect.W*0.2f, selCov.Rect.Y - selCov.Rect.H*0.2f, selCov.Rect.W*1.2f, selCov.Rect.H*1.2f, selCov.Rect.Z);
+            return CHelper.IsInBounds(rect, mEvent);
+        }
+
         public override CStatic GetSelectedSongCover()
         {
             foreach (CStatic tile in _Tiles)
@@ -479,17 +504,9 @@ namespace VocaluxeLib.Menu.SongMenu
             return new CStatic(_PartyModeID);
         }
 
-        protected void _SetSelectedTile(int itemNr)
+        private void _SetSelectedTile(int itemNr)
         {
-            bool sel = false;
-            foreach (CStatic tile in _Tiles)
-            {
-                if (tile.Selected)
-                {
-                    sel = true;
-                    break;
-                }
-            }
+            bool sel = _Tiles.Any(tile => tile.Selected);
 
             if (_Locked == -1 || !sel)
             {
@@ -525,7 +542,7 @@ namespace VocaluxeLib.Menu.SongMenu
         {
             base.SetSelectedSong(visibleSongNr);
 
-            if (visibleSongNr >= 0 && visibleSongNr < CBase.Songs.GetNumVisibleSongs())
+            if (visibleSongNr >= 0 && visibleSongNr < CBase.Songs.GetNumSongsVisible())
                 _SetSelectedTile(visibleSongNr);
         }
 
@@ -588,11 +605,11 @@ namespace VocaluxeLib.Menu.SongMenu
             if (_ActualSelection >= 0 && _ActualSelection < _Tiles.Count)
                 _Tiles[_ActualSelection].Selected = true;
 
-            if ((_LastKnownNumSongs == CBase.Songs.GetNumVisibleSongs()) && (_LastKnownCategory == CBase.Songs.GetCurrentCategoryIndex()))
+            if ((_LastKnownNumSongs == CBase.Songs.GetNumSongsVisible()) && (_LastKnownCategory == CBase.Songs.GetCurrentCategoryIndex()))
                 return;
 
             _LastKnownCategory = CBase.Songs.GetCurrentCategoryIndex();
-            _LastKnownNumSongs = CBase.Songs.GetNumVisibleSongs();
+            _LastKnownNumSongs = CBase.Songs.GetNumSongsVisible();
             _UpdateList(0, true);
             CBase.Songs.UpdateRandomSongList();
         }
@@ -604,8 +621,8 @@ namespace VocaluxeLib.Menu.SongMenu
 
         private void _UpdateList(int offset, bool force = false)
         {
-            bool isInCategory = CBase.Songs.GetCurrentCategoryIndex() >= 0;
-            int itemCount = isInCategory ? CBase.Songs.GetNumVisibleSongs() : CBase.Songs.GetNumCategories();
+            bool isInCategory = CBase.Songs.IsInCategory();
+            int itemCount = isInCategory ? CBase.Songs.GetNumSongsVisible() : CBase.Songs.GetNumCategories();
 
             if (offset >= (itemCount / _NumW) * _NumW - (_NumW * (_NumH - 1)))
                 offset = (itemCount / _NumW) * _NumW - (_NumW * (_NumH - 1));
@@ -620,10 +637,7 @@ namespace VocaluxeLib.Menu.SongMenu
             {
                 if (itemCount > i + offset)
                 {
-                    if (isInCategory)
-                        _Tiles[i].Texture = CBase.Songs.GetVisibleSong(i + offset).CoverTextureSmall;
-                    else
-                        _Tiles[i].Texture = CBase.Songs.GetCategory(i + offset).CoverTextureSmall;
+                    _Tiles[i].Texture = isInCategory ? CBase.Songs.GetVisibleSong(i + offset).CoverTextureSmall : CBase.Songs.GetCategory(i + offset).CoverTextureSmall;
                     _Tiles[i].Color = new SColorF(1f, 1f, 1f, 1f);
                 }
                 else

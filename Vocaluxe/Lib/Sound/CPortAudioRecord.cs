@@ -1,17 +1,36 @@
-﻿using System.Threading;
-using PortAudioSharp;
+﻿#region license
+// /*
+//     This file is part of Vocaluxe.
+// 
+//     Vocaluxe is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     Vocaluxe is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
+//  */
+#endregion
+
+using System.Collections.ObjectModel;
+using System.Threading;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Vocaluxe.Base;
+using Vocaluxe.Lib.Sound.PortAudio;
 
 namespace Vocaluxe.Lib.Sound
 {
     class CPortAudioRecord : IRecord
     {
         private bool _Initialized;
-        private List<SRecordDevice> _Devices;
-        private SRecordDevice[] _DeviceConfig;
+        private List<CRecordDevice> _Devices;
 
         private CPortAudio.PaStreamCallbackDelegate _MyRecProc;
         private IntPtr[] _RecHandle;
@@ -20,7 +39,7 @@ namespace Vocaluxe.Lib.Sound
 
         public CPortAudioRecord()
         {
-            _DeviceConfig = null;
+            _Devices = null;
 
             _Buffer = new CBuffer[CSettings.MaxNumPlayer];
             for (int i = 0; i < _Buffer.Length; i++)
@@ -35,7 +54,7 @@ namespace Vocaluxe.Lib.Sound
         /// <returns>true if success</returns>
         public bool Init()
         {
-            _Devices = new List<SRecordDevice>();
+            _Devices = new List<CRecordDevice>();
 
             try
             {
@@ -54,29 +73,17 @@ namespace Vocaluxe.Lib.Sound
                     CPortAudio.SPaDeviceInfo info = CPortAudio.PaGetDeviceInfo(i);
                     if (info.HostApi == hostAPI && info.MaxInputChannels > 0)
                     {
-                        SRecordDevice dev = new SRecordDevice();
+                        CRecordDevice dev = new CRecordDevice {ID = i, Name = info.Name, Driver = info.Name + i, Channels = info.MaxInputChannels};
 
-                        dev.ID = i;
-                        dev.Name = info.Name;
-                        dev.Driver = info.Name + i.ToString();
-                        dev.Inputs = new List<SInput>();
+                        if (dev.Channels > 2)
+                            dev.Channels = 2; //more are not supported in vocaluxe
 
-                        SInput inp = new SInput();
-                        inp.Name = "Default";
-
-                        inp.Channels = info.MaxInputChannels;
-                        if (inp.Channels > 2)
-                            inp.Channels = 2; //more are not supported in vocaluxe
-
-                        dev.Inputs.Add(inp);
                         _Devices.Add(dev);
                     }
                 }
 
                 _RecHandle = new IntPtr[_Devices.Count];
-                _MyRecProc = MyPaStreamCallback;
-
-                _DeviceConfig = _Devices.ToArray();
+                _MyRecProc = _MyPaStreamCallback;
             }
             catch (Exception e)
             {
@@ -91,29 +98,22 @@ namespace Vocaluxe.Lib.Sound
         /// <summary>
         ///     Start Voice Capturing
         /// </summary>
-        /// <param name="deviceConfig"></param>
         /// <returns></returns>
-        public bool Start(SRecordDevice[] deviceConfig)
+        public bool Start()
         {
             if (!_Initialized)
                 return false;
 
-            if (deviceConfig == null)
+            if (_RecHandle == null || _RecHandle.Length == 0)
                 return false;
 
-            if (_RecHandle == null)
-                return false;
+            foreach (CBuffer buffer in _Buffer)
+                buffer.Reset();
 
-            if (_RecHandle.Length == 0)
-                return false;
-
-            for (int i = 0; i < _Buffer.Length; i++)
-                _Buffer[i].Reset();
-
-            for (int i = 0; i < _RecHandle.Length; i++)
+            foreach (IntPtr handle in _RecHandle)
             {
                 int waitcount = 0;
-                while (waitcount < 5 && CPortAudio.Pa_IsStreamStopped(_RecHandle[i]) == CPortAudio.EPaError.PaStreamIsNotStopped)
+                while (waitcount < 5 && CPortAudio.Pa_IsStreamStopped(handle) == CPortAudio.EPaError.PaStreamIsNotStopped)
                 {
                     Thread.Sleep(1);
                     waitcount++;
@@ -123,29 +123,25 @@ namespace Vocaluxe.Lib.Sound
             for (int i = 0; i < _RecHandle.Length; i++)
                 _RecHandle[i] = IntPtr.Zero;
 
-            _DeviceConfig = deviceConfig;
-            bool[] active = new bool[deviceConfig.Length];
-            for (int dev = 0; dev < deviceConfig.Length; dev++)
+            bool[] active = new bool[_Devices.Count];
+            for (int dev = 0; dev < _Devices.Count; dev++)
             {
                 active[dev] = false;
-                for (int inp = 0; inp < deviceConfig[dev].Inputs.Count; inp++)
-                {
-                    if (deviceConfig[dev].Inputs[inp].PlayerChannel1 > 0 ||
-                        deviceConfig[dev].Inputs[inp].PlayerChannel2 > 0)
-                        active[dev] = true;
-                }
+                if (_Devices[dev].PlayerChannel1 > 0 || _Devices[dev].PlayerChannel2 > 0)
+                    active[dev] = true;
             }
 
-            bool result = true;
             for (int i = 0; i < _RecHandle.Length; i++)
             {
                 if (active[i])
                 {
-                    CPortAudio.SPaStreamParameters inputParams = new CPortAudio.SPaStreamParameters();
-                    inputParams.ChannelCount = _DeviceConfig[i].Inputs[0].Channels;
-                    inputParams.Device = _DeviceConfig[i].ID;
-                    inputParams.SampleFormat = CPortAudio.EPaSampleFormat.PaInt16;
-                    inputParams.SuggestedLatency = CPortAudio.PaGetDeviceInfo(_DeviceConfig[i].ID).DefaultLowInputLatency;
+                    CPortAudio.SPaStreamParameters inputParams = new CPortAudio.SPaStreamParameters
+                        {
+                            ChannelCount = _Devices[i].Channels,
+                            Device = _Devices[i].ID,
+                            SampleFormat = CPortAudio.EPaSampleFormat.PaInt16,
+                            SuggestedLatency = CPortAudio.PaGetDeviceInfo(_Devices[i].ID).DefaultLowInputLatency
+                        };
 
                     if (_ErrorCheck("OpenStream (rec)", CPortAudio.Pa_OpenStream(
                         out _RecHandle[i],
@@ -162,7 +158,7 @@ namespace Vocaluxe.Lib.Sound
                         return false;
                 }
             }
-            return result;
+            return true;
         }
 
         /// <summary>
@@ -174,8 +170,8 @@ namespace Vocaluxe.Lib.Sound
             if (!_Initialized)
                 return false;
 
-            for (int i = 0; i < _RecHandle.Length; i++)
-                CPortAudio.Pa_StopStream(_RecHandle[i]);
+            foreach (IntPtr handle in _RecHandle)
+                CPortAudio.Pa_StopStream(handle);
             return true;
         }
 
@@ -263,7 +259,7 @@ namespace Vocaluxe.Lib.Sound
             return _Buffer[player].ToneWeigth;
         }
 
-        public SRecordDevice[] RecordDevices()
+        public ReadOnlyCollection<CRecordDevice> RecordDevices()
         {
             if (!_Initialized)
                 return null;
@@ -271,10 +267,10 @@ namespace Vocaluxe.Lib.Sound
             if (_Devices.Count == 0)
                 return null;
 
-            return _Devices.ToArray();
+            return _Devices.AsReadOnly();
         }
 
-        public CPortAudio.EPaStreamCallbackResult MyPaStreamCallback(
+        private CPortAudio.EPaStreamCallbackResult _MyPaStreamCallback(
             IntPtr input,
             IntPtr output,
             uint frameCount,
@@ -305,11 +301,11 @@ namespace Vocaluxe.Lib.Sound
                     {
                         if (new IntPtr(i) == userData)
                         {
-                            if (_DeviceConfig[i].Inputs[0].PlayerChannel1 > 0)
-                                _Buffer[_DeviceConfig[i].Inputs[0].PlayerChannel1 - 1].ProcessNewBuffer(leftBuffer);
+                            if (_Devices[i].PlayerChannel1 > 0)
+                                _Buffer[_Devices[i].PlayerChannel1 - 1].ProcessNewBuffer(leftBuffer);
 
-                            if (_DeviceConfig[i].Inputs[0].PlayerChannel2 > 0)
-                                _Buffer[_DeviceConfig[i].Inputs[0].PlayerChannel2 - 1].ProcessNewBuffer(rightBuffer);
+                            if (_Devices[i].PlayerChannel2 > 0)
+                                _Buffer[_Devices[i].PlayerChannel2 - 1].ProcessNewBuffer(rightBuffer);
 
                             break;
                         }

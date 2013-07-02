@@ -25,6 +25,8 @@ using System.Reflection;
 using System.Windows.Forms;
 using Vocaluxe.Base;
 using System.Runtime.ExceptionServices;
+using Vocaluxe.Base.Fonts;
+using Vocaluxe.Base.Server;
 
 namespace Vocaluxe
 {
@@ -114,7 +116,7 @@ namespace Vocaluxe
 
                 // Init Playback
                 CLog.StartBenchmark(0, "Init Playback");
-                CSound.PlaybackInit();
+                CSound.Init();
                 CLog.StopBenchmark(0, "Init Playback");
 
                 Application.DoEvents();
@@ -182,32 +184,49 @@ namespace Vocaluxe
 
                 Application.DoEvents();
 
+                // Init Server
+                CLog.StartBenchmark(0, "Init Server");
+                CVocaluxeServer.Init();
+                CLog.StopBenchmark(0, "Init Server");
+
+                Application.DoEvents();
+
                 // Init Input
                 CLog.StartBenchmark(0, "Init Input");
-                CInput.Init();
+                CController.Init();
+                CController.Connect();
                 CLog.StopBenchmark(0, "Init Input");
+
+                Application.DoEvents();
 
                 // Init Game;
                 CLog.StartBenchmark(0, "Init Game");
                 CGame.Init();
+                CProfiles.Update();
+                CConfig.UsePlayers();
                 CLog.StopBenchmark(0, "Init Game");
+
+                Application.DoEvents();
 
                 // Init Party Modes;
                 CLog.StartBenchmark(0, "Init Party Modes");
                 CParty.Init();
                 CLog.StopBenchmark(0, "Init Party Modes");
+
+                Application.DoEvents();
             }
             catch (Exception e)
             {
                 MessageBox.Show("Error on start up: " + e.Message + e.StackTrace);
-                CLog.LogError("Error on start up: " + e.Message + e.StackTrace);
+                CLog.LogError("Error on start up: " + e);
+                _SplashScreen.Close();
                 _CloseProgram();
-                Environment.Exit(Environment.ExitCode);
             }
             Application.DoEvents();
 
             // Start Main Loop
             _SplashScreen.Close();
+            CVocaluxeServer.Start();
 
             CDraw.MainLoop();
         }
@@ -217,16 +236,18 @@ namespace Vocaluxe
             // Unloading
             try
             {
-                CLog.CloseAll();
-                CInput.Close();
+                CVocaluxeServer.Close();
+                CController.Close();
                 CSound.RecordCloseAll();
                 CSound.CloseAllStreams();
-                CVideo.VdCloseAll();
+                CVideo.CloseAll();
                 CDraw.Unload();
                 CDataBase.CloseConnections();
                 CWebcam.Close();
+                CLog.CloseAll();
             }
             catch (Exception) {}
+            Environment.Exit(Environment.ExitCode);
         }
 
         [HandleProcessCorruptedStateExceptions]
@@ -241,6 +262,7 @@ namespace Vocaluxe
             catch {}
             MessageBox.Show("Unhandled exception: " + e.Message + stackTrace);
             CLog.LogError("Unhandled exception: " + e.Message + stackTrace);
+            _CloseProgram();
         }
 
         private static Assembly _AssemblyResolver(Object sender, ResolveEventArgs args)
@@ -252,13 +274,12 @@ namespace Vocaluxe
             string[] arr = args.Name.Split(new char[] {','});
             if (arr.Length > 0)
             {
-                
 #if ARCH_X86
-                string path="x86";
+                string path = "x86";
 #endif
 
 #if ARCH_X64
-                string path="x64";
+                string path = "x64";
 #endif
                 path = Path.Combine(path, arr[0] + ".dll");
                 try
@@ -277,7 +298,7 @@ namespace Vocaluxe
                 }
                 catch (Exception e)
                 {
-                    CLog.LogError("Cannot load assembly "+args.Name+" from "+path+": "+e);
+                    CLog.LogError("Cannot load assembly " + args.Name + " from " + path + ": " + e);
                 }
             }
             return null;

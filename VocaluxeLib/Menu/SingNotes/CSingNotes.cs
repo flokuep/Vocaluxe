@@ -1,7 +1,28 @@
-﻿using System;
+﻿#region license
+// /*
+//     This file is part of Vocaluxe.
+// 
+//     Vocaluxe is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     Vocaluxe is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
+//  */
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
+using VocaluxeLib.Draw;
+using VocaluxeLib.Songs;
 
 namespace VocaluxeLib.Menu.SingNotes
 {
@@ -38,16 +59,14 @@ namespace VocaluxeLib.Menu.SingNotes
         public string SkinPerfectNoteStarName;
     }
 
-    public abstract class CSingNotes : ISingNotes, IMenuElement
+    public abstract class CSingNotes : IMenuElement
     {
-        protected int _PartyModeID;
+        protected readonly int _PartyModeID;
         private SThemeSingBar _Theme;
         private bool _ThemeLoaded;
 
         private readonly List<SPlayerNotes> _PlayerNotes;
         private int _ActID;
-
-        private SRectF[,] _BarPos;
 
         /// <summary>
         ///     Player bar positions
@@ -55,13 +74,9 @@ namespace VocaluxeLib.Menu.SingNotes
         /// <remarks>
         ///     first index = player number; second index = num players seen on screen
         /// </remarks>
-        public SRectF[,] BarPos
-        {
-            get { return _BarPos; }
-            set { _BarPos = value; }
-        }
+        public SRectF[,] BarPos { get; set; }
 
-        public CSingNotes(int partyModeID)
+        protected CSingNotes(int partyModeID)
         {
             _PartyModeID = partyModeID;
             _Theme = new SThemeSingBar();
@@ -81,32 +96,32 @@ namespace VocaluxeLib.Menu.SingNotes
             string item = xmlPath + "/" + elementName;
             _ThemeLoaded = true;
 
-            _ThemeLoaded &= xmlReader.GetValue(item + "/SkinLeft", ref _Theme.SkinLeftName, String.Empty);
-            _ThemeLoaded &= xmlReader.GetValue(item + "/SkinMiddle", ref _Theme.SkinMiddleName, String.Empty);
-            _ThemeLoaded &= xmlReader.GetValue(item + "/SkinRight", ref _Theme.SkinRightName, String.Empty);
+            _ThemeLoaded &= xmlReader.GetValue(item + "/SkinLeft", out _Theme.SkinLeftName, String.Empty);
+            _ThemeLoaded &= xmlReader.GetValue(item + "/SkinMiddle", out _Theme.SkinMiddleName, String.Empty);
+            _ThemeLoaded &= xmlReader.GetValue(item + "/SkinRight", out _Theme.SkinRightName, String.Empty);
 
-            _ThemeLoaded &= xmlReader.GetValue(item + "/SkinBackgroundLeft", ref _Theme.SkinBackgroundLeftName, String.Empty);
-            _ThemeLoaded &= xmlReader.GetValue(item + "/SkinBackgroundMiddle", ref _Theme.SkinBackgroundMiddleName, String.Empty);
-            _ThemeLoaded &= xmlReader.GetValue(item + "/SkinBackgroundRight", ref _Theme.SkinBackgroundRightName, String.Empty);
+            _ThemeLoaded &= xmlReader.GetValue(item + "/SkinBackgroundLeft", out _Theme.SkinBackgroundLeftName, String.Empty);
+            _ThemeLoaded &= xmlReader.GetValue(item + "/SkinBackgroundMiddle", out _Theme.SkinBackgroundMiddleName, String.Empty);
+            _ThemeLoaded &= xmlReader.GetValue(item + "/SkinBackgroundRight", out _Theme.SkinBackgroundRightName, String.Empty);
 
-            _ThemeLoaded &= xmlReader.GetValue(item + "/SkinGoldenStar", ref _Theme.SkinGoldenStarName, String.Empty);
-            _ThemeLoaded &= xmlReader.GetValue(item + "/SkinToneHelper", ref _Theme.SkinToneHelperName, String.Empty);
-            _ThemeLoaded &= xmlReader.GetValue(item + "/SkinPerfectNoteStar", ref _Theme.SkinPerfectNoteStarName, String.Empty);
+            _ThemeLoaded &= xmlReader.GetValue(item + "/SkinGoldenStar", out _Theme.SkinGoldenStarName, String.Empty);
+            _ThemeLoaded &= xmlReader.GetValue(item + "/SkinToneHelper", out _Theme.SkinToneHelperName, String.Empty);
+            _ThemeLoaded &= xmlReader.GetValue(item + "/SkinPerfectNoteStar", out _Theme.SkinPerfectNoteStarName, String.Empty);
 
-            _BarPos = new SRectF[CBase.Settings.GetMaxNumPlayer(),CBase.Settings.GetMaxNumPlayer()];
+            BarPos = new SRectF[CBase.Settings.GetMaxNumPlayer(),CBase.Settings.GetMaxNumPlayer()];
             for (int numplayer = 0; numplayer < CBase.Settings.GetMaxNumPlayer(); numplayer++)
             {
                 for (int player = 0; player < CBase.Settings.GetMaxNumPlayer(); player++)
                 {
                     if (player <= numplayer)
                     {
-                        _BarPos[player, numplayer] = new SRectF();
-                        string target = "/BarPositions/P" + (player + 1).ToString() + "N" + (numplayer + 1).ToString();
-                        _ThemeLoaded &= xmlReader.TryGetFloatValue(item + target + "X", ref _BarPos[player, numplayer].X);
-                        _ThemeLoaded &= xmlReader.TryGetFloatValue(item + target + "Y", ref _BarPos[player, numplayer].Y);
-                        _ThemeLoaded &= xmlReader.TryGetFloatValue(item + target + "Z", ref _BarPos[player, numplayer].Z);
-                        _ThemeLoaded &= xmlReader.TryGetFloatValue(item + target + "W", ref _BarPos[player, numplayer].W);
-                        _ThemeLoaded &= xmlReader.TryGetFloatValue(item + target + "H", ref _BarPos[player, numplayer].H);
+                        BarPos[player, numplayer] = new SRectF();
+                        string target = "/BarPositions/P" + (player + 1) + "N" + (numplayer + 1);
+                        _ThemeLoaded &= xmlReader.TryGetFloatValue(item + target + "X", ref BarPos[player, numplayer].X);
+                        _ThemeLoaded &= xmlReader.TryGetFloatValue(item + target + "Y", ref BarPos[player, numplayer].Y);
+                        _ThemeLoaded &= xmlReader.TryGetFloatValue(item + target + "Z", ref BarPos[player, numplayer].Z);
+                        _ThemeLoaded &= xmlReader.TryGetFloatValue(item + target + "W", ref BarPos[player, numplayer].W);
+                        _ThemeLoaded &= xmlReader.TryGetFloatValue(item + target + "H", ref BarPos[player, numplayer].H);
                     }
                 }
             }
@@ -161,16 +176,15 @@ namespace VocaluxeLib.Menu.SingNotes
                 {
                     for (int player = 0; player < CBase.Settings.GetMaxNumPlayer(); player++)
                     {
-                        if (player <= numplayer)
-                        {
-                            string target = "P" + (player + 1).ToString() + "N" + (numplayer + 1).ToString();
+                        if (player > numplayer)
+                            continue;
+                        string target = "P" + (player + 1) + "N" + (numplayer + 1);
 
-                            writer.WriteElementString(target + "X", _BarPos[player, numplayer].X.ToString("#0"));
-                            writer.WriteElementString(target + "Y", _BarPos[player, numplayer].Y.ToString("#0"));
-                            writer.WriteElementString(target + "Z", _BarPos[player, numplayer].Z.ToString("#0.00"));
-                            writer.WriteElementString(target + "W", _BarPos[player, numplayer].W.ToString("#0"));
-                            writer.WriteElementString(target + "H", _BarPos[player, numplayer].H.ToString("#0"));
-                        }
+                        writer.WriteElementString(target + "X", BarPos[player, numplayer].X.ToString("#0"));
+                        writer.WriteElementString(target + "Y", BarPos[player, numplayer].Y.ToString("#0"));
+                        writer.WriteElementString(target + "Z", BarPos[player, numplayer].Z.ToString("#0.00"));
+                        writer.WriteElementString(target + "W", BarPos[player, numplayer].W.ToString("#0"));
+                        writer.WriteElementString(target + "H", BarPos[player, numplayer].H.ToString("#0"));
                     }
                 }
                 writer.WriteEndElement(); //BarPositions
@@ -183,53 +197,53 @@ namespace VocaluxeLib.Menu.SingNotes
             return false;
         }
 
-        public virtual void Reset()
+        public void Reset()
         {
             _PlayerNotes.Clear();
             _ActID = 0;
         }
 
-        public virtual int AddPlayer(SRectF rect, SColorF color, int playerNr)
+        public int AddPlayer(SRectF rect, SColorF color, int playerNr)
         {
-            SPlayerNotes notes = new SPlayerNotes();
+            SPlayerNotes notes = new SPlayerNotes
+                {
+                    Rect = rect,
+                    Color = color,
+                    Alpha = 1f,
+                    ID = ++_ActID,
+                    Lines = null,
+                    LineNr = -1,
+                    PlayerNr = playerNr,
+                    Timer = new Stopwatch(),
+                    GoldenStars = new List<CParticleEffect>(),
+                    Flares = new List<CParticleEffect>(),
+                    PerfectNoteEffect = new List<CParticleEffect>(),
+                    PerfectLineTwinkle = new List<CParticleEffect>()
+                };
 
-            notes.Rect = rect;
-            notes.Color = color;
-            notes.Alpha = 1f;
-            notes.ID = ++_ActID;
-            notes.Lines = null;
-            notes.LineNr = -1;
-            notes.PlayerNr = playerNr;
-            notes.Timer = new Stopwatch();
-            notes.GoldenStars = new List<CParticleEffect>();
-            notes.Flares = new List<CParticleEffect>();
-            notes.PerfectNoteEffect = new List<CParticleEffect>();
-            notes.PerfectLineTwinkle = new List<CParticleEffect>();
             _PlayerNotes.Add(notes);
 
             return notes.ID;
         }
 
-        public virtual void RemovePlayer(int iD) {}
-
-        public virtual void AddLine(int iD, CLine[] line, int lineNr, int player)
+        public void SetLines(int id, CLine[] lines, int lineNr)
         {
-            if (line == null)
+            if (lines == null)
                 return;
 
-            int n = _FindPlayerLine(iD);
+            int n = _FindPlayerNotes(id);
             if (n == -1)
                 return;
 
             if (lineNr == _PlayerNotes[n].LineNr)
                 return;
 
-            SPlayerNotes notes = _PlayerNotes[n];
-
-            if (line.Length == 0 || line.Length <= lineNr)
+            if (lines.Length <= lineNr)
                 return;
 
-            notes.Lines = line;
+            SPlayerNotes notes = _PlayerNotes[n];
+
+            notes.Lines = lines;
             notes.LineNr = lineNr;
             notes.GoldenStars.Clear();
             notes.Flares.Clear();
@@ -239,13 +253,9 @@ namespace VocaluxeLib.Menu.SingNotes
             _PlayerNotes.Add(notes);
         }
 
-        public virtual void RemoveLine(int iD) {}
-
-        public virtual void AddNote(int iD, CNote note) {}
-
-        public virtual void SetAlpha(int iD, float alpha)
+        public void SetAlpha(int id, float alpha)
         {
-            int n = _FindPlayerLine(iD);
+            int n = _FindPlayerNotes(id);
             if (n == -1)
                 return;
 
@@ -254,23 +264,23 @@ namespace VocaluxeLib.Menu.SingNotes
             _PlayerNotes[n] = pn;
         }
 
-        public virtual float GetAlpha(int iD)
+        public float GetAlpha(int id)
         {
-            int n = _FindPlayerLine(iD);
+            int n = _FindPlayerNotes(id);
             if (n == -1)
                 return 0f;
 
             return _PlayerNotes[n].Alpha;
         }
 
-        public virtual void Draw(int iD, int player)
+        public void Draw(int id, int player)
         {
-            Draw(iD, null, player);
+            Draw(id, null, player);
         }
 
-        public virtual void Draw(int iD, List<CLine> singLine, int player)
+        public void Draw(int id, List<CLine> singLines, int player)
         {
-            int n = _FindPlayerLine(iD);
+            int n = _FindPlayerNotes(id);
             if (n == -1)
                 return;
 
@@ -293,11 +303,12 @@ namespace VocaluxeLib.Menu.SingNotes
 
             float w = _PlayerNotes[n].Rect.W;
             float h = _PlayerNotes[n].Rect.H;
-            float dh = h / CBase.Settings.GetNumNoteLines() * (2f - (int)CBase.Game.GetPlayer()[_PlayerNotes[n].PlayerNr].Difficulty) / 4f;
+            int profileID = CBase.Game.GetPlayers()[_PlayerNotes[n].PlayerNr].ProfileID;
+            float dh = h / CBase.Settings.GetNumNoteLines() * (2f - (int)CBase.Profiles.GetDifficulty(profileID)) / 4f;
 
             float beats = line.LastNoteBeat - line.FirstNoteBeat + 1;
 
-            if (beats == 0)
+            if (beats < 1)
                 return;
 
             SColorF color = new SColorF(
@@ -348,7 +359,7 @@ namespace VocaluxeLib.Menu.SingNotes
             foreach (CParticleEffect perfline in _PlayerNotes[n].PerfectLineTwinkle)
                 perfline.Draw();
 
-            if (singLine == null || singLine.Count == 0 || CBase.Game.GetPlayer()[player].CurrentLine == -1 || singLine.Count <= CBase.Game.GetPlayer()[player].CurrentLine)
+            if (singLines == null || singLines.Count == 0 || CBase.Game.GetPlayers()[player].CurrentLine == -1 || singLines.Count <= CBase.Game.GetPlayers()[player].CurrentLine)
             {
                 foreach (CParticleEffect stars in _PlayerNotes[n].GoldenStars)
                 {
@@ -358,7 +369,7 @@ namespace VocaluxeLib.Menu.SingNotes
                 return;
             }
 
-            foreach (CNote note in singLine[CBase.Game.GetPlayer()[player].CurrentLine].Notes)
+            foreach (CNote note in singLines[CBase.Game.GetPlayers()[player].CurrentLine].Notes)
             {
                 if (note.StartBeat >= line.FirstNoteBeat && note.EndBeat <= line.LastNoteBeat)
                 {
@@ -375,16 +386,13 @@ namespace VocaluxeLib.Menu.SingNotes
                         _PlayerNotes[n].Rect.Z
                         );
 
-                    float f = 0.7f;
-                    if (!note.Hit)
-                        f = 0.4f;
+                    float f = (note.Hit) ? 0.7f : 0.4f;
 
                     _DrawNote(rect, color, f);
 
                     if (note.EndBeat >= CBase.Game.GetCurrentBeatD() && note.Hit && note.NoteType == ENoteType.Golden)
                     {
-                        SRectF re = new SRectF(rect);
-                        re.W = (CBase.Game.GetMidBeatD() - note.StartBeat) / beats * w;
+                        SRectF re = new SRectF(rect) {W = (CBase.Game.GetMidBeatD() - note.StartBeat) / beats * w};
                         _AddFlare(re, n);
                     }
 
@@ -396,13 +404,13 @@ namespace VocaluxeLib.Menu.SingNotes
                 }
             }
 
-            int currentLine = CBase.Game.GetPlayer()[player].SingLine.Count - 1;
+            int currentLine = CBase.Game.GetPlayers()[player].SingLine.Count - 1;
             if (currentLine > 0)
             {
-                if (CBase.Game.GetPlayer()[player].SingLine[currentLine - 1].PerfectLine)
+                if (CBase.Game.GetPlayers()[player].SingLine[currentLine - 1].PerfectLine)
                 {
                     _AddPerfectLine(n);
-                    CBase.Game.GetPlayer()[player].SingLine[currentLine - 1].PerfectLine = false;
+                    CBase.Game.GetPlayers()[player].SingLine[currentLine - 1].PerfectLine = false;
                 }
             }
 
@@ -448,64 +456,44 @@ namespace VocaluxeLib.Menu.SingNotes
             LoadTextures();
         }
 
-        private int _FindPlayerLine(int iD)
+        private int _FindPlayerNotes(int id)
         {
-            if (iD < 0 || iD > _PlayerNotes.Count)
-                return -1;
-
-            int n = -1;
             for (int i = 0; i < _PlayerNotes.Count; i++)
             {
-                if (_PlayerNotes[i].ID == iD)
-                {
-                    n = i;
-                    break;
-                }
+                if (_PlayerNotes[i].ID == id)
+                    return i;
             }
 
-            return n;
+            return -1;
         }
 
-        private void _DrawNote(SRectF rect, SColorF color)
+        private void _DrawNote(SRectF rect, SColorF color, float factor = 1f)
         {
-            _DrawNote(rect, color, 1f);
-        }
+            if (factor <= 0)
+                return;
 
-        private void _DrawNote(SRectF rect, SColorF color, float factor)
-        {
-            const int spacing = 0;
+            float dh = (1f - factor) * rect.H / 2;
+            float dw = Math.Min(dh, rect.W / 2);
 
-            float d = (1f - factor) / 2 * rect.H;
-            float dw = d;
+            SRectF noteRect = new SRectF(rect.X + dw, rect.Y + dh, rect.W - 2 * dw, rect.H - 2 * dh, rect.Z);
 
-            if (2 * dw > rect.W)
-                dw = rect.W / 2;
+            CTexture noteBegin = CBase.Theme.GetSkinTexture(_Theme.SkinLeftName, _PartyModeID);
+            CTexture noteMiddle = CBase.Theme.GetSkinTexture(_Theme.SkinMiddleName, _PartyModeID);
+            CTexture noteEnd = CBase.Theme.GetSkinTexture(_Theme.SkinRightName, _PartyModeID);
 
-            SRectF r = new SRectF(
-                rect.X + dw + spacing,
-                rect.Y + d + spacing,
-                rect.W - 2 * dw - 2 * spacing,
-                rect.H - 2 * d - 2 * spacing,
-                rect.Z
-                );
+            //Width of each of the ends (round parts)
+            //Need 2 of them so use minimum
+            float endsW = Math.Min(noteRect.H * noteBegin.OrigAspect, noteRect.W / 2);
 
-            STexture noteBegin = CBase.Theme.GetSkinTexture(_Theme.SkinLeftName, _PartyModeID);
-            STexture noteMiddle = CBase.Theme.GetSkinTexture(_Theme.SkinMiddleName, _PartyModeID);
-            STexture noteEnd = CBase.Theme.GetSkinTexture(_Theme.SkinRightName, _PartyModeID);
+            CBase.Drawing.DrawTexture(noteBegin, new SRectF(noteRect.X, noteRect.Y, endsW, noteRect.H, noteRect.Z), color);
 
-            float dx = noteBegin.Width * r.H / noteBegin.Height;
-            if (2 * dx > r.W)
-                dx = r.W / 2;
-
-
-            CBase.Drawing.DrawTexture(noteBegin, new SRectF(r.X, r.Y, dx, r.H, r.Z), color);
-
-            if (r.W - 2 * dx >= 2 * dx)
-                CBase.Drawing.DrawTexture(noteMiddle, new SRectF(r.X + dx, r.Y, r.W - 2 * dx, r.H, r.Z), color);
+            SRectF middleRect = new SRectF(noteRect.X + endsW, noteRect.Y, noteRect.W - 2 * endsW, noteRect.H, noteRect.Z);
+            if (noteRect.W >= 4 * endsW)
+                CBase.Drawing.DrawTexture(noteMiddle, middleRect, color);
             else
-                CBase.Drawing.DrawTexture(noteMiddle, new SRectF(r.X + dx, r.Y, 2 * dx, r.H, r.Z), color, new SRectF(r.X + dx, r.Y, r.W - 2 * dx, r.H, r.Z));
+                CBase.Drawing.DrawTexture(noteMiddle, new SRectF(middleRect.X, middleRect.Y, 2 * endsW, middleRect.H, middleRect.Z), color, middleRect);
 
-            CBase.Drawing.DrawTexture(noteEnd, new SRectF(r.X + r.W - dx, r.Y, dx, r.H, r.Z), color);
+            CBase.Drawing.DrawTexture(noteEnd, new SRectF(noteRect.X + noteRect.W - endsW, noteRect.Y, endsW, noteRect.H, noteRect.Z), color);
         }
 
         private void _DrawNoteBG(SRectF rect, SColorF color, float factor, Stopwatch timer)
@@ -536,11 +524,11 @@ namespace VocaluxeLib.Menu.SingNotes
                 rect.Z
                 );
 
-            STexture noteBackgroundBegin = CBase.Theme.GetSkinTexture(_Theme.SkinBackgroundLeftName, _PartyModeID);
-            STexture noteBackgroundMiddle = CBase.Theme.GetSkinTexture(_Theme.SkinBackgroundMiddleName, _PartyModeID);
-            STexture noteBackgroundEnd = CBase.Theme.GetSkinTexture(_Theme.SkinBackgroundRightName, _PartyModeID);
+            CTexture noteBackgroundBegin = CBase.Theme.GetSkinTexture(_Theme.SkinBackgroundLeftName, _PartyModeID);
+            CTexture noteBackgroundMiddle = CBase.Theme.GetSkinTexture(_Theme.SkinBackgroundMiddleName, _PartyModeID);
+            CTexture noteBackgroundEnd = CBase.Theme.GetSkinTexture(_Theme.SkinBackgroundRightName, _PartyModeID);
 
-            float dx = noteBackgroundBegin.Width * r.H / noteBackgroundBegin.Height;
+            float dx = r.H * noteBackgroundBegin.OrigAspect;
             if (2 * dx > r.W)
                 dx = r.W / 2;
 
@@ -565,12 +553,7 @@ namespace VocaluxeLib.Menu.SingNotes
             }
         }
 
-        private void _AddGoldenNote(SRectF rect, int n, int nr)
-        {
-            _AddGoldenNote(rect, n, nr, 1f);
-        }
-
-        private void _AddGoldenNote(SRectF rect, int n, int nr, float factor)
+        private void _AddGoldenNote(SRectF rect, int n, int nr, float factor = 1f)
         {
             const int spacing = 0;
 
@@ -596,12 +579,7 @@ namespace VocaluxeLib.Menu.SingNotes
             }
         }
 
-        private void _AddFlare(SRectF rect, int n)
-        {
-            _AddFlare(rect, n, 1f);
-        }
-
-        private void _AddFlare(SRectF rect, int n, float factor)
+        private void _AddFlare(SRectF rect, int n, float factor = 1f)
         {
             const int spacing = 0;
 
@@ -623,12 +601,7 @@ namespace VocaluxeLib.Menu.SingNotes
             _PlayerNotes[n].Flares.Add(flares);
         }
 
-        private void _AddPerfectNote(SRectF rect, int n)
-        {
-            _AddPerfectNote(rect, n, 1f);
-        }
-
-        private void _AddPerfectNote(SRectF rect, int n, float factor)
+        private void _AddPerfectNote(SRectF rect, int n, float factor = 1f)
         {
             const int spacing = 0;
 
@@ -646,8 +619,8 @@ namespace VocaluxeLib.Menu.SingNotes
                 rect.Z
                 );
 
-            STexture noteBegin = CBase.Theme.GetSkinTexture(_Theme.SkinLeftName, _PartyModeID);
-            float dx = noteBegin.Width * r.H / noteBegin.Height;
+            CTexture noteBegin = CBase.Theme.GetSkinTexture(_Theme.SkinLeftName, _PartyModeID);
+            float dx = r.H * noteBegin.OrigAspect;
             if (2 * dx > r.W)
                 dx = r.W / 2;
 
@@ -703,7 +676,7 @@ namespace VocaluxeLib.Menu.SingNotes
                 _PlayerNotes[n].Color.B,
                 _PlayerNotes[n].Color.A * _PlayerNotes[n].Alpha);
 
-            STexture toneHelper = CBase.Theme.GetSkinTexture(_Theme.SkinToneHelperName, _PartyModeID);
+            CTexture toneHelper = CBase.Theme.GetSkinTexture(_Theme.SkinToneHelperName, _PartyModeID);
             CBase.Drawing.DrawTexture(toneHelper, drawRect, color);
 
 

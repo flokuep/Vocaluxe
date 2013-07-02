@@ -1,10 +1,31 @@
-﻿using System;
+﻿#region license
+// /*
+//     This file is part of Vocaluxe.
+// 
+//     Vocaluxe is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     Vocaluxe is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
+//  */
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using Vocaluxe.Base;
+using System.Linq;
+using VocaluxeLib;
+using VocaluxeLib.Songs;
+using VocaluxeLib.Draw;
 using VocaluxeLib.Menu;
-using VocaluxeLib.Menu.SongMenu;
 
 namespace Vocaluxe.Base
 {
@@ -20,14 +41,13 @@ namespace Vocaluxe.Base
         private static readonly List<CPlaylistElement> _PreviousFileNames = new List<CPlaylistElement>();
 
         private static int _Video = -1;
-        private static STexture _CurrentVideoTexture = new STexture(-1);
+        private static CTexture _CurrentVideoTexture;
         private static readonly Stopwatch _FadeTimer = new Stopwatch();
         private static bool _VideoEnabled;
 
         private static int _ActivePlaylist;
         private static bool _OwnMusicAdded;
         private static bool _BackgroundMusicAdded;
-        private static bool _Playing;
         private static bool _Disabled;
         private static bool _CanSing;
         private static bool _RepeatSong;
@@ -37,14 +57,9 @@ namespace Vocaluxe.Base
             get { return _VideoEnabled; }
             set
             {
-                if (_VideoEnabled && value)
+                if (_VideoEnabled == value)
                     return;
-                if (!_VideoEnabled && !value)
-                    return;
-                if (_VideoEnabled && !value)
-                    ToggleVideo();
-                if (!_VideoEnabled && value)
-                    ToggleVideo();
+                ToggleVideo();
                 _VideoEnabled = value;
             }
         }
@@ -89,10 +104,7 @@ namespace Vocaluxe.Base
             get { return File.Exists(_CurrentPlaylistElement.VideoFilePath); }
         }
 
-        public static bool Playing
-        {
-            get { return _Playing; }
-        }
+        public static bool IsPlaying { get; private set; }
 
         public static int ActivePlaylist
         {
@@ -124,21 +136,20 @@ namespace Vocaluxe.Base
         {
             get
             {
-                if (_CurrentPlaylistElement.Artist.Length > 0 && _CurrentPlaylistElement.Title.Length > 0)
+                if (_CurrentPlaylistElement.Artist != "" && _CurrentPlaylistElement.Title != "")
                     return _CurrentPlaylistElement.Artist + " - " + _CurrentPlaylistElement.Title;
-                else
-                    return Path.GetFileNameWithoutExtension(_CurrentPlaylistElement.MusicFilePath);
+                return Path.GetFileNameWithoutExtension(_CurrentPlaylistElement.MusicFilePath);
             }
         }
 
-        public static STexture Cover
+        public static CTexture Cover
         {
             get { return _CurrentPlaylistElement.Cover; }
         }
 
         public static void Init()
         {
-            List<string> templist = new List<string>();
+            var templist = new List<string>();
 
             foreach (string ending in CSettings.MusicFileTypes)
                 templist.AddRange(CHelper.ListFiles(CSettings.FolderBackgroundMusic, ending, true, true));
@@ -148,17 +159,16 @@ namespace Vocaluxe.Base
 
             if (CConfig.BackgroundMusicSource != EBackgroundMusicSource.TR_CONFIG_ONLY_OWN_MUSIC)
                 AddBackgroundMusic();
-            if (CConfig.VideoBackgrounds == EOffOn.TR_CONFIG_ON)
-                _VideoEnabled = true;
 
-            _Playing = false;
+            IsPlaying = false;
 
             _ActivePlaylist = -1;
+            _VideoEnabled = (CConfig.VideoBackgrounds == EOffOn.TR_CONFIG_ON && CConfig.VideosToBackground == EOffOn.TR_CONFIG_ON);
         }
 
         public static void Play()
         {
-            if (_Playing)
+            if (IsPlaying)
                 return;
 
             if (CConfig.BackgroundMusic == EOffOn.TR_CONFIG_ON)
@@ -170,28 +180,25 @@ namespace Vocaluxe.Base
                         CSound.Fade(_CurrentMusicStream, 100f, CSettings.BackgroundMusicFadeTime);
                         CSound.Play(_CurrentMusicStream);
                         if (_VideoEnabled && _Video != -1)
-                            CVideo.VdResume(_Video);
-                        _Playing = true;
+                            CVideo.Resume(_Video);
+                        IsPlaying = true;
                     }
                     else
                         Next();
 
-                    if (!_IsBackgroundFile(_CurrentPlaylistElement))
-                        _CanSing = true;
-                    else
-                        _CanSing = false;
+                    _CanSing = !_IsBackgroundFile(_CurrentPlaylistElement);
                 }
             }
         }
 
         public static void Stop()
         {
-            if (!_Playing)
+            if (!IsPlaying)
                 return;
 
             if (_VideoEnabled && _Video != -1)
             {
-                CVideo.VdClose(_Video);
+                CVideo.Close(_Video);
                 CDraw.RemoveTexture(ref _CurrentVideoTexture);
                 _Video = -1;
             }
@@ -199,21 +206,21 @@ namespace Vocaluxe.Base
             _CurrentMusicStream = -1;
 
             _CurrentPlaylistElement = new CPlaylistElement();
-            _Playing = false;
+            IsPlaying = false;
         }
 
         public static void Pause()
         {
-            if (!_Playing)
+            if (!IsPlaying)
                 return;
 
             if (_VideoEnabled && _Video != -1)
             {
-                CVideo.VdPause(_Video);
-                CVideo.VdSkip(_Video, CSound.GetPosition(_CurrentMusicStream) + CSettings.BackgroundMusicFadeTime, _CurrentPlaylistElement.VideoGap);
+                CVideo.Pause(_Video);
+                CVideo.Skip(_Video, CSound.GetPosition(_CurrentMusicStream) + CSettings.BackgroundMusicFadeTime, _CurrentPlaylistElement.VideoGap);
             }
             CSound.FadeAndPause(_CurrentMusicStream, 0f, CSettings.BackgroundMusicFadeTime);
-            _Playing = false;
+            IsPlaying = false;
         }
 
         public static void Update()
@@ -221,27 +228,27 @@ namespace Vocaluxe.Base
             if (_AllFileNames.Count > 0 && _CurrentMusicStream != -1)
             {
                 float timeToPlay;
-                if (_CurrentPlaylistElement.Finish == 0f) //No End-Tag defined
+                if (Math.Abs(_CurrentPlaylistElement.Finish) < 0.001) //No End-Tag defined
                     timeToPlay = CSound.GetLength(_CurrentMusicStream) - CSound.GetPosition(_CurrentMusicStream);
                 else //End-Tag found
                     timeToPlay = _CurrentPlaylistElement.Finish - CSound.GetPosition(_CurrentMusicStream);
 
                 bool finished = CSound.IsFinished(_CurrentMusicStream);
-                if (_Playing && (timeToPlay <= CSettings.BackgroundMusicFadeTime || finished))
+                if (IsPlaying && (timeToPlay <= CSettings.BackgroundMusicFadeTime || finished))
                 {
                     if (_RepeatSong)
                     {
                         //Seek to #Start-Tag, if found
-                        if (_CurrentPlaylistElement.Start != 0f && CConfig.BackgroundMusicUseStart == EOffOn.TR_CONFIG_ON)
+                        if (_CurrentPlaylistElement.Start > 0.001 && CConfig.BackgroundMusicUseStart == EOffOn.TR_CONFIG_ON)
                             CSound.SetPosition(_CurrentMusicStream, _CurrentPlaylistElement.Start);
                         else
                             CSound.SetPosition(_CurrentMusicStream, 0);
                         if (_VideoEnabled && _Video != -1)
                         {
-                            if (_CurrentPlaylistElement.Start != 0f && CConfig.BackgroundMusicUseStart == EOffOn.TR_CONFIG_ON)
-                                CVideo.VdSkip(_Video, _CurrentPlaylistElement.Start, _CurrentPlaylistElement.VideoGap);
+                            if (_CurrentPlaylistElement.Start > 0.001 && CConfig.BackgroundMusicUseStart == EOffOn.TR_CONFIG_ON)
+                                CVideo.Skip(_Video, _CurrentPlaylistElement.Start, _CurrentPlaylistElement.VideoGap);
                             else
-                                CVideo.VdSkip(_Video, 0f, _CurrentPlaylistElement.VideoGap);
+                                CVideo.Skip(_Video, 0f, _CurrentPlaylistElement.VideoGap);
                         }
                     }
                     else
@@ -279,7 +286,7 @@ namespace Vocaluxe.Base
                 CSound.SetStreamVolumeMax(_CurrentMusicStream, CConfig.BackgroundMusicVolume);
 
                 //Seek to #Start-Tag, if found
-                if (_CurrentPlaylistElement.Start != 0f && CConfig.BackgroundMusicUseStart == EOffOn.TR_CONFIG_ON)
+                if (_CurrentPlaylistElement.Start > 0.001 && CConfig.BackgroundMusicUseStart == EOffOn.TR_CONFIG_ON)
                     CSound.SetPosition(_CurrentMusicStream, _CurrentPlaylistElement.Start);
 
                 if (_VideoEnabled)
@@ -295,20 +302,19 @@ namespace Vocaluxe.Base
         {
             if (_PreviousFileNames.Count > 0 && _PreviousMusicIndex >= 0)
             {
-                float pos = CSound.GetPosition(_CurrentMusicStream);
                 if (CSound.GetPosition(_CurrentMusicStream) >= 1.5f)
                 {
                     //Seek to #Start-Tag, if found
-                    if (_CurrentPlaylistElement.Start != 0f && CConfig.BackgroundMusicUseStart == EOffOn.TR_CONFIG_ON)
+                    if (_CurrentPlaylistElement.Start > 0.001 && CConfig.BackgroundMusicUseStart == EOffOn.TR_CONFIG_ON)
                         CSound.SetPosition(_CurrentMusicStream, _CurrentPlaylistElement.Start);
                     else
                         CSound.SetPosition(_CurrentMusicStream, 0);
                     if (_VideoEnabled && _Video != -1)
                     {
-                        if (_CurrentPlaylistElement.Start != 0f && CConfig.BackgroundMusicUseStart == EOffOn.TR_CONFIG_ON)
-                            CVideo.VdSkip(_Video, _CurrentPlaylistElement.Start, _CurrentPlaylistElement.VideoGap);
+                        if (_CurrentPlaylistElement.Start > 0.001 && CConfig.BackgroundMusicUseStart == EOffOn.TR_CONFIG_ON)
+                            CVideo.Skip(_Video, _CurrentPlaylistElement.Start, _CurrentPlaylistElement.VideoGap);
                         else
-                            CVideo.VdSkip(_Video, 0f, _CurrentPlaylistElement.VideoGap);
+                            CVideo.Skip(_Video, 0f, _CurrentPlaylistElement.VideoGap);
                     }
                 }
                 else
@@ -331,16 +337,16 @@ namespace Vocaluxe.Base
             else if (_CurrentMusicStream != -1)
             {
                 //Seek to #Start-Tag, if found
-                if (_CurrentPlaylistElement.Start != 0f && CConfig.BackgroundMusicUseStart == EOffOn.TR_CONFIG_ON)
+                if (_CurrentPlaylistElement.Start > 0.001 && CConfig.BackgroundMusicUseStart == EOffOn.TR_CONFIG_ON)
                     CSound.SetPosition(_CurrentMusicStream, _CurrentPlaylistElement.Start);
                 else
                     CSound.SetPosition(_CurrentMusicStream, 0);
                 if (_VideoEnabled && _Video != -1)
                 {
-                    if (_CurrentPlaylistElement.Start != 0f && CConfig.BackgroundMusicUseStart == EOffOn.TR_CONFIG_ON)
-                        CVideo.VdSkip(_Video, _CurrentPlaylistElement.Start, _CurrentPlaylistElement.VideoGap);
+                    if (_CurrentPlaylistElement.Start > 0.001 && CConfig.BackgroundMusicUseStart == EOffOn.TR_CONFIG_ON)
+                        CVideo.Skip(_Video, _CurrentPlaylistElement.Start, _CurrentPlaylistElement.VideoGap);
                     else
-                        CVideo.VdSkip(_Video, 0f, _CurrentPlaylistElement.VideoGap);
+                        CVideo.Skip(_Video, 0f, _CurrentPlaylistElement.VideoGap);
                 }
             }
         }
@@ -386,7 +392,7 @@ namespace Vocaluxe.Base
                 _NotPlayedFileNames.AddRange(_BGMusicFileNames);
             }
 
-            if (Playing && !_IsBackgroundFile(_CurrentPlaylistElement) || _AllFileNames.Count == 0)
+            if (IsPlaying && !_IsBackgroundFile(_CurrentPlaylistElement) || _AllFileNames.Count == 0)
                 Next();
 
             _OwnMusicAdded = false;
@@ -411,7 +417,7 @@ namespace Vocaluxe.Base
                 AddOwnMusic();
                 _BackgroundMusicAdded = false;
 
-                if (Playing && _IsBackgroundFile(_CurrentPlaylistElement) || _AllFileNames.Count == 0)
+                if (IsPlaying && _IsBackgroundFile(_CurrentPlaylistElement) || _AllFileNames.Count == 0)
                     Next();
             }
         }
@@ -457,7 +463,7 @@ namespace Vocaluxe.Base
                     Pause();
             }
 
-            if (CConfig.BackgroundMusicVolume != newVolume)
+            if (Math.Abs(CConfig.BackgroundMusicVolume - newVolume) > 0.01)
             {
                 CConfig.BackgroundMusicVolume = (int)newVolume;
                 ApplyVolume();
@@ -470,201 +476,184 @@ namespace Vocaluxe.Base
         {
             if (_Video != -1)
             {
-                if (_VideoEnabled)
-                {
-                    _VideoEnabled = false;
-                    CVideo.VdClose(_Video);
-                    _Video = -1;
-                    CDraw.RemoveTexture(ref _CurrentVideoTexture);
-                    return;
-                }
-                if (CVideo.VdFinished(_Video))
-                {
-                    CVideo.VdClose(_Video);
-                    CDraw.RemoveTexture(ref _CurrentVideoTexture);
-                    _Video = -1;
-                    return;
-                }
+                CVideo.Close(_Video);
+                CDraw.RemoveTexture(ref _CurrentVideoTexture);
+                _Video = -1;
             }
             else
                 _LoadVideo();
         }
 
-        public static STexture GetVideoTexture()
+        public static CTexture GetVideoTexture()
         {
             if (_Video != -1)
             {
-                float vtime = 0f;
-                CVideo.VdGetFrame(_Video, ref _CurrentVideoTexture, CSound.GetPosition(_CurrentMusicStream), ref vtime);
-                if (_FadeTimer.ElapsedMilliseconds <= 3000L)
-                    _CurrentVideoTexture.Color.A = _FadeTimer.ElapsedMilliseconds / 3000f;
-                else
+                float vtime;
+                if (CVideo.GetFrame(_Video, ref _CurrentVideoTexture, CSound.GetPosition(_CurrentMusicStream), out vtime))
                 {
-                    _CurrentVideoTexture.Color.A = 1f;
-                    _FadeTimer.Stop();
+                    if (_FadeTimer.ElapsedMilliseconds <= 3000L)
+                        _CurrentVideoTexture.Color.A = _FadeTimer.ElapsedMilliseconds / 3000f;
+                    else
+                    {
+                        _CurrentVideoTexture.Color.A = 1f;
+                        _FadeTimer.Stop();
+                    }
+                    return _CurrentVideoTexture;
                 }
-                return _CurrentVideoTexture;
             }
-            return new STexture(-1);
+            return null;
         }
 
         private static bool _IsBackgroundFile(CPlaylistElement element)
         {
-            foreach (CPlaylistElement elements in _BGMusicFileNames)
-            {
-                if (elements.MusicFilePath == element.MusicFilePath)
-                    return true;
-            }
-            return false;
+            return _BGMusicFileNames.Any(elements => elements.MusicFilePath == element.MusicFilePath);
         }
 
         private static void _LoadVideo()
         {
-            if (_Video == -1)
+            if (_Video != -1 || String.IsNullOrEmpty(_CurrentPlaylistElement.VideoFilePath))
+                return;
+            _Video = CVideo.Load(_CurrentPlaylistElement.VideoFilePath);
+            if (_CurrentPlaylistElement.Start > 0.001 && CConfig.BackgroundMusicUseStart == EOffOn.TR_CONFIG_ON)
+                CVideo.Skip(_Video, _CurrentPlaylistElement.Start, _CurrentPlaylistElement.VideoGap);
+            else
+                CVideo.Skip(_Video, 0f, _CurrentPlaylistElement.VideoGap);
+            _FadeTimer.Reset();
+            _FadeTimer.Start();
+        }
+    }
+
+    class CPlaylistElement
+    {
+        private readonly CSong _Song;
+
+        private readonly int _SongID;
+        public int SongID
+        {
+            get { return _SongID; }
+        }
+
+        private string _MusicFilePath = String.Empty;
+
+        public string MusicFilePath
+        {
+            get
             {
-                _Video = CVideo.VdLoad(_CurrentPlaylistElement.VideoFilePath);
-                if (_CurrentPlaylistElement.Start != 0f && CConfig.BackgroundMusicUseStart == EOffOn.TR_CONFIG_ON)
-                    CVideo.VdSkip(_Video, _CurrentPlaylistElement.Start, _CurrentPlaylistElement.VideoGap);
-                else
-                    CVideo.VdSkip(_Video, 0f, _CurrentPlaylistElement.VideoGap);
-                _VideoEnabled = true;
-                _FadeTimer.Reset();
-                _FadeTimer.Start();
+                if (_Song != null)
+                    return _Song.GetMP3();
+
+                return _MusicFilePath;
+            }
+
+            set { _MusicFilePath = value; }
+        }
+
+        public string VideoFilePath
+        {
+            get
+            {
+                if (_Song != null)
+                    return _Song.GetVideo();
+
+                return string.Empty;
             }
         }
-    }
-}
 
-class CPlaylistElement
-{
-    private readonly CSong _Song;
-
-    private readonly int _SongID;
-    public int SongID
-    {
-        get { return _SongID; }
-    }
-
-    private string _MusicFilePath = String.Empty;
-
-    public string MusicFilePath
-    {
-        get
+        public string Title
         {
-            if (_Song != null)
-                return _Song.GetMP3();
+            get
+            {
+                if (_Song != null)
+                    return _Song.Title;
 
-            return _MusicFilePath;
+                return "";
+            }
         }
 
-        set { _MusicFilePath = value; }
-    }
-
-    public string VideoFilePath
-    {
-        get
+        public string Artist
         {
-            if (_Song != null)
-                return _Song.GetVideo();
+            get
+            {
+                if (_Song != null)
+                    return _Song.Artist;
 
-            return string.Empty;
+                return "";
+            }
         }
-    }
 
-    public string Title
-    {
-        get
+        public float Start
         {
-            if (_Song != null)
-                return _Song.Title;
+            get
+            {
+                if (_Song != null)
+                    return _Song.Start;
 
-            return "";
+                return 0f;
+            }
         }
-    }
 
-    public string Artist
-    {
-        get
+        public float Finish
         {
-            if (_Song != null)
-                return _Song.Artist;
+            get
+            {
+                if (_Song != null)
+                    return _Song.Finish;
 
-            return "";
+                return 0f;
+            }
         }
-    }
 
-    public float Start
-    {
-        get
+        public CTexture Cover
         {
-            if (_Song != null)
-                return _Song.Start;
+            get
+            {
+                if (_Song != null)
+                    return _Song.CoverTextureSmall;
 
-            return 0f;
+                return CCover.NoCover;
+            }
         }
-    }
 
-    public float Finish
-    {
-        get
+        public float VideoGap
         {
-            if (_Song != null)
-                return _Song.Finish;
+            get
+            {
+                if (_Song != null)
+                    return _Song.VideoGap;
 
-            return 0f;
+                return 0;
+            }
         }
-    }
 
-    public STexture Cover
-    {
-        get
+        public bool Duet
         {
-            if (_Song != null)
-                return _Song.CoverTextureSmall;
+            get
+            {
+                if (_Song != null)
+                    return _Song.IsDuet;
 
-            return CCover.NoCover;
+                return false;
+            }
         }
-    }
 
-    public float VideoGap
-    {
-        get
+        public CPlaylistElement(CSong song)
         {
-            if (_Song != null)
-                return _Song.VideoGap;
+            MusicFilePath = string.Empty;
+            _SongID = song.ID;
 
-            return 0;
+            _Song = song;
         }
-    }
 
-    public bool Duet
-    {
-        get
+        public CPlaylistElement(string filePath)
         {
-            if (_Song != null)
-                return _Song.IsDuet;
-
-            return false;
+            MusicFilePath = filePath;
+            _SongID = -1;
         }
-    }
 
-    public CPlaylistElement(CSong song)
-    {
-        MusicFilePath = string.Empty;
-        _SongID = song.ID;
-
-        _Song = song;
-    }
-
-    public CPlaylistElement(string filePath)
-    {
-        MusicFilePath = filePath;
-        _SongID = -1;
-    }
-
-    public CPlaylistElement()
-    {
-        MusicFilePath = string.Empty;
-        _SongID = -1;
+        public CPlaylistElement()
+        {
+            MusicFilePath = string.Empty;
+            _SongID = -1;
+        }
     }
 }

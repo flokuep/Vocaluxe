@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <ScreenSing>
-    <ScreenVersion>6</ScreenVersion>
+    <ScreenVersion>7</ScreenVersion>
     <Background1>
       <!--<Type>: Background type: None, Color, Texture, Video-->
       <Type>None</Type>
@@ -961,11 +961,11 @@
     <TextSongName>
       <!--<X>, <Y>: Text position-->
       <X>640</X>
-      <Y>18</Y>
+      <Y>20</Y>
       <!--<Z>: Text position-->
       <Z>-1,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>880</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -976,7 +976,7 @@
       <SColor>TextBlack</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1005,7 +1005,7 @@
       <SColor>TextWhite</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Right</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1024,7 +1024,7 @@
       <!--<Z>: Text position-->
       <Z>-2,11</Z>
       <!--<H>: Text height-->
-      <H>100</H>
+      <H>90</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -1034,7 +1034,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1053,7 +1053,7 @@
       <!--<Z>: Text position-->
       <Z>-1,00</Z>
       <!--<H>: Text height-->
-      <H>35</H>
+      <H>30</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -1063,7 +1063,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Left</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1082,7 +1082,7 @@
       <!--<Z>: Text position-->
       <Z>-1,00</Z>
       <!--<H>: Text height-->
-      <H>35</H>
+      <H>30</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -1092,7 +1092,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Left</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1104,6 +1104,35 @@
       <!--   <Space>: Reflection Space-->
       <!--   <Height>: Reflection Height-->
     </TextDuetName2>
+    <TextMedleyCountdown>
+      <!--<X>, <Y>: Text position-->
+      <X>640</X>
+      <Y>20</Y>
+      <!--<Z>: Text position-->
+      <Z>-1,00</Z>
+      <!--<H>: Text height-->
+      <H>27</H>
+      <!--<MaxW>: Maximum text width (if exists)-->
+      <!--<Color>: Text color from ColorScheme (high priority)-->
+      <!--or <R>, <G>, <B>, <A> (lower priority)-->
+      <Color>TextColor</Color>
+      <!--<SColor>: Selected Text color from ColorScheme (high priority)-->
+      <!--or <SR>, <SG>, <SB>, <SA> (lower priority)-->
+      <SColor>TextSColor</SColor>
+      <!--<Align>: Text align horizontal: Left, Center, Right-->
+      <Align>Left</Align>
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <HAlign>Center</HAlign>
+      <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
+      <Style>Bold</Style>
+      <!--<Font>: Text font name-->
+      <Font>Outline</Font>
+      <!--<Text>: Nothing or translation tag-->
+      <Text />
+      <!--<Reflection> If exists:-->
+      <!--   <Space>: Reflection Space-->
+      <!--   <Height>: Reflection Height-->
+    </TextMedleyCountdown>
     <TextScoreP1N1>
       <!--<X>, <Y>: Text position-->
       <X>1240</X>
@@ -1121,7 +1150,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Right</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1153,7 +1182,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1182,7 +1211,7 @@
       <SColor>Player1</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Right</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1214,7 +1243,7 @@
       <SColor>Player1</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1243,7 +1272,7 @@
       <SColor>Player2</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Right</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1275,7 +1304,7 @@
       <SColor>Player2</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1304,7 +1333,7 @@
       <SColor>Player1</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Right</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1336,7 +1365,7 @@
       <SColor>Player1</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1365,7 +1394,7 @@
       <SColor>Player2</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Right</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1397,7 +1426,7 @@
       <SColor>Player2</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1426,7 +1455,7 @@
       <SColor>Player3</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Right</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1458,7 +1487,7 @@
       <SColor>Player3</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1487,7 +1516,7 @@
       <SColor>Player1</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1519,7 +1548,7 @@
       <SColor>Player1</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1548,7 +1577,7 @@
       <SColor>Player2</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1580,7 +1609,7 @@
       <SColor>Player2</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1609,7 +1638,7 @@
       <SColor>Player3</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1641,7 +1670,7 @@
       <SColor>Player3</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1670,7 +1699,7 @@
       <SColor>Player4</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1702,7 +1731,7 @@
       <SColor>Player4</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1731,7 +1760,7 @@
       <SColor>Player1</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1763,7 +1792,7 @@
       <SColor>Player1</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1792,7 +1821,7 @@
       <SColor>Player2</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1824,7 +1853,7 @@
       <SColor>Player2</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1853,7 +1882,7 @@
       <SColor>Player3</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1885,7 +1914,7 @@
       <SColor>Player3</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1914,7 +1943,7 @@
       <SColor>Player4</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1946,7 +1975,7 @@
       <SColor>Player4</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -1975,7 +2004,7 @@
       <SColor>Player5</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2007,7 +2036,7 @@
       <SColor>Player5</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2036,7 +2065,7 @@
       <SColor>Player1</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2068,7 +2097,7 @@
       <SColor>Player1</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2097,7 +2126,7 @@
       <SColor>Player2</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2129,7 +2158,7 @@
       <SColor>Player2</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2158,7 +2187,7 @@
       <SColor>Player3</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2190,7 +2219,7 @@
       <SColor>Player3</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2219,7 +2248,7 @@
       <SColor>Player4</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2251,7 +2280,7 @@
       <SColor>Player4</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2280,7 +2309,7 @@
       <SColor>Player5</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2312,7 +2341,7 @@
       <SColor>Player5</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2341,7 +2370,7 @@
       <SColor>Player6</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2373,7 +2402,7 @@
       <SColor>Player6</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -2405,9 +2434,9 @@
       <Text>
         <!--<X>, <Y>: Text position-->
         <X>75</X>
-        <Y>10</Y>
+        <Y>12</Y>
         <!--<H>: Text height-->
-        <H>32</H>
+        <H>27</H>
         <!--<MaxW>: Maximum text width (if exists)-->
         <MaxW>142</MaxW>
         <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -2418,7 +2447,7 @@
         <SColor>ButtonTextSColor</SColor>
         <!--<Align>: Text align horizontal: Left, Center, Right-->
         <Align>Center</Align>
-        <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+        <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
         <HAlign>Center</HAlign>
         <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
         <Style>Bold</Style>
@@ -2462,9 +2491,9 @@
       <Text>
         <!--<X>, <Y>: Text position-->
         <X>75</X>
-        <Y>10</Y>
+        <Y>12</Y>
         <!--<H>: Text height-->
-        <H>32</H>
+        <H>27</H>
         <!--<MaxW>: Maximum text width (if exists)-->
         <MaxW>142</MaxW>
         <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -2475,7 +2504,7 @@
         <SColor>ButtonTextSColor</SColor>
         <!--<Align>: Text align horizontal: Left, Center, Right-->
         <Align>Center</Align>
-        <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+        <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
         <HAlign>Center</HAlign>
         <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
         <Style>Bold</Style>
@@ -2519,9 +2548,9 @@
       <Text>
         <!--<X>, <Y>: Text position-->
         <X>75</X>
-        <Y>10</Y>
+        <Y>12</Y>
         <!--<H>: Text height-->
-        <H>32</H>
+        <H>27</H>
         <!--<MaxW>: Maximum text width (if exists)-->
         <MaxW>142</MaxW>
         <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -2532,7 +2561,7 @@
         <SColor>ButtonTextSColor</SColor>
         <!--<Align>: Text align horizontal: Left, Center, Right-->
         <Align>Center</Align>
-        <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+        <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
         <HAlign>Center</HAlign>
         <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
         <Style>Bold</Style>
@@ -2562,7 +2591,7 @@
       <Y>600</Y>
       <Z>-1,00</Z>
       <W>1200</W>
-      <H>50</H>
+      <H>42</H>
       <!--<Color>: Lyric text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
       <Color>LyricMainColor</Color>
@@ -2576,7 +2605,7 @@
       <Y>642</Y>
       <Z>-1,00</Z>
       <W>1200</W>
-      <H>45</H>
+      <H>38</H>
       <!--<Color>: Lyric text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
       <Color>LyricSubColor</Color>
@@ -2590,7 +2619,7 @@
       <Y>12</Y>
       <Z>-1,00</Z>
       <W>1200</W>
-      <H>50</H>
+      <H>42</H>
       <!--<Color>: Lyric text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
       <Color>LyricMainColor</Color>
@@ -2604,7 +2633,7 @@
       <Y>54</Y>
       <Z>-1,00</Z>
       <W>1200</W>
-      <H>45</H>
+      <H>38</H>
       <!--<Color>: Lyric text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
       <Color>LyricSubColor</Color>
@@ -2618,7 +2647,7 @@
       <Y>12</Y>
       <Z>-1,00</Z>
       <W>1200</W>
-      <H>50</H>
+      <H>42</H>
       <!--<Color>: Lyric text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
       <Color>LyricMainColor</Color>
@@ -2632,7 +2661,7 @@
       <Y>54</Y>
       <Z>-1,00</Z>
       <W>1200</W>
-      <H>45</H>
+      <H>38</H>
       <!--<Color>: Lyric text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
       <Color>LyricSubColor</Color>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <ScreenOptionsRecord>
-    <ScreenVersion>2</ScreenVersion>
+    <ScreenVersion>3</ScreenVersion>
     <Background1>
       <!--<Type>: Background type: None, Color, Texture, Video-->
       <Type>Video</Type>
@@ -160,11 +160,11 @@
     <Text1>
       <!--<X>, <Y>: Text position-->
       <X>640</X>
-      <Y>48</Y>
+      <Y>55</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -174,7 +174,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -189,11 +189,11 @@
     <Text2>
       <!--<X>, <Y>: Text position-->
       <X>75</X>
-      <Y>105</Y>
+      <Y>106</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -203,7 +203,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Left</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -218,11 +218,11 @@
     <Text3>
       <!--<X>, <Y>: Text position-->
       <X>75</X>
-      <Y>165</Y>
+      <Y>227</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -232,36 +232,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Left</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
-      <HAlign>Center</HAlign>
-      <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
-      <Style>Bold</Style>
-      <!--<Font>: Text font name-->
-      <Font>Outline</Font>
-      <!--<Text>: Nothing or translation tag-->
-      <Text>TR_SCREENORECORD_INPUT</Text>
-      <!--<Reflection> If exists:-->
-      <!--   <Space>: Reflection Space-->
-      <!--   <Height>: Reflection Height-->
-    </Text3>
-    <Text4>
-      <!--<X>, <Y>: Text position-->
-      <X>75</X>
-      <Y>225</Y>
-      <!--<Z>: Text position-->
-      <Z>0,00</Z>
-      <!--<H>: Text height-->
-      <H>32</H>
-      <!--<MaxW>: Maximum text width (if exists)-->
-      <!--<Color>: Text color from ColorScheme (high priority)-->
-      <!--or <R>, <G>, <B>, <A> (lower priority)-->
-      <Color>StaticColor</Color>
-      <!--<SColor>: Selected Text color from ColorScheme (high priority)-->
-      <!--or <SR>, <SG>, <SB>, <SA> (lower priority)-->
-      <SColor>TextSColor</SColor>
-      <!--<Align>: Text align horizontal: Left, Center, Right-->
-      <Align>Left</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -272,15 +243,15 @@
       <!--<Reflection> If exists:-->
       <!--   <Space>: Reflection Space-->
       <!--   <Height>: Reflection Height-->
-    </Text4>
-    <Text5>
+    </Text3>
+    <Text4>
       <!--<X>, <Y>: Text position-->
       <X>75</X>
-      <Y>285</Y>
+      <Y>287</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -290,7 +261,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Left</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -301,15 +272,15 @@
       <!--<Reflection> If exists:-->
       <!--   <Space>: Reflection Space-->
       <!--   <Height>: Reflection Height-->
-    </Text5>
-    <Text6>
+    </Text4>
+    <Text5>
       <!--<X>, <Y>: Text position-->
       <X>75</X>
-      <Y>345</Y>
+      <Y>347</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -319,7 +290,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Left</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -330,15 +301,15 @@
       <!--<Reflection> If exists:-->
       <!--   <Space>: Reflection Space-->
       <!--   <Height>: Reflection Height-->
-    </Text6>
+    </Text5>
     <TextWarning>
       <!--<X>, <Y>: Text position-->
       <X>640</X>
-      <Y>535</Y>
+      <Y>537</Y>
       <!--<Z>: Text position-->
       <Z>0,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <MaxW>970</MaxW>
       <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -349,7 +320,7 @@
       <SColor>TextWarningColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Center</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -364,11 +335,11 @@
     <TextDelayChannel1>
       <!--<X>, <Y>: Text position-->
       <X>330</X>
-      <Y>225</Y>
+      <Y>227</Y>
       <!--<Z>: Text position-->
       <Z>-1,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -378,7 +349,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Right</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -393,11 +364,11 @@
     <TextDelayChannel2>
       <!--<X>, <Y>: Text position-->
       <X>330</X>
-      <Y>285</Y>
+      <Y>287</Y>
       <!--<Z>: Text position-->
       <Z>-1,00</Z>
       <!--<H>: Text height-->
-      <H>32</H>
+      <H>27</H>
       <!--<MaxW>: Maximum text width (if exists)-->
       <!--<Color>: Text color from ColorScheme (high priority)-->
       <!--or <R>, <G>, <B>, <A> (lower priority)-->
@@ -407,7 +378,7 @@
       <SColor>TextSColor</SColor>
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Right</Align>
-      <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
       <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
@@ -439,9 +410,9 @@
       <Text>
         <!--<X>, <Y>: Text position-->
         <X>75</X>
-        <Y>10</Y>
+        <Y>12</Y>
         <!--<H>: Text height-->
-        <H>32</H>
+        <H>27</H>
         <!--<MaxW>: Maximum text width (if exists)-->
         <MaxW>142</MaxW>
         <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -452,7 +423,7 @@
         <SColor>ButtonTextSColor</SColor>
         <!--<Align>: Text align horizontal: Left, Center, Right-->
         <Align>Center</Align>
-        <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+        <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
         <HAlign>Center</HAlign>
         <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
         <Style>Bold</Style>
@@ -496,9 +467,9 @@
       <Text>
         <!--<X>, <Y>: Text position-->
         <X>75</X>
-        <Y>10</Y>
+        <Y>12</Y>
         <!--<H>: Text height-->
-        <H>32</H>
+        <H>27</H>
         <!--<MaxW>: Maximum text width (if exists)-->
         <MaxW>142</MaxW>
         <!--<Color>: Text color from ColorScheme (high priority)-->
@@ -509,7 +480,7 @@
         <SColor>ButtonTextSColor</SColor>
         <!--<Align>: Text align horizontal: Left, Center, Right-->
         <Align>Center</Align>
-        <!--<HAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+        <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
         <HAlign>Center</HAlign>
         <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
         <Style>Bold</Style>
@@ -588,7 +559,7 @@
       <!--or <TextSR>, <TextSG>, <TextSB>, <TextSA> (lower priority)-->
       <TextSColor>TextSColor</TextSColor>
       <!--<TextH>: Text height-->
-      <TextH>32,00</TextH>
+      <TextH>27,00</TextH>
       <!--<TextRelativeX>: Text relative x-position-->
       <!--<TextRelativeY>: Text relative y-position-->
       <!--<TextMaxW>: Maximum text width (if exists)-->
@@ -600,73 +571,6 @@
       <!--<NumVisible>: Number of visible elements in the slide-->
       <NumVisible>1</NumVisible>
     </SelectSlideRecordDevices>
-    <SelectSlideRecordInputs>
-      <!--<Skin>: Texture name-->
-      <Skin>Invisible</Skin>
-      <!--<SkinArrowLeft>: Texture name of left arrow-->
-      <SkinArrowLeft>SelectSlideArrowLeft</SkinArrowLeft>
-      <!--<SkinArrowRight>: Texture name of right arrow-->
-      <SkinArrowRight>SelectSlideArrowRight</SkinArrowRight>
-      <!--<SkinSelected>: Texture name for selected SelectSlide-->
-      <SkinSelected>SelectSlide</SkinSelected>
-      <!--<SkinArrowLeftSelected>: Texture name of selected left arrow-->
-      <SkinArrowLeftSelected>SelectSlideArrowLeft</SkinArrowLeftSelected>
-      <!--<SkinArrowRightSelected>: Texture name of selected right arrow-->
-      <SkinArrowRightSelected>SelectSlideArrowRight</SkinArrowRightSelected>
-      <!--<SkinHighlighted>: Texture name for highlighted SelectSlide-->
-      <SkinHighlighted>SelectSlide</SkinHighlighted>
-      <!--<X>, <Y>, <Z>, <W>, <H>: SelectSlide position, width and height-->
-      <X>500</X>
-      <Y>160</Y>
-      <Z>0,00</Z>
-      <W>700</W>
-      <H>50</H>
-      <!--<ArrowLeftX>, <ArrowLeftY>, <ArrowLeftZ>, <ArrowLeftW>, <ArrowLeftH>: Left arrow position, width and height-->
-      <ArrowLeftX>505</ArrowLeftX>
-      <ArrowLeftY>165</ArrowLeftY>
-      <ArrowLeftZ>0,00</ArrowLeftZ>
-      <ArrowLeftW>40</ArrowLeftW>
-      <ArrowLeftH>40</ArrowLeftH>
-      <!--<ArrowRightX>, <ArrowRightY>, <ArrowRightZ>, <ArrowRightW>, <ArrowRightH>: Right arrow position, width and height-->
-      <ArrowRightX>1170</ArrowRightX>
-      <ArrowRightY>165</ArrowRightY>
-      <ArrowRightZ>0,00</ArrowRightZ>
-      <ArrowRightW>40</ArrowRightW>
-      <ArrowRightH>40</ArrowRightH>
-      <!--<Color>: SelectSlide color from ColorScheme (high priority)-->
-      <!--or <R>, <G>, <B>, <A> (lower priority)-->
-      <Color>SelectSlideColor</Color>
-      <!--<SColor>: Selected SelectSlide color from ColorScheme (high priority)-->
-      <!--or <SR>, <SG>, <SB>, <SA> (lower priority)-->
-      <SColor>SelectSlideSColor</SColor>
-      <!--<HColor>: Highlighted SelectSlide color from ColorScheme (high priority)-->
-      <!--or <HR>, <HG>, <HB>, <HA> (lower priority)-->
-      <HColor>SelectSlideHColor</HColor>
-      <!--<ArrowColor>: Arrow color from ColorScheme (high priority)-->
-      <!--or <ArrowR>, <ArrowG>, <ArrowB>, <ArrowA> (lower priority)-->
-      <ArrowColor>ArrowColor</ArrowColor>
-      <!--<ArrowSColor>: Selected arrow color from ColorScheme (high priority)-->
-      <!--or <ArrowSR>, <ArrowSG>, <ArrowSB>, <ArrowSA> (lower priority)-->
-      <ArrowSColor>ArrowSColor</ArrowSColor>
-      <!--<TextColor>: Text color from ColorScheme (high priority)-->
-      <!--or <TextR>, <TextG>, <TextB>, <TextA> (lower priority)-->
-      <TextColor>TextColor</TextColor>
-      <!--<TextSColor>: Selected text color from ColorScheme (high priority)-->
-      <!--or <TextSR>, <TextSG>, <TextSB>, <TextSA> (lower priority)-->
-      <TextSColor>TextSColor</TextSColor>
-      <!--<TextH>: Text height-->
-      <TextH>32,00</TextH>
-      <!--<TextRelativeX>: Text relative x-position-->
-      <!--<TextRelativeY>: Text relative y-position-->
-      <!--<TextMaxW>: Maximum text width (if exists)-->
-      <TextMaxW>616,00</TextMaxW>
-      <!--<TextFont>: Text font name-->
-      <TextFont>Outline</TextFont>
-      <!--<TextStyle>: Text style: Normal, Italic, Bold, BoldItalic-->
-      <TextStyle>Bold</TextStyle>
-      <!--<NumVisible>: Number of visible elements in the slide-->
-      <NumVisible>1</NumVisible>
-    </SelectSlideRecordInputs>
     <SelectSlideRecordChannel1>
       <!--<Skin>: Texture name-->
       <Skin>Invisible</Skin>
@@ -722,7 +626,7 @@
       <!--or <TextSR>, <TextSG>, <TextSB>, <TextSA> (lower priority)-->
       <TextSColor>TextSColor</TextSColor>
       <!--<TextH>: Text height-->
-      <TextH>32,00</TextH>
+      <TextH>27,00</TextH>
       <!--<TextRelativeX>: Text relative x-position-->
       <!--<TextRelativeY>: Text relative y-position-->
       <!--<TextMaxW>: Maximum text width (if exists)-->
@@ -789,7 +693,7 @@
       <!--or <TextSR>, <TextSG>, <TextSB>, <TextSA> (lower priority)-->
       <TextSColor>TextSColor</TextSColor>
       <!--<TextH>: Text height-->
-      <TextH>32,00</TextH>
+      <TextH>27,00</TextH>
       <!--<TextRelativeX>: Text relative x-position-->
       <!--<TextRelativeY>: Text relative y-position-->
       <!--<TextMaxW>: Maximum text width (if exists)-->
@@ -856,7 +760,7 @@
       <!--or <TextSR>, <TextSG>, <TextSB>, <TextSA> (lower priority)-->
       <TextSColor>TextSColor</TextSColor>
       <!--<TextH>: Text height-->
-      <TextH>32,00</TextH>
+      <TextH>27,00</TextH>
       <!--<TextRelativeX>: Text relative x-position-->
       <!--<TextRelativeY>: Text relative y-position-->
       <!--<TextMaxW>: Maximum text width (if exists)-->

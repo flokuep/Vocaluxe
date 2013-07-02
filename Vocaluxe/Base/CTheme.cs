@@ -1,10 +1,31 @@
-﻿using System;
+﻿#region license
+// /*
+//     This file is part of Vocaluxe.
+// 
+//     Vocaluxe is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     Vocaluxe is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
+//  */
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using VocaluxeLib.Menu;
+using Vocaluxe.Base.Fonts;
+using VocaluxeLib;
+using VocaluxeLib.Draw;
 
 namespace Vocaluxe.Base
 {
@@ -23,13 +44,15 @@ namespace Vocaluxe.Base
         public int PartyModeID;
     }
 
-    struct SSkinElement
+    class CSkinElement
     {
-        public string Name;
         public string Value;
+        public CTexture Texture;
+    }
 
-        public STexture Texture;
-        public int VideoIndex;
+    class CVideoSkinElement : CSkinElement
+    {
+        public int VideoIndex = -1;
     }
 
     struct SSkin
@@ -43,8 +66,8 @@ namespace Vocaluxe.Base
         public string FileName;
         public int PartyModeID;
 
-        public Dictionary<string, SSkinElement> SkinList;
-        public List<SSkinElement> VideoList;
+        public Dictionary<string, CSkinElement> SkinList;
+        public Dictionary<string, CVideoSkinElement> VideoList;
 
         public SColors ThemeColors;
     }
@@ -90,8 +113,10 @@ namespace Vocaluxe.Base
         {
             get
             {
-                List<string> names = new List<string>();
-                foreach (STheme th in _Themes)
+                var names = new List<string>();
+                // ReSharper disable LoopCanBeConvertedToQuery
+                foreach (var th in _Themes)
+                    // ReSharper restore LoopCanBeConvertedToQuery
                 {
                     if (th.PartyModeID == -1)
                         names.Add(th.Name);
@@ -105,8 +130,10 @@ namespace Vocaluxe.Base
         {
             get
             {
-                List<string> names = new List<string>();
-                foreach (SSkin sk in _Skins)
+                var names = new List<string>();
+                // ReSharper disable LoopCanBeConvertedToQuery
+                foreach (var sk in _Skins)
+                    // ReSharper restore LoopCanBeConvertedToQuery
                 {
                     if (sk.PartyModeID == -1)
                         names.Add(sk.Name);
@@ -115,7 +142,7 @@ namespace Vocaluxe.Base
             }
         }
 
-        public static SCursor Cursor = new SCursor();
+        public static SCursor Cursor;
         #endregion Vars
 
         #region Theme and Skin loading and writing
@@ -147,50 +174,34 @@ namespace Vocaluxe.Base
             if (xmlReader == null)
                 return false;
 
-            string value = String.Empty;
-
-
             // load skins/textures
-            List<string> keys = new List<string>(_Skins[skinIndex].SkinList.Keys);
-
-            foreach (string name in keys)
+            foreach (var valuePair in _Skins[skinIndex].SkinList)
             {
+                CSkinElement sk = valuePair.Value;
                 try
                 {
-                    xmlReader.GetValue("//root/Skins/" + name, ref value, String.Empty);
-                    SSkinElement sk = _Skins[skinIndex].SkinList[name];
-                    sk.Value = value;
-                    sk.VideoIndex = -1;
+                    xmlReader.GetValue("//root/Skins/" + valuePair.Key, out sk.Value, String.Empty);
                     sk.Texture = CDraw.AddTexture(Path.Combine(_Skins[skinIndex].Path, sk.Value));
-                    _Skins[skinIndex].SkinList[name] = sk;
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show("Error on loading texture \"" + name + "\": " + e.Message + e.StackTrace);
-                    CLog.LogError("Error on loading texture \"" + name + "\": " + e.Message + e.StackTrace);
+                    MessageBox.Show("Error on loading texture \"" + valuePair.Key + "\": " + e.Message + e.StackTrace);
+                    CLog.LogError("Error on loading texture \"" + valuePair.Key + "\": " + e.Message + e.StackTrace);
                 }
             }
 
 
             // load videos
-            for (int i = 0; i < _Skins[skinIndex].VideoList.Count; i++)
+            foreach (var valuePair in _Skins[skinIndex].VideoList)
             {
                 try
                 {
-                    xmlReader.GetValue("//root/Videos/" + _Skins[skinIndex].VideoList[i].Name, ref value, String.Empty);
-                    SSkinElement sk = new SSkinElement();
-                    sk.Name = _Skins[skinIndex].VideoList[i].Name;
-                    sk.Value = value;
-                    sk.VideoIndex = CVideo.VdLoad(Path.Combine(_Skins[skinIndex].Path, sk.Value));
-                    CVideo.VdSetLoop(sk.VideoIndex, true);
-                    CVideo.VdPause(sk.VideoIndex);
-                    sk.Texture = new STexture(-1);
-                    _Skins[skinIndex].VideoList[i] = sk;
+                    xmlReader.GetValue("//root/Videos/" + valuePair.Key, out valuePair.Value.Value, String.Empty);
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show("Error on loading video \"" + _Skins[skinIndex].VideoList[i].Name + "\": " + e.Message + e.StackTrace);
-                    CLog.LogError("Error on loading video \"" + _Skins[skinIndex].VideoList[i].Name + "\": " + e.Message + e.StackTrace);
+                    MessageBox.Show("Error on loading video \"" + valuePair.Key + "\": " + e.Message + e.StackTrace);
+                    CLog.LogError("Error on loading video \"" + valuePair.Key + "\": " + e.Message + e.StackTrace);
                 }
             }
 
@@ -201,37 +212,24 @@ namespace Vocaluxe.Base
 
         public static void UnloadSkins()
         {
-            int numPartyModeSkins = 0;
             for (int i = 0; i < _Skins.Count; i++)
             {
-                foreach (SSkinElement sk in _Skins[i].SkinList.Values)
-                {
-                    STexture texture = sk.Texture;
-                    CDraw.RemoveTexture(ref texture);
-                }
+                foreach (var sk in _Skins[i].SkinList.Values)
+                    CDraw.RemoveTexture(ref sk.Texture);
 
-                for (int j = 0; j < _Skins[i].VideoList.Count; j++)
+                foreach (var vsk in _Skins[i].VideoList.Values)
                 {
-                    CVideo.VdClose(_Skins[i].VideoList[j].VideoIndex);
-                    STexture videoTexture = _Skins[i].VideoList[j].Texture;
-                    CDraw.RemoveTexture(ref videoTexture);
+                    CVideo.Close(vsk.VideoIndex);
+                    CDraw.RemoveTexture(ref vsk.Texture);
                 }
-
-                if (_Skins[i].PartyModeID != -1)
-                    numPartyModeSkins++;
             }
 
-            while (_Skins.Count > numPartyModeSkins)
+            for (int i = 0; i < _Skins.Count; i++)
             {
-                int num = _Skins.Count;
-                for (int i = 0; i < num; i++)
-                {
-                    if (_Skins[i].PartyModeID == -1)
-                    {
-                        _Skins.RemoveAt(i);
-                        break;
-                    }
-                }
+                if (_Skins[i].PartyModeID != -1)
+                    continue;
+                _Skins.RemoveAt(i);
+                i--;
             }
         }
 
@@ -248,7 +246,7 @@ namespace Vocaluxe.Base
         {
             if (themeIndex < 0 || themeIndex >= _Themes.Count)
             {
-                CLog.LogError("Can't find Theme Index " + themeIndex.ToString());
+                CLog.LogError("Can't find Theme Index " + themeIndex);
                 return false;
             }
 
@@ -360,16 +358,16 @@ namespace Vocaluxe.Base
                     #region Skins
                     writer.WriteStartElement("Skins");
 
-                    foreach (SSkinElement element in _Skins[skinIndex].SkinList.Values)
-                        writer.WriteElementString(element.Name, element.Value);
+                    foreach (var element in _Skins[skinIndex].SkinList)
+                        writer.WriteElementString(element.Key, element.Value.Value);
                     writer.WriteEndElement();
                     #endregion Skins
 
                     #region Videos
                     writer.WriteStartElement("Videos");
 
-                    foreach (SSkinElement element in _Skins[skinIndex].VideoList)
-                        writer.WriteElementString(element.Name, element.Value);
+                    foreach (var element in _Skins[skinIndex].VideoList)
+                        writer.WriteElementString(element.Key, element.Value.Value);
                     writer.WriteEndElement();
                     #endregion Videos
 
@@ -387,7 +385,7 @@ namespace Vocaluxe.Base
             _Themes.Clear();
 
             string path = Path.Combine(Directory.GetCurrentDirectory(), CSettings.FolderThemes);
-            List<string> files = CHelper.ListFiles(path, "*.xml", false);
+            List<string> files = CHelper.ListFiles(path, "*.xml");
 
             foreach (string file in files)
                 AddTheme(Path.Combine(path, file), -1);
@@ -399,18 +397,18 @@ namespace Vocaluxe.Base
             if (xmlReader == null)
                 return false;
 
-            STheme theme = new STheme();
+            var theme = new STheme();
 
             int version = 0;
             xmlReader.TryGetIntValue("//root/ThemeSystemVersion", ref version);
 
             if (version == _ThemeSystemVersion)
             {
-                xmlReader.GetValue("//root/Info/Name", ref theme.Name, String.Empty);
-                if (theme.Name.Length > 0)
+                xmlReader.GetValue("//root/Info/Name", out theme.Name, String.Empty);
+                if (theme.Name != "")
                 {
-                    xmlReader.GetValue("//root/Info/Author", ref theme.Author, String.Empty);
-                    xmlReader.GetValue("//root/Info/SkinFolder", ref theme.SkinFolder, String.Empty);
+                    xmlReader.GetValue("//root/Info/Author", out theme.Author, String.Empty);
+                    xmlReader.GetValue("//root/Info/SkinFolder", out theme.SkinFolder, String.Empty);
                     xmlReader.TryGetIntValue("//root/Info/ThemeVersionMajor", ref theme.ThemeVersionMajor);
                     xmlReader.TryGetIntValue("//root/Info/ThemeVersionMinor", ref theme.ThemeVersionMinor);
                     theme.Path = Path.GetDirectoryName(filePath);
@@ -428,7 +426,7 @@ namespace Vocaluxe.Base
                 else
                     msg += "the file is for newer program versions! ";
 
-                msg += "Current ThemeSystemVersion is " + _ThemeSystemVersion.ToString() + " but found " + version;
+                msg += "Current ThemeSystemVersion is " + _ThemeSystemVersion + " but found " + version;
                 CLog.LogError(msg);
             }
             return true;
@@ -451,14 +449,14 @@ namespace Vocaluxe.Base
         {
             if (themeIndex < 0 || themeIndex >= _Themes.Count)
             {
-                CLog.LogError("Error List Skins. Can't find Theme index: " + themeIndex.ToString());
+                CLog.LogError("Error List Skins. Can't find Theme index: " + themeIndex);
                 return;
             }
 
             STheme theme = _Themes[themeIndex];
 
             string path = Path.Combine(theme.Path, theme.SkinFolder);
-            List<string> files = CHelper.ListFiles(path, "*.xml", false);
+            List<string> files = CHelper.ListFiles(path, "*.xml");
 
             foreach (string file in files)
             {
@@ -466,17 +464,17 @@ namespace Vocaluxe.Base
                 if (xmlReader == null)
                     continue;
 
-                SSkin skin = new SSkin();
+                var skin = new SSkin();
 
                 int version = 0;
                 xmlReader.TryGetIntValue("//root/SkinSystemVersion", ref version);
 
                 if (version == _SkinSystemVersion)
                 {
-                    xmlReader.GetValue("//root/Info/Name", ref skin.Name, String.Empty);
-                    if (skin.Name.Length > 0)
+                    xmlReader.GetValue("//root/Info/Name", out skin.Name, String.Empty);
+                    if (skin.Name != "")
                     {
-                        xmlReader.GetValue("//root/Info/Author", ref skin.Author, String.Empty);
+                        xmlReader.GetValue("//root/Info/Author", out skin.Author, String.Empty);
                         xmlReader.TryGetIntValue("//root/Info/SkinVersionMajor", ref skin.SkinVersionMajor);
                         xmlReader.TryGetIntValue("//root/Info/SkinVersionMinor", ref skin.SkinVersionMinor);
 
@@ -485,25 +483,15 @@ namespace Vocaluxe.Base
                         skin.FileName = file;
                         skin.PartyModeID = theme.PartyModeID;
 
-                        skin.SkinList = new Dictionary<string, SSkinElement>();
+                        skin.SkinList = new Dictionary<string, CSkinElement>();
                         List<string> names = xmlReader.GetValues("Skins");
                         foreach (string str in names)
-                        {
-                            SSkinElement sk = new SSkinElement();
-                            sk.Name = str;
-                            sk.Value = String.Empty;
-                            skin.SkinList[str] = sk;
-                        }
+                            skin.SkinList[str] = new CSkinElement();
 
-                        skin.VideoList = new List<SSkinElement>();
+                        skin.VideoList = new Dictionary<string, CVideoSkinElement>();
                         names = xmlReader.GetValues("Videos");
                         foreach (string str in names)
-                        {
-                            SSkinElement sk = new SSkinElement();
-                            sk.Name = str;
-                            sk.Value = String.Empty;
-                            skin.VideoList.Add(sk);
-                        }
+                            skin.VideoList[str] = new CVideoSkinElement();
                         _Skins.Add(skin);
                     }
                 }
@@ -515,7 +503,7 @@ namespace Vocaluxe.Base
                     else
                         msg += "the file is for newer program versions! ";
 
-                    msg += "Current SkinSystemVersion is " + _SkinSystemVersion.ToString();
+                    msg += "Current SkinSystemVersion is " + _SkinSystemVersion;
                     CLog.LogError(msg);
                 }
             }
@@ -529,7 +517,7 @@ namespace Vocaluxe.Base
             {
                 if (partyModeID != -1 && _Skins[i].PartyModeID == partyModeID)
                     return i;
-                else if (partyModeID == -1 && _Skins[i].Name == CConfig.Skin)
+                if (partyModeID == -1 && _Skins[i].Name == CConfig.Skin)
                     return i;
             }
 
@@ -542,7 +530,7 @@ namespace Vocaluxe.Base
             {
                 if (partyModeID != -1 && _Themes[i].PartyModeID == partyModeID)
                     return i;
-                else if (partyModeID == -1 && _Themes[i].Name == CConfig.Theme)
+                if (partyModeID == -1 && _Themes[i].Name == CConfig.Theme)
                     return i;
             }
 
@@ -565,12 +553,13 @@ namespace Vocaluxe.Base
             return path;
         }
 
-        public static STexture GetSkinTexture(string textureName, int partyModeID)
+        public static CTexture GetSkinTexture(string textureName, int partyModeID)
         {
             int skinIndex = GetSkinIndex(partyModeID);
-            if (skinIndex != -1 && textureName != null && _Skins[skinIndex].SkinList.ContainsKey(textureName))
-                return _Skins[skinIndex].SkinList[textureName].Texture;
-            return new STexture(-1);
+            CSkinElement sk;
+            if (skinIndex != -1 && textureName != null && _Skins[skinIndex].SkinList.TryGetValue(textureName, out sk))
+                return sk.Texture;
+            return null;
         }
 
         public static string GetSkinFilePath(string skinName, int partyModeID)
@@ -578,97 +567,59 @@ namespace Vocaluxe.Base
             return _GetSkinFileName(skinName, GetSkinIndex(partyModeID), true);
         }
 
-        private static string _GetSkinFileName(string skinName, int skinIndex)
+        private static string _GetSkinFileName(string skinName, int skinIndex, bool returnPath = false)
         {
-            return _GetSkinFileName(skinName, skinIndex, false);
-        }
-
-        private static string _GetSkinFileName(string skinName, int skinIndex, bool returnPath)
-        {
-            foreach (SSkinElement sk in _Skins[skinIndex].SkinList.Values)
-            {
-                if (sk.Name == skinName)
-                {
-                    if (!returnPath)
-                        return sk.Value;
-                    else
-                        return Path.Combine(_Skins[skinIndex].Path, sk.Value);
-                }
-            }
+            CSkinElement sk;
+            if (_Skins[skinIndex].SkinList.TryGetValue(skinName, out sk))
+                return !returnPath ? sk.Value : Path.Combine(_Skins[skinIndex].Path, sk.Value);
 
             CLog.LogError("Can't find Skin Element \"" + skinName);
             return skinName;
         }
 
-        public static STexture GetSkinVideoTexture(string videoName, int partyModeID)
+        public static CVideoSkinElement GetSkinVideo(string videoName, int partyModeID, bool load = true)
         {
             int skinIndex = GetSkinIndex(partyModeID);
             if (skinIndex != -1)
             {
-                for (int i = 0; i < _Skins[skinIndex].VideoList.Count; i++)
+                CVideoSkinElement sk;
+                if (_Skins[skinIndex].VideoList.TryGetValue(videoName, out sk))
                 {
-                    SSkinElement sk = _Skins[skinIndex].VideoList[i];
-                    if (sk.Name == videoName)
+                    if (sk.VideoIndex == -1 && load)
                     {
-                        float time = 0f;
-                        if (sk.VideoIndex == -1)
-                        {
-                            sk.VideoIndex = CVideo.VdLoad(GetVideoFilePath(sk.Name, partyModeID));
-                            CVideo.VdSetLoop(sk.VideoIndex, true);
-                        }
-                        CVideo.VdGetFrame(sk.VideoIndex, ref sk.Texture, time, ref time);
-                        _Skins[skinIndex].VideoList[i] = sk;
-                        return sk.Texture;
+                        sk.VideoIndex = CVideo.Load(GetVideoFilePath(videoName, partyModeID));
+                        CVideo.SetLoop(sk.VideoIndex, true);
                     }
+                    return sk;
                 }
             }
-            return new STexture(-1);
+            return null;
+        }
+
+        public static CTexture GetSkinVideoTexture(string videoName, int partyModeID)
+        {
+            CVideoSkinElement sk = GetSkinVideo(videoName, partyModeID);
+            if (sk == null)
+                return null;
+            float time = 0f;
+            CVideo.GetFrame(sk.VideoIndex, ref sk.Texture, time, out time);
+            return sk.Texture;
         }
 
         public static void SkinVideoPause(string videoName, int partyModeID)
         {
-            int skinIndex = GetSkinIndex(partyModeID);
-            if (skinIndex != -1)
-            {
-                for (int i = 0; i < _Skins[skinIndex].VideoList.Count; i++)
-                {
-                    SSkinElement sk = _Skins[skinIndex].VideoList[i];
-                    if (sk.Name == videoName)
-                    {
-                        if (sk.VideoIndex == -1)
-                        {
-                            sk.VideoIndex = CVideo.VdLoad(GetVideoFilePath(sk.Name, partyModeID));
-                            CVideo.VdSetLoop(sk.VideoIndex, true);
-                        }
-                        CVideo.VdPause(sk.VideoIndex);
-                        _Skins[skinIndex].VideoList[i] = sk;
-                        return;
-                    }
-                }
-            }
+            CVideoSkinElement sk = GetSkinVideo(videoName, partyModeID, false);
+            if (sk == null)
+                return;
+            CVideo.Pause(sk.VideoIndex);
         }
 
         public static void SkinVideoResume(string videoName, int partyModeID)
         {
-            int skinIndex = GetSkinIndex(partyModeID);
-            if (skinIndex != -1)
-            {
-                for (int i = 0; i < _Skins[skinIndex].VideoList.Count; i++)
-                {
-                    SSkinElement sk = _Skins[skinIndex].VideoList[i];
-                    if (sk.Name == videoName)
-                    {
-                        if (sk.VideoIndex == -1)
-                        {
-                            sk.VideoIndex = CVideo.VdLoad(GetVideoFilePath(sk.Name, partyModeID));
-                            CVideo.VdSetLoop(sk.VideoIndex, true);
-                        }
-                        CVideo.VdResume(sk.VideoIndex);
-                        _Skins[skinIndex].VideoList[i] = sk;
-                        return;
-                    }
-                }
-            }
+            CVideoSkinElement sk = GetSkinVideo(videoName, partyModeID);
+            if (sk == null)
+                return;
+            CVideo.Resume(sk.VideoIndex);
         }
 
         public static string GetVideoFilePath(string videoName, int partyModeID)
@@ -676,23 +627,11 @@ namespace Vocaluxe.Base
             return _GetVideoFileName(videoName, GetSkinIndex(partyModeID), true);
         }
 
-        private static string _GetVideoFileName(string videoName, int skinIndex)
+        private static string _GetVideoFileName(string videoName, int skinIndex, bool returnPath = false)
         {
-            return _GetVideoFileName(videoName, skinIndex, false);
-        }
-
-        private static string _GetVideoFileName(string videoName, int skinIndex, bool returnPath)
-        {
-            foreach (SSkinElement sk in _Skins[skinIndex].VideoList)
-            {
-                if (sk.Name == videoName)
-                {
-                    if (!returnPath)
-                        return sk.Value;
-                    else
-                        return Path.Combine(_Skins[skinIndex].Path, sk.Value);
-                }
-            }
+            CVideoSkinElement sk;
+            if (_Skins[skinIndex].VideoList.TryGetValue(videoName, out sk))
+                return !returnPath ? sk.Value : Path.Combine(_Skins[skinIndex].Path, sk.Value);
 
             CLog.LogError("Can't find Video Element \"" + videoName);
             return videoName;
@@ -706,18 +645,17 @@ namespace Vocaluxe.Base
 
             if (_Skins[skinIndex].PartyModeID == -1)
             {
-                List<SColorF> playerColors = new List<SColorF>();
+                var playerColors = new List<SColorF>();
                 float value = 0f;
 
                 int i = 1;
-                while (xmlReader.TryGetFloatValue("//root/Colors/Player" + i.ToString() + "/R", ref value))
+                while (xmlReader.TryGetFloatValue("//root/Colors/Player" + i + "/R", ref value))
                 {
-                    SColorF color = new SColorF();
+                    var color = new SColorF {R = value};
 
-                    color.R = value;
-                    xmlReader.TryGetFloatValue("//root/Colors/Player" + i.ToString() + "/G", ref color.G);
-                    xmlReader.TryGetFloatValue("//root/Colors/Player" + i.ToString() + "/B", ref color.B);
-                    xmlReader.TryGetFloatValue("//root/Colors/Player" + i.ToString() + "/A", ref color.A);
+                    xmlReader.TryGetFloatValue("//root/Colors/Player" + i + "/G", ref color.G);
+                    xmlReader.TryGetFloatValue("//root/Colors/Player" + i + "/B", ref color.B);
+                    xmlReader.TryGetFloatValue("//root/Colors/Player" + i + "/A", ref color.A);
 
                     playerColors.Add(color);
                     i++;
@@ -725,12 +663,11 @@ namespace Vocaluxe.Base
                 skin.ThemeColors.Player = playerColors.ToArray();
             }
 
-            List<SColorScheme> colorScheme = new List<SColorScheme>();
+            var colorScheme = new List<SColorScheme>();
             List<string> names = xmlReader.GetValues("ColorSchemes");
             foreach (string str in names)
             {
-                SColorScheme scheme = new SColorScheme();
-                scheme.Name = str;
+                var scheme = new SColorScheme {Name = str};
 
                 xmlReader.TryGetFloatValue("//root/ColorSchemes/" + str + "/R", ref scheme.Color.R);
                 xmlReader.TryGetFloatValue("//root/ColorSchemes/" + str + "/G", ref scheme.Color.G);
@@ -747,12 +684,12 @@ namespace Vocaluxe.Base
         private static void _LoadCursor(CXMLReader xmlReader, int skinIndex)
         {
             string value = String.Empty;
-            xmlReader.GetValue("//root/Cursor/Skin", ref Cursor.SkinName, value);
+            xmlReader.GetValue("//root/Cursor/Skin", out Cursor.SkinName, value);
 
             xmlReader.TryGetFloatValue("//root/Cursor/W", ref Cursor.W);
             xmlReader.TryGetFloatValue("//root/Cursor/H", ref Cursor.H);
 
-            if (xmlReader.GetValue("//root/Cursor/Color", ref value, value))
+            if (xmlReader.GetValue("//root/Cursor/Color", out value, value))
             {
                 SColorF color = GetColor(value, _Skins[skinIndex].PartyModeID);
                 Cursor.R = color.R;
@@ -780,7 +717,7 @@ namespace Vocaluxe.Base
                 writer.WriteStartElement("Colors");
                 for (int i = 0; i < _Skins[skinIndex].ThemeColors.Player.Length; i++)
                 {
-                    writer.WriteStartElement("Player" + (i + 1).ToString());
+                    writer.WriteStartElement("Player" + (i + 1));
 
                     writer.WriteElementString("R", _Skins[skinIndex].ThemeColors.Player[i].R.ToString("#0.000"));
                     writer.WriteElementString("G", _Skins[skinIndex].ThemeColors.Player[i].G.ToString("#0.000"));
@@ -793,7 +730,7 @@ namespace Vocaluxe.Base
             }
 
             writer.WriteStartElement("ColorSchemes");
-            foreach (SColorScheme scheme in _Skins[skinIndex].ThemeColors.ColorSchemes)
+            foreach (var scheme in _Skins[skinIndex].ThemeColors.ColorSchemes)
             {
                 writer.WriteStartElement(scheme.Name);
 
@@ -816,7 +753,7 @@ namespace Vocaluxe.Base
             writer.WriteElementString("W", Cursor.W.ToString("#0.000"));
             writer.WriteElementString("H", Cursor.H.ToString("#0.000"));
 
-            if (Cursor.Color.Length > 0)
+            if (!String.IsNullOrEmpty(Cursor.Color))
                 writer.WriteElementString("Color", Cursor.Color);
             else
             {
@@ -843,7 +780,7 @@ namespace Vocaluxe.Base
 
         public static bool GetColor(string colorName, int skinIndex, out SColorF color)
         {
-            foreach (SColorScheme scheme in _Skins[skinIndex].ThemeColors.ColorSchemes)
+            foreach (var scheme in _Skins[skinIndex].ThemeColors.ColorSchemes)
             {
                 if (scheme.Name == colorName)
                 {
@@ -859,7 +796,7 @@ namespace Vocaluxe.Base
 
         public static SColorF GetPlayerColor(int playerNr)
         {
-            SColorF color = new SColorF(1f, 1f, 1f, 1f);
+            var color = new SColorF(1f, 1f, 1f, 1f);
 
             int skinIndex = GetSkinIndex(-1);
 
@@ -878,7 +815,7 @@ namespace Vocaluxe.Base
         public static SColorF GetPlayerColor(string playerNrString, int skinIndex, out bool success)
         {
             int selection = 0;
-            if (playerNrString.StartsWith("Player"))
+            if (playerNrString != null && playerNrString.StartsWith("Player"))
                 int.TryParse(playerNrString.Substring(6), out selection);
 
             return GetPlayerColor(selection, skinIndex, out success);
@@ -892,13 +829,12 @@ namespace Vocaluxe.Base
         public static SColorF GetPlayerColor(int playerNr, int skinIndex, out bool success)
         {
             success = false;
-            SColorF color = new SColorF(1f, 1f, 1f, 1f);
 
             if (_Skins[skinIndex].PartyModeID != -1)
                 skinIndex = GetSkinIndex(-1);
 
             if (_Skins[skinIndex].ThemeColors.Player.Length < playerNr || playerNr < 1)
-                return color;
+                return new SColorF(1f, 1f, 1f, 1f);
 
             success = true;
             return _Skins[skinIndex].ThemeColors.Player[playerNr - 1];

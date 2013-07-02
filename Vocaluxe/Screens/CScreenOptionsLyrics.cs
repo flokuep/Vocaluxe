@@ -1,5 +1,25 @@
-﻿using System.Windows.Forms;
+﻿#region license
+// /*
+//     This file is part of Vocaluxe.
+// 
+//     Vocaluxe is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     Vocaluxe is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
+//  */
+#endregion
+
+using System.Windows.Forms;
 using Vocaluxe.Base;
+using VocaluxeLib;
 using VocaluxeLib.Menu;
 
 namespace Vocaluxe.Screens
@@ -9,11 +29,11 @@ namespace Vocaluxe.Screens
         // Version number for theme files. Increment it, if you've changed something on the theme files!
         protected override int _ScreenVersion
         {
-            get { return 1; }
+            get { return 2; }
         }
 
         private const string _SelectSlideLyricStyle = "SelectSlideLyricStyle";
-        private const string _SelectSlideLyricsOnTop = "SelectSlideLyricsOnTop";
+        private const string _SelectSlideLyricsPosition = "SelectSlideLyricsPosition";
 
         private const string _ButtonExit = "ButtonExit";
 
@@ -22,14 +42,14 @@ namespace Vocaluxe.Screens
             base.Init();
 
             _ThemeButtons = new string[] {_ButtonExit};
-            _ThemeSelectSlides = new string[] {_SelectSlideLyricStyle, _SelectSlideLyricsOnTop};
+            _ThemeSelectSlides = new string[] {_SelectSlideLyricStyle, _SelectSlideLyricsPosition};
         }
 
         public override void LoadTheme(string xmlPath)
         {
             base.LoadTheme(xmlPath);
-            SelectSlides[_SelectSlideLyricStyle].SetValues<ELyricStyle>((int)CConfig.LyricStyle);
-            SelectSlides[_SelectSlideLyricsOnTop].SetValues<EOffOn>((int)CConfig.LyricsOnTop);
+            _SelectSlides[_SelectSlideLyricStyle].SetValues<ELyricStyle>((int)CConfig.LyricStyle);
+            _SelectSlides[_SelectSlideLyricsPosition].SetValues<ELyricsPosition>((int)CConfig.LyricsPosition);
         }
 
         public override bool HandleInput(SKeyEvent keyEvent)
@@ -53,7 +73,7 @@ namespace Vocaluxe.Screens
                         break;
 
                     case Keys.Enter:
-                        if (Buttons[_ButtonExit].Selected)
+                        if (_Buttons[_ButtonExit].Selected)
                         {
                             _SaveConfig();
                             CGraphics.FadeTo(EScreens.ScreenOptions);
@@ -81,10 +101,10 @@ namespace Vocaluxe.Screens
                 _SaveConfig();
                 CGraphics.FadeTo(EScreens.ScreenOptions);
             }
-            if (mouseEvent.LB && IsMouseOver(mouseEvent))
+            if (mouseEvent.LB && _IsMouseOver(mouseEvent))
             {
                 _SaveConfig();
-                if (Buttons[_ButtonExit].Selected)
+                if (_Buttons[_ButtonExit].Selected)
                     CGraphics.FadeTo(EScreens.ScreenOptions);
             }
             return true;
@@ -103,8 +123,8 @@ namespace Vocaluxe.Screens
 
         private void _SaveConfig()
         {
-            CConfig.LyricsOnTop = (EOffOn)SelectSlides[_SelectSlideLyricsOnTop].Selection;
-            CConfig.LyricStyle = (ELyricStyle)SelectSlides[_SelectSlideLyricStyle].Selection;
+            CConfig.LyricsPosition = (ELyricsPosition)_SelectSlides[_SelectSlideLyricsPosition].Selection;
+            CConfig.LyricStyle = (ELyricStyle)_SelectSlides[_SelectSlideLyricStyle].Selection;
             CConfig.SaveConfig();
         }
     }

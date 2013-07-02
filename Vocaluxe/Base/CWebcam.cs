@@ -1,6 +1,26 @@
-﻿using System.Drawing;
+﻿#region license
+// /*
+//     This file is part of Vocaluxe.
+// 
+//     Vocaluxe is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     Vocaluxe is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
+//  */
+#endregion
+
+using System.Drawing;
 using Vocaluxe.Lib.Webcam;
-using VocaluxeLib.Menu;
+using VocaluxeLib;
+using VocaluxeLib.Draw;
 
 namespace Vocaluxe.Base
 {
@@ -27,10 +47,9 @@ namespace Vocaluxe.Base
             CConfig.SaveConfig();
         }
 
-        public static bool GetFrame(ref STexture tex)
+        public static bool GetFrame(ref CTexture tex)
         {
-            _Webcam.GetFrame(ref tex);
-            return true;
+            return _Webcam.GetFrame(ref tex);
         }
 
         public static Bitmap GetBitmap()
@@ -66,6 +85,16 @@ namespace Vocaluxe.Base
         public static SWebcamDevice[] GetDevices()
         {
             return _Webcam.GetDevices();
+        }
+
+        public static bool IsDeviceAvailable()
+        {
+            return _Webcam.IsDeviceAvailable();
+        }
+
+        public static bool IsCapturing()
+        {
+            return _Webcam.IsCapturing();
         }
     }
 }

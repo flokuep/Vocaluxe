@@ -1,14 +1,33 @@
-﻿using System;
+﻿#region license
+// /*
+//     This file is part of Vocaluxe.
+// 
+//     Vocaluxe is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     Vocaluxe is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
+//  */
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Reflection;
-using VocaluxeLib.Menu;
-using VocaluxeLib.Menu.SongMenu;
+using VocaluxeLib;
+using VocaluxeLib.Songs;
 
 namespace Vocaluxe.Base
 {
     class CSongSorter : CObservable
     {
-        private SSongPointer[] _SortedSongs = new SSongPointer[0];
+        private CSongPointer[] _SortedSongs = new CSongPointer[0];
         private EOffOn _IgnoreArticles = CConfig.IgnoreArticles;
         private ESongSorting _SongSorting = CConfig.SongSorting;
 
@@ -17,7 +36,7 @@ namespace Vocaluxe.Base
             CSongs.Filter.ObjectChanged += _HandleFilteredSongsChanged;
         }
 
-        public SSongPointer[] SortedSongs
+        public CSongPointer[] SortedSongs
         {
             get
             {
@@ -31,11 +50,10 @@ namespace Vocaluxe.Base
             get { return _IgnoreArticles; }
             set
             {
-                if (value != _IgnoreArticles)
-                {
-                    _IgnoreArticles = value;
-                    _SetChanged();
-                }
+                if (value == _IgnoreArticles)
+                    return;
+                _IgnoreArticles = value;
+                _SetChanged();
             }
         }
 
@@ -44,11 +62,10 @@ namespace Vocaluxe.Base
             get { return _SongSorting; }
             set
             {
-                if (value != _SongSorting)
-                {
-                    _SongSorting = value;
-                    _SetChanged();
-                }
+                if (value == _SongSorting)
+                    return;
+                _SongSorting = value;
+                _SetChanged();
             }
         }
 
@@ -67,69 +84,66 @@ namespace Vocaluxe.Base
             _SetChanged();
         }
 
-        private int _SortByFieldArtistTitle(SSongPointer s1, SSongPointer s2)
+        private int _SortByFieldArtistTitle(CSongPointer s1, CSongPointer s2)
         {
-            int res = s1.SortString.ToUpper().CompareTo(s2.SortString.ToUpper());
+            int res = String.Compare(s1.SortString, s2.SortString, StringComparison.CurrentCultureIgnoreCase);
             if (res == 0)
             {
                 if (_IgnoreArticles == EOffOn.TR_CONFIG_ON)
                 {
-                    res = CSongs.Songs[s1.SongID].ArtistSorting.ToUpper().CompareTo(CSongs.Songs[s2.SongID].ArtistSorting.ToUpper());
-                    if (res == 0)
-                        return CSongs.Songs[s1.SongID].TitleSorting.ToUpper().CompareTo(CSongs.Songs[s2.SongID].TitleSorting.ToUpper());
-                    return res;
+                    res = String.Compare(CSongs.Songs[s1.SongID].ArtistSorting, CSongs.Songs[s2.SongID].ArtistSorting, StringComparison.CurrentCultureIgnoreCase);
+                    return res != 0 ? res : String.Compare(CSongs.Songs[s1.SongID].TitleSorting, CSongs.Songs[s2.SongID].TitleSorting, StringComparison.CurrentCultureIgnoreCase);
                 }
-                else
-                {
-                    res = CSongs.Songs[s1.SongID].Artist.ToUpper().CompareTo(CSongs.Songs[s2.SongID].Artist.ToUpper());
-                    if (res == 0)
-                        return CSongs.Songs[s1.SongID].Title.ToUpper().CompareTo(CSongs.Songs[s2.SongID].Title.ToUpper());
-                    return res;
-                }
+                res = String.Compare(CSongs.Songs[s1.SongID].Artist, CSongs.Songs[s2.SongID].Artist, StringComparison.CurrentCultureIgnoreCase);
+                return res != 0 ? res : String.Compare(CSongs.Songs[s1.SongID].Title, CSongs.Songs[s2.SongID].Title, StringComparison.CurrentCultureIgnoreCase);
             }
             return res;
         }
 
-        private int _SortByFieldTitle(SSongPointer s1, SSongPointer s2)
+        private int _SortByFieldTitle(CSongPointer s1, CSongPointer s2)
         {
-            int res = s1.SortString.ToUpper().CompareTo(s2.SortString.ToUpper());
+            int res = String.Compare(s1.SortString, s2.SortString, StringComparison.CurrentCultureIgnoreCase);
             if (res == 0)
             {
-                if (_IgnoreArticles == EOffOn.TR_CONFIG_ON)
-                    return CSongs.Songs[s1.SongID].TitleSorting.ToUpper().CompareTo(CSongs.Songs[s2.SongID].TitleSorting.ToUpper());
-                else
-                    return CSongs.Songs[s1.SongID].Title.ToUpper().CompareTo(CSongs.Songs[s2.SongID].Title.ToUpper());
+                return _IgnoreArticles == EOffOn.TR_CONFIG_ON
+                           ? String.Compare(CSongs.Songs[s1.SongID].TitleSorting, CSongs.Songs[s2.SongID].TitleSorting, StringComparison.CurrentCultureIgnoreCase) :
+                           String.Compare(CSongs.Songs[s1.SongID].Title, CSongs.Songs[s2.SongID].Title, StringComparison.CurrentCultureIgnoreCase);
             }
             return res;
         }
 
-        private List<SSongPointer> _CreateSortList(string fieldName)
+        private List<CSongPointer> _CreateSortList(string fieldName)
         {
-            FieldInfo field = null;
-            bool isString = false;
-            List<SSongPointer> sortList = new List<SSongPointer>();
-            if (fieldName.Length == 0)
-                CSongs.Filter.FilteredSongs.ForEach((song) => sortList.Add(new SSongPointer(song.ID, "")));
+            List<CSongPointer> sortList = new List<CSongPointer>();
+            if (fieldName == "")
+                CSongs.Filter.FilteredSongs.ForEach(song => sortList.Add(new CSongPointer(song.ID, "")));
             else
             {
-                field = typeof(CSong).GetField(fieldName, BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public);
-                isString = field.FieldType == typeof(string);
+                FieldInfo field = typeof(CSong).GetField(fieldName, BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public);
+                if (field == null)
+                {
+                    CLog.LogError("Unknow sorting field: " + fieldName);
+                    return _CreateSortList("");
+                }
+                bool isString = field.FieldType == typeof(string);
                 if (!isString && field.FieldType != typeof(List<String>))
                     throw new Exception("Unkown sort field type");
                 foreach (CSong song in CSongs.Filter.FilteredSongs)
                 {
                     object value = field.GetValue(song);
                     if (isString)
-                        sortList.Add(new SSongPointer(song.ID, (String)value));
+                        sortList.Add(new CSongPointer(song.ID, (String)value));
                     else
                     {
                         List<String> values = (List<String>)value;
                         if (values.Count == 0)
-                            sortList.Add(new SSongPointer(song.ID, ""));
+                            sortList.Add(new CSongPointer(song.ID, ""));
                         else
                         {
-                            foreach (String sortString in (List<String>)value)
-                                sortList.Add(new SSongPointer(song.ID, sortString));
+                            // ReSharper disable LoopCanBeConvertedToQuery
+                            foreach (String sortString in values)
+                                // ReSharper restore LoopCanBeConvertedToQuery
+                                sortList.Add(new CSongPointer(song.ID, sortString));
                         }
                     }
                 }
@@ -155,16 +169,10 @@ namespace Vocaluxe.Base
                     break;
                 case ESongSorting.TR_CONFIG_ARTIST_LETTER:
                 case ESongSorting.TR_CONFIG_ARTIST:
-                    if (_IgnoreArticles == EOffOn.TR_CONFIG_ON)
-                        fieldName = "ArtistSorting";
-                    else
-                        fieldName = "Artist";
+                    fieldName = _IgnoreArticles == EOffOn.TR_CONFIG_ON ? "ArtistSorting" : "Artist";
                     break;
                 case ESongSorting.TR_CONFIG_TITLE_LETTER:
-                    if (_IgnoreArticles == EOffOn.TR_CONFIG_ON)
-                        fieldName = "TitleSorting";
-                    else
-                        fieldName = "Title";
+                    fieldName = _IgnoreArticles == EOffOn.TR_CONFIG_ON ? "TitleSorting" : "Title";
                     break;
                 case ESongSorting.TR_CONFIG_YEAR:
                 case ESongSorting.TR_CONFIG_DECADE:
@@ -177,7 +185,7 @@ namespace Vocaluxe.Base
                     fieldName = "";
                     break;
             }
-            List<SSongPointer> sortList = _CreateSortList(fieldName);
+            List<CSongPointer> sortList = _CreateSortList(fieldName);
             switch (_SongSorting)
             {
                 case ESongSorting.TR_CONFIG_ARTIST_LETTER:

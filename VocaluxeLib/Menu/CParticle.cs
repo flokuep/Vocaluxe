@@ -1,7 +1,27 @@
-﻿using System;
+﻿#region license
+// /*
+//     This file is part of Vocaluxe.
+// 
+//     Vocaluxe is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     Vocaluxe is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
+//  */
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
+using VocaluxeLib.Draw;
 
 namespace VocaluxeLib.Menu
 {
@@ -26,11 +46,11 @@ namespace VocaluxeLib.Menu
         #region private vars
         private readonly int _PartyModeID;
         private readonly string _TextureName;
-        private readonly STexture _Texture;
+        private readonly CTexture _Texture;
         private SRectF _Rect;
         private float _Size;
         private SColorF _Color;
-        private float _Alpha;
+        private float _Alpha = 1;
         private float _Angle; //0..360°
         private readonly float _MaxAge; //[s]
         private float _Age; //[s]
@@ -42,7 +62,7 @@ namespace VocaluxeLib.Menu
         private float _LastTime;
         private readonly EParticleType _Type;
 
-        private readonly Stopwatch _Timer;
+        private readonly Stopwatch _Timer = new Stopwatch();
         #endregion private vars
 
         #region public vars
@@ -86,7 +106,7 @@ namespace VocaluxeLib.Menu
 
         public bool IsAlive
         {
-            get { return _Age < _MaxAge || _MaxAge == 0f; }
+            get { return _Age < _MaxAge || Math.Abs(_MaxAge) < float.Epsilon; }
         }
         #endregion public vars
 
@@ -96,26 +116,20 @@ namespace VocaluxeLib.Menu
         {
             _PartyModeID = partyModeID;
             _TextureName = textureName;
-            _Texture = new STexture(-1);
             _Color = color;
             _Rect = new SRectF(x, y, size, size, z);
             _Size = size;
-            _Alpha = 1f;
-            _Angle = 0f;
             _Vx = vx;
             _Vy = vy;
             _Vr = vr;
             _Vsize = vsize;
-            _LastTime = 0f;
             _Type = type;
 
-            _Timer = new Stopwatch();
-            _Age = 0f;
             _MaxAge = maxage;
             _Rotation = (float)(CBase.Game.GetRandomDouble() * 360.0);
         }
 
-        public CParticle(int partyModeID, STexture texture, SColorF color, float x, float y, float size, float maxage, float z, float vx, float vy, float vr, float vsize,
+        public CParticle(int partyModeID, CTexture texture, SColorF color, float x, float y, float size, float maxage, float z, float vx, float vy, float vr, float vsize,
                          EParticleType type)
         {
             _PartyModeID = partyModeID;
@@ -124,17 +138,12 @@ namespace VocaluxeLib.Menu
             _Color = color;
             _Rect = new SRectF(x, y, size, size, z);
             _Size = size;
-            _Alpha = 1f;
-            _Angle = 0f;
             _Vx = vx;
             _Vy = vy;
             _Vr = vr;
             _Vsize = vsize;
-            _LastTime = 0f;
             _Type = type;
 
-            _Timer = new Stopwatch();
-            _Age = 0f;
             _MaxAge = maxage;
             _Rotation = (float)(CBase.Game.GetRandomDouble() * 360.0);
         }
@@ -199,7 +208,7 @@ namespace VocaluxeLib.Menu
                     if (Math.Round(Y) < maxy)
                     {
                         float vdx = 0f;
-                        if (_Vx != 0)
+                        if (Math.Abs(_Vx) > float.Epsilon)
                             vdx = (float)Math.Sin(currentTime / _Vx * Math.PI);
 
                         X += _Vx * timediff * (0.5f + vdx);
@@ -223,7 +232,7 @@ namespace VocaluxeLib.Menu
 
 
             // update size
-            if (_Vsize != 0f)
+            if (Math.Abs(_Vsize) > float.Epsilon)
             {
                 float size = _Size;
                 switch (_Type)
@@ -256,7 +265,7 @@ namespace VocaluxeLib.Menu
             }
 
             // update rotation
-            if (_Vr != 0f)
+            if (Math.Abs(_Vr) > 0.01)
             {
                 float r = currentTime * _Vr / 60f;
                 _Angle = _Rotation + 360f * (r - (float)Math.Floor(r));
@@ -278,7 +287,9 @@ namespace VocaluxeLib.Menu
 
         public void Draw()
         {
-            if (_TextureName.Length > 0)
+            // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
+            if (!String.IsNullOrEmpty(_TextureName))
+                // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
                 CBase.Drawing.DrawTexture(CBase.Theme.GetSkinTexture(_TextureName, _PartyModeID), _Rect, new SColorF(_Color.R, _Color.G, _Color.B, _Color.A * Alpha2 * _Alpha));
             else
                 CBase.Drawing.DrawTexture(_Texture, _Rect, new SColorF(_Color.R, _Color.G, _Color.B, _Color.A * Alpha2 * _Alpha));
@@ -291,7 +302,7 @@ namespace VocaluxeLib.Menu
         private SThemeParticleEffect _Theme;
         private bool _ThemeLoaded;
 
-        public STexture Texture;
+        public CTexture Texture;
         public SColorF Color;
         public SRectF Rect;
 
@@ -332,10 +343,9 @@ namespace VocaluxeLib.Menu
             _PartyModeID = partyModeID;
             _Theme = new SThemeParticleEffect();
             _Stars = new List<CParticle>();
-            this.Rect = rect;
-            this.Color = color;
+            Rect = rect;
+            Color = color;
             _Theme.TextureName = textureName;
-            Texture = new STexture(-1);
             _MaxNumber = maxNumber;
             _Size = size;
             _Type = type;
@@ -344,15 +354,15 @@ namespace VocaluxeLib.Menu
             Visible = true;
         }
 
-        public CParticleEffect(int partyModeID, int maxNumber, SColorF color, SRectF rect, STexture texture, float size, EParticleType type)
+        public CParticleEffect(int partyModeID, int maxNumber, SColorF color, SRectF rect, CTexture texture, float size, EParticleType type)
         {
             _PartyModeID = partyModeID;
             _Theme = new SThemeParticleEffect();
             _Stars = new List<CParticle>();
-            this.Rect = rect;
-            this.Color = color;
+            Rect = rect;
+            Color = color;
             _Theme.TextureName = String.Empty;
-            this.Texture = texture;
+            Texture = texture;
             _MaxNumber = maxNumber;
             _Size = size;
             _Type = type;
@@ -366,7 +376,7 @@ namespace VocaluxeLib.Menu
             string item = xmlPath + "/" + elementName;
             _ThemeLoaded = true;
 
-            _ThemeLoaded &= xmlReader.GetValue(item + "/Skin", ref _Theme.TextureName, String.Empty);
+            _ThemeLoaded &= xmlReader.GetValue(item + "/Skin", out _Theme.TextureName, String.Empty);
 
             _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/X", ref Rect.X);
             _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/Y", ref Rect.Y);
@@ -374,7 +384,7 @@ namespace VocaluxeLib.Menu
             _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/W", ref Rect.W);
             _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/H", ref Rect.H);
 
-            if (xmlReader.GetValue(item + "/Color", ref _Theme.ColorName, String.Empty))
+            if (xmlReader.GetValue(item + "/Color", out _Theme.ColorName, String.Empty))
                 _ThemeLoaded &= CBase.Theme.GetColor(_Theme.ColorName, skinIndex, out Color);
             else
             {
@@ -414,7 +424,7 @@ namespace VocaluxeLib.Menu
 
                 writer.WriteComment("<Color>: ParticleEffect color from ColorScheme (high priority)");
                 writer.WriteComment("or <R>, <G>, <B>, <A> (lower priority)");
-                if (_Theme.ColorName.Length > 0)
+                if (!String.IsNullOrEmpty(_Theme.ColorName))
                     writer.WriteElementString("Color", _Theme.ColorName);
                 else
                 {
@@ -525,7 +535,7 @@ namespace VocaluxeLib.Menu
                     h = 0;
 
                 CParticle star;
-                if (_Theme.TextureName.Length > 0)
+                if (!String.IsNullOrEmpty(_Theme.TextureName))
                 {
                     star = new CParticle(_PartyModeID, _Theme.TextureName, Color,
                                          CBase.Game.GetRandom(w) + Rect.X - size / 4f,
@@ -581,14 +591,14 @@ namespace VocaluxeLib.Menu
 
         public void UnloadTextures()
         {
-            Texture = new STexture();
+            Texture = null;
         }
 
         public void LoadTextures()
         {
-            if (_Theme.ColorName.Length > 0)
+            if (!String.IsNullOrEmpty(_Theme.ColorName))
                 Color = CBase.Theme.GetColor(_Theme.ColorName, _PartyModeID);
-            if (_Theme.TextureName.Length > 0)
+            if (!String.IsNullOrEmpty(_Theme.TextureName))
                 Texture = CBase.Theme.GetSkinTexture(_Theme.TextureName, _PartyModeID);
         }
 

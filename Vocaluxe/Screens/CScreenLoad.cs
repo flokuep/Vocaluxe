@@ -1,7 +1,27 @@
-﻿using System.Diagnostics;
+﻿#region license
+// /*
+//     This file is part of Vocaluxe.
+// 
+//     Vocaluxe is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     Vocaluxe is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
+//  */
+#endregion
+
+using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 using Vocaluxe.Base;
+using VocaluxeLib;
 using VocaluxeLib.Menu;
 
 namespace Vocaluxe.Screens
@@ -11,11 +31,11 @@ namespace Vocaluxe.Screens
         // Version number for theme files. Increment it, if you've changed something on the theme files!
         protected override int _ScreenVersion
         {
-            get { return 1; }
+            get { return 2; }
         }
-        private const float _WaitTime = 0.5f; //wait time before starting first video
 
         private const string _TextStatus = "TextStatus";
+        private const string _TextProgramName = "TextProgramName";
 
         private readonly string[] _IntroVideo = new string[] {"IntroIn", "IntroMid", "IntroOut"};
 
@@ -26,13 +46,13 @@ namespace Vocaluxe.Screens
         private bool _IntroOutPlayed;
         private CVideoPlayer[] _Intros;
 
-        private bool _BGMusicStartet;
+        private bool _BGMusicStarted;
 
         public override void Init()
         {
             base.Init();
 
-            _ThemeTexts = new string[] {_TextStatus};
+            _ThemeTexts = new string[] {_TextStatus, _TextProgramName};
             _Intros = new CVideoPlayer[_IntroVideo.Length];
             for (int i = 0; i < _Intros.Length; i++)
                 _Intros[i] = new CVideoPlayer();
@@ -84,12 +104,11 @@ namespace Vocaluxe.Screens
                 }
             }
 
-            _SongLoaderThread = new Thread(CSongs.LoadSongs);
-            _SongLoaderThread.Name = "SongLoader";
+            _SongLoaderThread = new Thread(CSongs.LoadSongs) {Name = "SongLoader"};
 
-            Texts[_TextStatus].Text = CLanguage.Translate("TR_SCREENLOAD_TOTAL") + ": 0 " +
-                                     CLanguage.Translate("TR_SCREENLOAD_SONGS") + " (0 " +
-                                     CLanguage.Translate("TR_SCREENLOAD_LOADED") + ")";
+            _Texts[_TextStatus].Text = CLanguage.Translate("TR_SCREENLOAD_TOTAL") + ": 0 " +
+                                       CLanguage.Translate("TR_SCREENLOAD_SONGS") + " (0 " +
+                                       CLanguage.Translate("TR_SCREENLOAD_LOADED") + ")";
 
             _SkipIntro = false;
             _CurrentIntroVideoNr = -1;
@@ -99,9 +118,10 @@ namespace Vocaluxe.Screens
             {
                 for (int i = 0; i < _Intros.Length; i++)
                     _Intros[i].Load(_IntroVideo[i]);
+                _Texts[_TextProgramName].Visible = false;
             }
 
-            _BGMusicStartet = false;
+            _BGMusicStarted = false;
         }
 
         public override void OnShowFinish()
@@ -110,8 +130,8 @@ namespace Vocaluxe.Screens
 
             if (CConfig.VideoBackgrounds == EOffOn.TR_CONFIG_ON)
             {
-                for (int i = 0; i < _Intros.Length; i++)
-                    _Intros[i].PreLoad();
+                foreach (CVideoPlayer videoPlayer in _Intros)
+                    videoPlayer.PreLoad();
             }
 
             CLog.StartBenchmark(0, "Load Songs Full");
@@ -120,14 +140,14 @@ namespace Vocaluxe.Screens
             _Timer.Start();
 
             if (CConfig.BackgroundMusic == EOffOn.TR_CONFIG_ON &&
-                CConfig.BackgroundMusicSource == EBackgroundMusicSource.TR_CONFIG_NO_OWN_MUSIC && !_BGMusicStartet)
+                CConfig.BackgroundMusicSource == EBackgroundMusicSource.TR_CONFIG_NO_OWN_MUSIC && !_BGMusicStarted)
             {
                 CBackgroundMusic.AddOwnMusic();
 
-                if (!CBackgroundMusic.Playing)
+                if (!CBackgroundMusic.IsPlaying)
                     CBackgroundMusic.Next();
 
-                _BGMusicStartet = true;
+                _BGMusicStarted = true;
             }
 
             CBackgroundMusic.CanSing = false;
@@ -150,20 +170,20 @@ namespace Vocaluxe.Screens
             if (CSettings.GameState == EGameState.Normal)
                 CGraphics.FadeTo(EScreens.ScreenMain);
 
-            Texts[_TextStatus].Text =
-                CLanguage.Translate("TR_SCREENLOAD_TOTAL") + ": " + CSongs.NumAllSongs.ToString() + " " +
+            _Texts[_TextStatus].Text =
+                CLanguage.Translate("TR_SCREENLOAD_TOTAL") + ": " + CSongs.NumAllSongs + " " +
                 CLanguage.Translate("TR_SCREENLOAD_SONGS") + " (" + CSongs.NumSongsWithCoverLoaded + " " +
                 CLanguage.Translate("TR_SCREENLOAD_LOADED") + ")";
 
             if (CSongs.SongsLoaded && CConfig.BackgroundMusic == EOffOn.TR_CONFIG_ON &&
-                CConfig.BackgroundMusicSource != EBackgroundMusicSource.TR_CONFIG_NO_OWN_MUSIC && !_BGMusicStartet)
+                CConfig.BackgroundMusicSource != EBackgroundMusicSource.TR_CONFIG_NO_OWN_MUSIC && !_BGMusicStarted)
             {
                 CBackgroundMusic.AddOwnMusic();
 
-                if (!CBackgroundMusic.Playing)
+                if (!CBackgroundMusic.IsPlaying)
                     CBackgroundMusic.Next();
 
-                _BGMusicStartet = true;
+                _BGMusicStarted = true;
             }
 
             return true;
@@ -171,12 +191,12 @@ namespace Vocaluxe.Screens
 
         public override bool Draw()
         {
-            DrawBG();
+            _DrawBG();
 
-            for (int i = 0; i < _Intros.Length; i++)
-                _Intros[i].Draw();
+            foreach (CVideoPlayer videoPlayer in _Intros)
+                videoPlayer.Draw();
 
-            DrawFG();
+            _DrawFG();
             return true;
         }
 
@@ -186,8 +206,8 @@ namespace Vocaluxe.Screens
             _Timer.Stop();
             _Timer.Reset();
 
-            for (int i = 0; i < _Intros.Length; i++)
-                _Intros[i].Close();
+            foreach (CVideoPlayer videoPlayer in _Intros)
+                videoPlayer.Close();
 
             CBackgroundMusic.CanSing = true;
 
