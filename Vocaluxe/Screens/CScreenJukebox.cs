@@ -76,6 +76,19 @@ namespace Vocaluxe.Screens
             {
                 switch (keyEvent.Key)
                 {
+                    case Keys.Enter:
+                        if (_Buttons[_ButtonNext].Selected)
+                            CBackgroundMusic.Next();
+                        if (_Buttons[_ButtonPrevious].Selected)
+                            CBackgroundMusic.Previous();
+                        if (_Buttons[_ButtonPlay].Selected)
+                            CBackgroundMusic.Play();
+                        if (_Buttons[_ButtonPause].Selected)
+                            CBackgroundMusic.Pause();
+                        if (_Buttons[_ButtonRepeat].Selected)
+                            CBackgroundMusic.RepeatSong = !CBackgroundMusic.RepeatSong;
+                        break;
+
                     case Keys.Back:
                     case Keys.Escape:
                         CGraphics.Back();
@@ -107,8 +120,18 @@ namespace Vocaluxe.Screens
             {
                 _FadePlayerDirection = -1;
             }
-            if (mouseEvent.LB)
+            if (mouseEvent.LB && _IsMouseOver(mouseEvent))
             {
+                if (_Buttons[_ButtonNext].Selected)
+                    CBackgroundMusic.Next();
+                if (_Buttons[_ButtonPrevious].Selected)
+                    CBackgroundMusic.Previous();
+                if (_Buttons[_ButtonPlay].Selected)
+                    CBackgroundMusic.Play();
+                if (_Buttons[_ButtonPause].Selected)
+                    CBackgroundMusic.Pause();
+                if (_Buttons[_ButtonRepeat].Selected)
+                    CBackgroundMusic.RepeatSong = !CBackgroundMusic.RepeatSong;
             }
             else if (mouseEvent.RB)
                 CGraphics.Back();
@@ -162,6 +185,9 @@ namespace Vocaluxe.Screens
             _Texts[_TextTitle].Text = CSongs.Songs[CBackgroundMusic.SongID].Title;
             //Texts[_TextAlbum].Text = CSongs.Songs[CBackgroundMusic.SongID].;
             _Texts[_TextTimer].Text = minCurrent.ToString("00") + ":" + secCurrent.ToString("00") + "/" + minLength.ToString("00") + ":" + secLength.ToString("00");
+
+            _Buttons[_ButtonPause].Visible = _Statics[_StaticPlayerBG].Visible && CBackgroundMusic.IsPlaying;
+            _Buttons[_ButtonPlay].Visible = _Statics[_StaticPlayerBG].Visible && !CBackgroundMusic.IsPlaying;
         }
 
         private void _UpdatePlayerVisibility(float alpha)
