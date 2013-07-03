@@ -260,6 +260,8 @@ namespace Vocaluxe.Base
                                 CVideo.Skip(_Video, _CurrentPlaylistElement.Start, _CurrentPlaylistElement.VideoGap);
                             else
                                 CVideo.Skip(_Video, 0f, _CurrentPlaylistElement.VideoGap);
+                            if (CVideo.Finished(_Video))
+                                CVideo.Resume(_Video);
                         }
                     }
                     else
