@@ -51,6 +51,7 @@ namespace Vocaluxe.Base
         private static bool _Disabled;
         private static bool _CanSing;
         private static bool _RepeatSong;
+        private static bool _RandomOrder;
 
         public static bool VideoEnabled
         {
@@ -113,6 +114,10 @@ namespace Vocaluxe.Base
             {
                 if (value != _ActivePlaylist)
                 {
+                    if (value == -1)
+                        _RandomOrder = true;
+                    else if(value == 0)
+                        _RandomOrder = false;
                     _ActivePlaylist = value;
                     RemoveOwnMusic();
                     AddOwnMusic();
@@ -145,6 +150,12 @@ namespace Vocaluxe.Base
         public static CTexture Cover
         {
             get { return _CurrentPlaylistElement.Cover; }
+        }
+
+        public static bool RandomOrder
+        {
+            set { _RandomOrder = value; }
+            get { return _RandomOrder; }
         }
 
         public static void Init()
@@ -268,7 +279,10 @@ namespace Vocaluxe.Base
                     if (_NotPlayedFileNames.Count == 0)
                         _NotPlayedFileNames.AddRange(_AllFileNames);
 
-                    _CurrentPlaylistElement = _NotPlayedFileNames[CGame.Rand.Next(_NotPlayedFileNames.Count)];
+                    if(_RandomOrder)
+                        _CurrentPlaylistElement = _NotPlayedFileNames[CGame.Rand.Next(_NotPlayedFileNames.Count)];
+                    else
+                        _CurrentPlaylistElement = _NotPlayedFileNames[0];
                     _NotPlayedFileNames.Remove(_CurrentPlaylistElement);
 
                     _PreviousFileNames.Add(_CurrentPlaylistElement);
