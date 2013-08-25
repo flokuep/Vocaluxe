@@ -26,6 +26,7 @@ using Vocaluxe.Base.Fonts;
 using Vocaluxe.Screens;
 using VocaluxeLib;
 using VocaluxeLib.Menu;
+using VocaluxeLib.Animations;
 using VocaluxeLib.PartyModes;
 
 namespace Vocaluxe.Base
@@ -177,6 +178,7 @@ namespace Vocaluxe.Base
             CBackgroundMusic.Update();
             CController.Update();
             CProfiles.Update();
+            CAnimations.Update();
 
             if (CConfig.CoverLoading == ECoverLoading.TR_CONFIG_COVERLOADING_DYNAMIC && _CurrentScreen != EScreens.ScreenSing)
                 CSongs.LoadCover();

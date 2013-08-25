@@ -25,6 +25,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using VocaluxeLib.Draw;
+using VocaluxeLib.Animations;
 using VocaluxeLib.Menu.SingNotes;
 using VocaluxeLib.Menu.SongMenu;
 
@@ -724,6 +725,7 @@ namespace VocaluxeLib.Menu
         public virtual void OnShow()
         {
             _ResumeBG();
+            CAnimations.UpdateEvent(EAnimationEvent.OnVisible);
         }
 
         public virtual void OnShowFinish()

@@ -110,6 +110,15 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Animations\CAnimation.cs" />
+    <Compile Include="Animations\CAnimationFadeColor.cs" />
+    <Compile Include="Animations\CAnimationFramework.cs" />
+    <Compile Include="Animations\CAnimationMoveLinear.cs" />
+    <Compile Include="Animations\CAnimationResize.cs" />
+    <Compile Include="Animations\CAnimationRotate.cs" />
+    <Compile Include="Animations\CAnimations.cs" />
+    <Compile Include="Animations\CAnimationVideo.cs" />
+    <Compile Include="Animations\IAnimation.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IBasic.cs" />
     <Compile Include="Menu\CBackground.cs" />
@@ -136,6 +145,7 @@
     <Compile Include="Enums.cs" />
     <Compile Include="Menu\IMenu.cs" />
     <Compile Include="Menu\IMenuElement.cs" />
+    <Compile Include="Menu\IMenuProperties.cs" />
     <Compile Include="Profile\CAvatar.cs" />
     <Compile Include="Profile\CProfile.cs" />
     <Compile Include="Songs\CNotes.cs" />
