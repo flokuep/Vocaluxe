@@ -19,6 +19,8 @@
 
 using System;
 using System.Xml;
+using System.Collections.Generic;
+using VocaluxeLib.Animations;
 using VocaluxeLib.Draw;
 
 namespace VocaluxeLib.Menu
@@ -34,17 +36,43 @@ namespace VocaluxeLib.Menu
         public string SelTextureName;
     }
 
-    public class CButton : IMenuElement
+    public class CButton : IMenuElement, IMenuProperties
     {
         private SThemeButton _Theme;
         private bool _ThemeLoaded;
         private readonly int _PartyModeID;
 
-        public CTexture Texture;
-        public CTexture SelTexture;
-        public SRectF Rect;
-        public SColorF Color;
-        public SColorF SelColor;
+        public CTexture _Texture;
+        public CTexture _SelTexture;
+        public SRectF _Rect;
+        public SColorF _Color;
+        public SColorF _SelColor;
+
+        public CTexture Texture
+        {
+            get { return _Texture; }
+            set { _Texture = value; }
+        }
+        public CTexture SelTexture
+        { 
+            get { return _SelTexture; } 
+            set { _SelTexture = value; }
+        }
+        public SRectF Rect
+        {
+            get { return _Rect; } 
+            set { _Rect = value; }
+        }
+        public SColorF Color
+        {
+            get { return _Color; } 
+            set {_Color = value;}
+        }
+        public SColorF SelColor
+        {   
+            get { return _SelColor; } 
+            set { _SelColor = value; }
+        }
 
         private bool _IsSelText;
         public readonly CText Text;
@@ -57,6 +85,10 @@ namespace VocaluxeLib.Menu
         private bool _SelReflection;
         private float _SelReflectionSpace;
         private float _SelReflectionHeight;
+
+        public bool Animation;
+        private readonly List<CAnimation> _Animations;
+        public EAnimationEvent Event {get; set;}
 
         public bool Pressed;
 
@@ -76,11 +108,34 @@ namespace VocaluxeLib.Menu
             get { return _Selected; }
             set
             {
+                if (value)
+                    CAnimations.SetOnSelectAnim(this);
+                else
+                {
+                    CAnimations.SetAfterSelectAnim(this);
+                    if (Event == EAnimationEvent.None)
+                    {
+                        Rect = _Rect;
+                        Color = _Color;
+                    }
+                } 
                 _Selected = value;
                 Text.Selected = value;
             }
         }
-        public bool Visible = true;
+        private bool _Visible = true;
+        public bool Visible
+        {
+            get { return _Visible; }
+            set 
+            { 
+                if (value)
+                    CAnimations.SetOnVisibleAnim(this);
+                else
+                    CAnimations.SetAfterVisibleAnim(this); 
+                _Visible = value; 
+            }
+        }
         public bool Enabled = true;
 
         public string GetThemeName()
@@ -127,6 +182,10 @@ namespace VocaluxeLib.Menu
             _SelReflection = button._SelReflection;
             _SelReflectionHeight = button._SelReflectionHeight;
             _SelReflectionSpace = button._SelReflectionSpace;
+
+            Animation = button.Animation;
+            _Animations = button._Animations;
+            Event = button.Event;
         }
 
         public bool LoadTheme(string xmlPath, string elementName, CXMLReader xmlReader, int skinIndex)
@@ -137,30 +196,30 @@ namespace VocaluxeLib.Menu
             _ThemeLoaded &= xmlReader.GetValue(item + "/Skin", out _Theme.TextureName, String.Empty);
             _ThemeLoaded &= xmlReader.GetValue(item + "/SkinSelected", out _Theme.SelTextureName, String.Empty);
 
-            _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/X", ref Rect.X);
-            _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/Y", ref Rect.Y);
-            _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/Z", ref Rect.Z);
-            _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/W", ref Rect.W);
-            _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/H", ref Rect.H);
+            _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/X", ref _Rect.X);
+            _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/Y", ref _Rect.Y);
+            _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/Z", ref _Rect.Z);
+            _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/W", ref _Rect.W);
+            _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/H", ref _Rect.H);
 
             if (xmlReader.GetValue(item + "/Color", out _Theme.ColorName, String.Empty))
-                _ThemeLoaded &= CBase.Theme.GetColor(_Theme.ColorName, skinIndex, out Color);
+                _ThemeLoaded &= CBase.Theme.GetColor(_Theme.ColorName, skinIndex, out _Color);
             else
             {
-                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/R", ref Color.R);
-                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/G", ref Color.G);
-                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/B", ref Color.B);
-                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/A", ref Color.A);
+                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/R", ref _Color.R);
+                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/G", ref _Color.G);
+                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/B", ref _Color.B);
+                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/A", ref _Color.A);
             }
 
             if (xmlReader.GetValue(item + "/SColor", out _Theme.SelColorName, String.Empty))
-                _ThemeLoaded &= CBase.Theme.GetColor(_Theme.SelColorName, skinIndex, out SelColor);
+                _ThemeLoaded &= CBase.Theme.GetColor(_Theme.SelColorName, skinIndex, out _SelColor);
             else
             {
-                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/SR", ref SelColor.R);
-                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/SG", ref SelColor.G);
-                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/SB", ref SelColor.B);
-                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/SA", ref SelColor.A);
+                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/SR", ref _SelColor.R);
+                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/SG", ref _SelColor.G);
+                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/SB", ref _SelColor.B);
+                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/SA", ref _SelColor.A);
             }
 
             _ThemeLoaded &= Text.LoadTheme(item, "Text", xmlReader, skinIndex, true);
@@ -192,10 +251,45 @@ namespace VocaluxeLib.Menu
             else
                 _SelReflection = false;
 
+            //Animations
+            int i = 1;
+            while (xmlReader.ItemExists(item + "/Animation" + i.ToString()))
+            {
+                Animation = true;
+                EAnimationType type = new EAnimationType();
+                _ThemeLoaded &= xmlReader.TryGetEnumValue(item + "/Animation" + i.ToString() + "/Type", ref type);
+                CAnimation anim = new CAnimation(type, _PartyModeID);
+                _Animations.Add(anim);
+                i++;
+            }
+
+            //Load Animations
+            if (Animation)
+            {
+                i = 1;
+                foreach (CAnimation anim in _Animations)
+                {
+                    _ThemeLoaded &= anim.LoadAnimation(item + "/Animation" + i.ToString(), xmlReader);
+                    i++;
+                }
+            }
+ 
+
             if (_ThemeLoaded)
             {
                 _Theme.Name = elementName;
                 LoadTextures();
+                //Give button-data to animation
+                if (Animation)
+                {
+                    foreach (CAnimation anim in _Animations)
+                    {
+                        anim.SetColor(Color);
+                        anim.SetRect(Rect);
+                        anim.SetTexture(ref _Texture);
+                        CAnimations.Add(this, anim);
+                    }
+                } 
             }
             return _ThemeLoaded;
         }
@@ -269,6 +363,11 @@ namespace VocaluxeLib.Menu
                     writer.WriteEndElement();
                 }
 
+                for (int i = 0; i < _Animations.Count; i++)
+                {
+                    _Animations[i].SaveAnimation(writer);
+                }
+
                 writer.WriteEndElement();
 
                 return true;
@@ -288,6 +387,7 @@ namespace VocaluxeLib.Menu
                 texture = Texture ?? CBase.Theme.GetSkinTexture(_Theme.TextureName, _PartyModeID);
 
                 CBase.Drawing.DrawTexture(texture, Rect, Color);
+                Text.DrawRelative(Rect.X, Rect.Y); 
 
                 if (_Reflection)
                 {
@@ -301,11 +401,20 @@ namespace VocaluxeLib.Menu
             {
                 texture = Texture ?? CBase.Theme.GetSkinTexture(_Theme.SelTextureName, _PartyModeID);
 
-                CBase.Drawing.DrawTexture(texture, Rect, SelColor);
+                bool anim = (Event == EAnimationEvent.OnSelected && CAnimations.AnimAvailable(this, EAnimationEvent.OnSelected)) ||
+                            (Event == EAnimationEvent.Selected && CAnimations.AnimAvailable(this, EAnimationEvent.Selected));
+                if (anim)
+                    CBase.Drawing.DrawTexture(texture, Rect, Color);
+                else
+                    CBase.Drawing.DrawTexture(texture, Rect, SelColor);
+                Text.DrawRelative(Rect.X, Rect.Y);
 
                 if (_Reflection)
                 {
-                    CBase.Drawing.DrawTextureReflection(texture, Rect, SelColor, Rect, _ReflectionSpace, _ReflectionHeight);
+                    if (anim)
+                        CBase.Drawing.DrawTextureReflection(texture, Rect, Color, Rect, _ReflectionSpace, _ReflectionHeight);
+                    else
+                        CBase.Drawing.DrawTextureReflection(texture, Rect, SelColor, Rect, _ReflectionSpace, _ReflectionHeight);
                     Text.DrawRelative(Rect.X, Rect.Y, _ReflectionHeight, _ReflectionSpace, Rect.H);
                 }
                 else
@@ -357,19 +466,19 @@ namespace VocaluxeLib.Menu
         #region ThemeEdit
         public void MoveElement(int stepX, int stepY)
         {
-            Rect.X += stepX;
-            Rect.Y += stepY;
+            _Rect.X += stepX;
+            _Rect.Y += stepY;
         }
 
         public void ResizeElement(int stepW, int stepH)
         {
-            Rect.W += stepW;
-            if (Rect.W <= 0)
-                Rect.W = 1;
+            _Rect.W += stepW;
+            if (_Rect.W <= 0)
+                _Rect.W = 1;
 
-            Rect.H += stepH;
-            if (Rect.H <= 0)
-                Rect.H = 1;
+            _Rect.H += stepH;
+            if (_Rect.H <= 0)
+                _Rect.H = 1;
         }
         #endregion ThemeEdit
     }
