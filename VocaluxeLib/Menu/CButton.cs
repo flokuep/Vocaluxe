@@ -87,7 +87,7 @@ namespace VocaluxeLib.Menu
         private float _SelReflectionHeight;
 
         public bool Animation;
-        private readonly List<CAnimation> _Animations;
+        private readonly List<CAnimation> _Animations = new List<CAnimation>();
         public EAnimationEvent Event {get; set;}
 
         public bool Pressed;
@@ -108,19 +108,22 @@ namespace VocaluxeLib.Menu
             get { return _Selected; }
             set
             {
-                if (value)
-                    CAnimations.SetOnSelectAnim(this);
-                else
+                if (value != _Selected)
                 {
-                    CAnimations.SetAfterSelectAnim(this);
-                    if (Event == EAnimationEvent.None)
+                    if (value)
+                        CAnimations.SetOnSelectAnim(this);
+                    else
                     {
-                        Rect = _Rect;
-                        Color = _Color;
+                        CAnimations.SetAfterSelectAnim(this);
+                        if (Event == EAnimationEvent.None)
+                        {
+                            Rect = _Rect;
+                            Color = _Color;
+                        }
                     }
-                } 
-                _Selected = value;
-                Text.Selected = value;
+                    _Selected = value;
+                    Text.Selected = value;
+                }
             }
         }
         private bool _Visible = true;
@@ -258,8 +261,11 @@ namespace VocaluxeLib.Menu
                 Animation = true;
                 EAnimationType type = new EAnimationType();
                 _ThemeLoaded &= xmlReader.TryGetEnumValue(item + "/Animation" + i.ToString() + "/Type", ref type);
-                CAnimation anim = new CAnimation(type, _PartyModeID);
-                _Animations.Add(anim);
+                if (_ThemeLoaded)
+                {
+                    CAnimation anim = new CAnimation(type, _PartyModeID);
+                    _Animations.Add(anim);
+                }
                 i++;
             }
 

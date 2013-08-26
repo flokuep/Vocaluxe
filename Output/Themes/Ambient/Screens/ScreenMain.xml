@@ -85,6 +85,22 @@
         <Space>10</Space>
         <Height>26</Height>
       </SReflection>
+      <Animation1>
+		  <Type>FadeColor</Type>
+		  <Event>OnSelected</Event>
+		  <Time>500</Time>
+		  <Repeat>None</Repeat>
+		  <StartColor>ButtonColor</StartColor>
+		  <EndColor>ButtonSColor</EndColor>
+      </Animation1>
+      <Animation2>
+		  <Type>FadeColor</Type>
+		  <Event>AfterSelected</Event>
+		  <Time>500</Time>
+		  <Repeat>None</Repeat>
+		  <StartColor>ButtonSColor</StartColor>
+		  <EndColor>ButtonColor</EndColor>
+      </Animation2>
     </ButtonSing>
     <ButtonParty>
       <!--<Skin>: Texture name-->
