@@ -46,6 +46,19 @@ namespace VocaluxeLib.Animations
             return AnimationLoaded;
         }
 
+        public override bool SaveAnimation(System.Xml.XmlWriter writer)
+        {
+            if (AnimationLoaded)
+            {
+                base.SaveAnimation(writer);
+                writer.WriteComment("<Video>: Video-texture-name from skin");
+                writer.WriteElementString("Video", _VideoName);
+                return true;
+            }
+            else
+                return false;
+        }
+
         public override CTexture GetTexture()
         {
             return _VideoTexture;

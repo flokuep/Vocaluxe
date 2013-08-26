@@ -17,6 +17,8 @@
 //  */
 #endregion
 
+using System;
+using System.Xml;
 using VocaluxeLib.Menu;
 
 namespace VocaluxeLib.Animations
@@ -69,6 +71,28 @@ namespace VocaluxeLib.Animations
             AnimationLoaded &= xmlReader.TryGetEnumValue(item + "/Order", ref Order);
 
             return AnimationLoaded;
+        }
+
+        public override bool SaveAnimation(XmlWriter writer)
+        {
+            if (AnimationLoaded)
+            {
+                base.SaveAnimation(writer);
+                writer.WriteComment("<Time>: Duration of animation in ms");
+                writer.WriteElementString("Time", Time.ToString("#0.00"));
+                writer.WriteComment("<Repeat>: Repeat-Mode of animation: " + CHelper.ListStrings(Enum.GetNames(typeof(EAnimationRepeat))));
+                writer.WriteElementString("Repeat", Enum.GetName(typeof(EAnimationRepeat), Repeat));
+                writer.WriteComment("<W> and <H>: Final size");
+                writer.WriteElementString("W", _FinalRect.W.ToString("#0.00"));
+                writer.WriteElementString("H", _FinalRect.H.ToString("#0.00"));
+                writer.WriteComment("<Position>: Position of final rect: " + CHelper.ListStrings(Enum.GetNames(typeof(EAnimationResizePosition))));
+                writer.WriteElementString("Position", Enum.GetName(typeof(EAnimationResizePosition), Position));
+                writer.WriteComment("<Order>: Order of resizing: " + CHelper.ListStrings(Enum.GetNames(typeof(EAnimationResizeOrder))));
+                writer.WriteElementString("Order", Enum.GetName(typeof(EAnimationResizeOrder), Order));
+                return true;
+            }
+            else
+                return false;
         }
 
         public override void SetRect(SRectF rect)

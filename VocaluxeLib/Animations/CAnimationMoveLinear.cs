@@ -17,6 +17,7 @@
 //  */
 #endregion
 
+using System;
 using VocaluxeLib.Menu;
 
 namespace VocaluxeLib.Animations
@@ -52,6 +53,24 @@ namespace VocaluxeLib.Animations
 
 
             return AnimationLoaded;
+        }
+
+        public override bool SaveAnimation(System.Xml.XmlWriter writer)
+        {
+            if (AnimationLoaded)
+            {
+                base.SaveAnimation(writer);
+                writer.WriteComment("<Time>: Duration of animation in ms");
+                writer.WriteElementString("Time", Time.ToString("#0.00"));
+                writer.WriteComment("<Repeat>: Repeat-Mode of animation: " + CHelper.ListStrings(Enum.GetNames(typeof(EAnimationRepeat))));
+                writer.WriteElementString("Repeat", Enum.GetName(typeof(EAnimationRepeat), Repeat));
+                writer.WriteComment("<X> and <Y>: Element destination");
+                writer.WriteElementString("X", _FinalRect.X.ToString("#0.00"));
+                writer.WriteElementString("Y", _FinalRect.Y.ToString("#0.00"));
+                return true;
+            }
+            else
+                return false;
         }
 
         public override void SetRect(SRectF rect)

@@ -17,6 +17,8 @@
 //  */
 #endregion
 
+using System;
+using System.Xml;
 using VocaluxeLib.Menu;
 
 namespace VocaluxeLib.Animations
@@ -48,6 +50,23 @@ namespace VocaluxeLib.Animations
             AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/Degree", ref _Degree);
 
             return AnimationLoaded;
+        }
+
+        public override bool SaveAnimation(XmlWriter writer)
+        {
+            if (AnimationLoaded)
+            {
+                base.SaveAnimation(writer);
+                writer.WriteComment("<Time>: Duration of animation in ms");
+                writer.WriteElementString("Time", Time.ToString("#0.00"));
+                writer.WriteComment("<Repeat>: Repeat-Mode of animation: " + CHelper.ListStrings(Enum.GetNames(typeof(EAnimationRepeat))));
+                writer.WriteElementString("Repeat", Enum.GetName(typeof(EAnimationRepeat), Repeat));
+                writer.WriteComment("<Degree>: Rotation");
+                writer.WriteElementString("Degree", _FinalRect.X.ToString("#0.00"));
+                return true;
+            }
+            else
+                return false;
         }
 
         public override void SetRect(SRectF rect)

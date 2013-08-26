@@ -17,6 +17,7 @@
 //  */
 #endregion
 
+using System;
 using System.Diagnostics;
 using System.Xml;
 using VocaluxeLib.Menu;
@@ -97,6 +98,10 @@ namespace VocaluxeLib.Animations
 
         public virtual bool SaveAnimation(XmlWriter writer)
         {
+            writer.WriteComment("<Type>: Type of animation: " + CHelper.ListStrings(Enum.GetNames(typeof(EAnimationType))));
+            writer.WriteElementString("Type", Enum.GetName(typeof(EAnimationType), Type));
+            writer.WriteComment("<Event>: Trigger for animation: " + CHelper.ListStrings(Enum.GetNames(typeof(EAnimationEvent))));
+            writer.WriteElementString("Event", Enum.GetName(typeof(EAnimationEvent), Event));
             return false;
         }
 

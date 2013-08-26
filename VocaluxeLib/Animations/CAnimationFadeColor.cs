@@ -66,6 +66,43 @@ namespace VocaluxeLib.Animations
             return AnimationLoaded;
         }
 
+        public override bool SaveAnimation(System.Xml.XmlWriter writer)
+        {
+            if (AnimationLoaded)
+            {
+                base.SaveAnimation(writer);
+                writer.WriteComment("<Time>: Duration of animation in ms");
+                writer.WriteElementString("Time", Time.ToString("#0.00"));
+                writer.WriteComment("<Repeat>: Repeat-Mode of animation: " + CHelper.ListStrings(Enum.GetNames(typeof(EAnimationRepeat))));
+                writer.WriteElementString("Repeat", Enum.GetName(typeof(EAnimationRepeat), Repeat));
+                writer.WriteComment("<StartColor>: Start color for fading from ColorScheme (high priority)");
+                writer.WriteComment("or <StartR>, <StartG>, <StartB>, <StartA> (lower priority)");
+                if (_StartColorName != String.Empty)
+                    writer.WriteElementString("StartColor", _StartColorName);
+                else
+                {
+                    writer.WriteElementString("StartR", _StartColor.R.ToString("#0.00"));
+                    writer.WriteElementString("StartG", _StartColor.G.ToString("#0.00"));
+                    writer.WriteElementString("StartB", _StartColor.B.ToString("#0.00"));
+                    writer.WriteElementString("StartA", _StartColor.A.ToString("#0.00"));
+                }
+                writer.WriteComment("<EndColor>: End color for fading from ColorScheme (high priority)");
+                writer.WriteComment("or <EndR>, <EndG>, <EndB>, <EndA> (lower priority)");
+                if (_EndColorName != String.Empty)
+                    writer.WriteElementString("EndColor", _EndColorName);
+                else
+                {
+                    writer.WriteElementString("EndR", _EndColor.R.ToString("#0.00"));
+                    writer.WriteElementString("EndG", _EndColor.G.ToString("#0.00"));
+                    writer.WriteElementString("EndB", _EndColor.B.ToString("#0.00"));
+                    writer.WriteElementString("EndA", _EndColor.A.ToString("#0.00"));
+                }
+                return true;
+            }
+            else
+                return false;
+        }
+
         public override void StartAnimation()
         {
             base.StartAnimation();
@@ -79,6 +116,8 @@ namespace VocaluxeLib.Animations
             }
             else if (!AnimationFromStart && Repeat == EAnimationRepeat.OnlyReset)
                 ResetMode = true;
+
+            CBase.Log.LogError("Anim started");
         }
 
         public override SColorF GetColor()
@@ -93,6 +132,7 @@ namespace VocaluxeLib.Animations
         public override void SetCurrentValues(SRectF rect, SColorF color)
         {
             _CurrentColor = color;
+            CBase.Log.LogError("Current Vals set");
         }
 
         public override void Update()

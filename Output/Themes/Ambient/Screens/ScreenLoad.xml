@@ -47,7 +47,7 @@
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Left</Align>
       <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
-      <ResizeAlign>Center</ResizeAlign>
+      <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
       <!--<Font>: Text font name-->
@@ -58,35 +58,6 @@
       <!--   <Space>: Reflection Space-->
       <!--   <Height>: Reflection Height-->
     </Text1>
-    <TextProgramName>
-      <!--<X>, <Y>: Text position-->
-      <X>640</X>
-      <Y>305</Y>
-      <!--<Z>: Text position-->
-      <Z>0,00</Z>
-      <!--<H>: Text height-->
-      <H>101</H>
-      <!--<MaxW>: Maximum text width (if exists)-->
-      <!--<Color>: Text color from ColorScheme (high priority)-->
-      <!--or <R>, <G>, <B>, <A> (lower priority)-->
-      <Color>StaticColor</Color>
-      <!--<SColor>: Selected Text color from ColorScheme (high priority)-->
-      <!--or <SR>, <SG>, <SB>, <SA> (lower priority)-->
-      <SColor>TextSColor</SColor>
-      <!--<Align>: Text align horizontal: Left, Center, Right-->
-      <Align>Center</Align>
-      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
-      <ResizeAlign>Center</ResizeAlign>
-      <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
-      <Style>Bold</Style>
-      <!--<Font>: Text font name-->
-      <Font>Outline</Font>
-      <!--<Text>: Nothing or translation tag-->
-      <Text>TR_PROGRAM_NAME</Text>
-      <!--<Reflection> If exists:-->
-      <!--   <Space>: Reflection Space-->
-      <!--   <Height>: Reflection Height-->
-    </TextProgramName>
     <TextStatus>
       <!--<X>, <Y>: Text position-->
       <X>240</X>
@@ -105,7 +76,7 @@
       <!--<Align>: Text align horizontal: Left, Center, Right-->
       <Align>Left</Align>
       <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
-      <ResizeAlign>Center</ResizeAlign>
+      <HAlign>Center</HAlign>
       <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
       <Style>Bold</Style>
       <!--<Font>: Text font name-->
@@ -116,5 +87,34 @@
       <!--   <Space>: Reflection Space-->
       <!--   <Height>: Reflection Height-->
     </TextStatus>
+    <TextProgramName>
+      <!--<X>, <Y>: Text position-->
+      <X>640</X>
+      <Y>305</Y>
+      <!--<Z>: Text position-->
+      <Z>0,00</Z>
+      <!--<H>: Text height-->
+      <H>101</H>
+      <!--<MaxW>: Maximum text width (if exists)-->
+      <!--<Color>: Text color from ColorScheme (high priority)-->
+      <!--or <R>, <G>, <B>, <A> (lower priority)-->
+      <Color>StaticColor</Color>
+      <!--<SColor>: Selected Text color from ColorScheme (high priority)-->
+      <!--or <SR>, <SG>, <SB>, <SA> (lower priority)-->
+      <SColor>TextSColor</SColor>
+      <!--<Align>: Text align horizontal: Left, Center, Right-->
+      <Align>Center</Align>
+      <!--<ResizeAlign>: Text align vertical (on downsizing): Top, Center, Bottom-->
+      <HAlign>Center</HAlign>
+      <!--<Style>: Text style: Normal, Italic, Bold, BoldItalic-->
+      <Style>Bold</Style>
+      <!--<Font>: Text font name-->
+      <Font>Outline</Font>
+      <!--<Text>: Nothing or translation tag-->
+      <Text>TR_PROGRAM_NAME</Text>
+      <!--<Reflection> If exists:-->
+      <!--   <Space>: Reflection Space-->
+      <!--   <Height>: Reflection Height-->
+    </TextProgramName>
   </ScreenLoad>
 </root>

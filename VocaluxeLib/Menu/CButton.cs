@@ -371,7 +371,9 @@ namespace VocaluxeLib.Menu
 
                 for (int i = 0; i < _Animations.Count; i++)
                 {
+                    writer.WriteStartElement("Animation" + (i + 1));
                     _Animations[i].SaveAnimation(writer);
+                    writer.WriteEndElement();
                 }
 
                 writer.WriteEndElement();

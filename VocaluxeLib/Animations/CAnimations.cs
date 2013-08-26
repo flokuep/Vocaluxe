@@ -51,8 +51,8 @@ namespace VocaluxeLib.Animations
                 {
                     if (!am.anim.AnimationActive() && !am.anim.IsDrawn())
                     {
-                        am.anim.SetCurrentValues(am.element.Rect, am.element.Color);
                         am.anim.StartAnimation();
+                        am.anim.SetCurrentValues(am.element.Rect, am.element.Color);
                     }
                     else if (am.element.Event == EAnimationEvent.AfterSelected && am.anim.IsDrawn())
                     {
