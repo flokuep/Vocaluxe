@@ -981,9 +981,12 @@ namespace VocaluxeLib.Menu
                 if (_GetZValue(_Interactions[i]) > z)
                     continue;
                 z = _GetZValue(_Interactions[i]);
-                _UnsetSelected();
-                _Selection = i;
-                _SetSelected();
+                if (_Selection != i)
+                {
+                    _UnsetSelected();
+                    _Selection = i;
+                    _SetSelected();
+                }
             }
         }
 
