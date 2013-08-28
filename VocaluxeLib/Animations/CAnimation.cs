@@ -28,6 +28,10 @@ namespace VocaluxeLib.Animations
         private IAnimation _Animation;
         private readonly int _PartyModeID;
 
+        public CAnimation()
+        {
+        }
+
         public CAnimation(EAnimationType type, int partyModeID)
         {
             _PartyModeID = partyModeID;

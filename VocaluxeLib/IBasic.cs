@@ -26,6 +26,7 @@ using VocaluxeLib.Game;
 using VocaluxeLib.Menu;
 using VocaluxeLib.Profile;
 using VocaluxeLib.Songs;
+using VocaluxeLib.Animations;
 
 namespace VocaluxeLib
 {
@@ -94,6 +95,9 @@ namespace VocaluxeLib
         SColorF GetColor(string colorName, int partyModeID);
         bool GetColor(string colorName, int skinIndex, out SColorF color);
         SColorF GetPlayerColor(int playerNr);
+
+        CAnimation GetAnimation(string animationName, int partyModeID);
+        bool GetAnimation(string animationName, int skinIndex, out CAnimation animation);
 
         void UnloadSkins();
         void ListSkins();

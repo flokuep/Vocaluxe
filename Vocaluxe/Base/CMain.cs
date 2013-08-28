@@ -28,6 +28,7 @@ using VocaluxeLib.Draw;
 using VocaluxeLib.Menu;
 using VocaluxeLib.Songs;
 using VocaluxeLib.Profile;
+using VocaluxeLib.Animations;
 
 namespace Vocaluxe.Base
 {
@@ -266,6 +267,16 @@ namespace Vocaluxe.Base
         public SColorF GetPlayerColor(int playerNr)
         {
             return CTheme.GetPlayerColor(playerNr);
+        }
+
+        public CAnimation GetAnimation(string animationName, int partyModeID)
+        {
+            return CTheme.GetAnimation(animationName, partyModeID);
+        }
+
+        public bool GetAnimation(string animationName, int skinIndex, out CAnimation animation)
+        {
+            return CTheme.GetAnimation(animationName, skinIndex, out animation);
         }
 
         public void UnloadSkins()

@@ -259,27 +259,23 @@ namespace VocaluxeLib.Menu
             while (xmlReader.ItemExists(item + "/Animation" + i.ToString()))
             {
                 Animation = true;
-                EAnimationType type = new EAnimationType();
-                _ThemeLoaded &= xmlReader.TryGetEnumValue(item + "/Animation" + i.ToString() + "/Type", ref type);
-                if (_ThemeLoaded)
+                CAnimation anim;
+                string animName = String.Empty;
+                if (xmlReader.GetValue(item + "/Animation"+i+"/Name", out animName, String.Empty))
                 {
-                    CAnimation anim = new CAnimation(type, _PartyModeID);
-                    _Animations.Add(anim);
+                    _ThemeLoaded &= CBase.Theme.GetAnimation(animName, skinIndex, out anim);
                 }
+                else
+                {
+                    EAnimationType type = new EAnimationType();
+                    _ThemeLoaded &= xmlReader.TryGetEnumValue(item + "/Animation" + i.ToString() + "/Type", ref type);
+                    anim = new CAnimation(type, _PartyModeID);
+                    _ThemeLoaded &= anim.LoadAnimation(item + "/Animation" + i.ToString(), xmlReader);
+                }
+                if (_ThemeLoaded)
+                    _Animations.Add(anim);
                 i++;
             }
-
-            //Load Animations
-            if (Animation)
-            {
-                i = 1;
-                foreach (CAnimation anim in _Animations)
-                {
-                    _ThemeLoaded &= anim.LoadAnimation(item + "/Animation" + i.ToString(), xmlReader);
-                    i++;
-                }
-            }
- 
 
             if (_ThemeLoaded)
             {

@@ -25,6 +25,7 @@ using System.Windows.Forms;
 using System.Xml;
 using Vocaluxe.Base.Fonts;
 using VocaluxeLib;
+using VocaluxeLib.Animations;
 using VocaluxeLib.Draw;
 
 namespace Vocaluxe.Base
@@ -70,6 +71,7 @@ namespace Vocaluxe.Base
         public Dictionary<string, CVideoSkinElement> VideoList;
 
         public SColors ThemeColors;
+        public Dictionary<string, CAnimation> AnimationsList;
     }
 
     struct SColors
@@ -82,6 +84,12 @@ namespace Vocaluxe.Base
     {
         public string Name;
         public SColorF Color;
+    }
+
+    struct SAnimations
+    {
+        public string Name;
+        public CAnimation Animation;
     }
 
     struct SCursor
@@ -104,7 +112,7 @@ namespace Vocaluxe.Base
     {
         // Version number for main theme and skin files. Increment it, if you've changed something on the theme files!
         private const int _ThemeSystemVersion = 5;
-        private const int _SkinSystemVersion = 3;
+        private const int _SkinSystemVersion = 4;
 
         #region Vars
         private static readonly XmlWriterSettings _Settings = new XmlWriterSettings();
@@ -207,6 +215,9 @@ namespace Vocaluxe.Base
 
             // load colors
             _LoadColors(xmlReader, skinIndex);
+
+            // load animation
+            _LoadAnimations(xmlReader, skinIndex);
             return true;
         }
 
@@ -492,6 +503,12 @@ namespace Vocaluxe.Base
                         names = xmlReader.GetValues("Videos");
                         foreach (string str in names)
                             skin.VideoList[str] = new CVideoSkinElement();
+
+                        skin.AnimationsList = new Dictionary<string, CAnimation>();
+                        names = xmlReader.GetValues("Animations");
+                        foreach (string str in names)
+                            skin.AnimationsList[str] = new CAnimation();
+
                         _Skins.Add(skin);
                     }
                 }
@@ -681,6 +698,23 @@ namespace Vocaluxe.Base
             _Skins[skinIndex] = skin;
         }
 
+        private static void _LoadAnimations(CXMLReader xmlReader, int skinIndex)
+        {
+            SSkin skin = _Skins[skinIndex];
+
+            foreach (var valuePair in _Skins[skinIndex].AnimationsList)
+            {
+                CAnimation anim = valuePair.Value;
+                EAnimationType type = EAnimationType.FadeColor;
+                if (xmlReader.TryGetEnumValue<EAnimationType>("//root/Animations/" + valuePair.Key + "/Type", ref type))
+                {
+                    anim = new CAnimation(type, skin.PartyModeID);
+                    if (!anim.LoadAnimation("//root/Animations/" + valuePair.Key, xmlReader))
+                        CLog.LogError("Could not load animation \"" + valuePair.Key + "\" from " + skin.Name + " - Skin");
+                }
+            }
+        }
+
         private static void _LoadCursor(CXMLReader xmlReader, int skinIndex)
         {
             string value = String.Empty;
@@ -840,5 +874,25 @@ namespace Vocaluxe.Base
             return _Skins[skinIndex].ThemeColors.Player[playerNr - 1];
         }
         #endregion Color Handling
+
+        #region Animation Handling
+
+        public static CAnimation GetAnimation(string animationName, int partyModeID)
+        {
+            CAnimation animation;
+
+            int skinIndex = GetSkinIndex(partyModeID);
+            GetAnimation(animationName, skinIndex, out animation);
+
+            return animation;
+        }
+
+        public static bool GetAnimation(string animationName, int skinIndex, out CAnimation animation)
+        {
+           bool val =  _Skins[skinIndex].AnimationsList.TryGetValue(animationName, out animation);
+           return val;
+        }
+
+        #endregion Animation Handling
     }
 }
