@@ -1,6 +1,12 @@
 Skin System
 
 ++++++++++
+
+Version 4:
+
+Added <Animations>-element for easier adding animations to themes.
+
+++++++++++
 Version 3:
 
 Added videos:
