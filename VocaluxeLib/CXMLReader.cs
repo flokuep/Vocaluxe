@@ -130,9 +130,11 @@ namespace VocaluxeLib
             _Navigator.MoveToFirstChild();
 
             while (_Navigator.Name != cast)
-                _Navigator.MoveToNext();
+                if (!_Navigator.MoveToNext())
+                    return values;
 
-            _Navigator.MoveToFirstChild();
+            if (!_Navigator.MoveToFirstChild())
+                return values;
 
             values.Add(_Navigator.LocalName);
             while (_Navigator.MoveToNext())
