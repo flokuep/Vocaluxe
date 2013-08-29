@@ -30,6 +30,7 @@ using VocaluxeLib;
 using VocaluxeLib.Draw;
 using VocaluxeLib.Menu;
 using VocaluxeLib.Songs;
+using VocaluxeLib.Animations;
 
 namespace Vocaluxe.Screens
 {
@@ -115,8 +116,6 @@ namespace Vocaluxe.Screens
         private readonly int[] _NoteLines = new int[CSettings.MaxNumPlayer];
 
         private Stopwatch _TimerSongText;
-        private Stopwatch _TimerDuetText1;
-        private Stopwatch _TimerDuetText2;
 
         private bool _Pause;
         private bool _Webcam;
@@ -156,8 +155,6 @@ namespace Vocaluxe.Screens
 
             _TimeRects = new List<STimeRect>();
             _TimerSongText = new Stopwatch();
-            _TimerDuetText1 = new Stopwatch();
-            _TimerDuetText2 = new Stopwatch();
         }
 
         public override void LoadTheme(string xmlPath)
@@ -175,6 +172,11 @@ namespace Vocaluxe.Screens
 
             _Buttons[_ButtonCancel].Visible = false;
             _Buttons[_ButtonContinue].Visible = false;
+
+            if (!_Texts[_TextDuetName1].Animation)
+                CLog.LogError("ScreenSing.xml: Warning! TextuDuetName1 hasn't an animation and is maybe not visible!");
+            if (!_Texts[_TextDuetName2].Animation)
+                CLog.LogError("ScreenSing.xml: Warning! TextuDuetName1 hasn't an animation and is maybe not visible!");
         }
 
         public override bool HandleInput(SKeyEvent keyEvent)
@@ -638,6 +640,8 @@ namespace Vocaluxe.Screens
             {
                 _Texts[_TextDuetName1].Text = song.DuetPart1;
                 _Texts[_TextDuetName2].Text = song.DuetPart2;
+                _Texts[_TextDuetName1].Visible = false;
+                _Texts[_TextDuetName2].Visible = false;
                 //More than one song: Player is not assigned to line by user
                 //Otherwise, this is done by CScreenNames
                 if (CGame.GetNumSongs() > 1)
@@ -676,10 +680,6 @@ namespace Vocaluxe.Screens
             */
             _TimerSongText.Stop();
             _TimerSongText.Reset();
-            _TimerDuetText1.Stop();
-            _TimerDuetText1.Reset();
-            _TimerDuetText2.Stop();
-            _TimerDuetText2.Reset();
 
             if (song.Notes.Voices.Length != 2)
                 _TimerSongText.Start();
@@ -1224,62 +1224,21 @@ namespace Vocaluxe.Screens
         {
             if (CGame.GetSong() != null)
             {
-                //Timer for first duet-part
-                if (_TimerDuetText1.IsRunning)
+                if (CAnimations.GetCurrentAnimation(_Texts[_TextDuetName1]) != null)
                 {
-                    float t = _TimerDuetText1.ElapsedMilliseconds / 1000f;
-                    if (t < 10f)
-                    {
+                    if (!CAnimations.GetCurrentAnimation(_Texts[_TextDuetName1]).IsDrawn() && !_Texts[_TextDuetName1].Visible && _Lyrics[_LyricMainDuet].Alpha > 0 && CGame.GetSong().IsDuet)
                         _Texts[_TextDuetName1].Visible = true;
-                        SColorF color = _Texts[_TextDuetName1].Color;
-
-                        if (t < 3f)
-                            color.A = (3f - (3f - t)) / 3f;
-                        else if (t < 7f)
-                            color.A = 1f;
-                        else
-                            color.A = (3f - (t - 7f)) / 3f;
-
-                        _Texts[_TextDuetName1].Color = color;
-                    }
-                    else
-                    {
+                    else if (CAnimations.GetCurrentAnimation(_Texts[_TextDuetName1]).IsDrawn() && _Texts[_TextDuetName1].Visible)
                         _Texts[_TextDuetName1].Visible = false;
-                        _TimerDuetText1.Stop();
-                    }
                 }
-                else if (!_TimerDuetText1.IsRunning && _TimerDuetText1.ElapsedMilliseconds == 0 && _Lyrics[_LyricMainDuet].Alpha > 0 && CGame.GetSong().IsDuet)
-                    _TimerDuetText1.Start();
-                else
-                    _Texts[_TextDuetName1].Visible = false;
-                //Timer for second duet-part
-                if (_TimerDuetText2.IsRunning)
+
+                if (CAnimations.GetCurrentAnimation(_Texts[_TextDuetName2]) != null)
                 {
-                    float t = _TimerDuetText2.ElapsedMilliseconds / 1000f;
-                    if (t < 10f)
-                    {
+                    if (!CAnimations.GetCurrentAnimation(_Texts[_TextDuetName2]).IsDrawn() && !_Texts[_TextDuetName2].Visible && _Lyrics[_LyricMain].Alpha > 0 && CGame.GetSong().IsDuet)
                         _Texts[_TextDuetName2].Visible = true;
-                        SColorF color = _Texts[_TextDuetName2].Color;
-
-                        if (t < 3f)
-                            color.A = (3f - (3f - t)) / 3f;
-                        else if (t < 7f)
-                            color.A = 1f;
-                        else
-                            color.A = (3f - (t - 7f)) / 3f;
-
-                        _Texts[_TextDuetName2].Color = color;
-                    }
-                    else
-                    {
+                    else if (CAnimations.GetCurrentAnimation(_Texts[_TextDuetName2]).IsDrawn() && _Texts[_TextDuetName2].Visible)
                         _Texts[_TextDuetName2].Visible = false;
-                        _TimerDuetText2.Stop();
-                    }
                 }
-                else if (!_TimerDuetText2.IsRunning && _TimerDuetText2.ElapsedMilliseconds == 0 && _Lyrics[_LyricMain].Alpha > 0 && CGame.GetSong().IsDuet)
-                    _TimerDuetText2.Start();
-                else
-                    _Texts[_TextDuetName2].Visible = false;
             }
         }
 
