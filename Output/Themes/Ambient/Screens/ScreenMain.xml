@@ -70,6 +70,12 @@
         <Font>Outline</Font>
         <!--<Text>: Nothing or translation tag-->
         <Text>TR_SCREENMAIN_BUTTON_SING</Text>
+        <Animation1>
+          <Name>ButtonOnSelected</Name>
+        </Animation1>
+        <Animation2>
+		  <Name>ButtonAfterSelected</Name>
+        </Animation2>
       </Text>
       <!--<Reflection> If exists:-->
       <!--   <Space>: Reflection Space-->

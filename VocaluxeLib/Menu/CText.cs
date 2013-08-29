@@ -18,8 +18,11 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Xml;
+using VocaluxeLib.Draw;
+using VocaluxeLib.Animations;
 
 namespace VocaluxeLib.Menu
 {
@@ -32,7 +35,7 @@ namespace VocaluxeLib.Menu
         public string SelColorName; //for Buttons
     }
 
-    public class CText : IMenuElement
+    public class CText : IMenuElement, IMenuProperties
     {
         private SThemeText _Theme;
         private bool _ThemeLoaded;
@@ -180,13 +183,34 @@ namespace VocaluxeLib.Menu
                     _UpdateTextPosition();
                 return _Rect;
             }
+            set
+            {
+                _Rect = value;
+            }
         }
 
-        public SColorF Color; //normal Color
-        public SColorF SelColor; //selected Color for Buttons
+        public SColorF Color
+        {
+            get { return _Color; }
+            set { _Color = value; }
+        }
+        public SColorF SelColor
+        {
+            get { return _SelColor; }
+            set { _SelColor = value; }
+        }
+
+        public CTexture Texture { set; get; }
+
+        private SColorF _Color; //normal Color
+        private SColorF _SelColor; //selected Color for Buttons
 
         public float ReflectionSpace;
         public float ReflectionHeight;
+
+        public bool Animation;
+        private readonly List<CAnimation> _Animations = new List<CAnimation>();
+        public EAnimationEvent Event { get; set; }
 
         private string _Text = String.Empty;
         public string Text
@@ -225,8 +249,42 @@ namespace VocaluxeLib.Menu
             }
         }
 
-        public bool Selected;
-        public bool Visible = true;
+        private bool _Selected;
+        public bool Selected
+        {
+            get { return _Selected; }
+            set
+            {
+                if (value != _Selected)
+                {
+                    if (value)
+                        CAnimations.SetOnSelectAnim(this);
+                    else
+                    {
+                        CAnimations.SetAfterSelectAnim(this);
+                        if (Event == EAnimationEvent.None)
+                        {
+                            Rect = _Rect;
+                            Color = _Color;
+                        }
+                    }
+                    _Selected = value;
+                }
+            }
+        }
+        private bool _Visible = true;
+        public bool Visible
+        {
+            get { return _Visible; }
+            set
+            {
+                if (value)
+                    CAnimations.SetOnVisibleAnim(this);
+                else
+                    CAnimations.SetAfterVisibleAnim(this);
+                _Visible = value;
+            }
+        }
         private bool _EditMode;
         public bool EditMode
         {
@@ -329,24 +387,24 @@ namespace VocaluxeLib.Menu
             xmlReader.TryGetFloatValue(item + "/MaxW", ref _MaxWidth);
 
             if (xmlReader.GetValue(item + "/Color", out _Theme.ColorName, String.Empty))
-                _ThemeLoaded &= CBase.Theme.GetColor(_Theme.ColorName, skinIndex, out Color);
+                _ThemeLoaded &= CBase.Theme.GetColor(_Theme.ColorName, skinIndex, out _Color);
             else
             {
-                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/R", ref Color.R);
-                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/G", ref Color.G);
-                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/B", ref Color.B);
-                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/A", ref Color.A);
+                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/R", ref _Color.R);
+                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/G", ref _Color.G);
+                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/B", ref _Color.B);
+                _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/A", ref _Color.A);
             }
 
             if (xmlReader.GetValue(item + "/SColor", out _Theme.SelColorName, String.Empty))
-                _ThemeLoaded &= CBase.Theme.GetColor(_Theme.SelColorName, skinIndex, out SelColor);
+                _ThemeLoaded &= CBase.Theme.GetColor(_Theme.SelColorName, skinIndex, out _SelColor);
             else
             {
-                if (xmlReader.TryGetFloatValue(item + "/SR", ref SelColor.R))
+                if (xmlReader.TryGetFloatValue(item + "/SR", ref _SelColor.R))
                 {
-                    _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/SG", ref SelColor.G);
-                    _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/SB", ref SelColor.B);
-                    _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/SA", ref SelColor.A);
+                    _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/SG", ref _SelColor.G);
+                    _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/SB", ref _SelColor.B);
+                    _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/SA", ref _SelColor.A);
                 }
             }
 
@@ -363,13 +421,48 @@ namespace VocaluxeLib.Menu
                 _ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/Reflection/Height", ref ReflectionHeight);
             }
 
+            //Animations
+            int i = 1;
+            while (xmlReader.ItemExists(item + "/Animation" + i.ToString()))
+            {
+                Animation = true;
+                CAnimation anim;
+                string animName = String.Empty;
+                if (xmlReader.GetValue(item + "/Animation" + i + "/Name", out animName, String.Empty))
+                {
+                    _ThemeLoaded &= CBase.Theme.GetAnimation(animName, skinIndex, out anim);
+                }
+                else
+                {
+                    EAnimationType type = new EAnimationType();
+                    _ThemeLoaded &= xmlReader.TryGetEnumValue(item + "/Animation" + i.ToString() + "/Type", ref type);
+                    anim = new CAnimation(type, _PartyModeID);
+                    _ThemeLoaded &= anim.LoadAnimation(item + "/Animation" + i.ToString(), xmlReader);
+                }
+                if (_ThemeLoaded)
+                    _Animations.Add(anim);
+                i++;
+            }
+
             // Set values
             _Theme.Name = elementName;
             _ButtonText = buttonText;
             _PositionNeedsUpdate = true;
 
             if (_ThemeLoaded)
+            {
                 LoadTextures();
+                //Give text-data to animation
+                if (Animation)
+                {
+                    foreach (CAnimation anim in _Animations)
+                    {
+                        anim.SetColor(Color);
+                        anim.SetRect(Rect);
+                        CAnimations.Add(this, anim);
+                    }
+                }
+            }
             return _ThemeLoaded;
         }
 
@@ -450,6 +543,13 @@ namespace VocaluxeLib.Menu
                     writer.WriteEndElement();
                 }
 
+                for (int i = 0; i < _Animations.Count; i++)
+                {
+                    writer.WriteStartElement("Animation" + (i + 1));
+                    _Animations[i].SaveAnimation(writer);
+                    writer.WriteEndElement();
+                }
+
                 writer.WriteEndElement();
 
                 return true;
@@ -468,7 +568,10 @@ namespace VocaluxeLib.Menu
             CBase.Fonts.SetFont(Font);
             CBase.Fonts.SetStyle(Style);
 
-            SColorF currentColor = (Selected) ? SelColor : Color;
+            bool anim = (Event == EAnimationEvent.OnSelected && CAnimations.AnimAvailable(this, EAnimationEvent.OnSelected)) ||
+                            (Event == EAnimationEvent.Selected && CAnimations.AnimAvailable(this, EAnimationEvent.Selected));
+
+            SColorF currentColor = (Selected && !anim) ? SelColor : Color;
             SColorF color = new SColorF(currentColor.R, currentColor.G, currentColor.B, currentColor.A * Alpha);
 
             CBase.Fonts.DrawText(_Text, Rect.H, Rect.X, Rect.Y, Z, color);
@@ -485,7 +588,10 @@ namespace VocaluxeLib.Menu
             CBase.Fonts.SetFont(Font);
             CBase.Fonts.SetStyle(Style);
 
-            SColorF currentColor = (Selected) ? SelColor : Color;
+            bool anim = (Event == EAnimationEvent.OnSelected && CAnimations.AnimAvailable(this, EAnimationEvent.OnSelected)) ||
+                            (Event == EAnimationEvent.Selected && CAnimations.AnimAvailable(this, EAnimationEvent.Selected));
+
+            SColorF currentColor = (Selected && !anim) ? SelColor : Color;
             SColorF color = new SColorF(currentColor.R, currentColor.G, currentColor.B, currentColor.A * Alpha);
 
             CBase.Fonts.DrawText(Text, Rect.H, Rect.X, Rect.Y, Z, color, begin, end);

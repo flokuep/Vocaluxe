@@ -1191,15 +1191,19 @@ namespace Vocaluxe.Screens
                     _Statics[_StaticSongText].Visible = true;
                     _Texts[_TextSongName].Visible = true;
 
+                    SColorF color = _Texts[_TextSongName].Color;
+
                     if (t < 7f)
                     {
                         _Statics[_StaticSongText].Color.A = 1f;
-                        _Texts[_TextSongName].Color.A = 1f;
+                        color.A = 1f;
+                        _Texts[_TextSongName].Color = color;
                     }
                     else
                     {
                         _Statics[_StaticSongText].Color.A = (3f - (t - 7f)) / 3f;
-                        _Texts[_TextSongName].Color.A = (3f - (t - 7f)) / 3f;
+                        color.A = (3f - (t - 7f)) / 3f;
+                        _Texts[_TextSongName].Color = color;
                     }
                 }
                 else
@@ -1227,13 +1231,16 @@ namespace Vocaluxe.Screens
                     if (t < 10f)
                     {
                         _Texts[_TextDuetName1].Visible = true;
+                        SColorF color = _Texts[_TextDuetName1].Color;
 
                         if (t < 3f)
-                            _Texts[_TextDuetName1].Color.A = (3f - (3f - t)) / 3f;
+                            color.A = (3f - (3f - t)) / 3f;
                         else if (t < 7f)
-                            _Texts[_TextDuetName1].Color.A = 1f;
+                            color.A = 1f;
                         else
-                            _Texts[_TextDuetName1].Color.A = (3f - (t - 7f)) / 3f;
+                            color.A = (3f - (t - 7f)) / 3f;
+
+                        _Texts[_TextDuetName1].Color = color;
                     }
                     else
                     {
@@ -1252,13 +1259,16 @@ namespace Vocaluxe.Screens
                     if (t < 10f)
                     {
                         _Texts[_TextDuetName2].Visible = true;
+                        SColorF color = _Texts[_TextDuetName2].Color;
 
                         if (t < 3f)
-                            _Texts[_TextDuetName2].Color.A = (3f - (3f - t)) / 3f;
+                            color.A = (3f - (3f - t)) / 3f;
                         else if (t < 7f)
-                            _Texts[_TextDuetName2].Color.A = 1f;
+                            color.A = 1f;
                         else
-                            _Texts[_TextDuetName2].Color.A = (3f - (t - 7f)) / 3f;
+                            color.A = (3f - (t - 7f)) / 3f;
+
+                        _Texts[_TextDuetName2].Color = color;
                     }
                     else
                     {
