@@ -366,6 +366,9 @@ namespace Vocaluxe.Base
                     // save colors
                     _SaveColors(writer, skinIndex);
 
+                    // save animations
+                    _SaveAnimations(writer, skinIndex);
+
                     #region Skins
                     writer.WriteStartElement("Skins");
 
@@ -778,6 +781,19 @@ namespace Vocaluxe.Base
                 writer.WriteElementString("B", scheme.Color.B.ToString("#0.000"));
                 writer.WriteElementString("A", scheme.Color.A.ToString("#0.000"));
 
+                writer.WriteEndElement();
+            }
+            writer.WriteEndElement();
+        }
+
+
+        private static void _SaveAnimations(XmlWriter writer, int skinIndex)
+        {
+            writer.WriteStartElement("Animations");
+            foreach (var valuePair in _Skins[skinIndex].AnimationsList)
+            {
+                writer.WriteStartElement(valuePair.Key);
+                valuePair.Value.SaveAnimation(writer);
                 writer.WriteEndElement();
             }
             writer.WriteEndElement();
