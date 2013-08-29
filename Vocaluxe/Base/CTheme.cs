@@ -700,19 +700,24 @@ namespace Vocaluxe.Base
 
         private static void _LoadAnimations(CXMLReader xmlReader, int skinIndex)
         {
-            SSkin skin = _Skins[skinIndex];
+            Dictionary<string, CAnimation> animList = new Dictionary<string,CAnimation>();
 
-            foreach (var valuePair in _Skins[skinIndex].AnimationsList)
+            foreach(var valuePair in _Skins[skinIndex].AnimationsList)
             {
-                CAnimation anim = valuePair.Value;
                 EAnimationType type = EAnimationType.FadeColor;
                 if (xmlReader.TryGetEnumValue<EAnimationType>("//root/Animations/" + valuePair.Key + "/Type", ref type))
                 {
-                    anim = new CAnimation(type, skin.PartyModeID);
-                    if (!anim.LoadAnimation("//root/Animations/" + valuePair.Key, xmlReader))
-                        CLog.LogError("Could not load animation \"" + valuePair.Key + "\" from " + skin.Name + " - Skin");
+                    CAnimation anim = new CAnimation(type, _Skins[skinIndex].PartyModeID);
+                    if (anim.LoadAnimation("//root/Animations/" + valuePair.Key, xmlReader))
+                        animList.Add(valuePair.Key, anim);
+                    else
+                        CLog.LogError("Could not load animation \"" + valuePair.Key + "\" from " + _Skins[skinIndex].Name + " - Skin");
                 }
             }
+
+            _Skins[skinIndex].AnimationsList.Clear();
+            foreach (var valuePair in animList)
+                _Skins[skinIndex].AnimationsList.Add(valuePair.Key, valuePair.Value);
         }
 
         private static void _LoadCursor(CXMLReader xmlReader, int skinIndex)
@@ -889,8 +894,7 @@ namespace Vocaluxe.Base
 
         public static bool GetAnimation(string animationName, int skinIndex, out CAnimation animation)
         {
-           bool val =  _Skins[skinIndex].AnimationsList.TryGetValue(animationName, out animation);
-           return val;
+           return _Skins[skinIndex].AnimationsList.TryGetValue(animationName, out animation);
         }
 
         #endregion Animation Handling

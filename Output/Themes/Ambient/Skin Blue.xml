@@ -282,7 +282,7 @@
     </TimeBarSentence>
   </ColorSchemes>
   <Animations>
-	  <ButtonOnSlected>
+	  <ButtonOnSelected>
         <!--<Type>: Type of animation: Resize, MoveLinear, Video, FadeColor, Rotate-->
         <Type>FadeColor</Type>
         <!--<Event>: Trigger for animation: None, OnVisible, Visible, AfterVisible, OnSelected, Selected, AfterSelected-->
@@ -297,7 +297,7 @@
         <!--<EndColor>: End color for fading from ColorScheme (high priority)-->
         <!--or <EndR>, <EndG>, <EndB>, <EndA> (lower priority)-->
         <EndColor>ButtonSColor</EndColor>
-      </ButtonOnSlected>
+      </ButtonOnSelected>
       <ButtonAfterSelected>
         <!--<Type>: Type of animation: Resize, MoveLinear, Video, FadeColor, Rotate-->
         <Type>FadeColor</Type>
