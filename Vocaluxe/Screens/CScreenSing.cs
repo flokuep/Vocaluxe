@@ -1195,13 +1195,13 @@ namespace Vocaluxe.Screens
 
                     if (t < 7f)
                     {
-                        _Statics[_StaticSongText].Color.A = 1f;
+                        //_Statics[_StaticSongText].Color.A = 1f;
                         color.A = 1f;
                         _Texts[_TextSongName].Color = color;
                     }
                     else
                     {
-                        _Statics[_StaticSongText].Color.A = (3f - (t - 7f)) / 3f;
+                        //_Statics[_StaticSongText].Color.A = (3f - (t - 7f)) / 3f;
                         color.A = (3f - (t - 7f)) / 3f;
                         _Texts[_TextSongName].Color = color;
                     }
@@ -1304,7 +1304,9 @@ namespace Vocaluxe.Screens
                             _TimeRects[i].Rect.Color = _Statics[_StaticTimeLineExpandedNormal].Color;
                         }
                     }
-                    _Statics[_StaticTimePointer].Rect.X = stat.Rect.X + stat.Rect.W * (currentTime / totalTime);
+                    SRectF rect = _Statics[_StaticTimePointer].Rect;
+                    rect.X = stat.Rect.X + stat.Rect.W * (currentTime / totalTime);
+                    _Statics[_StaticTimePointer].Rect = rect;
                     break;
             }
         }

@@ -62,8 +62,12 @@ namespace Vocaluxe.Screens
             get { return _Image.Rect.X; }
             set
             {
-                _Image.Rect.X = value;
-                _ImgDot.Rect.X = value + _ParticleOffsetX;
+                SRectF rect = _Image.Rect;
+                rect.X = value;
+                _Image.Rect = rect;
+                rect = _ImgDot.Rect;
+                rect.X = value + _ParticleOffsetX;
+                _ImgDot.Rect = rect;
                 _Particle.Rect.X = value + _ParticleOffsetX;
             }
         }
@@ -72,8 +76,12 @@ namespace Vocaluxe.Screens
             get { return _Image.Rect.Y; }
             set
             {
-                _Image.Rect.Y = value;
-                _ImgDot.Rect.Y = value + _ParticleOffsetY;
+                SRectF rect = _Image.Rect;
+                rect.Y = value;
+                _Image.Rect = rect;
+                rect = _ImgDot.Rect;
+                rect.Y = value + _ParticleOffsetY;
+                _ImgDot.Rect = rect;
                 _Particle.Rect.Y = value + _ParticleOffsetY;
             }
         }
@@ -386,7 +394,7 @@ namespace Vocaluxe.Screens
             {
                 active = true;
 
-                _Logo.Rect.Y = -270 + (270f / 3000f) * _LogoTimer.ElapsedMilliseconds;
+                _Logo.Rect = new SRectF(_Logo.Rect.X,-270 + (270f / 3000f) * _LogoTimer.ElapsedMilliseconds, _Logo.Rect.W, _Logo.Rect.H, _Logo.Rect.Z);
                 _StarsRed.Rect.Y = _Logo.Rect.Y;
                 _StarsBlue.Rect.Y = _Logo.Rect.Y;
                 if (_LogoTimer.ElapsedMilliseconds >= 2000 && !_CreditsTimer.IsRunning)

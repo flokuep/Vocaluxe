@@ -151,8 +151,10 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
             if (mouseEvent.LBH && _SelectingMouseActive)
             {
                 //Update coords for Drag/Drop-Texture
-                _ChooseAvatarStatic.Rect.X += mouseEvent.X - _OldMouseX;
-                _ChooseAvatarStatic.Rect.Y += mouseEvent.Y - _OldMouseY;
+                SRectF rect = _ChooseAvatarStatic.Rect;
+                rect.X += mouseEvent.X - _OldMouseX;
+                rect.Y += mouseEvent.Y - _OldMouseY;
+                _ChooseAvatarStatic.Rect = rect;
                 _OldMouseX = mouseEvent.X;
                 _OldMouseY = mouseEvent.Y;
             }

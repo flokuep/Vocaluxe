@@ -123,11 +123,15 @@ namespace VocaluxeLib.Menu
                 int diffX = posX - oldPosX;
                 int diffY = posY - oldPosY;
 
-                Cover.Rect.X += diffX;
-                Cover.Rect.Y += diffY;
+                SRectF rect = Cover.Rect;
+                rect.X += diffX;
+                rect.Y += diffY;
+                Cover.Rect = rect;
 
-                Background.Rect.X += diffX;
-                Background.Rect.Y += diffY;
+                rect = Background.Rect;
+                rect.X += diffX;
+                rect.Y += diffY;
+                Background.Rect = rect;
 
                 SelectSlide.Rect.X += diffX;
                 SelectSlide.Rect.Y += diffY;
@@ -954,9 +958,15 @@ namespace VocaluxeLib.Menu
                             if (_ChangeOrderSource >= _PlaylistElementContents.Count)
                                 return true;
 
+                            SRectF rect;
+
                             _ChangeOrderElement = new CPlaylistElement(_PlaylistElements[CurrentPlaylistElement]);
-                            _ChangeOrderElement.Background.Rect.Z = CBase.Settings.GetZNear();
-                            _ChangeOrderElement.Cover.Rect.Z = CBase.Settings.GetZNear();
+                            rect = _ChangeOrderElement.Background.Rect;
+                            rect.Z = CBase.Settings.GetZNear();
+                            _ChangeOrderElement.Background.Rect = rect;
+                            rect = _ChangeOrderElement.Cover.Rect;
+                            rect.Z = CBase.Settings.GetZNear();
+                            _ChangeOrderElement.Cover.Rect = rect;
                             _ChangeOrderElement.SelectSlide.Rect.Z = CBase.Settings.GetZNear();
                             _ChangeOrderElement.SelectSlide.RectArrowLeft.Z = CBase.Settings.GetZNear();
                             _ChangeOrderElement.SelectSlide.RectArrowRight.Z = CBase.Settings.GetZNear();
@@ -1109,8 +1119,10 @@ namespace VocaluxeLib.Menu
                         Cover = new CStatic(_Theme.StaticCover)
                     };
 
-                en.Cover.Rect.Y += Rect.Y + (i * _Theme.EntryHeight);
-                en.Cover.Rect.X += Rect.X;
+                SRectF rect = en.Cover.Rect;
+                rect.Y += Rect.Y + (i * _Theme.EntryHeight);
+                rect.X += Rect.X;
+                en.Cover.Rect = rect;
 
                 en.Text1 = new CText(_Theme.Text1);
                 en.Text1.X += Rect.X;
