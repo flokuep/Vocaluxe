@@ -329,6 +329,10 @@ namespace VocaluxeLib.Menu
             ReflectionSpace = text.ReflectionSpace;
             ReflectionHeight = text.ReflectionHeight;
 
+            Animation = text.Animation;
+            _Animations = text._Animations;
+            Event = text.Event;
+
             Text = text.Text;
             Selected = text.Selected;
             Visible = text.Visible;
@@ -338,7 +342,7 @@ namespace VocaluxeLib.Menu
         }
 
         public CText(float x, float y, float z, float h, float mw, EAlignment align, EStyle style, string font, SColorF col, string text, int partyModeID = -1, float rheight = 0,
-                     float rspace = 0)
+                     float rspace = 0, bool anim = false, List<CAnimation> anims = null, EAnimationEvent evt = EAnimationEvent.None)
         {
             _Theme = new SThemeText();
             _ThemeLoaded = false;
@@ -365,6 +369,13 @@ namespace VocaluxeLib.Menu
 
             ReflectionSpace = rspace;
             ReflectionHeight = rheight;
+
+            Animation = anim;
+            if (anims == null)
+                _Animations = new List<CAnimation>();
+            else
+                _Animations = anims;
+            Event = evt;
         }
 
         public bool LoadTheme(string xmlPath, string elementName, CXMLReader xmlReader, int skinIndex)
