@@ -314,6 +314,38 @@
         <!--or <EndR>, <EndG>, <EndB>, <EndA> (lower priority)-->
         <EndColor>ButtonColor</EndColor>
       </ButtonAfterSelected>
+      <OptionsButtonFadeIn>
+		<!--<Type>: Type of animation: Resize, MoveLinear, Video, FadeColor, Rotate-->
+        <Type>FadeColor</Type>
+        <!--<Event>: Trigger for animation: None, OnVisible, Visible, AfterVisible, OnSelected, Selected, AfterSelected-->
+        <Event>OnVisible</Event>
+        <!--<Time>: Duration of animation in ms-->
+        <Time>500,00</Time>
+        <!--<Repeat>: Repeat-Mode of animation: None, OnlyReset, Reset, Repeat, RepeatWithReset-->
+        <Repeat>None</Repeat>
+        <!--<StartColor>: Start color for fading from ColorScheme (high priority)-->
+        <!--or <StartR>, <StartG>, <StartB>, <StartA> (lower priority)-->
+        <StartColor>Invisible</StartColor>
+        <!--<EndColor>: End color for fading from ColorScheme (high priority)-->
+        <!--or <EndR>, <EndG>, <EndB>, <EndA> (lower priority)-->
+        <EndColor>ButtonColor</EndColor>
+      </OptionsButtonFadeIn>
+      <OptionsButtonFadeOut>
+		<!--<Type>: Type of animation: Resize, MoveLinear, Video, FadeColor, Rotate-->
+        <Type>FadeColor</Type>
+        <!--<Event>: Trigger for animation: None, OnVisible, Visible, AfterVisible, OnSelected, Selected, AfterSelected-->
+        <Event>AfterVisible</Event>
+        <!--<Time>: Duration of animation in ms-->
+        <Time>500,00</Time>
+        <!--<Repeat>: Repeat-Mode of animation: None, OnlyReset, Reset, Repeat, RepeatWithReset-->
+        <Repeat>None</Repeat>
+        <!--<StartColor>: Start color for fading from ColorScheme (high priority)-->
+        <!--or <StartR>, <StartG>, <StartB>, <StartA> (lower priority)-->
+        <StartColor>ButtonColor</StartColor>
+        <!--<EndColor>: End color for fading from ColorScheme (high priority)-->
+        <!--or <EndR>, <EndG>, <EndB>, <EndA> (lower priority)-->
+        <EndColor>Invisible</EndColor>
+      </OptionsButtonFadeOut>
   </Animations>
   <Skins>
     <BG_Default>[Blue]BG_Default.png</BG_Default>
