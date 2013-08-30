@@ -161,104 +161,108 @@ namespace VocaluxeLib.Animations
             LastRect = _CurrentRect;
 
             bool finished = false;
+            if ((ResetMode && Timer.ElapsedMilliseconds > TimeoutReset) || (!ResetMode && Timer.ElapsedMilliseconds > Timeout)){
 
-            switch (Order)
-            {
-                case EAnimationResizeOrder.Both:
-                    float factor = Timer.ElapsedMilliseconds / Time;
-                    if (!ResetMode)
-                    {
-                        _CurrentRect.X = OriginalRect.X + ((_FinalRect.X - OriginalRect.X) * factor);
-                        _CurrentRect.Y = OriginalRect.Y + ((_FinalRect.Y - OriginalRect.Y) * factor);
-                        _CurrentRect.H = OriginalRect.H + ((_FinalRect.H - OriginalRect.H) * factor);
-                        _CurrentRect.W = OriginalRect.W + ((_FinalRect.W - OriginalRect.W) * factor);
-                        if (factor >= 1f)
-                            finished = true;
-                    }
-                    else
-                    {
-                        _CurrentRect.X = _FinalRect.X + ((OriginalRect.X - _FinalRect.X) * factor);
-                        _CurrentRect.Y = _FinalRect.Y + ((OriginalRect.Y - _FinalRect.Y) * factor);
-                        _CurrentRect.H = _FinalRect.H + ((OriginalRect.H - _FinalRect.H) * factor);
-                        _CurrentRect.W = _FinalRect.W + ((OriginalRect.W - _FinalRect.W) * factor);
-                        if (factor >= 1f)
-                            finished = true;
-                    }
-                    break;
+                switch (Order)
+                {
+                    case EAnimationResizeOrder.Both:
+                        float factor;
+                        if (!ResetMode)
+                        {
+                            factor = (Timer.ElapsedMilliseconds - Timeout) / Time;
+                            _CurrentRect.X = OriginalRect.X + ((_FinalRect.X - OriginalRect.X) * factor);
+                            _CurrentRect.Y = OriginalRect.Y + ((_FinalRect.Y - OriginalRect.Y) * factor);
+                            _CurrentRect.H = OriginalRect.H + ((_FinalRect.H - OriginalRect.H) * factor);
+                            _CurrentRect.W = OriginalRect.W + ((_FinalRect.W - OriginalRect.W) * factor);
+                            if (factor >= 1f)
+                                finished = true;
+                        }
+                        else
+                        {
+                            factor = (Timer.ElapsedMilliseconds - TimeoutReset) / Time;
+                            _CurrentRect.X = _FinalRect.X + ((OriginalRect.X - _FinalRect.X) * factor);
+                            _CurrentRect.Y = _FinalRect.Y + ((OriginalRect.Y - _FinalRect.Y) * factor);
+                            _CurrentRect.H = _FinalRect.H + ((OriginalRect.H - _FinalRect.H) * factor);
+                            _CurrentRect.W = _FinalRect.W + ((OriginalRect.W - _FinalRect.W) * factor);
+                            if (factor >= 1f)
+                                finished = true;
+                        }
+                        break;
 
-                case EAnimationResizeOrder.HeightFirst:
-                    if (!ResetMode)
-                    {
-                        float factorH = Timer.ElapsedMilliseconds / (Time / 2);
-                        float factorW = (Timer.ElapsedMilliseconds - (Time / 2)) / (Time / 2);
-                        if (factorH < 1f)
+                    case EAnimationResizeOrder.HeightFirst:
+                        if (!ResetMode)
                         {
-                            _CurrentRect.Y = OriginalRect.Y + ((_FinalRect.Y - OriginalRect.Y) * factorH);
-                            _CurrentRect.H = OriginalRect.H + ((_FinalRect.H - OriginalRect.H) * factorH);
-                        }
-                        else if (factorW < 1f)
-                        {
-                            _CurrentRect.W = OriginalRect.W + ((_FinalRect.W - OriginalRect.W) * factorW);
-                            _CurrentRect.X = OriginalRect.X + ((_FinalRect.X - OriginalRect.X) * factorW);
-                        }
-                        else
-                            finished = true;
-                    }
-                    else
-                    {
-                        float factorH = Timer.ElapsedMilliseconds / (Time / 2);
-                        float factorW = (Timer.ElapsedMilliseconds - (Time / 2)) / (Time / 2);
-                        if (factorH < 1f)
-                        {
-                            _CurrentRect.Y = _FinalRect.Y + ((OriginalRect.Y - _FinalRect.Y) * factorH);
-                            _CurrentRect.H = _FinalRect.H + ((OriginalRect.H - _FinalRect.H) * factorH);
-                        }
-                        else if (factorW < 1f)
-                        {
-                            _CurrentRect.W = _FinalRect.W + ((OriginalRect.W - _FinalRect.W) * factorW);
-                            _CurrentRect.X = _FinalRect.X + ((OriginalRect.X - _FinalRect.X) * factorW);
+                            float factorH = (Timer.ElapsedMilliseconds - Timeout) / (Time / 2);
+                            float factorW = ((Timer.ElapsedMilliseconds - TimeoutReset) - (Time / 2)) / (Time / 2);
+                            if (factorH < 1f)
+                            {
+                                _CurrentRect.Y = OriginalRect.Y + ((_FinalRect.Y - OriginalRect.Y) * factorH);
+                                _CurrentRect.H = OriginalRect.H + ((_FinalRect.H - OriginalRect.H) * factorH);
+                            }
+                            else if (factorW < 1f)
+                            {
+                                _CurrentRect.W = OriginalRect.W + ((_FinalRect.W - OriginalRect.W) * factorW);
+                                _CurrentRect.X = OriginalRect.X + ((_FinalRect.X - OriginalRect.X) * factorW);
+                            }
+                            else
+                                finished = true;
                         }
                         else
-                            finished = true;
-                    }
-                    break;
+                        {
+                            float factorH = (Timer.ElapsedMilliseconds - TimeoutReset) / (Time / 2);
+                            float factorW = ((Timer.ElapsedMilliseconds - TimeoutReset) - (Time / 2)) / (Time / 2);
+                            if (factorH < 1f)
+                            {
+                                _CurrentRect.Y = _FinalRect.Y + ((OriginalRect.Y - _FinalRect.Y) * factorH);
+                                _CurrentRect.H = _FinalRect.H + ((OriginalRect.H - _FinalRect.H) * factorH);
+                            }
+                            else if (factorW < 1f)
+                            {
+                                _CurrentRect.W = _FinalRect.W + ((OriginalRect.W - _FinalRect.W) * factorW);
+                                _CurrentRect.X = _FinalRect.X + ((OriginalRect.X - _FinalRect.X) * factorW);
+                            }
+                            else
+                                finished = true;
+                        }
+                        break;
 
-                case EAnimationResizeOrder.WidthFirst:
-                    if (!ResetMode)
-                    {
-                        float factorH = (Timer.ElapsedMilliseconds - (Time / 2)) / (Time / 2);
-                        float factorW = Timer.ElapsedMilliseconds / (Time / 2);
-                        if (factorW < 1f)
+                    case EAnimationResizeOrder.WidthFirst:
+                        if (!ResetMode)
                         {
-                            _CurrentRect.W = OriginalRect.W + ((_FinalRect.W - OriginalRect.W) * factorW);
-                            _CurrentRect.X = OriginalRect.X + ((_FinalRect.X - OriginalRect.X) * factorW);
-                        }
-                        else if (factorH < 1f)
-                        {
-                            _CurrentRect.Y = OriginalRect.Y + ((_FinalRect.Y - OriginalRect.Y) * factorH);
-                            _CurrentRect.H = OriginalRect.H + ((_FinalRect.H - OriginalRect.H) * factorH);
-                        }
-                        else
-                            finished = true;
-                    }
-                    else
-                    {
-                        float factorH = (Timer.ElapsedMilliseconds - (Time / 2)) / (Time / 2);
-                        float factorW = Timer.ElapsedMilliseconds / (Time / 2);
-                        if (factorW < 1f)
-                        {
-                            _CurrentRect.W = _FinalRect.W + ((OriginalRect.W - _FinalRect.W) * factorW);
-                            _CurrentRect.X = _FinalRect.X + ((OriginalRect.X - _FinalRect.X) * factorW);
-                        }
-                        else if (factorH < 1f)
-                        {
-                            _CurrentRect.Y = _FinalRect.Y + ((OriginalRect.Y - _FinalRect.Y) * factorH);
-                            _CurrentRect.H = _FinalRect.H + ((OriginalRect.H - _FinalRect.H) * factorH);
+                            float factorH = ((Timer.ElapsedMilliseconds - Timeout) - (Time / 2)) / (Time / 2);
+                            float factorW = (Timer.ElapsedMilliseconds - Timeout) / (Time / 2);
+                            if (factorW < 1f)
+                            {
+                                _CurrentRect.W = OriginalRect.W + ((_FinalRect.W - OriginalRect.W) * factorW);
+                                _CurrentRect.X = OriginalRect.X + ((_FinalRect.X - OriginalRect.X) * factorW);
+                            }
+                            else if (factorH < 1f)
+                            {
+                                _CurrentRect.Y = OriginalRect.Y + ((_FinalRect.Y - OriginalRect.Y) * factorH);
+                                _CurrentRect.H = OriginalRect.H + ((_FinalRect.H - OriginalRect.H) * factorH);
+                            }
+                            else
+                                finished = true;
                         }
                         else
-                            finished = true;
-                    }
-                    break;
+                        {
+                            float factorH = ((Timer.ElapsedMilliseconds - TimeoutReset) - (Time / 2)) / (Time / 2);
+                            float factorW = (Timer.ElapsedMilliseconds - TimeoutReset) / (Time / 2);
+                            if (factorW < 1f)
+                            {
+                                _CurrentRect.W = _FinalRect.W + ((OriginalRect.W - _FinalRect.W) * factorW);
+                                _CurrentRect.X = _FinalRect.X + ((OriginalRect.X - _FinalRect.X) * factorW);
+                            }
+                            else if (factorH < 1f)
+                            {
+                                _CurrentRect.Y = _FinalRect.Y + ((OriginalRect.Y - _FinalRect.Y) * factorH);
+                                _CurrentRect.H = _FinalRect.H + ((OriginalRect.H - _FinalRect.H) * factorH);
+                            }
+                            else
+                                finished = true;
+                        }
+                        break;
+                }
             }
 
 

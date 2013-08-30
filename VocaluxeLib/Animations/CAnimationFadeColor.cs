@@ -138,30 +138,38 @@ namespace VocaluxeLib.Animations
         public override void Update()
         {
             bool finished = false;
-            float factor = Timer.ElapsedMilliseconds / Time;
+            if ((ResetMode && Timer.ElapsedMilliseconds > TimeoutReset) || (!ResetMode && Timer.ElapsedMilliseconds > Timeout))
+            {
+                float factor;
 
-            if (!ResetMode)
-            {
-                _CurrentColor.R = _StartColor.R + factor * (_EndColor.R - _StartColor.R);
-                _CurrentColor.G = _StartColor.G + factor * (_EndColor.G - _StartColor.G);
-                _CurrentColor.B = _StartColor.B + factor * (_EndColor.B - _StartColor.B);
-                _CurrentColor.A = _StartColor.A + factor * (_EndColor.A - _StartColor.A);
-            }
-            else
-            {
-                _CurrentColor.R = _EndColor.R + factor * (_StartColor.R - _EndColor.R);
-                _CurrentColor.G = _EndColor.G + factor * (_StartColor.G - _EndColor.G);
-                _CurrentColor.B = _EndColor.B + factor * (_StartColor.B - _EndColor.B);
-                _CurrentColor.A = _EndColor.A + factor * (_StartColor.A - _EndColor.A);
-            }
-
-            if (factor >= 1f)
-            {
-                if (!ResetMode)
-                    _CurrentColor = _EndColor;
+                if(ResetMode)
+                    factor = (Timer.ElapsedMilliseconds - TimeoutReset) / Time;
                 else
-                    _CurrentColor = _StartColor;
-                finished = true;
+                    factor = (Timer.ElapsedMilliseconds - Timeout) / Time;
+
+                if (!ResetMode)
+                {
+                    _CurrentColor.R = _StartColor.R + factor * (_EndColor.R - _StartColor.R);
+                    _CurrentColor.G = _StartColor.G + factor * (_EndColor.G - _StartColor.G);
+                    _CurrentColor.B = _StartColor.B + factor * (_EndColor.B - _StartColor.B);
+                    _CurrentColor.A = _StartColor.A + factor * (_EndColor.A - _StartColor.A);
+                }
+                else
+                {
+                    _CurrentColor.R = _EndColor.R + factor * (_StartColor.R - _EndColor.R);
+                    _CurrentColor.G = _EndColor.G + factor * (_StartColor.G - _EndColor.G);
+                    _CurrentColor.B = _EndColor.B + factor * (_StartColor.B - _EndColor.B);
+                    _CurrentColor.A = _EndColor.A + factor * (_StartColor.A - _EndColor.A);
+                }
+
+                if (factor >= 1f)
+                {
+                    if (!ResetMode)
+                        _CurrentColor = _EndColor;
+                    else
+                        _CurrentColor = _StartColor;
+                    finished = true;
+                }
             }
 
             //If Animation finished

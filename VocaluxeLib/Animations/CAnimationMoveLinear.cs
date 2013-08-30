@@ -118,21 +118,25 @@ namespace VocaluxeLib.Animations
             LastRect = _CurrentRect;
 
             bool finished = false;
-
-            float factor = Timer.ElapsedMilliseconds / Time;
-            if (!ResetMode)
+            if ((ResetMode && Timer.ElapsedMilliseconds > TimeoutReset) || (!ResetMode && Timer.ElapsedMilliseconds > Timeout))
             {
-                _CurrentRect.X = OriginalRect.X + ((_FinalRect.X - OriginalRect.X) * factor);
-                _CurrentRect.Y = OriginalRect.Y + ((_FinalRect.Y - OriginalRect.Y) * factor);
-                if (factor >= 1f)
-                    finished = true;
-            }
-            else
-            {
-                _CurrentRect.X = _FinalRect.X + ((OriginalRect.X - _FinalRect.X) * factor);
-                _CurrentRect.Y = _FinalRect.Y + ((OriginalRect.Y - _FinalRect.Y) * factor);
-                if (factor >= 1f)
-                    finished = true;
+                float factor;
+                if (!ResetMode)
+                {
+                    factor = (Timer.ElapsedMilliseconds - Timeout) / Time;
+                    _CurrentRect.X = OriginalRect.X + ((_FinalRect.X - OriginalRect.X) * factor);
+                    _CurrentRect.Y = OriginalRect.Y + ((_FinalRect.Y - OriginalRect.Y) * factor);
+                    if (factor >= 1f)
+                        finished = true;
+                }
+                else
+                {
+                    factor = (Timer.ElapsedMilliseconds - TimeoutReset) / Time;
+                    _CurrentRect.X = _FinalRect.X + ((OriginalRect.X - _FinalRect.X) * factor);
+                    _CurrentRect.Y = _FinalRect.Y + ((OriginalRect.Y - _FinalRect.Y) * factor);
+                    if (factor >= 1f)
+                        finished = true;
+                }
             }
 
             //If Animation finished

@@ -68,6 +68,8 @@ namespace VocaluxeLib.Animations
         public CTexture OriginalTexture;
 
         public float Time;
+        public float Timeout;
+        public float TimeoutReset;
 
         public Stopwatch Timer = new Stopwatch();
         public bool ResetMode = false;
@@ -89,6 +91,8 @@ namespace VocaluxeLib.Animations
             AnimationLoaded = true;
 
             AnimationLoaded &= xmlReader.TryGetEnumValue(item + "/Event", ref Event);
+            xmlReader.TryGetFloatValue(item + "/Timeout", ref Timeout);
+            xmlReader.TryGetFloatValue(item + "/TimeoutReset", ref TimeoutReset);
 
             if (AnimationLoaded)
                 AnimationLoaded = Event != EAnimationEvent.None;
@@ -102,6 +106,12 @@ namespace VocaluxeLib.Animations
             writer.WriteElementString("Type", Enum.GetName(typeof(EAnimationType), Type));
             writer.WriteComment("<Event>: Trigger for animation: " + CHelper.ListStrings(Enum.GetNames(typeof(EAnimationEvent))));
             writer.WriteElementString("Event", Enum.GetName(typeof(EAnimationEvent), Event));
+            writer.WriteComment("<Timeout>: Time in ms until animation should start");
+            if(Timeout != 0f)
+                writer.WriteElementString("Timeout", Timeout.ToString("#0,00"));
+            writer.WriteComment("<TimeoutReset>: Time in ms until animation-rest should start");
+            if(TimeoutReset != 0f)
+                writer.WriteElementString("TimeoutReset", TimeoutReset.ToString("#0,00"));
             return false;
         }
 

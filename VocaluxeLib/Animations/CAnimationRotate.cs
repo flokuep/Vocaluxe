@@ -111,19 +111,23 @@ namespace VocaluxeLib.Animations
             LastRect = _CurrentRect;
 
             bool finished = false;
-
-            float factor = Timer.ElapsedMilliseconds / Time;
-            if (!ResetMode)
+            if ((ResetMode && Timer.ElapsedMilliseconds > TimeoutReset) || (!ResetMode && Timer.ElapsedMilliseconds > Timeout))
             {
-                _CurrentRect.Rotation = OriginalRect.Rotation + ((_FinalRect.Rotation - OriginalRect.Rotation) * factor);
-                if (factor >= 1f)
-                    finished = true;
-            }
-            else
-            {
-                _CurrentRect.Rotation = _FinalRect.Rotation + ((OriginalRect.Rotation - _FinalRect.Rotation) * factor);
-                if (factor >= 1f)
-                    finished = true;
+                float factor;
+                if (!ResetMode)
+                {
+                    factor = (Timer.ElapsedMilliseconds - Timeout) / Time;
+                    _CurrentRect.Rotation = OriginalRect.Rotation + ((_FinalRect.Rotation - OriginalRect.Rotation) * factor);
+                    if (factor >= 1f)
+                        finished = true;
+                }
+                else
+                {
+                    factor = (Timer.ElapsedMilliseconds - TimeoutReset) / Time;
+                    _CurrentRect.Rotation = _FinalRect.Rotation + ((OriginalRect.Rotation - _FinalRect.Rotation) * factor);
+                    if (factor >= 1f)
+                        finished = true;
+                }
             }
 
             //If Animation finished
