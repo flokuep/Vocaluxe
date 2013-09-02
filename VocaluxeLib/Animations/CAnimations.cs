@@ -134,7 +134,7 @@ namespace VocaluxeLib.Animations
                     e.Event = EAnimationEvent.OnVisible;
                 else if (AnimAvailable(e, EAnimationEvent.Visible))
                     e.Event = EAnimationEvent.Visible;
-                ResetAnimation(e, EAnimationEvent.OnVisible);
+                ResetAnimation(e, e.Event);
             }
         }
 

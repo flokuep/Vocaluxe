@@ -1184,12 +1184,6 @@
       <!--<SReflection> If exists:-->
       <!--   <Space>: Reflection Space of selected button-->
       <!--   <Height>: Reflection Height of selected button-->
-      <Animation1>
-		  <Name>OptionsButtonFadeIn</Name>
-      </Animation1>
-      <Animation2>
-		  <Name>OptionsButtonFadeOut</Name>
-      </Animation2>
     </ButtonOpenOptions>
     <ButtonStart>
       <!--<Skin>: Texture name-->
@@ -1247,6 +1241,12 @@
         <Space>10</Space>
         <Height>26</Height>
       </SReflection>
+      <Animation1>
+		  <Name>OptionsButtonFadeIn</Name>
+      </Animation1>
+      <Animation2>
+		  <Name>OptionsButtonFadeOut</Name>
+      </Animation2>
     </ButtonStart>
     <ButtonOptionsRandomMedley>
       <!--<Skin>: Texture name-->

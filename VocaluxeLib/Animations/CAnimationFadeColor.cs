@@ -116,8 +116,6 @@ namespace VocaluxeLib.Animations
             }
             else if (!AnimationFromStart && Repeat == EAnimationRepeat.OnlyReset)
                 ResetMode = true;
-
-            CBase.Log.LogError("Anim started");
         }
 
         public override SColorF GetColor()
@@ -132,7 +130,6 @@ namespace VocaluxeLib.Animations
         public override void SetCurrentValues(SRectF rect, SColorF color)
         {
             _CurrentColor = color;
-            CBase.Log.LogError("Current Vals set");
         }
 
         public override void Update()
