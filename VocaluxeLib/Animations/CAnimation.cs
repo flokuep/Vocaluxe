@@ -27,15 +27,23 @@ namespace VocaluxeLib.Animations
     {
         private IAnimation _Animation;
         private readonly int _PartyModeID;
+        private readonly int _SkinIndex;
 
         public CAnimation()
         {
         }
 
+        public CAnimation(EAnimationType type, int skinIndex, int partyModeID)
+        {
+            _SkinIndex = skinIndex;
+            _PartyModeID = partyModeID;
+            SetAnimation(type, skinIndex);
+        }
+
         public CAnimation(EAnimationType type, int partyModeID)
         {
             _PartyModeID = partyModeID;
-            SetAnimation(type);
+            SetAnimation(type);          
         }
 
         public void Init()
@@ -133,28 +141,28 @@ namespace VocaluxeLib.Animations
             return _Animation.IsDrawn();
         }
 
-        public void SetAnimation(EAnimationType type)
+        public void SetAnimation(EAnimationType type, int skinIndex = -1)
         {
             switch (type)
             {
                 case EAnimationType.Resize:
-                    _Animation = new CAnimationResize(_PartyModeID);
+                    _Animation = new CAnimationResize(_PartyModeID, skinIndex);
                     break;
 
                 case EAnimationType.MoveLinear:
-                    _Animation = new CAnimationMoveLinear(_PartyModeID);
+                    _Animation = new CAnimationMoveLinear(_PartyModeID, skinIndex);
                     break;
 
                 case EAnimationType.Video:
-                    _Animation = new CAnimationVideo(_PartyModeID);
+                    _Animation = new CAnimationVideo(_PartyModeID, skinIndex);
                     break;
 
                 case EAnimationType.FadeColor:
-                    _Animation = new CAnimationFadeColor(_PartyModeID);
+                    _Animation = new CAnimationFadeColor(_PartyModeID, skinIndex);
                     break;
 
                 case EAnimationType.Rotate:
-                    _Animation = new CAnimationRotate(_PartyModeID);
+                    _Animation = new CAnimationRotate(_PartyModeID, skinIndex);
                     break;
             }
         }

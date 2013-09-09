@@ -30,8 +30,8 @@ namespace VocaluxeLib.Animations
         private SRectF _FinalRect;
         private SRectF _CurrentRect;
 
-        public CAnimationMoveLinear(int partyModeID)
-            : base(partyModeID) {}
+        public CAnimationMoveLinear(int partyModeID, int skinIndex = -1)
+            : base(partyModeID, skinIndex) {}
 
         public override void Init()
         {

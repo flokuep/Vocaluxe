@@ -29,8 +29,8 @@ namespace VocaluxeLib.Animations
         private SRectF _FinalRect;
         private SRectF _CurrentRect;
 
-        public CAnimationRotate(int partyModeID)
-            : base(partyModeID) {}
+        public CAnimationRotate(int partyModeID, int skinIndex)
+            : base(partyModeID, skinIndex) {}
 
         public override void Init()
         {

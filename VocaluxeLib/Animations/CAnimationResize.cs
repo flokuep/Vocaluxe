@@ -47,8 +47,8 @@ namespace VocaluxeLib.Animations
         private SRectF _FinalRect;
         private SRectF _CurrentRect;
 
-        public CAnimationResize(int partyModeID)
-            : base(partyModeID) {}
+        public CAnimationResize(int partyModeID, int skinIndex = -1)
+            : base(partyModeID, skinIndex) {}
 
         public override void Init()
         {

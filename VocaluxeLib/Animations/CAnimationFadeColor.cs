@@ -31,8 +31,8 @@ namespace VocaluxeLib.Animations
         private SColorF _StartColor;
         private SColorF _EndColor;
 
-        public CAnimationFadeColor(int partyModeID)
-            : base(partyModeID) {}
+        public CAnimationFadeColor(int partyModeID, int skinIndex = -1)
+            : base(partyModeID, skinIndex) {}
 
         public override void Init()
         {
@@ -46,7 +46,10 @@ namespace VocaluxeLib.Animations
             AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/Time", ref Time);
             AnimationLoaded &= xmlReader.TryGetEnumValue(item + "/Repeat", ref Repeat);
             if (xmlReader.GetValue(item + "/StartColor", out _StartColorName, String.Empty))
-                _StartColor = CBase.Theme.GetColor(_StartColorName, _PartyModeID);
+                if (_SkinIndex != -1)
+                    CBase.Theme.GetColor(_StartColorName, _SkinIndex, out _StartColor);
+                else
+                    _StartColor = CBase.Theme.GetColor(_StartColorName, _PartyModeID);
             else
             {
                 AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/StartR", ref _StartColor.R);
@@ -55,7 +58,10 @@ namespace VocaluxeLib.Animations
                 AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/StartA", ref _StartColor.A);
             }
             if (xmlReader.GetValue(item + "/EndColor", out _EndColorName, String.Empty))
-                _EndColor = CBase.Theme.GetColor(_EndColorName, _PartyModeID);
+                if (_SkinIndex != -1)
+                    CBase.Theme.GetColor(_EndColorName, _SkinIndex, out _EndColor);
+                else
+                    _EndColor = CBase.Theme.GetColor(_EndColorName, _PartyModeID);
             else
             {
                 AnimationLoaded &= xmlReader.TryGetFloatValue(item + "/EndR", ref _EndColor.R);

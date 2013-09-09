@@ -28,8 +28,8 @@ namespace VocaluxeLib.Animations
         private string _VideoName;
         private CTexture _VideoTexture;
 
-        public CAnimationVideo(int partyModeID)
-            : base(partyModeID) {}
+        public CAnimationVideo(int partyModeID, int skinIndex)
+            : base(partyModeID, skinIndex) {}
 
         public override void Init()
         {

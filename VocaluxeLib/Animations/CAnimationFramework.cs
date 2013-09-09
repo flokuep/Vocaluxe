@@ -77,10 +77,12 @@ namespace VocaluxeLib.Animations
         public bool AnimationFromStart = true;
 
         protected int _PartyModeID;
+        protected int _SkinIndex = -1;
 
-        public CAnimationFramework(int partyModeID)
+        public CAnimationFramework(int partyModeID, int skinIndex = -1)
         {
             _PartyModeID = partyModeID;
+            _SkinIndex = skinIndex;
             Init();
         }
 

@@ -710,7 +710,7 @@ namespace Vocaluxe.Base
                 EAnimationType type = EAnimationType.FadeColor;
                 if (xmlReader.TryGetEnumValue<EAnimationType>("//root/Animations/" + valuePair.Key + "/Type", ref type))
                 {
-                    CAnimation anim = new CAnimation(type, _Skins[skinIndex].PartyModeID);
+                    CAnimation anim = new CAnimation(type, skinIndex, _Skins[skinIndex].PartyModeID);
                     if (anim.LoadAnimation("//root/Animations/" + valuePair.Key, xmlReader))
                         animList.Add(valuePair.Key, anim);
                     else
