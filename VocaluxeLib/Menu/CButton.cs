@@ -459,6 +459,9 @@ namespace VocaluxeLib.Menu
 
             if (!String.IsNullOrEmpty(_Theme.SelColorName))
                 SelColor = CBase.Theme.GetColor(_Theme.SelColorName, _PartyModeID);
+
+            foreach (CAnimation anim in _Animations)
+                anim.SetColor(Color);
         }
 
         public void ReloadTextures()
