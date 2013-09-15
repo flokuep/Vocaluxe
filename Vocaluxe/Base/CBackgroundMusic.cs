@@ -507,12 +507,15 @@ namespace Vocaluxe.Base
                 float vtime;
                 if (CVideo.GetFrame(_Video, ref _CurrentVideoTexture, CSound.GetPosition(_CurrentMusicStream), out vtime))
                 {
-                    if (_FadeTimer.ElapsedMilliseconds <= 3000L)
-                        _CurrentVideoTexture.Color.A = _FadeTimer.ElapsedMilliseconds / 3000f;
-                    else
+                    if (_CurrentVideoTexture != null)
                     {
-                        _CurrentVideoTexture.Color.A = 1f;
-                        _FadeTimer.Stop();
+                        if (_FadeTimer.ElapsedMilliseconds <= 3000L)
+                            _CurrentVideoTexture.Color.A = _FadeTimer.ElapsedMilliseconds / 3000f;
+                        else
+                        {
+                            _CurrentVideoTexture.Color.A = 1f;
+                            _FadeTimer.Stop();
+                        }
                     }
                     return _CurrentVideoTexture;
                 }
