@@ -24,6 +24,130 @@ namespace VocaluxeLib.Menu
 {
     public abstract class CMenuProperties
     {
+        protected SRectF _Rect;
+        protected SColorF _Color;
+        protected CTexture _Texture;
+
+        public SRectF OriginalRect
+        {
+            set 
+            { 
+                _Rect = value;
+                Rect = value; 
+            }
+            get { return _Rect; }
+        }
+
+        public float OriginalRectX
+        {
+            set 
+            { 
+                _Rect.X = value;
+                Rect.X = value; 
+            }
+            get { return _Rect.X; }
+        }
+
+        public float OriginalRectY
+        {
+            set 
+            { 
+                _Rect.Y = value;
+                Rect.Y = value; 
+            }
+            get { return _Rect.Y; }
+        }
+
+        public float OriginalRectH
+        {
+            set 
+            { 
+                _Rect.H = value;
+                Rect.H = value;
+            }
+            get { return _Rect.H; }
+        }
+
+        public float OriginalRectW
+        {
+            set 
+            { 
+                _Rect.W = value;
+                Rect.W = value;
+            }
+            get { return _Rect.W; }
+        }
+
+        public float OriginalRectZ
+        {
+            set 
+            { 
+                _Rect.Z = value;
+                Rect.Z = value;
+            }
+            get { return _Rect.Z; }
+        }
+
+        public SColorF OriginalColor
+        {
+            set 
+            { 
+                _Color = value;
+                Color = value; 
+            }
+            get { return _Color; }
+        }
+
+        public float OriginalColorR
+        {
+            set 
+            { 
+                _Color.R = value;
+                Color.R = value; 
+            }
+            get { return _Color.R; }
+        }
+
+        public float OriginalColorG
+        {
+            set 
+            { 
+                _Color.G = value;
+                Color.G = value; 
+            }
+            get { return _Color.G; }
+        }
+
+        public float OriginalColorB
+        {
+            set
+            { 
+                _Color.B = value;
+                Color.B = value;
+            }
+            get { return _Color.B; }
+        }
+
+        public float OriginalColorA
+        {
+            set 
+            { 
+                _Color.A = value;
+                Color.A = value; 
+            }
+            get { return _Color.A; }
+        }
+
+        public CTexture OriginalTexture
+        {
+            set 
+            {
+                _Texture = value; 
+                Texture = value; 
+            }
+            get { return _Texture; }
+        }
+
         public bool Visible;
         public SRectF Rect;
         public SColorF Color;

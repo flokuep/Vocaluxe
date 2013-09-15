@@ -637,13 +637,13 @@ namespace VocaluxeLib.Menu.SongMenu
             {
                 if (itemCount > i + offset)
                 {
-                    _Tiles[i].Texture = isInCategory ? CBase.Songs.GetVisibleSong(i + offset).CoverTextureSmall : CBase.Songs.GetCategory(i + offset).CoverTextureSmall;
-                    _Tiles[i].Color = new SColorF(1f, 1f, 1f, 1f);
+                    _Tiles[i].OriginalTexture = isInCategory ? CBase.Songs.GetVisibleSong(i + offset).CoverTextureSmall : CBase.Songs.GetCategory(i + offset).CoverTextureSmall;
+                    _Tiles[i].OriginalColor = new SColorF(1f, 1f, 1f, 1f);
                 }
                 else
                 {
-                    _Tiles[i].Texture = _CoverTexture;
-                    _Tiles[i].Color = _Color;
+                    _Tiles[i].OriginalTexture = _CoverTexture;
+                    _Tiles[i].OriginalColor = _Color;
                 }
             }
             _Offset = offset;

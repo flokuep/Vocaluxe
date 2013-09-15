@@ -174,7 +174,6 @@ namespace VocaluxeLib.Menu
         /// <summary>
         ///     Do NOT read/write this anywhere but in _UpdateTextPosition!
         /// </summary>
-        private SRectF _Rect;
         public new SRectF Rect
         {
             get
@@ -195,7 +194,6 @@ namespace VocaluxeLib.Menu
             set { _SelColor = value; }
         }
 
-        private SColorF _Color; //normal Color
         private SColorF _SelColor; //selected Color for Buttons
 
         public float ReflectionSpace;

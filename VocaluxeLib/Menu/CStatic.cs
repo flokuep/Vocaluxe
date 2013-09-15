@@ -45,16 +45,12 @@ namespace VocaluxeLib.Menu
             return _Theme.Name;
         }
 
-        private CTexture _Texture;
         public new CTexture Texture
         {
             get { return _Texture ?? CBase.Theme.GetSkinTexture(_Theme.TextureName, _PartyModeID); }
 
             set { _Texture = value; }
         }
-
-        private SColorF _Color;
-        private SRectF _Rect;
 
         public bool Reflection;
         public float ReflectionSpace;

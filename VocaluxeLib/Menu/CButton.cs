@@ -42,10 +42,7 @@ namespace VocaluxeLib.Menu
         private bool _ThemeLoaded;
         private readonly int _PartyModeID;
 
-        public CTexture _Texture;
         public CTexture _SelTexture;
-        public SRectF _Rect;
-        public SColorF _Color;
         public SColorF _SelColor;
 
         public CTexture SelTexture

@@ -221,8 +221,8 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
             for (int i = 1; i <= _PartyMode.GetMaxPlayer(); i++)
             {
                 CButton b = GetNewButton(_Buttons[_ButtonPlayerDestination]);
-                b.Rect.X = _PlayerDestinationButtonsFirstX + column * (b.Rect.W + _PlayerDestinationButtonsSpaceH);
-                b.Rect.Y = _PlayerDestinationButtonsFirstY + row * (b.Rect.H + _PlayerDestinationButtonsSpaceW); 
+                b.OriginalRectX = _PlayerDestinationButtonsFirstX + column * (b.Rect.W + _PlayerDestinationButtonsSpaceH);
+                b.OriginalRectY = _PlayerDestinationButtonsFirstY + row * (b.Rect.H + _PlayerDestinationButtonsSpaceW); 
                 _PlayerDestinationButtons.Add(b);
                 column++;
                 if (column >= _PlayerDestinationButtonsNumH)
@@ -245,8 +245,8 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
             for (int i = 1; i <= _PlayerChooseButtonsNumH * _PlayerChooseButtonsNumW; i++)
             {
                 CButton b = GetNewButton(_Buttons[_ButtonPlayerChoose]);
-                b.Rect.X = _PlayerChooseButtonsFirstX + column * (b.Rect.W + _PlayerChooseButtonsSpaceH);
-                b.Rect.Y = _PlayerChooseButtonsFirstY + row * (b.Rect.H + _PlayerChooseButtonsSpaceW); 
+                b.OriginalRectX = _PlayerChooseButtonsFirstX + column * (b.Rect.W + _PlayerChooseButtonsSpaceH);
+                b.OriginalRectY = _PlayerChooseButtonsFirstY + row * (b.Rect.H + _PlayerChooseButtonsSpaceW); 
                 CPlayerChooseButton pcb = new CPlayerChooseButton { Button = b, ProfileID = -1 };
                 _PlayerChooseButtons.Add(pcb);
                 column++;
@@ -286,9 +286,9 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
                         int id = _PlayerChooseButtonsVisibleProfiles[i + offset * numButtonPlayerChoose];
                         _PlayerChooseButtons[i].ProfileID = id;
                         _PlayerChooseButtons[i].Button.Text.Text = CBase.Profiles.GetPlayerName(id);
-                        _PlayerChooseButtons[i].Button.Texture = CBase.Profiles.GetAvatar(id);
+                        _PlayerChooseButtons[i].Button.OriginalTexture = CBase.Profiles.GetAvatar(id);
                         _PlayerChooseButtons[i].Button.SelTexture = CBase.Profiles.GetAvatar(id);
-                        _PlayerChooseButtons[i].Button.Color = new SColorF(1, 1, 1, 0.6f);
+                        _PlayerChooseButtons[i].Button.OriginalColor = new SColorF(1, 1, 1, 0.6f);
                         _PlayerChooseButtons[i].Button.SelColor = new SColorF(1, 1, 1, 1);
                         _PlayerChooseButtons[i].Button.Enabled = true;
                     }
@@ -296,9 +296,9 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
                     {
                         _PlayerChooseButtons[i].ProfileID = -1;
                         _PlayerChooseButtons[i].Button.Text.Text = String.Empty;
-                        _PlayerChooseButtons[i].Button.Texture = _Buttons[_ButtonPlayerChoose].Texture;
+                        _PlayerChooseButtons[i].Button.OriginalTexture = _Buttons[_ButtonPlayerChoose].Texture;
                         _PlayerChooseButtons[i].Button.SelTexture = _Buttons[_ButtonPlayerChoose].SelTexture;
-                        _PlayerChooseButtons[i].Button.Color = _Buttons[_ButtonPlayerChoose].Color;
+                        _PlayerChooseButtons[i].Button.OriginalColor = _Buttons[_ButtonPlayerChoose].Color;
                         _PlayerChooseButtons[i].Button.SelColor = _Buttons[_ButtonPlayerChoose].SelColor;
                         _PlayerChooseButtons[i].Button.Enabled = false;
                     }
@@ -343,9 +343,9 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
                     if (_Data.ScreenNames.ProfileIDs[i] != -1)
                     {
                         int id = _Data.ScreenNames.ProfileIDs[i];
-                        _PlayerDestinationButtons[i].Color = new SColorF(1, 1, 1, 0.6f);
+                        _PlayerDestinationButtons[i].OriginalColor = new SColorF(1, 1, 1, 0.6f);
                         _PlayerDestinationButtons[i].SelColor = new SColorF(1, 1, 1, 1);
-                        _PlayerDestinationButtons[i].Texture = CBase.Profiles.GetAvatar(id);
+                        _PlayerDestinationButtons[i].OriginalTexture = CBase.Profiles.GetAvatar(id);
                         _PlayerDestinationButtons[i].SelTexture = CBase.Profiles.GetAvatar(id);
                         _PlayerDestinationButtons[i].Text.Text = CBase.Profiles.GetPlayerName(id);
                         _PlayerDestinationButtons[i].Enabled = true;
@@ -353,9 +353,9 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
                 }
                 else
                 {
-                    _PlayerDestinationButtons[i].Color = _Buttons[_ButtonPlayerDestination].Color;
+                    _PlayerDestinationButtons[i].OriginalColor = _Buttons[_ButtonPlayerDestination].Color;
                     _PlayerDestinationButtons[i].SelColor = _Buttons[_ButtonPlayerDestination].SelColor;
-                    _PlayerDestinationButtons[i].Texture = _Buttons[_ButtonPlayerDestination].Texture;
+                    _PlayerDestinationButtons[i].OriginalTexture = _Buttons[_ButtonPlayerDestination].Texture;
                     _PlayerDestinationButtons[i].SelTexture = _Buttons[_ButtonPlayerDestination].SelTexture;
                     _PlayerDestinationButtons[i].Text.Text = String.Empty;
                     _PlayerDestinationButtons[i].Enabled = false;
@@ -385,9 +385,9 @@ namespace VocaluxeLib.PartyModes.ChallengeMedley
                 int added = _Data.ScreenNames.ProfileIDs.Count - 1;
                 _UpdateButtonNext();
                 //Update texture and name
-                _PlayerDestinationButtons[added].Color = new SColorF(1, 1, 1, 0.6f);
+                _PlayerDestinationButtons[added].OriginalColor = new SColorF(1, 1, 1, 0.6f);
                 _PlayerDestinationButtons[added].SelColor = new SColorF(1, 1, 1, 1);
-                _PlayerDestinationButtons[added].Texture = CBase.Profiles.GetAvatar(id);
+                _PlayerDestinationButtons[added].OriginalTexture = CBase.Profiles.GetAvatar(id);
                 _PlayerDestinationButtons[added].SelTexture = CBase.Profiles.GetAvatar(id);
                 _PlayerDestinationButtons[added].Text.Text = CBase.Profiles.GetPlayerName(id);
                 _PlayerDestinationButtons[added].Enabled = true;
