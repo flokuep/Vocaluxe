@@ -33,7 +33,7 @@ namespace VocaluxeLib.Menu
         public string ColorName;
     }
 
-    public class CStatic : IMenuElement, IMenuProperties
+    public class CStatic: CMenuProperties, IMenuElement
     {
         private readonly int _PartyModeID;
 
@@ -46,7 +46,7 @@ namespace VocaluxeLib.Menu
         }
 
         private CTexture _Texture;
-        public CTexture Texture
+        public new CTexture Texture
         {
             get { return _Texture ?? CBase.Theme.GetSkinTexture(_Theme.TextureName, _PartyModeID); }
 
@@ -54,17 +54,7 @@ namespace VocaluxeLib.Menu
         }
 
         private SColorF _Color;
-        public SColorF Color
-        {
-            get { return _Color; }
-            set { _Color = value; }
-        }
         private SRectF _Rect;
-        public SRectF Rect
-        {
-            get { return _Rect; }
-            set { _Rect = value; }
-        }
 
         public bool Reflection;
         public float ReflectionSpace;
@@ -72,7 +62,6 @@ namespace VocaluxeLib.Menu
 
         public bool Animation;
         private readonly List<CAnimation> _Animations = new List<CAnimation>();
-        public EAnimationEvent Event { get; set; }
 
         private bool _Selected;
         public bool Selected
@@ -125,8 +114,8 @@ namespace VocaluxeLib.Menu
             _PartyModeID = s._PartyModeID;
 
             _Texture = s.Texture;
-            Color = new SColorF(s.Color);
-            Rect = new SRectF(s.Rect);
+            _Color = new SColorF(s.Color);
+            _Rect = new SRectF(s.Rect);
             Reflection = s.Reflection;
             ReflectionSpace = s.ReflectionHeight;
             ReflectionHeight = s.ReflectionSpace;
@@ -138,6 +127,8 @@ namespace VocaluxeLib.Menu
             Animation = s.Animation;
             Event = s.Event;
             _Animations = s._Animations;
+
+            SetProperties();
         }
 
         public CStatic(int partyModeID, CTexture texture, SColorF color, SRectF rect)
@@ -145,16 +136,20 @@ namespace VocaluxeLib.Menu
             _PartyModeID = partyModeID;
 
             _Texture = texture;
-            Color = color;
-            Rect = rect;
+            _Color = color;
+            _Rect = rect;
+
+            SetProperties();
         }
 
         public CStatic(int partyModeID, string textureSkinName, SColorF color, SRectF rect)
         {
             _PartyModeID = partyModeID;
             _Theme.TextureName = textureSkinName;
-            Color = color;
-            Rect = rect;
+            _Color = color;
+            _Rect = rect;
+
+            SetProperties();
         }
 
         public bool LoadTheme(string xmlPath, string elementName, CXMLReader xmlReader, int skinIndex)
@@ -341,13 +336,22 @@ namespace VocaluxeLib.Menu
         public void LoadTextures()
         {
             if (!String.IsNullOrEmpty(_Theme.ColorName))
-                Color = CBase.Theme.GetColor(_Theme.ColorName, _PartyModeID);
+                _Color = CBase.Theme.GetColor(_Theme.ColorName, _PartyModeID);
+
+            SetProperties();
         }
 
         public void ReloadTextures()
         {
             UnloadTextures();
             LoadTextures();
+        }
+
+        public override void SetProperties()
+        {
+            Color = _Color;
+            Texture = _Texture;
+            Rect = _Rect;
         }
 
         #region ThemeEdit

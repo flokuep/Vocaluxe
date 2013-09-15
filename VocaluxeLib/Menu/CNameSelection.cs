@@ -260,10 +260,8 @@ namespace VocaluxeLib.Menu
                     //Update PlayerSelector-Coords
                     if (_Player > -1 && _ActualSelection == i)
                     {
-                        SRectF rect = _PlayerSelector.Rect;
-                        rect.X = tile.Avatar.Rect.X - 3;
-                        rect.Y = tile.Avatar.Rect.Y - 3;
-                        _PlayerSelector.Rect = rect;
+                        _PlayerSelector.Rect.X = tile.Avatar.Rect.X - 3;
+                        _PlayerSelector.Rect.Y = tile.Avatar.Rect.Y - 3; 
                     }
                 }
 

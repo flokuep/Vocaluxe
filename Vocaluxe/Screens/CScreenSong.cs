@@ -393,10 +393,8 @@ namespace Vocaluxe.Screens
 
             if (_DragAndDropActive)
             {
-                SRectF rect = _DragAndDropCover.Rect;
-                rect.X += mouseEvent.X - _OldMousePosX;
-                rect.Y += mouseEvent.Y - _OldMousePosY;
-                _DragAndDropCover.Rect = rect;
+                _DragAndDropCover.Rect.X += mouseEvent.X - _OldMousePosX;
+                _DragAndDropCover.Rect.Y += mouseEvent.Y - _OldMousePosY; 
             }
             _OldMousePosX = mouseEvent.X;
             _OldMousePosY = mouseEvent.Y;
@@ -584,7 +582,7 @@ namespace Vocaluxe.Screens
                 if (!_DragAndDropActive && _Playlists[_Playlist].Visible && CSongs.NumSongsVisible > 0 && _SongMenus[_SongMenu].GetActualSelection() != -1)
                 {
                     _DragAndDropCover = _SongMenus[_SongMenu].GetSelectedSongCover();
-                    _DragAndDropCover.Rect = new SRectF(_DragAndDropCover.Rect.X, _DragAndDropCover.Rect.Y, _DragAndDropCover.Rect.W, _DragAndDropCover.Rect.H, CSettings.ZNear);
+                    _DragAndDropCover.Rect.Z = CSettings.ZNear; 
                     _Playlists[_Playlist].DragAndDropSongID = CSongs.VisibleSongs[_SongMenus[_SongMenu].GetActualSelection()].ID;
                     _DragAndDropActive = true;
                     return true;

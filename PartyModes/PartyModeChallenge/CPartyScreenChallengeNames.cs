@@ -151,10 +151,8 @@ namespace VocaluxeLib.PartyModes.Challenge
             if (mouseEvent.LBH && _SelectingMouseActive)
             {
                 //Update coords for Drag/Drop-Texture
-                SRectF rect = _ChooseAvatarStatic.Rect;
-                rect.X += mouseEvent.X - _OldMouseX;
-                rect.Y += mouseEvent.Y - _OldMouseY;
-                _ChooseAvatarStatic.Rect = rect;
+                _ChooseAvatarStatic.Rect.X += mouseEvent.X - _OldMouseX;;
+                _ChooseAvatarStatic.Rect.Y += mouseEvent.Y - _OldMouseY;
                 _OldMouseX = mouseEvent.X;
                 _OldMouseY = mouseEvent.Y;
             }
@@ -223,10 +221,8 @@ namespace VocaluxeLib.PartyModes.Challenge
             for (int i = 1; i <= _PartyMode.GetMaxPlayer(); i++)
             {
                 CButton b = GetNewButton(_Buttons[_ButtonPlayerDestination]);
-                SRectF rect = new SRectF(b.Rect);
-                rect.X = _PlayerDestinationButtonsFirstX + column * (b.Rect.W + _PlayerDestinationButtonsSpaceH);
-                rect.Y = _PlayerDestinationButtonsFirstY + row * (b.Rect.H + _PlayerDestinationButtonsSpaceW);
-                b.Rect = rect;
+                b.Rect.X = _PlayerDestinationButtonsFirstX + column * (b.Rect.W + _PlayerDestinationButtonsSpaceH);
+                b.Rect.Y = _PlayerDestinationButtonsFirstY + row * (b.Rect.H + _PlayerDestinationButtonsSpaceW); 
                 _PlayerDestinationButtons.Add(b);
                 column++;
                 if (column >= _PlayerDestinationButtonsNumH)
@@ -249,10 +245,8 @@ namespace VocaluxeLib.PartyModes.Challenge
             for (int i = 1; i <= _PlayerChooseButtonsNumH * _PlayerChooseButtonsNumW; i++)
             {
                 CButton b = GetNewButton(_Buttons[_ButtonPlayerChoose]);
-                SRectF rect = new SRectF(b.Rect);
-                rect.X = _PlayerChooseButtonsFirstX + column * (b.Rect.W + _PlayerChooseButtonsSpaceH);
-                rect.Y = _PlayerChooseButtonsFirstY + row * (b.Rect.H + _PlayerChooseButtonsSpaceW);
-                b.Rect = rect;
+                b.Rect.X = _PlayerChooseButtonsFirstX + column * (b.Rect.W + _PlayerChooseButtonsSpaceH);
+                b.Rect.Y = _PlayerChooseButtonsFirstY + row * (b.Rect.H + _PlayerChooseButtonsSpaceW);
                 CPlayerChooseButton pcb = new CPlayerChooseButton {Button = b, ProfileID = -1};
                 _PlayerChooseButtons.Add(pcb);
                 column++;

@@ -26,10 +26,10 @@ namespace VocaluxeLib.Animations
     {
         private struct SAnimationMenu
         {
-            public readonly IMenuProperties element;
+            public readonly CMenuProperties element;
             public readonly CAnimation anim;
 
-            public SAnimationMenu(IMenuProperties e, CAnimation a)
+            public SAnimationMenu(CMenuProperties e, CAnimation a)
             {
                 element = e;
                 anim = a;
@@ -38,7 +38,7 @@ namespace VocaluxeLib.Animations
 
         private static readonly List<SAnimationMenu> Elements = new List<SAnimationMenu>();
 
-        public static void Add(IMenuProperties e, CAnimation anim)
+        public static void Add(CMenuProperties e, CAnimation anim)
         {
             Elements.Add(new SAnimationMenu(e, anim));
         }
@@ -100,7 +100,7 @@ namespace VocaluxeLib.Animations
             }
         }
 
-        public static void SetOnSelectAnim(IMenuProperties e)
+        public static void SetOnSelectAnim(CMenuProperties e)
         {
             if (e.Event != EAnimationEvent.OnSelected)
             {
@@ -112,7 +112,7 @@ namespace VocaluxeLib.Animations
             }
         }
 
-        public static void SetAfterSelectAnim(IMenuProperties e)
+        public static void SetAfterSelectAnim(CMenuProperties e)
         {
             if (e.Event != EAnimationEvent.AfterSelected)
             {
@@ -126,7 +126,7 @@ namespace VocaluxeLib.Animations
             }
         }
 
-        public static void SetOnVisibleAnim(IMenuProperties e)
+        public static void SetOnVisibleAnim(CMenuProperties e)
         {
             if (e.Event != EAnimationEvent.OnVisible)
             {
@@ -138,7 +138,7 @@ namespace VocaluxeLib.Animations
             }
         }
 
-        public static void SetAfterVisibleAnim(IMenuProperties e)
+        public static void SetAfterVisibleAnim(CMenuProperties e)
         {
             if (e.Event != EAnimationEvent.AfterVisible)
             {
@@ -163,7 +163,7 @@ namespace VocaluxeLib.Animations
             }
         }
 
-        public static void ResetAnimation(IMenuProperties e, EAnimationEvent ev)
+        public static void ResetAnimation(CMenuProperties e, EAnimationEvent ev)
         {
             bool fromStart = true;
             if (GetCurrentAnimation(e) != null)
@@ -178,7 +178,7 @@ namespace VocaluxeLib.Animations
             }
         }
 
-        public static bool AnimAvailable(IMenuProperties e, EAnimationEvent ev)
+        public static bool AnimAvailable(CMenuProperties e, EAnimationEvent ev)
         {
             foreach (SAnimationMenu am in Elements)
             {
@@ -191,7 +191,7 @@ namespace VocaluxeLib.Animations
             return false;
         }
 
-        public static CAnimation GetCurrentAnimation(IMenuProperties e)
+        public static CAnimation GetCurrentAnimation(CMenuProperties e)
         {
             foreach (SAnimationMenu am in Elements)
             {

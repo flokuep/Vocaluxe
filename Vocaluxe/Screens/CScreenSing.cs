@@ -1304,9 +1304,7 @@ namespace Vocaluxe.Screens
                             _TimeRects[i].Rect.Color = _Statics[_StaticTimeLineExpandedNormal].Color;
                         }
                     }
-                    SRectF rect = _Statics[_StaticTimePointer].Rect;
-                    rect.X = stat.Rect.X + stat.Rect.W * (currentTime / totalTime);
-                    _Statics[_StaticTimePointer].Rect = rect;
+                    _Statics[_StaticTimePointer].Rect.X = stat.Rect.X + stat.Rect.W * (currentTime / totalTime); 
                     break;
             }
         }

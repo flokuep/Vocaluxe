@@ -86,12 +86,6 @@ namespace Vocaluxe.Base
         public SColorF Color;
     }
 
-    struct SAnimations
-    {
-        public string Name;
-        public CAnimation Animation;
-    }
-
     struct SCursor
     {
         public string SkinName;

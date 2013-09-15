@@ -35,7 +35,7 @@ namespace VocaluxeLib.Menu
         public string SelColorName; //for Buttons
     }
 
-    public class CText : IMenuElement, IMenuProperties
+    public class CText : CMenuProperties, IMenuElement
     {
         private SThemeText _Theme;
         private bool _ThemeLoaded;
@@ -175,7 +175,7 @@ namespace VocaluxeLib.Menu
         ///     Do NOT read/write this anywhere but in _UpdateTextPosition!
         /// </summary>
         private SRectF _Rect;
-        public SRectF Rect
+        public new SRectF Rect
         {
             get
             {
@@ -189,18 +189,11 @@ namespace VocaluxeLib.Menu
             }
         }
 
-        public SColorF Color
-        {
-            get { return _Color; }
-            set { _Color = value; }
-        }
         public SColorF SelColor
         {
             get { return _SelColor; }
             set { _SelColor = value; }
         }
-
-        public CTexture Texture { set; get; }
 
         private SColorF _Color; //normal Color
         private SColorF _SelColor; //selected Color for Buttons
@@ -210,7 +203,6 @@ namespace VocaluxeLib.Menu
 
         public bool Animation;
         private readonly List<CAnimation> _Animations = new List<CAnimation>();
-        public EAnimationEvent Event { get; set; }
 
         private string _Text = String.Empty;
         public string Text
@@ -273,7 +265,7 @@ namespace VocaluxeLib.Menu
             }
         }
         private bool _Visible = true;
-        public bool Visible
+        public new bool Visible
         {
             get { return _Visible; }
             set
@@ -324,7 +316,7 @@ namespace VocaluxeLib.Menu
             _Style = text._Style;
             _Font = text._Font;
 
-            Color = new SColorF(text.Color);
+            _Color = new SColorF(text.Color);
             SelColor = new SColorF(text.SelColor);
             ReflectionSpace = text.ReflectionSpace;
             ReflectionHeight = text.ReflectionHeight;
@@ -360,7 +352,7 @@ namespace VocaluxeLib.Menu
             Style = style;
             Font = font;
 
-            Color = col;
+            _Color = col;
             SelColor = new SColorF(col);
 
             Text = text;
@@ -506,10 +498,10 @@ namespace VocaluxeLib.Menu
                     writer.WriteElementString("Color", _Theme.ColorName);
                 else
                 {
-                    writer.WriteElementString("R", Color.R.ToString("#0.00"));
-                    writer.WriteElementString("G", Color.G.ToString("#0.00"));
-                    writer.WriteElementString("B", Color.B.ToString("#0.00"));
-                    writer.WriteElementString("A", Color.A.ToString("#0.00"));
+                    writer.WriteElementString("R", _Color.R.ToString("#0.00"));
+                    writer.WriteElementString("G", _Color.G.ToString("#0.00"));
+                    writer.WriteElementString("B", _Color.B.ToString("#0.00"));
+                    writer.WriteElementString("A", _Color.A.ToString("#0.00"));
                 }
 
                 writer.WriteComment("<SColor>: Selected Text color from ColorScheme (high priority)");
@@ -641,10 +633,12 @@ namespace VocaluxeLib.Menu
         public void LoadTextures()
         {
             if (!String.IsNullOrEmpty(_Theme.ColorName))
-                Color = CBase.Theme.GetColor(_Theme.ColorName, _PartyModeID);
+                _Color = CBase.Theme.GetColor(_Theme.ColorName, _PartyModeID);
 
             if (!String.IsNullOrEmpty(_Theme.SelColorName))
-                SelColor = CBase.Theme.GetColor(_Theme.SelColorName, _PartyModeID);
+                _SelColor = CBase.Theme.GetColor(_Theme.SelColorName, _PartyModeID);
+
+            SetProperties();
 
             foreach (CAnimation anim in _Animations)
                 anim.SetColor(Color);
@@ -654,6 +648,12 @@ namespace VocaluxeLib.Menu
         {
             UnloadTextures();
             LoadTextures();
+        }
+
+        public override void SetProperties()
+        {
+            Color = _Color;
+            Rect = _Rect;
         }
 
         #region ThemeEdit

@@ -36,7 +36,7 @@ namespace VocaluxeLib.Menu
         public string SelTextureName;
     }
 
-    public class CButton : IMenuElement, IMenuProperties
+    public class CButton : CMenuProperties, IMenuElement
     {
         private SThemeButton _Theme;
         private bool _ThemeLoaded;
@@ -48,25 +48,10 @@ namespace VocaluxeLib.Menu
         public SColorF _Color;
         public SColorF _SelColor;
 
-        public CTexture Texture
-        {
-            get { return _Texture; }
-            set { _Texture = value; }
-        }
         public CTexture SelTexture
         { 
             get { return _SelTexture; } 
             set { _SelTexture = value; }
-        }
-        public SRectF Rect
-        {
-            get { return _Rect; } 
-            set { _Rect = value; }
-        }
-        public SColorF Color
-        {
-            get { return _Color; } 
-            set {_Color = value;}
         }
         public SColorF SelColor
         {   
@@ -88,7 +73,6 @@ namespace VocaluxeLib.Menu
 
         public bool Animation;
         private readonly List<CAnimation> _Animations = new List<CAnimation>();
-        public EAnimationEvent Event {get; set;}
 
         public bool Pressed;
 
@@ -127,7 +111,7 @@ namespace VocaluxeLib.Menu
             }
         }
         private bool _Visible = true;
-        public bool Visible
+        public new bool Visible
         {
             get { return _Visible; }
             set 
@@ -136,7 +120,8 @@ namespace VocaluxeLib.Menu
                     CAnimations.SetOnVisibleAnim(this);
                 else
                     CAnimations.SetAfterVisibleAnim(this); 
-                _Visible = value; 
+                _Visible = value;
+                Text.Visible = value;
             }
         }
         public bool Enabled = true;
@@ -166,10 +151,10 @@ namespace VocaluxeLib.Menu
                     SelTextureName = button._Theme.SelTextureName
                 };
 
-            Rect = new SRectF(button.Rect);
-            Color = new SColorF(button.Color);
+            _Rect = new SRectF(button.Rect);
+            _Color = new SColorF(button.Color);
             SelColor = new SColorF(button.Color);
-            Texture = button.Texture;
+            _Texture = button.Texture;
             SelTexture = button.SelTexture;
 
             Text = new CText(button.Text);
@@ -189,6 +174,8 @@ namespace VocaluxeLib.Menu
             Animation = button.Animation;
             _Animations = button._Animations;
             Event = button.Event;
+
+            SetProperties();
         }
 
         public bool LoadTheme(string xmlPath, string elementName, CXMLReader xmlReader, int skinIndex)
@@ -309,11 +296,11 @@ namespace VocaluxeLib.Menu
                 writer.WriteElementString("SkinSelected", _Theme.SelTextureName);
 
                 writer.WriteComment("<X>, <Y>, <Z>, <W>, <H>: Button position, width and height");
-                writer.WriteElementString("X", Rect.X.ToString("#0"));
-                writer.WriteElementString("Y", Rect.Y.ToString("#0"));
-                writer.WriteElementString("Z", Rect.Z.ToString("#0.00"));
-                writer.WriteElementString("W", Rect.W.ToString("#0"));
-                writer.WriteElementString("H", Rect.H.ToString("#0"));
+                writer.WriteElementString("X", _Rect.X.ToString("#0"));
+                writer.WriteElementString("Y", _Rect.Y.ToString("#0"));
+                writer.WriteElementString("Z", _Rect.Z.ToString("#0.00"));
+                writer.WriteElementString("W", _Rect.W.ToString("#0"));
+                writer.WriteElementString("H", _Rect.H.ToString("#0"));
 
                 writer.WriteComment("<Color>: Button color from ColorScheme (high priority)");
                 writer.WriteComment("or <R>, <G>, <B>, <A> (lower priority)");
@@ -321,10 +308,10 @@ namespace VocaluxeLib.Menu
                     writer.WriteElementString("Color", _Theme.ColorName);
                 else
                 {
-                    writer.WriteElementString("R", Color.R.ToString("#0.00"));
-                    writer.WriteElementString("G", Color.G.ToString("#0.00"));
-                    writer.WriteElementString("B", Color.B.ToString("#0.00"));
-                    writer.WriteElementString("A", Color.A.ToString("#0.00"));
+                    writer.WriteElementString("R", _Color.R.ToString("#0.00"));
+                    writer.WriteElementString("G", _Color.G.ToString("#0.00"));
+                    writer.WriteElementString("B", _Color.B.ToString("#0.00"));
+                    writer.WriteElementString("A", _Color.A.ToString("#0.00"));
                 }
 
                 writer.WriteComment("<SColor>: Selected button color from ColorScheme (high priority)");
@@ -333,10 +320,10 @@ namespace VocaluxeLib.Menu
                     writer.WriteElementString("SColor", _Theme.SelColorName);
                 else
                 {
-                    writer.WriteElementString("SR", SelColor.R.ToString("#0.00"));
-                    writer.WriteElementString("SG", SelColor.G.ToString("#0.00"));
-                    writer.WriteElementString("SB", SelColor.B.ToString("#0.00"));
-                    writer.WriteElementString("SA", SelColor.A.ToString("#0.00"));
+                    writer.WriteElementString("SR", _SelColor.R.ToString("#0.00"));
+                    writer.WriteElementString("SG", _SelColor.G.ToString("#0.00"));
+                    writer.WriteElementString("SB", _SelColor.B.ToString("#0.00"));
+                    writer.WriteElementString("SA", _SelColor.A.ToString("#0.00"));
                 }
 
                 Text.SaveTheme(writer);
@@ -455,10 +442,12 @@ namespace VocaluxeLib.Menu
             Text.LoadTextures();
 
             if (!String.IsNullOrEmpty(_Theme.ColorName))
-                Color = CBase.Theme.GetColor(_Theme.ColorName, _PartyModeID);
+                _Color = CBase.Theme.GetColor(_Theme.ColorName, _PartyModeID);
 
             if (!String.IsNullOrEmpty(_Theme.SelColorName))
-                SelColor = CBase.Theme.GetColor(_Theme.SelColorName, _PartyModeID);
+                _SelColor = CBase.Theme.GetColor(_Theme.SelColorName, _PartyModeID);
+
+            SetProperties();
 
             foreach (CAnimation anim in _Animations)
                 anim.SetColor(Color);
@@ -468,6 +457,13 @@ namespace VocaluxeLib.Menu
         {
             UnloadTextures();
             LoadTextures();
+        }
+
+        public override void SetProperties()
+        {
+            Color = _Color;
+            Texture = _Texture;
+            Rect = _Rect;
         }
 
         #region ThemeEdit

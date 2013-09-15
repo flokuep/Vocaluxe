@@ -22,16 +22,14 @@ using VocaluxeLib.Draw;
 
 namespace VocaluxeLib.Menu
 {
-    public interface IMenuProperties
+    public abstract class CMenuProperties
     {
-        bool Visible { get; set; }
+        public bool Visible;
+        public SRectF Rect;
+        public SColorF Color;
+        public CTexture Texture;
+        public EAnimationEvent Event;
 
-        SRectF Rect { get; set; }
-
-        SColorF Color { get; set; }
-
-        CTexture Texture { get; set; }
-
-        EAnimationEvent Event { get; set; }
+        public abstract void SetProperties();
     }
 }

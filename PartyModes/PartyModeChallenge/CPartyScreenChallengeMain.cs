@@ -358,10 +358,8 @@ namespace VocaluxeLib.PartyModes.Challenge
             for (int i = 0; i < _GameState.NumPlayerAtOnce; i++)
             {
                 //static
-                SRectF rect = _NextPlayerStatics[i].Rect;
-                rect.X = x;
-                rect.Y = staticY;
-                _NextPlayerStatics[i].Rect = rect;
+                _NextPlayerStatics[i].Rect.X = x;
+                _NextPlayerStatics[i].Rect.Y = staticY;
                 _NextPlayerStatics[i].Visible = true;
                 //text
                 _NextPlayerTexts[i].X = x + _Statics[_StaticNextPlayer].Rect.W / 2;
