@@ -219,6 +219,11 @@ namespace Vocaluxe.Base
         {
             return CSettings.FolderProfiles;
         }
+
+        public string GetDataPath()
+        {
+            return CSettings.DataPath;
+        }
     }
 
     class CBtheme : ITheme
@@ -781,6 +786,11 @@ namespace Vocaluxe.Base
         public bool GetCover(string fileName, ref CTexture texture, int coverSize)
         {
             return CDataBase.GetCover(fileName, ref texture, coverSize);
+        }
+
+        public bool GetDataBaseSongInfos(string artist, string title, out int numPlayed, out string dateAdded, out int highscoreID)
+        {
+            return CDataBase.GetDataBaseSongInfos(artist, title, out numPlayed, out dateAdded, out highscoreID);
         }
     }
 

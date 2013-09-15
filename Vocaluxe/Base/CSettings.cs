@@ -55,7 +55,7 @@ namespace Vocaluxe.Base
 
         public const ERevision VersionRevision = ERevision.Beta;
 
-        public const int DatabaseHighscoreVersion = 2;
+        public const int DatabaseHighscoreVersion = 3;
         public const int DatabaseCoverVersion = 1;
         public const int DatabaseCreditsRessourcesVersion = 1;
 
@@ -67,6 +67,12 @@ namespace Vocaluxe.Base
 
         public static bool IsFullScreen;
         public const int VertexBufferElements = 10000;
+
+#if INSTALLER
+        public static string DataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Vocaluxe");
+#else
+        public static string DataPath = Environment.CurrentDirectory;
+#endif
 
         public const string Icon = "Vocaluxe.ico";
         public const string Logo = "Logo.png";
@@ -90,7 +96,14 @@ namespace Vocaluxe.Base
         public const string FolderThemes = "Themes";
         public const string FolderThemeFonts = "Fonts";
         public const string FolderScreens = "Screens";
-        public static string FolderProfiles = "Profiles";
+        public const string FolderProfiles = "Profiles";
+        public static List<string> FoldersProfiles = new List<string>()
+            {
+#if INSTALLER
+                Path.Combine(Environment.CurrentDirectory, FolderProfiles),
+#endif
+                Path.Combine(DataPath, FolderProfiles)
+            };
         public const string FolderSongs = "Songs";
         public const string FolderSounds = "Sounds";
         public const string FolderLanguages = "Languages";
@@ -209,7 +222,8 @@ namespace Vocaluxe.Base
 
         public static void CreateFolders()
         {
-            List<string> folders = new List<string> {FolderCover, FolderFonts, FolderProfiles, FolderSongs, FolderScreenshots, FolderBackgroundMusic, FolderSounds, FolderPlaylists};
+            List<string> folders = new List<string> {FolderCover, FolderFonts, Path.Combine(DataPath,FolderScreenshots), FolderBackgroundMusic, FolderSounds, Path.Combine(DataPath,FolderPlaylists)};
+            folders.AddRange(FoldersProfiles);
 
             foreach (string folder in folders)
             {
