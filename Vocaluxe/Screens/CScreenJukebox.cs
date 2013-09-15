@@ -35,6 +35,9 @@ namespace Vocaluxe.Screens
         private const string _ButtonPrevious = "ButtonPrevious";
         private const string _ButtonRepeat = "ButtonRepeat";
 
+        private const string _Playlist = "Playlist";
+
+        private bool _PlaylistActive;
         private EOffOn _OldBGSetting = EOffOn.TR_CONFIG_OFF;
 
         public override void Init()
@@ -44,6 +47,7 @@ namespace Vocaluxe.Screens
             _ThemeStatics = new string[] { _StaticCover, _StaticPlayerBG };
             _ThemeTexts = new string[] { _TextAlbum, _TextArtist, _TextTimer, _TextTitle };
             _ThemeButtons = new string[] { _ButtonPlay, _ButtonPause, _ButtonNext, _ButtonPrevious, _ButtonRepeat };
+            _ThemePlaylists = new string[] { _Playlist };
 
             _FadePlayerTimer = new Stopwatch();
         }
@@ -56,6 +60,8 @@ namespace Vocaluxe.Screens
             CConfig.VideosToBackground = EOffOn.TR_CONFIG_ON;
             CBackgroundMusic.VideoEnabled = true;
             _UpdatePlayerVisibility(1f);
+
+            _Playlists[_Playlist].LoadPlaylist(CBackgroundMusic.ActivePlaylist);
         }
 
         public override void OnClose()
@@ -66,10 +72,28 @@ namespace Vocaluxe.Screens
             CBackgroundMusic.VideoEnabled = CConfig.VideosToBackground == EOffOn.TR_CONFIG_ON;
         }
 
+        public override void LoadTheme(string xmlPath)
+        {
+            base.LoadTheme(xmlPath);
+
+            _Playlists[_Playlist].Init();
+            _Playlists[_Playlist].OptionsChangeGameModeAllowed = false;
+            _Playlists[_Playlist].OptionsClosingAllowed = false;
+            _Playlists[_Playlist].OptionsDeletingAllowed = false;
+            _Playlists[_Playlist].OptionsGameModeVisible = false;
+        }
 
         public override bool HandleInput(SKeyEvent keyEvent)
         {
             base.HandleInput(keyEvent);
+            if (keyEvent.Handled)
+                return true;
+
+            if (_PlaylistActive)
+            {
+                _Playlists[_Playlist].HandleInput(keyEvent);
+                return true;
+            }
 
             if (keyEvent.KeyPressed) { }
             else
@@ -89,6 +113,14 @@ namespace Vocaluxe.Screens
                             CBackgroundMusic.RepeatSong = !CBackgroundMusic.RepeatSong;
                         break;
 
+                    case Keys.Tab:
+                        if (_Playlists[_Playlist].Visible)
+                        {
+                            _PlaylistActive = !_PlaylistActive;
+                            _Playlists[_Playlist].Selected = _PlaylistActive;
+                        }
+                        break;
+
                     case Keys.Back:
                     case Keys.Escape:
                         CGraphics.Back();
@@ -102,21 +134,38 @@ namespace Vocaluxe.Screens
         {
             base.HandleMouse(mouseEvent);
 
-            if (!CHelper.IsInBounds(_Statics[_StaticPlayerBG].Rect, mouseEvent) && _Statics[_StaticPlayerBG].Visible && !_FadePlayerTimer.IsRunning)
+            if (_Playlists[_Playlist].Visible && _Playlists[_Playlist].IsMouseOver(mouseEvent))
+            {
+                _PlaylistActive = true;
+                _Playlists[_Playlist].Selected = _PlaylistActive;
+            }
+            else
+            {
+                _PlaylistActive = false;
+                _Playlists[_Playlist].Selected = _PlaylistActive;
+            }
+
+            if (_Playlists[_Playlist].Visible && _PlaylistActive)
+            {
+                if (_Playlists[_Playlist].HandleMouse(mouseEvent))
+                    return true;
+            }
+
+            if (!(CHelper.IsInBounds(_Statics[_StaticPlayerBG].Rect, mouseEvent) || CHelper.IsInBounds(_Playlists[_Playlist].Rect, mouseEvent)) && _Statics[_StaticPlayerBG].Visible && !_FadePlayerTimer.IsRunning)
             {
                 _FadePlayerTimer.Start();
                 _FadePlayerDirection = -1;
             }
-            else if (CHelper.IsInBounds(_Statics[_StaticPlayerBG].Rect, mouseEvent) && _Statics[_StaticPlayerBG].Visible && _FadePlayerTimer.IsRunning)
+            else if ((CHelper.IsInBounds(_Statics[_StaticPlayerBG].Rect, mouseEvent) || CHelper.IsInBounds(_Playlists[_Playlist].Rect, mouseEvent)) && _Statics[_StaticPlayerBG].Visible && _FadePlayerTimer.IsRunning)
             {
                 _FadePlayerDirection = 1;
             }
-            else if (CHelper.IsInBounds(_Statics[_StaticPlayerBG].Rect, mouseEvent) && !_Statics[_StaticPlayerBG].Visible && !_FadePlayerTimer.IsRunning)
+            else if ((CHelper.IsInBounds(_Statics[_StaticPlayerBG].Rect, mouseEvent) || CHelper.IsInBounds(_Playlists[_Playlist].Rect, mouseEvent)) && !_Statics[_StaticPlayerBG].Visible && !_FadePlayerTimer.IsRunning)
             {
                 _FadePlayerTimer.Start();
                 _FadePlayerDirection = 1;
             }
-            else if (!CHelper.IsInBounds(_Statics[_StaticPlayerBG].Rect, mouseEvent) && _Statics[_StaticPlayerBG].Visible && _FadePlayerTimer.IsRunning)
+            else if (!(CHelper.IsInBounds(_Statics[_StaticPlayerBG].Rect, mouseEvent) || CHelper.IsInBounds(_Playlists[_Playlist].Rect, mouseEvent)) && _Statics[_StaticPlayerBG].Visible && _FadePlayerTimer.IsRunning)
             {
                 _FadePlayerDirection = -1;
             }
@@ -219,6 +268,7 @@ namespace Vocaluxe.Screens
             _Buttons[_ButtonPlay].Visible = alpha > 0f && !CBackgroundMusic.IsPlaying;
             _Buttons[_ButtonPrevious].Visible = alpha > 0f;
             _Buttons[_ButtonRepeat].Visible = alpha > 0f;
+            _Playlists[_Playlist].Visible = alpha > 0f;
         }
     }
 }
