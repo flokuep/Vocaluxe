@@ -177,7 +177,7 @@ namespace Vocaluxe.Screens
                         name += " (P" + (_Scores[_Round][_Pos + p].VoiceNr + 1) + ")";
                     _Texts[_TextName[p]].Text = name;
 
-                    _Texts[_TextScore[p]].Text = _Scores[_Round][_Pos + p].Score.ToString("00000");
+                    _Texts[_TextScore[p]].Text = _Scores[_Round][_Pos + p].Score.ToString("D");
                     _Texts[_TextDate[p]].Text = _Scores[_Round][_Pos + p].Date;
 
                     _ParticleEffects[_ParticleEffectNew[p]].Visible = _IsNewEntry(_Scores[_Round][_Pos + p].ID);
@@ -238,8 +238,9 @@ namespace Vocaluxe.Screens
             for (int round = 0; round < rounds; round++)
             {
                 int songID = CGame.GetSong(round).ID;
-                ESongMode gameMode = CGame.GetSongMode(round);
-                _Scores[round] = CDataBase.LoadScore(songID, gameMode);
+                EGameMode gameMode = CGame.GetGameMode(round);
+                EHighscoreStyle style = CBase.Config.GetHighscoreStyle();
+                _Scores[round] = CDataBase.LoadScore(songID, gameMode, style);
             }
         }
 
@@ -255,22 +256,22 @@ namespace Vocaluxe.Screens
             if (points.NumRounds > 1)
                 _Texts[_TextSongName].Text += " (" + (_Round + 1) + "/" + points.NumRounds + ")";
 
-            switch (CGame.GetSongMode(_Round))
+            switch (CGame.GetGameMode(_Round))
             {
-                case ESongMode.TR_SONGMODE_NORMAL:
+                case EGameMode.TR_GAMEMODE_NORMAL:
                     _Texts[_TextSongMode].Text = "TR_GAMEMODE_NORMAL";
                     break;
 
-                case ESongMode.TR_SONGMODE_MEDLEY:
+                case EGameMode.TR_GAMEMODE_MEDLEY:
                     _Texts[_TextSongMode].Text = "TR_GAMEMODE_MEDLEY";
                     break;
 
-                case ESongMode.TR_SONGMODE_DUET:
+                case EGameMode.TR_GAMEMODE_DUET:
                     _Texts[_TextSongMode].Text = "TR_GAMEMODE_DUET";
                     _IsDuet = true;
                     break;
 
-                case ESongMode.TR_SONGMODE_SHORTSONG:
+                case EGameMode.TR_GAMEMODE_SHORTSONG:
                     _Texts[_TextSongMode].Text = "TR_GAMEMODE_SHORTSONG";
                     break;
 

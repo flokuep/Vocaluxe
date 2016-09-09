@@ -104,7 +104,7 @@ namespace Vocaluxe.Base
             [DefaultValue(EPlayerInfo.TR_CONFIG_PLAYERINFO_BOTH)] public EPlayerInfo PlayerInfo;
             [DefaultValue(EFadePlayerInfo.TR_CONFIG_FADEPLAYERINFO_OFF)] public EFadePlayerInfo FadePlayerInfo;
             [DefaultValue(ECoverLoading.TR_CONFIG_COVERLOADING_DYNAMIC)] public ECoverLoading CoverLoading;
-            [DefaultValue(ELyricStyle.Slide)] public ELyricStyle LyricStyle;
+            [DefaultValue(ELyricStyle.TR_CONFIG_LYRICSTYLE_SLIDE)] public ELyricStyle LyricStyle;
         }
 
         public struct SConfigSound
@@ -139,6 +139,7 @@ namespace Vocaluxe.Base
             [DefaultValue(ELyricsPosition.TR_CONFIG_LYRICSPOSITION_BOTTOM)] public ELyricsPosition LyricsPosition;
             [DefaultValue(0.1f)] public float MinLineBreakTime; //Minimum time to show the text before it is (to be) sung (if possible)
             [XmlArrayItem("Player"), XmlArray] public string[] Players;
+            [DefaultValue(EHighscoreStyle.TR_CONFIG_HIGHSCORE_LIST_BEST)] public EHighscoreStyle HighscoreStyle;
         }
 
         public struct SConfigVideo
@@ -163,6 +164,7 @@ namespace Vocaluxe.Base
             [DefaultValue(EOffOn.TR_CONFIG_OFF)] public EOffOn ServerActive;
             [DefaultValue(EOffOn.TR_CONFIG_OFF)] public EOffOn ServerEncryption;
             [DefaultValue(3000)] public int ServerPort;
+            [DefaultValue(70)] public int SongCountCoverThreshold;
         }
 #pragma warning restore 649
         // ReSharper restore UnassignedField.Global
@@ -495,6 +497,8 @@ namespace Vocaluxe.Base
                     return "Server Encryption On/Off: " + CHelper.ListStrings(Enum.GetNames(typeof(EOffOn)));
                 case "ServerPort":
                     return "Server Port (default: 3000) [1..65535]";
+                case "SongCountCoverThreshold":
+                    return "Threshold of songs for that covers will not longer be included in get-all-songs-requests (e.g. song list) (default: 70) [-1..65535] -1 => always deliver covers";
                 case "Stretch":
                     return "Stretch view to full window size: " + CHelper.ListStrings(Enum.GetNames(typeof(EOffOn)));
                 default:
@@ -520,28 +524,24 @@ namespace Vocaluxe.Base
         /// <summary>
         ///     Checks, if there is a mic-configuration
         /// </summary>
-        /// <returns></returns>
-        public static bool IsMicConfig()
-        {
-            ReadOnlyCollection<CRecordDevice> devices = CRecord.GetDevices();
-            if (devices == null)
-                return false;
-
-            return devices.Any(t => t.PlayerChannel1 != 0 || t.PlayerChannel2 != 0);
-        }
-
-        /// <summary>
-        ///     Checks, if there is a mic-configuration
-        /// </summary>
         /// <param name="player">Player-Number</param>
         /// <returns></returns>
-        public static bool IsMicConfig(int player)
+        public static bool IsMicConfig(int player = 0)
         {
             ReadOnlyCollection<CRecordDevice> devices = CRecord.GetDevices();
             if (devices == null)
                 return false;
 
-            return devices.Any(t => t.PlayerChannel1 == player || t.PlayerChannel2 == player);
+            if (player > 0)
+                return devices.Any(t => t.PlayerChannel.Contains(player));
+
+            for (int p = 0; p < CSettings.MaxNumPlayer; ++p)
+                if (devices.Any(t => t.PlayerChannel.Contains(p+1)))
+                {
+                    return true;
+                }
+
+            return false;
         }
 
         public static int GetMaxNumMics()
