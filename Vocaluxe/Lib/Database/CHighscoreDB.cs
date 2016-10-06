@@ -180,15 +180,15 @@ namespace Vocaluxe.Lib.Database
                 int medley = 0;
                 int duet = 0;
                 int shortSong = 0;
-                switch (player.GameMode)
+                switch (player.SongMode)
                 {
-                    case EGameMode.TR_GAMEMODE_MEDLEY:
+                    case ESongMode.TR_SONGMODE_MEDLEY:
                         medley = 1;
                         break;
-                    case EGameMode.TR_GAMEMODE_DUET:
+                    case ESongMode.TR_SONGMODE_DUET:
                         duet = 1;
                         break;
-                    case EGameMode.TR_GAMEMODE_SHORTSONG:
+                    case ESongMode.TR_SONGMODE_SHORTSONG:
                         shortSong = 1;
                         break;
                 }
@@ -266,7 +266,7 @@ namespace Vocaluxe.Lib.Database
             return lastInsertID;
         }
 
-        public List<SDBScoreEntry> LoadScore(int songID, EGameMode gameMode, EHighscoreStyle style)
+        public List<SDBScoreEntry> LoadScore(int songID, ESongMode songMode, EHighscoreStyle style)
         {
             var scores = new List<SDBScoreEntry>();
             using (var connection = new SQLiteConnection())
@@ -287,15 +287,15 @@ namespace Vocaluxe.Lib.Database
                     int medley = 0;
                     int duet = 0;
                     int shortSong = 0;
-                    switch (gameMode)
+                    switch (songMode)
                     {
-                        case EGameMode.TR_GAMEMODE_MEDLEY:
+                        case ESongMode.TR_SONGMODE_MEDLEY:
                             medley = 1;
                             break;
-                        case EGameMode.TR_GAMEMODE_DUET:
+                        case ESongMode.TR_SONGMODE_DUET:
                             duet = 1;
                             break;
-                        case EGameMode.TR_GAMEMODE_SHORTSONG:
+                        case ESongMode.TR_SONGMODE_SHORTSONG:
                             shortSong = 1;
                             break;
                     }

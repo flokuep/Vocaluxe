@@ -238,9 +238,9 @@ namespace Vocaluxe.Screens
             for (int round = 0; round < rounds; round++)
             {
                 int songID = CGame.GetSong(round).ID;
-                EGameMode gameMode = CGame.GetGameMode(round);
+                ESongMode songMode = CGame.GetSongMode(round);
                 EHighscoreStyle style = CBase.Config.GetHighscoreStyle();
-                _Scores[round] = CDataBase.LoadScore(songID, gameMode, style);
+                _Scores[round] = CDataBase.LoadScore(songID, songMode, style);
             }
         }
 
@@ -256,27 +256,27 @@ namespace Vocaluxe.Screens
             if (points.NumRounds > 1)
                 _Texts[_TextSongName].Text += " (" + (_Round + 1) + "/" + points.NumRounds + ")";
 
-            switch (CGame.GetGameMode(_Round))
+            switch (CGame.GetSongMode(_Round))
             {
-                case EGameMode.TR_GAMEMODE_NORMAL:
-                    _Texts[_TextSongMode].Text = "TR_GAMEMODE_NORMAL";
+                case ESongMode.TR_SONGMODE_NORMAL:
+                    _Texts[_TextSongMode].Text = "TR_SONGMODE_NORMAL";
                     break;
 
-                case EGameMode.TR_GAMEMODE_MEDLEY:
-                    _Texts[_TextSongMode].Text = "TR_GAMEMODE_MEDLEY";
+                case ESongMode.TR_SONGMODE_MEDLEY:
+                    _Texts[_TextSongMode].Text = "TR_SONGMODE_MEDLEY";
                     break;
 
-                case EGameMode.TR_GAMEMODE_DUET:
-                    _Texts[_TextSongMode].Text = "TR_GAMEMODE_DUET";
+                case ESongMode.TR_SONGMODE_DUET:
+                    _Texts[_TextSongMode].Text = "TR_SONGMODE_DUET";
                     _IsDuet = true;
                     break;
 
-                case EGameMode.TR_GAMEMODE_SHORTSONG:
-                    _Texts[_TextSongMode].Text = "TR_GAMEMODE_SHORTSONG";
+                case ESongMode.TR_SONGMODE_SHORTSONG:
+                    _Texts[_TextSongMode].Text = "TR_SONGMODE_SHORTSONG";
                     break;
 
                 default:
-                    _Texts[_TextSongMode].Text = "TR_GAMEMODE_NORMAL";
+                    _Texts[_TextSongMode].Text = "TR_SONGMODE_NORMAL";
                     break;
             }
 
