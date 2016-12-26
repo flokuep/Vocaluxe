@@ -29,6 +29,8 @@ tx.exe
 *.vshost.*
 *.userprefs
 *.user
+*.VC.db
+*.VC.opendb
 /*.vsp
 /*.ctl
 /Output/Config.xml
@@ -66,3 +68,5 @@ tx.exe
 /packages
 /Output/x64
 /Output/x86
+/PitchTracker/bin
+/PitchTracker/obj
