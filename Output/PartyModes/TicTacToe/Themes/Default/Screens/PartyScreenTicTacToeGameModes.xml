@@ -301,11 +301,11 @@
     </SelectSlide>
     <SelectSlide Name="SelectSlideGameMode1">
       <Skin/>
-      <SkinArrowLeft>SelectSlideArrowLeft</SkinArrowLeft>
-      <SkinArrowRight>SelectSlideArrowRight</SkinArrowRight>
+      <SkinArrowLeft>Plus</SkinArrowLeft>
+      <SkinArrowRight>Minus</SkinArrowRight>
       <SkinSelected>SelectSlide</SkinSelected>
-      <SkinArrowLeftSelected>SelectSlideArrowLeft</SkinArrowLeftSelected>
-      <SkinArrowRightSelected>SelectSlideArrowRight</SkinArrowRightSelected>
+      <SkinArrowLeftSelected>Plus</SkinArrowLeftSelected>
+      <SkinArrowRightSelected>Minus</SkinArrowRightSelected>
       <Rect>
         <X>40</X>
         <Y>180</Y>
@@ -314,14 +314,14 @@
         <Z>0</Z>
       </Rect>
       <RectArrowLeft>
-        <X>915</X>
+        <X>1000</X>
         <Y>195</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
       </RectArrowLeft>
       <RectArrowRight>
-        <X>1170</X>
+        <X>1000</X>
         <Y>195</Y>
         <W>40</W>
         <H>40</H>
@@ -331,8 +331,8 @@
       <SelColor Name="SelectSlideSelColor" />
       <ArrowColor Name="ArrowColor" />
       <ArrowSelColor Name="ArrowSelColor" />
-      <TextColor Name="TextColor" />
-      <TextSelColor Name="TextSelColor" />
+      <TextColor Name="Invisible" />
+      <TextSelColor Name="Invisible" />
       <TextH>27</TextH>
       <TextRelativeX>920</TextRelativeX>
       <TextRelativeY>0</TextRelativeY>
@@ -343,11 +343,11 @@
     </SelectSlide>
     <SelectSlide Name="SelectSlideGameMode2">
       <Skin/>
-      <SkinArrowLeft>SelectSlideArrowLeft</SkinArrowLeft>
-      <SkinArrowRight>SelectSlideArrowRight</SkinArrowRight>
+      <SkinArrowLeft>Plus</SkinArrowLeft>
+      <SkinArrowRight>Minus</SkinArrowRight>
       <SkinSelected>SelectSlide</SkinSelected>
-      <SkinArrowLeftSelected>SelectSlideArrowLeft</SkinArrowLeftSelected>
-      <SkinArrowRightSelected>SelectSlideArrowRight</SkinArrowRightSelected>
+      <SkinArrowLeftSelected>Plus</SkinArrowLeftSelected>
+      <SkinArrowRightSelected>Minus</SkinArrowRightSelected>
       <Rect>
         <X>40</X>
         <Y>260</Y>
@@ -356,14 +356,14 @@
         <Z>0</Z>
       </Rect>
       <RectArrowLeft>
-        <X>915</X>
+        <X>1000</X>
         <Y>275</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
       </RectArrowLeft>
       <RectArrowRight>
-        <X>1170</X>
+        <X>1000</X>
         <Y>275</Y>
         <W>40</W>
         <H>40</H>
@@ -373,8 +373,8 @@
       <SelColor Name="SelectSlideSelColor" />
       <ArrowColor Name="ArrowColor" />
       <ArrowSelColor Name="ArrowSelColor" />
-      <TextColor Name="TextColor" />
-      <TextSelColor Name="TextSelColor" />
+      <TextColor Name="Invisible" />
+      <TextSelColor Name="Invisible" />
       <TextH>27</TextH>
       <TextRelativeX>920</TextRelativeX>
       <TextRelativeY>0</TextRelativeY>
@@ -385,11 +385,11 @@
     </SelectSlide>
     <SelectSlide Name="SelectSlideGameMode3">
       <Skin/>
-      <SkinArrowLeft>SelectSlideArrowLeft</SkinArrowLeft>
-      <SkinArrowRight>SelectSlideArrowRight</SkinArrowRight>
+      <SkinArrowLeft>Plus</SkinArrowLeft>
+      <SkinArrowRight>Minus</SkinArrowRight>
       <SkinSelected>SelectSlide</SkinSelected>
-      <SkinArrowLeftSelected>SelectSlideArrowLeft</SkinArrowLeftSelected>
-      <SkinArrowRightSelected>SelectSlideArrowRight</SkinArrowRightSelected>
+      <SkinArrowLeftSelected>Plus</SkinArrowLeftSelected>
+      <SkinArrowRightSelected>Minus</SkinArrowRightSelected>
       <Rect>
         <X>40</X>
         <Y>340</Y>
@@ -398,14 +398,14 @@
         <Z>0</Z>
       </Rect>
       <RectArrowLeft>
-        <X>915</X>
+        <X>1000</X>
         <Y>355</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
       </RectArrowLeft>
       <RectArrowRight>
-        <X>1170</X>
+        <X>1000</X>
         <Y>355</Y>
         <W>40</W>
         <H>40</H>
@@ -415,8 +415,8 @@
       <SelColor Name="SelectSlideSelColor" />
       <ArrowColor Name="ArrowColor" />
       <ArrowSelColor Name="ArrowSelColor" />
-      <TextColor Name="TextColor" />
-      <TextSelColor Name="TextSelColor" />
+      <TextColor Name="Invisible" />
+      <TextSelColor Name="Invisible" />
       <TextH>27</TextH>
       <TextRelativeX>920</TextRelativeX>
       <TextRelativeY>0</TextRelativeY>
@@ -427,11 +427,11 @@
     </SelectSlide>
     <SelectSlide Name="SelectSlideGameMode4">
       <Skin/>
-      <SkinArrowLeft>SelectSlideArrowLeft</SkinArrowLeft>
-      <SkinArrowRight>SelectSlideArrowRight</SkinArrowRight>
+      <SkinArrowLeft>Plus</SkinArrowLeft>
+      <SkinArrowRight>Minus</SkinArrowRight>
       <SkinSelected>SelectSlide</SkinSelected>
-      <SkinArrowLeftSelected>SelectSlideArrowLeft</SkinArrowLeftSelected>
-      <SkinArrowRightSelected>SelectSlideArrowRight</SkinArrowRightSelected>
+      <SkinArrowLeftSelected>Plus</SkinArrowLeftSelected>
+      <SkinArrowRightSelected>Minus</SkinArrowRightSelected>
       <Rect>
         <X>40</X>
         <Y>420</Y>
@@ -440,14 +440,14 @@
         <Z>0</Z>
       </Rect>
       <RectArrowLeft>
-        <X>915</X>
+        <X>1000</X>
         <Y>435</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
       </RectArrowLeft>
       <RectArrowRight>
-        <X>1170</X>
+        <X>1000</X>
         <Y>435</Y>
         <W>40</W>
         <H>40</H>
@@ -457,8 +457,8 @@
       <SelColor Name="SelectSlideSelColor" />
       <ArrowColor Name="ArrowColor" />
       <ArrowSelColor Name="ArrowSelColor" />
-      <TextColor Name="TextColor" />
-      <TextSelColor Name="TextSelColor" />
+      <TextColor Name="Invisible" />
+      <TextSelColor Name="Invisible" />
       <TextH>27</TextH>
       <TextRelativeX>920</TextRelativeX>
       <TextRelativeY>0</TextRelativeY>
@@ -469,11 +469,11 @@
     </SelectSlide>
     <SelectSlide Name="SelectSlideGameMode5">
       <Skin/>
-      <SkinArrowLeft>SelectSlideArrowLeft</SkinArrowLeft>
-      <SkinArrowRight>SelectSlideArrowRight</SkinArrowRight>
+      <SkinArrowLeft>Plus</SkinArrowLeft>
+      <SkinArrowRight>Minus</SkinArrowRight>
       <SkinSelected>SelectSlide</SkinSelected>
-      <SkinArrowLeftSelected>SelectSlideArrowLeft</SkinArrowLeftSelected>
-      <SkinArrowRightSelected>SelectSlideArrowRight</SkinArrowRightSelected>
+      <SkinArrowLeftSelected>Plus</SkinArrowLeftSelected>
+      <SkinArrowRightSelected>Minus</SkinArrowRightSelected>
       <Rect>
         <X>40</X>
         <Y>500</Y>
@@ -482,14 +482,14 @@
         <Z>0</Z>
       </Rect>
       <RectArrowLeft>
-        <X>915</X>
+        <X>1000</X>
         <Y>515</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
       </RectArrowLeft>
       <RectArrowRight>
-        <X>1170</X>
+        <X>1000</X>
         <Y>515</Y>
         <W>40</W>
         <H>40</H>
@@ -499,8 +499,8 @@
       <SelColor Name="SelectSlideSelColor" />
       <ArrowColor Name="ArrowColor" />
       <ArrowSelColor Name="ArrowSelColor" />
-      <TextColor Name="TextColor" />
-      <TextSelColor Name="TextSelColor" />
+      <TextColor Name="Invisible" />
+      <TextSelColor Name="Invisible" />
       <TextH>27</TextH>
       <TextRelativeX>920</TextRelativeX>
       <TextRelativeY>0</TextRelativeY>
