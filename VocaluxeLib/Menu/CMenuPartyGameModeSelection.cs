@@ -28,6 +28,7 @@ namespace VocaluxeLib.Menu
     {
         public EGameMode GameMode;
         public string GameModeName;
+        public string GameModeDescription;
         public bool IsPartyGameMode
         {
             get
@@ -42,6 +43,14 @@ namespace VocaluxeLib.Menu
             get
             {
                 return IsPartyGameMode ? GameModeName : GameMode.ToString();
+            }
+        }
+
+        public string TranslationDescription
+        {
+            get
+            {
+                return IsPartyGameMode ? GameModeDescription : GameMode.ToString() + "_DESC";
             }
         }
     }
@@ -311,7 +320,7 @@ namespace VocaluxeLib.Menu
                     _SelectSlides[_SelectSlideGameModes[i]].Clear();
                     _SelectSlides[_SelectSlideGameModes[i]].SetValues<EOffOn>((int)_GameModes[i + _Offset].Active);
                     _Texts[_TextGameMode[i]].Text = _GameModes[i + _Offset].TranslationName;
-                    _Texts[_TextGameModeDesc[i]].Text = _GameModes[i + _Offset].TranslationName + "_DESC";
+                    _Texts[_TextGameModeDesc[i]].Text = _GameModes[i + _Offset].TranslationDescription;
                 }
                 else
                 {

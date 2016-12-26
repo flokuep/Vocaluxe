@@ -1,0 +1,884 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Screen xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Informations>
+    <ScreenName>PartyScreenClassicMain</ScreenName>
+    <ScreenVersion>1</ScreenVersion>
+  </Informations>
+  <Backgrounds>
+    <Background Name="Background1">
+      <Type>Video</Type>
+      <SlideShowTextures />
+      <Video>BG_Video</Video>
+      <Skin>BG_Default</Skin>
+      <Color Name="BackgroundColor" />
+    </Background>
+  </Backgrounds>
+  <Statics>
+    <Static Name="Static1">
+      <Skin>Menu</Skin>
+      <Color Name="StaticColor" />
+      <Rect>
+        <X>40</X>
+        <Y>40</Y>
+        <W>1200</W>
+        <H>40</H>
+        <Z>0</Z>
+      </Rect>
+    </Static>
+    <Static Name="Static2">
+      <Skin>Menu</Skin>
+      <Color Name="StaticColor" />
+      <Rect>
+        <X>830</X>
+        <Y>100</Y>
+        <W>360</W>
+        <H>40</H>
+        <Z>0</Z>
+      </Rect>
+    </Static>
+    <Static Name="StaticRoundsTable">
+      <Skin>Menu</Skin>
+      <Color Name="Invisible" />
+      <Rect>
+        <X>830</X>
+        <Y>140</Y>
+        <W>360</W>
+        <H>340</H>
+        <Z>0</Z>
+      </Rect>
+    </Static>
+    <Static Name="StaticPopupBG">
+      <Skin>PopupBG</Skin>
+      <Color Name="StaticColor" />
+      <Rect>
+        <X>0</X>
+        <Y>0</Y>
+        <W>1280</W>
+        <H>720</H>
+        <Z>-1</Z>
+      </Rect>
+    </Static>
+    <Static Name="StaticTeam1">
+      <Skin>Button</Skin>
+      <Color Name="Player1" />
+      <Rect>
+        <X>40</X>
+        <Y>150</Y>
+        <W>300</W>
+        <H>80</H>
+        <Z>0</Z>
+      </Rect>
+    </Static>
+    <Static Name="StaticTeam2">
+      <Skin>Button</Skin>
+      <Color Name="Player2" />
+      <Rect>
+        <X>450</X>
+        <Y>150</Y>
+        <W>300</W>
+        <H>80</H>
+        <Z>0</Z>
+      </Rect>
+    </Static>
+    <Static Name="StaticTeam3">
+      <Skin>Button</Skin>
+      <Color Name="Player3" />
+      <Rect>
+        <X>40</X>
+        <Y>250</Y>
+        <W>300</W>
+        <H>80</H>
+        <Z>0</Z>
+      </Rect>
+    </Static>
+    <Static Name="StaticTeam4">
+      <Skin>Button</Skin>
+      <Color Name="Player4" />
+      <Rect>
+        <X>450</X>
+        <Y>250</Y>
+        <W>300</W>
+        <H>80</H>
+        <Z>0</Z>
+      </Rect>
+    </Static>
+    <Static Name="StaticTeam5">
+      <Skin>Button</Skin>
+      <Color Name="Player5" />
+      <Rect>
+        <X>40</X>
+        <Y>350</Y>
+        <W>300</W>
+        <H>80</H>
+        <Z>0</Z>
+      </Rect>
+    </Static>
+    <Static Name="StaticTeam6">
+      <Skin>Button</Skin>
+      <Color Name="Player6" />
+      <Rect>
+        <X>450</X>
+        <Y>350</Y>
+        <W>300</W>
+        <H>80</H>
+        <Z>0</Z>
+      </Rect>
+    </Static>
+    <Static Name="StaticNextPlayer1">
+      <Skin>Button</Skin>
+      <Color Name="Player1" />
+      <Rect>
+        <X>340</X>
+        <Y>570</Y>
+        <W>200</W>
+        <H>50</H>
+        <Z>0</Z>
+      </Rect>
+    </Static>
+    <Static Name="StaticNextPlayer2">
+      <Skin>Button</Skin>
+      <Color Name="Player2" />
+      <Rect>
+        <X>553</X>
+        <Y>570</Y>
+        <W>200</W>
+        <H>50</H>
+        <Z>0</Z>
+      </Rect>
+    </Static>
+    <Static Name="StaticNextPlayer3">
+      <Skin>Button</Skin>
+      <Color Name="Player3" />
+      <Rect>
+        <X>766</X>
+        <Y>570</Y>
+        <W>200</W>
+        <H>50</H>
+        <Z>0</Z>
+      </Rect>
+    </Static>
+    <Static Name="StaticNextPlayer4">
+      <Skin>Button</Skin>
+      <Color Name="Player4" />
+      <Rect>
+        <X>340</X>
+        <Y>635</Y>
+        <W>200</W>
+        <H>50</H>
+        <Z>0</Z>
+      </Rect>
+    </Static>
+    <Static Name="StaticNextPlayer5">
+      <Skin>Button</Skin>
+      <Color Name="Player5" />
+      <Rect>
+        <X>553</X>
+        <Y>635</Y>
+        <W>200</W>
+        <H>50</H>
+        <Z>0</Z>
+      </Rect>
+    </Static>
+    <Static Name="StaticNextPlayer6">
+      <Skin>Button</Skin>
+      <Color Name="Player6" />
+      <Rect>
+        <X>766</X>
+        <Y>635</Y>
+        <W>200</W>
+        <H>50</H>
+        <Z>0</Z>
+      </Rect>
+    </Static>
+  </Statics>
+  <Texts>
+    <Text Name="Text1">
+      <X>640</X>
+      <Y>48</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>0</MaxW>
+      <Color Name="StaticColor" />
+      <SelColor Name="TextSelColor" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text>TR_SCREENMAIN_TITLE</Text>
+    </Text>
+    <Text Name="Text2">
+      <X>845</X>
+      <Y>100</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>0</MaxW>
+      <Color Name="StaticColor" />
+      <SelColor Name="TextSelColor" />
+      <Align>Left</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text>TR_SCREENMAIN_ROUND_GAME</Text>
+    </Text>
+    <Text Name="Text3">
+      <X>1190</X>
+      <Y>100</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>0</MaxW>
+      <Color Name="StaticColor" />
+      <SelColor Name="TextSelColor" />
+      <Align>Right</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text>TR_SCREENMAIN_ROUND_WINNER</Text>
+    </Text>
+	<Text Name="TextRoundNumber">
+      <X>10</X>
+      <Y>0</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>0</MaxW>
+      <Color Name="StaticColor" />
+      <SelColor Name="TextSelColor" />
+      <Align>Right</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextRoundGame">
+      <X>13</X>
+      <Y>0</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>0</MaxW>
+      <Color Name="StaticColor" />
+      <SelColor Name="TextSelColor" />
+      <Align>Left</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextRoundWinner">
+      <X>360</X>
+      <Y>0</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>0</MaxW>
+      <Color Name="StaticColor" />
+      <SelColor Name="TextSelColor" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>    
+    <Text Name="TextNextRound">
+      <X>640</X>
+      <Y>470</Y>
+      <Z>0</Z>
+      <H>40</H>
+      <MaxW>0</MaxW>
+      <Color Name="StaticColor" />
+      <SelColor Name="TextSelColor" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextNextRoundDesc">
+      <X>640</X>
+      <Y>520</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>0</MaxW>
+      <Color Name="StaticColor" />
+      <SelColor Name="TextSelColor" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextTeamPoints1">
+      <X>335</X>
+      <Y>156</Y>
+      <Z>0</Z>
+      <H>30</H>
+      <MaxW>0</MaxW>
+      <Color Name="Player1" />
+      <SelColor Name="Player1" />
+      <Align>Left</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextTeamPoints2">
+      <X>745</X>
+      <Y>156</Y>
+      <Z>0</Z>
+      <H>30</H>
+      <MaxW>0</MaxW>
+      <Color Name="Player2" />
+      <SelColor Name="Player2" />
+      <Align>Left</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextTeamPoints3">
+      <X>335</X>
+      <Y>256</Y>
+      <Z>0</Z>
+      <H>30</H>
+      <MaxW>0</MaxW>
+      <Color Name="Player3" />
+      <SelColor Name="Player3" />
+      <Align>Right</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextTeamPoints4">
+      <X>745</X>
+      <Y>256</Y>
+      <Z>0</Z>
+      <H>30</H>
+      <MaxW>0</MaxW>
+      <Color Name="Player4" />
+      <SelColor Name="Player4" />
+      <Align>Right</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextTeamPoints5">
+      <X>335</X>
+      <Y>356</Y>
+      <Z>0</Z>
+      <H>30</H>
+      <MaxW>0</MaxW>
+      <Color Name="Player5" />
+      <SelColor Name="Player5" />
+      <Align>Right</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextTeamPoints6">
+      <X>745</X>
+      <Y>356</Y>
+      <Z>0</Z>
+      <H>30</H>
+      <MaxW>0</MaxW>
+      <Color Name="Player6" />
+      <SelColor Name="Player6" />
+      <Align>Right</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextTeamPlayer1">
+      <X>190</X>
+      <Y>190</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>290</MaxW>
+      <Color Name="Player1" />
+      <SelColor Name="Player1" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextTeamPlayer2">
+      <X>600</X>
+      <Y>190</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>290</MaxW>
+      <Color Name="Player2" />
+      <SelColor Name="Player2" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextTeamPlayer3">
+      <X>190</X>
+      <Y>290</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>290</MaxW>
+      <Color Name="Player3" />
+      <SelColor Name="Player3" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextTeamPlayer4">
+      <X>600</X>
+      <Y>290</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>290</MaxW>
+      <Color Name="Player4" />
+      <SelColor Name="Player4" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextTeamPlayer5">
+      <X>190</X>
+      <Y>390</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>290</MaxW>
+      <Color Name="Player5" />
+      <SelColor Name="Player5" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextTeamPlayer6">
+      <X>600</X>
+      <Y>390</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>290</MaxW>
+      <Color Name="Player6" />
+      <SelColor Name="Player6" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextTeamName1">
+      <X>45</X>
+      <Y>155</Y>
+      <Z>0</Z>
+      <H>32</H>
+      <MaxW>0</MaxW>
+      <Color Name="Player1" />
+      <SelColor Name="Player1" />
+      <Align>Left</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text>TR_PARTY_TEAM_1</Text>
+    </Text>
+    <Text Name="TextTeamName2">
+      <X>455</X>
+      <Y>155</Y>
+      <Z>0</Z>
+      <H>32</H>
+      <MaxW>0</MaxW>
+      <Color Name="Player2" />
+      <SelColor Name="Player2" />
+      <Align>Left</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text>TR_PARTY_TEAM_2</Text>
+    </Text>
+    <Text Name="TextTeamName3">
+      <X>45</X>
+      <Y>255</Y>
+      <Z>0</Z>
+      <H>32</H>
+      <MaxW>0</MaxW>
+      <Color Name="Player3" />
+      <SelColor Name="Player3" />
+      <Align>Left</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text>TR_PARTY_TEAM_3</Text>
+    </Text>
+    <Text Name="TextTeamName4">
+      <X>455</X>
+      <Y>255</Y>
+      <Z>0</Z>
+      <H>32</H>
+      <MaxW>0</MaxW>
+      <Color Name="Player4" />
+      <SelColor Name="Player4" />
+      <Align>Left</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text>TR_PARTY_TEAM_4</Text>
+    </Text>
+    <Text Name="TextTeamName5">
+      <X>45</X>
+      <Y>355</Y>
+      <Z>0</Z>
+      <H>32</H>
+      <MaxW>0</MaxW>
+      <Color Name="Player5" />
+      <SelColor Name="Player5" />
+      <Align>Left</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text>TR_PARTY_TEAM_5</Text>
+    </Text>
+    <Text Name="TextTeamName6">
+      <X>455</X>
+      <Y>355</Y>
+      <Z>0</Z>
+      <H>32</H>
+      <MaxW>0</MaxW>
+      <Color Name="Player6" />
+      <SelColor Name="Player6" />
+      <Align>Left</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text>TR_PARTY_TEAM_6</Text>
+    </Text>
+    <Text Name="TextNextPlayer1">
+      <X>440</X>
+      <Y>580</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>200</MaxW>
+      <Color Name="Player1" />
+      <SelColor Name="Player1" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextNextPlayer2">
+      <X>653</X>
+      <Y>580</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>200</MaxW>
+      <Color Name="Player2" />
+      <SelColor Name="Player2" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextNextPlayer3">
+      <X>866</X>
+      <Y>580</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>200</MaxW>
+      <Color Name="Player3" />
+      <SelColor Name="Player3" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextNextPlayer4">
+      <X>653</X>
+      <Y>645</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>200</MaxW>
+      <Color Name="Player4" />
+      <SelColor Name="Player4" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextNextPlayer5">
+      <X>633</X>
+      <Y>645</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>200</MaxW>
+      <Color Name="Player5" />
+      <SelColor Name="Player5" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextNextPlayer6">
+      <X>866</X>
+      <Y>645</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>200</MaxW>
+      <Color Name="Player6" />
+      <SelColor Name="Player6" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+  </Texts>
+  <Buttons>
+    <Button Name="ButtonNextRound">
+      <Skin>Button</Skin>
+      <SkinSelected>Button</SkinSelected>
+      <Rect>
+        <X>1030</X>
+        <Y>600</Y>
+        <W>150</W>
+        <H>50</H>
+        <Z>0</Z>
+      </Rect>
+      <Color Name="ButtonColor" />
+      <SelColor Name="ButtonSelColor" />
+      <Text Name="Text">
+        <X>75</X>
+        <Y>10</Y>
+        <Z>0</Z>
+        <H>27</H>
+        <MaxW>142</MaxW>
+        <Color Name="ButtonTextColor" />
+        <SelColor Name="ButtonTextSelColor" />
+        <Align>Center</Align>
+        <ResizeAlign>Center</ResizeAlign>
+        <Style>Bold</Style>
+        <Font>Outline</Font>
+        <Text>TR_BUTTON_SING</Text>
+      </Text>
+      <Reflection>
+        <Height>26</Height>
+        <Space>10</Space>
+      </Reflection>
+      <SelReflection>
+        <Height>26</Height>
+        <Space>10</Space>
+      </SelReflection>
+    </Button>
+    <Button Name="ButtonBack">
+      <Skin>Button</Skin>
+      <SkinSelected>Button</SkinSelected>
+      <Rect>
+        <X>100</X>
+        <Y>600</Y>
+        <W>150</W>
+        <H>50</H>
+        <Z>0</Z>
+      </Rect>
+      <Color Name="ButtonColor" />
+      <SelColor Name="ButtonSelColor" />
+      <Text Name="Text">
+        <X>75</X>
+        <Y>10</Y>
+        <Z>0</Z>
+        <H>27</H>
+        <MaxW>142</MaxW>
+        <Color Name="ButtonTextColor" />
+        <SelColor Name="ButtonTextSelColor" />
+        <Align>Center</Align>
+        <ResizeAlign>Center</ResizeAlign>
+        <Style>Bold</Style>
+        <Font>Outline</Font>
+        <Text>TR_BUTTON_BACK</Text>
+      </Text>
+      <Reflection>
+        <Height>26</Height>
+        <Space>10</Space>
+      </Reflection>
+      <SelReflection>
+        <Height>26</Height>
+        <Space>10</Space>
+      </SelReflection>
+    </Button>
+    <Button Name="ButtonExit">
+      <Skin>Button</Skin>
+      <SkinSelected>Button</SkinSelected>
+      <Rect>
+        <X>100</X>
+        <Y>600</Y>
+        <W>150</W>
+        <H>50</H>
+        <Z>0</Z>
+      </Rect>
+      <Color Name="ButtonColor" />
+      <SelColor Name="ButtonSelColor" />
+      <Text Name="Text">
+        <X>75</X>
+        <Y>10</Y>
+        <Z>0</Z>
+        <H>27</H>
+        <MaxW>142</MaxW>
+        <Color Name="ButtonTextColor" />
+        <SelColor Name="ButtonTextSelColor" />
+        <Align>Center</Align>
+        <ResizeAlign>Center</ResizeAlign>
+        <Style>Bold</Style>
+        <Font>Outline</Font>
+        <Text>TR_BUTTON_EXIT</Text>
+      </Text>
+      <Reflection>
+        <Height>26</Height>
+        <Space>10</Space>
+      </Reflection>
+      <SelReflection>
+        <Height>26</Height>
+        <Space>10</Space>
+      </SelReflection>
+    </Button>
+    <Button Name="ButtonPopupYes">
+      <Skin>Button</Skin>
+      <SkinSelected>Button</SkinSelected>
+      <Rect>
+        <X>665</X>
+        <Y>360</Y>
+        <W>150</W>
+        <H>50</H>
+        <Z>-1.01</Z>
+      </Rect>
+      <Color Name="ButtonColor" />
+      <SelColor Name="ButtonSelColor" />
+      <Text Name="Text">
+        <X>75</X>
+        <Y>10</Y>
+        <Z>0</Z>
+        <H>27</H>
+        <MaxW>142</MaxW>
+        <Color Name="ButtonTextColor" />
+        <SelColor Name="ButtonTextSelColor" />
+        <Align>Center</Align>
+        <ResizeAlign>Center</ResizeAlign>
+        <Style>Bold</Style>
+        <Font>Outline</Font>
+        <Text>TR_BUTTON_YES</Text>
+      </Text>
+      <Reflection>
+        <Height>26</Height>
+        <Space>10</Space>
+      </Reflection>
+      <SelReflection>
+        <Height>26</Height>
+        <Space>10</Space>
+      </SelReflection>
+    </Button>
+    <Button Name="ButtonPopupNo">
+      <Skin>Button</Skin>
+      <SkinSelected>Button</SkinSelected>
+      <Rect>
+        <X>465</X>
+        <Y>360</Y>
+        <W>150</W>
+        <H>50</H>
+        <Z>-1.01</Z>
+      </Rect>
+      <Color Name="ButtonColor" />
+      <SelColor Name="ButtonSelColor" />
+      <Text Name="Text">
+        <X>75</X>
+        <Y>10</Y>
+        <Z>0</Z>
+        <H>27</H>
+        <MaxW>142</MaxW>
+        <Color Name="ButtonTextColor" />
+        <SelColor Name="ButtonTextSelColor" />
+        <Align>Center</Align>
+        <ResizeAlign>Center</ResizeAlign>
+        <Style>Bold</Style>
+        <Font>Outline</Font>
+        <Text>TR_BUTTON_NO</Text>
+      </Text>
+      <Reflection>
+        <Height>26</Height>
+        <Space>10</Space>
+      </Reflection>
+      <SelReflection>
+        <Height>26</Height>
+        <Space>10</Space>
+      </SelReflection>
+    </Button>
+    <Button Name="ButtonRoundsScrollDown">
+      <Skin>ScrollDown</Skin>
+      <SkinSelected>ScrollDown</SkinSelected>
+      <Rect>
+        <X>954</X>
+        <Y>515</Y>
+        <W>28</W>
+        <H>15</H>
+        <Z>-0.01</Z>
+      </Rect>
+      <Color Name="ButtonColor" />
+      <SelColor Name="ButtonSelColor" />
+      <Text Name="Text">
+        <X>75</X>
+        <Y>10</Y>
+        <Z>0</Z>
+        <H>27</H>
+        <MaxW>142</MaxW>
+        <Color Name="ButtonTextColor" />
+        <SelColor Name="ButtonTextSelColor" />
+        <Align>Center</Align>
+        <ResizeAlign>Center</ResizeAlign>
+        <Style>Bold</Style>
+        <Font>Outline</Font>
+        <Text />
+      </Text>
+    </Button>
+    <Button Name="ButtonRoundsScrollUp">
+      <Skin>ScrollUp</Skin>
+      <SkinSelected>ScrollUp</SkinSelected>
+      <Rect>
+        <X>954</X>
+        <Y>94</Y>
+        <W>28</W>
+        <H>15</H>
+        <Z>-0.01</Z>
+      </Rect>
+      <Color Name="ButtonColor" />
+      <SelColor Name="ButtonSelColor" />
+      <Text Name="Text">
+        <X>75</X>
+        <Y>10</Y>
+        <Z>0</Z>
+        <H>27</H>
+        <MaxW>142</MaxW>
+        <Color Name="ButtonTextColor" />
+        <SelColor Name="ButtonTextSelColor" />
+        <Align>Center</Align>
+        <ResizeAlign>Center</ResizeAlign>
+        <Style>Bold</Style>
+        <Font>Outline</Font>
+        <Text />
+      </Text>
+    </Button>
+  </Buttons>
+  <SongMenus />
+  <Lyrics />
+  <SelectSlides />
+  <SingNotes />
+  <NameSelections />
+  <Equalizers />
+  <Playlists />
+  <ParticleEffects />
+  <ScreenSettings />
+</Screen>

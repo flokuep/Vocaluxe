@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="language">English</string>
+  <string name="TR_PARTYMODE_NAME">Classic Mode</string>
+  <string name="TR_PARTYMODE_DESCRIPTION">Play some different games.</string>
+  <string name="TR_PARTYMODE_AUDIENCE">For a nice vocaluxe party evening</string>
+  <string name="TR_BUTTON_NEXT">Next</string>
+  <string name="TR_BUTTON_BACK">Back</string>
+  <string name="TR_BUTTON_START">Start</string>
+  <string name="TR_BUTTON_EXIT">Exit</string>
+  <string name="TR_BUTTON_YES">Yes</string>
+  <string name="TR_BUTTON_NO">No</string>
+  <string name="TR_BUTTON_SING">Sing</string>  
+  <string name="TR_BUTTON_NEXT_ROUND">Next Round</string>
+  <string name="TR_SCREENCONFIG_TITLE">Challenge Mode: Configuration</string>
+  <string name="TR_SCREENCONFIG_NUMPLAYERS">Number of players</string>
+  <string name="TR_SCREENCONFIG_NUMMICS">Number of mics</string>
+  <string name="TR_SCREENCONFIG_NUMROUNDS">Number of rounds</string>
+  <string name="TR_SCREENCONFIG_NUMJOKERS">Number of jokers</string>
+  <string name="TR_SCREENCONFIG_REFILLJOKERS">Refill jokers every round</string>
+  <string name="TR_SCREENNAMES_TITLE">Challenge Mode: Choose Player</string>
+  <string name="TR_SCREENNAMES_BUTTON_RANDOM">Select random</string>
+  <string name="TR_SCREENMAIN_TITLE">Challenge Mode: Overview</string>
+  <string name="TR_SCREENMAIN_POPUP_REALLYEXIT">Do you really want to exit?</string>
+  <string name="TR_SCREENMAIN_NEXT_PLAYER">Player to the mics!</string>
+  <string name="TR_SCREENMAIN_ROUND">Round</string>
+  <string name="TR_SCREENMAIN_ROUND_GAME">Game</string>
+  <string name="TR_SCREENMAIN_ROUND_WINNER">Winner</string>  
+  <string name="TR_SCREENMAIN_FINISH">All rounds were sung! And the winner is...</string>
+</resources>
