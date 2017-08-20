@@ -118,9 +118,9 @@ namespace Vocaluxe.Base
                 {
                     File.Delete(pl.File);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    CLog.LogError("Can't delete Playlist File " + _Playlists[playlistID].File + ".xml");
+                    CLog.LogError("Can't delete Playlist File " + _Playlists[playlistID].File + ".xml: " + e.Message);
                 }
             }
             _Playlists.Remove(pl);

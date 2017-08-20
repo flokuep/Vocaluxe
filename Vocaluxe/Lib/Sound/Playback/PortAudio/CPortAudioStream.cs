@@ -157,10 +157,10 @@ namespace Vocaluxe.Lib.Sound.Playback.PortAudio
 
                 _PaStreamCallback = _ProcessNewData;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 Dispose();
-                CLog.LogError("Error Init PortAudio Playback");
+                CLog.LogError("Error Init PortAudio Playback: " + e.Message);
                 return false;
             }
 

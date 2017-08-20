@@ -184,7 +184,10 @@ namespace VocaluxeLib
                         files.AddRange(ListFiles(di.FullName, searchPattern, true, fullpath));
                 }
             }
-            catch (Exception) {}
+            catch (Exception e)
+            {
+                CBase.Log.LogError("Error while listing files: " + e.Message);
+            }
 
             return files;
         }
@@ -305,9 +308,9 @@ namespace VocaluxeLib
             {
                 bmp = new Bitmap(filePath);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                CBase.Log.LogError("Error loading bitmap: " + filePath);
+                CBase.Log.LogError("Error loading bitmap: " + filePath + " - " + e.Message);
                 return null;
             }
             return bmp;

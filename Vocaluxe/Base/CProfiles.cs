@@ -630,9 +630,9 @@ namespace Vocaluxe.Base
                         CGame.Players[i].ProfileID = -1;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                CLog.LogError("Can't delete Profile File " + _Profiles[profileID].FilePath);
+                CLog.LogError("Can't delete Profile File " + _Profiles[profileID].FilePath + ": " + e.Message);
             }
             _ProfilesChanged = true;
         }

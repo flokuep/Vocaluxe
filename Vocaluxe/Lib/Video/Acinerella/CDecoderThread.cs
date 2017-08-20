@@ -373,9 +373,9 @@ namespace Vocaluxe.Lib.Video.Acinerella
                 {
                     hasFrameDecoded = CAcinerella.AcGetFrame(_Instance, _Videodecoder);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    CLog.LogError("Error AcGetFrame " + _FileName);
+                    CLog.LogError("Error AcGetFrame " + _FileName + ": " + e.Message);
                 }
             }
             if (hasFrameDecoded)
@@ -399,9 +399,9 @@ namespace Vocaluxe.Lib.Video.Acinerella
             {
                 hasFrameDecoded = CAcinerella.AcSeek(_Videodecoder, 0, (long)videoTime * 1000L);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                CLog.LogError("Error AcSeek " + _FileName);
+                CLog.LogError("Error AcSeek " + _FileName + ": " + e.Message);
             }
 
             if (!hasFrameDecoded)
@@ -423,9 +423,9 @@ namespace Vocaluxe.Lib.Video.Acinerella
             {
                 hasFrameDecoded = CAcinerella.AcSkipFrames(_Instance, _Videodecoder, frameDropCount);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                CLog.LogError("Error AcSkipFrame " + _FileName);
+                CLog.LogError("Error AcSkipFrame " + _FileName + ": " + e.Message);
             }
             return hasFrameDecoded;
         }

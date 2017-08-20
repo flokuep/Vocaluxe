@@ -171,9 +171,11 @@ namespace Vocaluxe.Lib.Sound.Playback.OpenAL
                     ok = ok && _Buffers[i] != 0;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                ok = false;
+                Dispose();
+                CLog.LogError("Error Init OpenAL Playback: " + e.Message);
+                return false;
             }
             if (!ok)
             {
