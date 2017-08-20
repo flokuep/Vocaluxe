@@ -101,16 +101,9 @@ namespace Vocaluxe.Lib.Database
             string sArtist;
             string sTitle;
             int songID;
-            using (var connection = new SQLiteConnection())
+            using (var connection = _GetConnection(_FilePath))
             {
-                connection.ConnectionString = "Data Source=" + _FilePath;
-
-                try
-                {
-                    connection.Open();
-                }
-                catch (Exception) {}
-
+                //TODO: May add some proper loading here in case of failure
                 using (var command = new SQLiteCommand(connection))
                 {
                     songID = _GetDataBaseSongID(artist, title, 0, command);
@@ -122,15 +115,10 @@ namespace Vocaluxe.Lib.Database
 
         public void IncreaseSongCounter(int dataBaseSongID)
         {
-            using (var connection = new SQLiteConnection())
+            using (var connection = _GetConnection(_FilePath))
             {
-                connection.ConnectionString = "Data Source=" + _FilePath;
-
-                try
-                {
-                    connection.Open();
-                }
-                catch (Exception) {}
+                if (connection == null)
+                    return;
 
                 using (var command = new SQLiteCommand(connection))
                     _IncreaseSongCounter(dataBaseSongID, command);
@@ -140,18 +128,10 @@ namespace Vocaluxe.Lib.Database
         public int AddScore(string playerName, int score, int lineNr, long date, int medley, int duet, int shortSong, int difficulty,
                             string artist, string title, int numPlayed, string filePath)
         {
-            using (var connection = new SQLiteConnection())
+            using (var connection = _GetConnection(_FilePath))
             {
-                connection.ConnectionString = "Data Source=" + filePath;
-
-                try
-                {
-                    connection.Open();
-                }
-                catch (Exception)
-                {
+                if (connection == null)
                     return -1;
-                }
 
                 using (var command = new SQLiteCommand(connection))
                 {
@@ -164,18 +144,10 @@ namespace Vocaluxe.Lib.Database
 
         public int AddScore(SPlayer player)
         {
-            using (var connection = new SQLiteConnection())
+            using (var connection = _GetConnection(_FilePath))
             {
-                connection.ConnectionString = "Data Source=" + _FilePath;
-
-                try
-                {
-                    connection.Open();
-                }
-                catch (Exception)
-                {
+                if (connection == null)
                     return -1;
-                }
 
                 int medley = 0;
                 int duet = 0;
@@ -226,7 +198,10 @@ namespace Vocaluxe.Lib.Database
                 {
                     reader = command.ExecuteReader();
                 }
-                catch (Exception) {}
+                catch (Exception e)
+                {
+                    CLog.LogError("Error while executing command: " + e.Message);
+                }
 
                 if (reader != null && reader.HasRows)
                 {
@@ -269,18 +244,10 @@ namespace Vocaluxe.Lib.Database
         public List<SDBScoreEntry> LoadScore(int songID, EGameMode gameMode, EHighscoreStyle style)
         {
             var scores = new List<SDBScoreEntry>();
-            using (var connection = new SQLiteConnection())
+            using (var connection = _GetConnection(_FilePath))
             {
-                connection.ConnectionString = "Data Source=" + _FilePath;
-
-                try
-                {
-                    connection.Open();
-                }
-                catch (Exception)
-                {
+                if (connection == null)
                     return scores;
-                }
 
                 using (var command = new SQLiteCommand(connection))
                 {
@@ -346,14 +313,14 @@ namespace Vocaluxe.Lib.Database
                         while (reader.Read())
                         {
                             var score = new SDBScoreEntry
-                                {
-                                    Name = reader.GetString(0),
-                                    Score = reader.GetInt32(1),
-                                    Date = new DateTime(reader.GetInt64(2)).ToString("dd/MM/yyyy"),
-                                    Difficulty = (EGameDifficulty)reader.GetInt32(3),
-                                    VoiceNr = reader.GetInt32(4),
-                                    ID = reader.GetInt32(5)
-                                };
+                            {
+                                Name = reader.GetString(0),
+                                Score = reader.GetInt32(1),
+                                Date = new DateTime(reader.GetInt64(2)).ToString("dd/MM/yyyy"),
+                                Difficulty = (EGameDifficulty)reader.GetInt32(3),
+                                VoiceNr = reader.GetInt32(4),
+                                ID = reader.GetInt32(5)
+                            };
 
                             scores.Add(score);
                         }
@@ -432,18 +399,10 @@ namespace Vocaluxe.Lib.Database
             numPlayed = 0;
             dateAdded = DateTime.Today;
 
-            using (var connection = new SQLiteConnection())
+            using (var connection = _GetConnection(filePath))
             {
-                connection.ConnectionString = "Data Source=" + filePath;
-
-                try
-                {
-                    connection.Open();
-                }
-                catch (Exception)
-                {
+                if (connection == null)
                     return false;
-                }
 
                 using (var command = new SQLiteCommand(connection))
                 {
@@ -455,8 +414,9 @@ namespace Vocaluxe.Lib.Database
                     {
                         reader = command.ExecuteReader();
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
+                        CLog.LogError("Error while executing command: " + e.Message);
                         return false;
                     }
 
@@ -478,20 +438,12 @@ namespace Vocaluxe.Lib.Database
             return false;
         }
 
-        private void _CreateHighscoreDB(string filePath)
+        private bool _CreateHighscoreDB(string filePath)
         {
-            using (var connection = new SQLiteConnection())
+            using (var connection = _GetConnection(filePath))
             {
-                connection.ConnectionString = "Data Source=" + filePath;
-
-                try
-                {
-                    connection.Open();
-                }
-                catch (Exception)
-                {
-                    return;
-                }
+                if (connection == null)
+                    return false;
 
                 using (var command = new SQLiteCommand(connection))
                 {
@@ -511,23 +463,36 @@ namespace Vocaluxe.Lib.Database
                                           "Medley INTEGER NOT NULL, Duet INTEGER NOT NULL, ShortSong INTEGER NOT NULL, Difficulty INTEGER NOT NULL);";
                     command.ExecuteNonQuery();
                 }
+
+                return true;
             }
+        }
+
+        private SQLiteConnection _GetConnection(String filePath)
+        {
+            var connection = new SQLiteConnection();
+            connection.ConnectionString = "Data Source=" + filePath;
+
+            try
+            {
+                connection.Open();
+            }
+            catch (Exception e)
+            {
+                CLog.LogError("Can't open database connection to: \"" + filePath + "\" " + ": " + e.Message);
+
+                return null;
+            }
+
+            return connection;
         }
 
         private void _CreateHighscoreDBV1(string filePath)
         {
-            using (var connection = new SQLiteConnection())
+            using (var connection = _GetConnection(filePath))
             {
-                connection.ConnectionString = "Data Source=" + filePath;
-
-                try
-                {
-                    connection.Open();
-                }
-                catch (Exception)
-                {
+                if (connection == null)
                     return;
-                }
 
                 using (var command = new SQLiteCommand(connection))
                 {
@@ -557,18 +522,10 @@ namespace Vocaluxe.Lib.Database
         private bool _CreateOrConvert(string filePath)
         {
             bool result = true;
-            using (var connection = new SQLiteConnection())
+            using (var connection = _GetConnection(filePath))
             {
-                connection.ConnectionString = "Data Source=" + filePath;
-
-                try
-                {
-                    connection.Open();
-                }
-                catch (Exception)
-                {
+                if (connection == null)
                     return false;
-                }
 
                 using (var command = new SQLiteCommand(connection))
                 {
@@ -595,7 +552,10 @@ namespace Vocaluxe.Lib.Database
                     {
                         reader = command.ExecuteReader();
                     }
-                    catch (Exception) {}
+                    catch (Exception e)
+                    {
+                        CLog.LogError("Error while executing command: " + e.Message);
+                    }
 
                     if (reader == null || reader.FieldCount == 0)
                     {
@@ -617,7 +577,7 @@ namespace Vocaluxe.Lib.Database
                             result &= _UpdateDatabase(2, connection);
                         }
                         else
-                            _CreateHighscoreDB(filePath);
+                            result &= _CreateHighscoreDB(filePath);
                     }
                     else
                     {
@@ -645,18 +605,9 @@ namespace Vocaluxe.Lib.Database
         /// <returns>True if succeeded</returns>
         private bool _ConvertFrom110(string filePath)
         {
-            using (var connection = new SQLiteConnection())
+            using (var connection = _GetConnection(filePath))
             {
-                connection.ConnectionString = "Data Source=" + filePath;
-
-                try
-                {
-                    connection.Open();
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
+                if(connection == null)
 
                 using (var command = new SQLiteCommand(connection))
                 {
@@ -758,18 +709,10 @@ namespace Vocaluxe.Lib.Database
         /// <returns>True if succeeded</returns>
         private bool _ConvertFrom101(string filePath)
         {
-            using (var connection = new SQLiteConnection())
+            using (var connection = _GetConnection(filePath))
             {
-                connection.ConnectionString = "Data Source=" + filePath;
-
-                try
-                {
-                    connection.Open();
-                }
-                catch (Exception)
-                {
+                if (connection == null)
                     return false;
-                }
 
                 using (var command = new SQLiteCommand(connection))
                 {
@@ -961,8 +904,9 @@ namespace Vocaluxe.Lib.Database
             {
                 reader = command.ExecuteReader();
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                CLog.LogError("Error while executing command: " + e.Message);
                 return false;
             }
 
