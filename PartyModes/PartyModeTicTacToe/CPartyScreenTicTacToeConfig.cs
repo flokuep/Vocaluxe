@@ -160,8 +160,9 @@ namespace VocaluxeLib.PartyModes.TicTacToe
 
             _SelectSlides[_SelectSlideGameMode].Visible = true;
             _SelectSlides[_SelectSlideGameMode].Clear();
-            _SelectSlides[_SelectSlideGameMode].SetValues<ESongMode>((int)_PartyMode.GameData.SongMode);
-            _SelectSlides[_SelectSlideGameMode].RemoveValue(ESongMode.TR_SONGMODE_MEDLEY.ToString());
+
+            _SelectSlides[_SelectSlideGameMode].AddValues(_PartyMode.AvailableSongModes.Select(gm => gm.ToString()));
+            _SelectSlides[_SelectSlideGameMode].Selection = _PartyMode.GameData.SongMode;
         }
 
         private void _UpdateSlides()
@@ -171,9 +172,9 @@ namespace VocaluxeLib.PartyModes.TicTacToe
             _PartyMode.GameData.SongSource = (ESongSource)_SelectSlides[_SelectSlideSongSource].Selection;
             _PartyMode.GameData.PlaylistID = _SelectSlides[_SelectSlidePlaylist].Selection;
             _PartyMode.GameData.CategoryIndex = _SelectSlides[_SelectSlideCategory].Selection;
-            _PartyMode.GameData.SongMode = (ESongMode)_SelectSlides[_SelectSlideGameMode].Selection;
+            _PartyMode.GameData.SongMode = _SelectSlides[_SelectSlideGameMode].Selection;
 
-            ESongMode gm = _PartyMode.GameData.SongMode;
+            ESongMode sm = _PartyMode.AvailableSongModes[_PartyMode.GameData.SongMode];
 
             if (_PartyMode.GameData.SongSource == ESongSource.TR_PLAYLIST)
             {
@@ -185,7 +186,7 @@ namespace VocaluxeLib.PartyModes.TicTacToe
                         for (int i = 0; i < CBase.Playlist.GetSongCount(_PartyMode.GameData.PlaylistID); i++)
                         {
                             int id = CBase.Playlist.GetSong(_PartyMode.GameData.PlaylistID, i).SongID;
-                            _ConfigOk = CBase.Songs.GetSongByID(id).AvailableSongModes.Any(mode => mode == gm);
+                            _ConfigOk = CBase.Songs.GetSongByID(id).AvailableSongModes.Any(mode => mode == sm);
                             if (_ConfigOk)
                                 break;
                         }
@@ -208,7 +209,7 @@ namespace VocaluxeLib.PartyModes.TicTacToe
                     _ConfigOk = false;
                     foreach (CSong song in CBase.Songs.GetVisibleSongs())
                     {
-                        _ConfigOk = song.AvailableSongModes.Any(mode => mode == gm);
+                        _ConfigOk = song.AvailableSongModes.Any(mode => mode == sm);
                         if (_ConfigOk)
                             break;
                     }
@@ -221,7 +222,7 @@ namespace VocaluxeLib.PartyModes.TicTacToe
                 {
                     for (int i = 0; i < CBase.Songs.GetNumSongs(); i++)
                     {
-                        _ConfigOk = CBase.Songs.GetSongByID(i).AvailableSongModes.Any(mode => mode == gm);
+                        _ConfigOk = CBase.Songs.GetSongByID(i).AvailableSongModes.Any(mode => mode == sm);
                         if (_ConfigOk)
                             break;
                     }

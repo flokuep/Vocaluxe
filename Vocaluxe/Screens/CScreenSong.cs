@@ -175,7 +175,12 @@ namespace Vocaluxe.Screens
             {
                 keyEvent.Handled = _Playlist.HandleInput(keyEvent);
                 if (keyEvent.Handled)
+                {
+                    //Check if playlist was closed and song menu needed to be resized
+                    if (!_Playlist.Visible)
+                        _SongMenu.SmallView = false;
                     return true;
+                }
                 if (!keyEvent.KeyPressed && keyEvent.Key == Keys.Escape)
                 {
                     _ClosePlaylist();
@@ -365,7 +370,10 @@ namespace Vocaluxe.Screens
                         {
                             if (CSongs.IsInCategory)
                                 _SongMenu.SetSelectedSong(CSongs.GetRandomSong());
-                            else
+                        }
+                        else if (_Buttons[_ButtonOptionsRandomCategory].Selected)
+                        {
+                            if (!CSongs.IsInCategory)
                                 _SongMenu.SetSelectedCategory(CSongs.GetRandomCategory());
                         }
                         else if (_Buttons[_ButtonOptionsSingAll].Selected)
@@ -414,7 +422,12 @@ namespace Vocaluxe.Screens
                 _SongMenu.Selected = false;
                 _ToggleSongOptions(ESongOptionsView.None);
                 if (_Playlist.HandleMouse(mouseEvent))
+                {
+                    //Check if playlist was closed and song menu needed to be resized
+                    if (!_Playlist.Visible)
+                        _SongMenu.SmallView = false;
                     return true;
+                }
             }
             else if (CHelper.IsInBounds(_SongMenu.Rect, mouseEvent))
             {
@@ -1279,6 +1292,8 @@ namespace Vocaluxe.Screens
             {
                 _SongMenu.SmallView = true;
                 _Playlist.Visible = true;
+                _SelectElement(_Playlist);
+                _ToggleSongOptions(ESongOptionsView.None);
             }
         }
 
