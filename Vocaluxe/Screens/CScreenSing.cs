@@ -377,6 +377,7 @@ namespace Vocaluxe.Screens
                         _Texts[_TextScores[p, CGame.NumPlayers - 1]].Visible = true;
                         _Statics[_StaticScores[p, CGame.NumPlayers - 1]].Alpha = alpha[CGame.Players[p].VoiceNr * 2];
                         _Texts[_TextScores[p, CGame.NumPlayers - 1]].Alpha = alpha[CGame.Players[p].VoiceNr * 2];
+                        _ProgressBars[_ProgressBarsRating[p, CGame.NumPlayers - 1]].Alpha = alpha[CGame.Players[p].VoiceNr * 2];
                     }
                 }
 
