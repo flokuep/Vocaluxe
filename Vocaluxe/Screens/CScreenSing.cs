@@ -366,6 +366,12 @@ namespace Vocaluxe.Screens
                         _Statics[_StaticAvatars[p, CGame.NumPlayers - 1]].Alpha = alpha[CGame.Players[p].VoiceNr * 2];
                         _Texts[_TextNames[p, CGame.NumPlayers - 1]].Alpha = alpha[CGame.Players[p].VoiceNr * 2];
                     }
+                    else
+                    {
+                        _Statics[_StaticAvatars[p, CGame.NumPlayers - 1]].Visible = true;
+                        _Texts[_TextNames[p, CGame.NumPlayers - 1]].Visible = true;
+                    }
+
                     if(!CGame.GameMode.IsPointsVisible(p))
                     {
                         _Statics[_StaticScores[p, CGame.NumPlayers - 1]].Visible = false;
@@ -377,7 +383,25 @@ namespace Vocaluxe.Screens
                         _Texts[_TextScores[p, CGame.NumPlayers - 1]].Visible = true;
                         _Statics[_StaticScores[p, CGame.NumPlayers - 1]].Alpha = alpha[CGame.Players[p].VoiceNr * 2];
                         _Texts[_TextScores[p, CGame.NumPlayers - 1]].Alpha = alpha[CGame.Players[p].VoiceNr * 2];
+                    }
+                    else
+                    {
+                        _Statics[_StaticScores[p, CGame.NumPlayers - 1]].Visible = true;
+                        _Texts[_TextScores[p, CGame.NumPlayers - 1]].Visible = true;
+                    }
+
+                    if(!CGame.GameMode.IsRatingBarVisible(p))
+                    {
+                        _ProgressBars[_ProgressBarsRating[p, CGame.NumPlayers - 1]].Visible = false;
+                    }
+                    else if(CConfig.Config.Theme.FadePlayerInfo == EFadePlayerInfo.TR_CONFIG_FADEPLAYERINFO_ALL)
+                    {
+                        _ProgressBars[_ProgressBarsRating[p, CGame.NumPlayers - 1]].Visible = true;
                         _ProgressBars[_ProgressBarsRating[p, CGame.NumPlayers - 1]].Alpha = alpha[CGame.Players[p].VoiceNr * 2];
+                    }
+                    else
+                    {
+                        _ProgressBars[_ProgressBarsRating[p, CGame.NumPlayers - 1]].Visible = true;
                     }
                 }
 
