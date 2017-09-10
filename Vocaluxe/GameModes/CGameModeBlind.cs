@@ -21,5 +21,10 @@ namespace Vocaluxe.GameModes
         {
             return false;
         }
+
+        public override bool IsRatingBarVisible(int p)
+        {
+            return false;
+        }
     }
 }
