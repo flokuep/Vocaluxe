@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Screen xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Informations>
+    <ScreenName>PartyScreenTicTacToeGameModes</ScreenName>
+    <ScreenVersion>1</ScreenVersion>
+  </Informations>
+  <Backgrounds>
+    <Background Name="Background1">
+      <Type>Video</Type>
+      <SlideShowTextures />
+      <Video>BG_Video</Video>
+      <Skin>BG_Default</Skin>
+      <Color Name="BackgroundColor" />
+    </Background>
+  </Backgrounds>
+  <Statics>
+    <Static Name="Static1">
+      <Skin>Menu</Skin>
+      <Color Name="StaticColor" />
+      <Rect>
+        <X>40</X>
+        <Y>40</Y>
+        <W>1200</W>
+        <H>50</H>
+        <Z>0</Z>
+      </Rect>
+    </Static>
+  </Statics>
+  <Texts>
+    <Text Name="Text1">
+      <X>640</X>
+      <Y>48</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>0</MaxW>
+      <Color Name="StaticColor" />
+      <SelColor Name="TextSelColor" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text>TR_SCREENCONFIG_TITLE</Text>
+    </Text>
+    <Text Name="TextGameMode1">
+      <X>455</X>
+      <Y>189</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>870</MaxW>
+      <Color Name="StaticColor" />
+      <SelColor Name="TextSelColor" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextGameMode2">
+      <X>455</X>
+      <Y>269</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>870</MaxW>
+      <Color Name="StaticColor" />
+      <SelColor Name="TextSelColor" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextGameMode3">
+      <X>455</X>
+      <Y>349</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>870</MaxW>
+      <Color Name="StaticColor" />
+      <SelColor Name="TextSelColor" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextGameMode4">
+      <X>455</X>
+      <Y>429</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>870</MaxW>
+      <Color Name="StaticColor" />
+      <SelColor Name="TextSelColor" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextGameMode5">
+      <X>455</X>
+      <Y>509</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>870</MaxW>
+      <Color Name="StaticColor" />
+      <SelColor Name="TextSelColor" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextGameModeDesc1">
+      <X>455</X>
+      <Y>216</Y>
+      <Z>0</Z>
+      <H>26</H>
+      <MaxW>870</MaxW>
+      <Color Name="StaticColor" />
+      <SelColor Name="TextSelColor" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Normal</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextGameModeDesc2">
+      <X>455</X>
+      <Y>296</Y>
+      <Z>0</Z>
+      <H>26</H>
+      <MaxW>870</MaxW>
+      <Color Name="StaticColor" />
+      <SelColor Name="TextSelColor" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Normal</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextGameModeDesc3">
+      <X>455</X>
+      <Y>376</Y>
+      <Z>0</Z>
+      <H>26</H>
+      <MaxW>870</MaxW>
+      <Color Name="StaticColor" />
+      <SelColor Name="TextSelColor" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Normal</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextGameModeDesc4">
+      <X>455</X>
+      <Y>456</Y>
+      <Z>0</Z>
+      <H>26</H>
+      <MaxW>870</MaxW>
+      <Color Name="StaticColor" />
+      <SelColor Name="TextSelColor" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Normal</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+    <Text Name="TextGameModeDesc5">
+      <X>455</X>
+      <Y>536</Y>
+      <Z>0</Z>
+      <H>26</H>
+      <MaxW>870</MaxW>
+      <Color Name="StaticColor" />
+      <SelColor Name="TextSelColor" />
+      <Align>Center</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Normal</Style>
+      <Font>Outline</Font>
+      <Text />
+    </Text>
+  </Texts>
+  <Buttons>
+    <Button Name="ButtonNext">
+      <Skin>Button</Skin>
+      <SkinSelected>Button</SkinSelected>
+      <Rect>
+        <X>985</X>
+        <Y>600</Y>
+        <W>150</W>
+        <H>50</H>
+        <Z>0</Z>
+      </Rect>
+      <Color Name="ButtonColor" />
+      <SelColor Name="ButtonSelColor" />
+      <Text Name="Text">
+        <X>75</X>
+        <Y>10</Y>
+        <Z>0</Z>
+        <H>27</H>
+        <MaxW>142</MaxW>
+        <Color Name="ButtonTextColor" />
+        <SelColor Name="ButtonTextSelColor" />
+        <Align>Center</Align>
+        <ResizeAlign>Center</ResizeAlign>
+        <Style>Bold</Style>
+        <Font>Outline</Font>
+        <Text>TR_BUTTON_NEXT</Text>
+      </Text>
+      <Reflection>
+        <Height>26</Height>
+        <Space>10</Space>
+      </Reflection>
+      <SelReflection>
+        <Height>26</Height>
+        <Space>10</Space>
+      </SelReflection>
+    </Button>
+    <Button Name="ButtonBack">
+      <Skin>Button</Skin>
+      <SkinSelected>Button</SkinSelected>
+      <Rect>
+        <X>145</X>
+        <Y>600</Y>
+        <W>150</W>
+        <H>50</H>
+        <Z>0</Z>
+      </Rect>
+      <Color Name="ButtonColor" />
+      <SelColor Name="ButtonSelColor" />
+      <Text Name="Text">
+        <X>75</X>
+        <Y>10</Y>
+        <Z>0</Z>
+        <H>27</H>
+        <MaxW>142</MaxW>
+        <Color Name="ButtonTextColor" />
+        <SelColor Name="ButtonTextSelColor" />
+        <Align>Center</Align>
+        <ResizeAlign>Center</ResizeAlign>
+        <Style>Bold</Style>
+        <Font>Outline</Font>
+        <Text>TR_BUTTON_BACK</Text>
+      </Text>
+      <Reflection>
+        <Height>26</Height>
+        <Space>10</Space>
+      </Reflection>
+      <SelReflection>
+        <Height>26</Height>
+        <Space>10</Space>
+      </SelReflection>
+    </Button>
+  </Buttons>
+  <SongMenus />
+  <Lyrics />
+  <SelectSlides>
+    <SelectSlide Name="SelectSlideGameMode">
+      <Skin/>
+      <SkinArrowLeft>SelectSlideArrowLeft</SkinArrowLeft>
+      <SkinArrowRight>SelectSlideArrowRight</SkinArrowRight>
+      <SkinSelected>SelectSlide</SkinSelected>
+      <SkinArrowLeftSelected>SelectSlideArrowLeft</SkinArrowLeftSelected>
+      <SkinArrowRightSelected>SelectSlideArrowRight</SkinArrowRightSelected>
+      <Rect>
+        <X>40</X>
+        <Y>100</Y>
+        <W>1200</W>
+        <H>50</H>
+        <Z>0</Z>
+      </Rect>
+      <RectArrowLeft>
+        <X>45</X>
+        <Y>105</Y>
+        <W>40</W>
+        <H>40</H>
+        <Z>0</Z>
+      </RectArrowLeft>
+      <RectArrowRight>
+        <X>1170</X>
+        <Y>105</Y>
+        <W>40</W>
+        <H>40</H>
+        <Z>0</Z>
+      </RectArrowRight>
+      <Color Name="SelectSlideColor" />
+      <SelColor Name="SelectSlideSelColor" />
+      <ArrowColor Name="ArrowColor" />
+      <ArrowSelColor Name="ArrowSelColor" />
+      <TextColor Name="TextColor" />
+      <TextSelColor Name="TextSelColor" />
+      <TextH>27</TextH>
+      <TextRelativeX>50</TextRelativeX>
+      <TextRelativeY>0</TextRelativeY>
+      <TextMaxW>205.33</TextMaxW>
+      <TextFont>Outline</TextFont>
+      <TextStyle>Bold</TextStyle>
+      <NumVisible>3</NumVisible>
+    </SelectSlide>
+    <SelectSlide Name="SelectSlideGameMode1">
+      <Skin/>
+      <SkinArrowLeft>Plus</SkinArrowLeft>
+      <SkinArrowRight>Minus</SkinArrowRight>
+      <SkinSelected>SelectSlide</SkinSelected>
+      <SkinArrowLeftSelected>Plus</SkinArrowLeftSelected>
+      <SkinArrowRightSelected>Minus</SkinArrowRightSelected>
+      <Rect>
+        <X>40</X>
+        <Y>180</Y>
+        <W>1200</W>
+        <H>70</H>
+        <Z>0</Z>
+      </Rect>
+      <RectArrowLeft>
+        <X>1000</X>
+        <Y>195</Y>
+        <W>40</W>
+        <H>40</H>
+        <Z>0</Z>
+      </RectArrowLeft>
+      <RectArrowRight>
+        <X>1000</X>
+        <Y>195</Y>
+        <W>40</W>
+        <H>40</H>
+        <Z>0</Z>
+      </RectArrowRight>
+      <Color Name="SelectSlideColor" />
+      <SelColor Name="SelectSlideSelColor" />
+      <ArrowColor Name="ArrowColor" />
+      <ArrowSelColor Name="ArrowSelColor" />
+      <TextColor Name="Invisible" />
+      <TextSelColor Name="Invisible" />
+      <TextH>27</TextH>
+      <TextRelativeX>920</TextRelativeX>
+      <TextRelativeY>0</TextRelativeY>
+      <TextMaxW>205.33</TextMaxW>
+      <TextFont>Outline</TextFont>
+      <TextStyle>Bold</TextStyle>
+      <NumVisible>2</NumVisible>
+    </SelectSlide>
+    <SelectSlide Name="SelectSlideGameMode2">
+      <Skin/>
+      <SkinArrowLeft>Plus</SkinArrowLeft>
+      <SkinArrowRight>Minus</SkinArrowRight>
+      <SkinSelected>SelectSlide</SkinSelected>
+      <SkinArrowLeftSelected>Plus</SkinArrowLeftSelected>
+      <SkinArrowRightSelected>Minus</SkinArrowRightSelected>
+      <Rect>
+        <X>40</X>
+        <Y>260</Y>
+        <W>1200</W>
+        <H>70</H>
+        <Z>0</Z>
+      </Rect>
+      <RectArrowLeft>
+        <X>1000</X>
+        <Y>275</Y>
+        <W>40</W>
+        <H>40</H>
+        <Z>0</Z>
+      </RectArrowLeft>
+      <RectArrowRight>
+        <X>1000</X>
+        <Y>275</Y>
+        <W>40</W>
+        <H>40</H>
+        <Z>0</Z>
+      </RectArrowRight>
+      <Color Name="SelectSlideColor" />
+      <SelColor Name="SelectSlideSelColor" />
+      <ArrowColor Name="ArrowColor" />
+      <ArrowSelColor Name="ArrowSelColor" />
+      <TextColor Name="Invisible" />
+      <TextSelColor Name="Invisible" />
+      <TextH>27</TextH>
+      <TextRelativeX>920</TextRelativeX>
+      <TextRelativeY>0</TextRelativeY>
+      <TextMaxW>205.33</TextMaxW>
+      <TextFont>Outline</TextFont>
+      <TextStyle>Bold</TextStyle>
+      <NumVisible>2</NumVisible>
+    </SelectSlide>
+    <SelectSlide Name="SelectSlideGameMode3">
+      <Skin/>
+      <SkinArrowLeft>Plus</SkinArrowLeft>
+      <SkinArrowRight>Minus</SkinArrowRight>
+      <SkinSelected>SelectSlide</SkinSelected>
+      <SkinArrowLeftSelected>Plus</SkinArrowLeftSelected>
+      <SkinArrowRightSelected>Minus</SkinArrowRightSelected>
+      <Rect>
+        <X>40</X>
+        <Y>340</Y>
+        <W>1200</W>
+        <H>70</H>
+        <Z>0</Z>
+      </Rect>
+      <RectArrowLeft>
+        <X>1000</X>
+        <Y>355</Y>
+        <W>40</W>
+        <H>40</H>
+        <Z>0</Z>
+      </RectArrowLeft>
+      <RectArrowRight>
+        <X>1000</X>
+        <Y>355</Y>
+        <W>40</W>
+        <H>40</H>
+        <Z>0</Z>
+      </RectArrowRight>
+      <Color Name="SelectSlideColor" />
+      <SelColor Name="SelectSlideSelColor" />
+      <ArrowColor Name="ArrowColor" />
+      <ArrowSelColor Name="ArrowSelColor" />
+      <TextColor Name="Invisible" />
+      <TextSelColor Name="Invisible" />
+      <TextH>27</TextH>
+      <TextRelativeX>920</TextRelativeX>
+      <TextRelativeY>0</TextRelativeY>
+      <TextMaxW>205.33</TextMaxW>
+      <TextFont>Outline</TextFont>
+      <TextStyle>Bold</TextStyle>
+      <NumVisible>2</NumVisible>
+    </SelectSlide>
+    <SelectSlide Name="SelectSlideGameMode4">
+      <Skin/>
+      <SkinArrowLeft>Plus</SkinArrowLeft>
+      <SkinArrowRight>Minus</SkinArrowRight>
+      <SkinSelected>SelectSlide</SkinSelected>
+      <SkinArrowLeftSelected>Plus</SkinArrowLeftSelected>
+      <SkinArrowRightSelected>Minus</SkinArrowRightSelected>
+      <Rect>
+        <X>40</X>
+        <Y>420</Y>
+        <W>1200</W>
+        <H>70</H>
+        <Z>0</Z>
+      </Rect>
+      <RectArrowLeft>
+        <X>1000</X>
+        <Y>435</Y>
+        <W>40</W>
+        <H>40</H>
+        <Z>0</Z>
+      </RectArrowLeft>
+      <RectArrowRight>
+        <X>1000</X>
+        <Y>435</Y>
+        <W>40</W>
+        <H>40</H>
+        <Z>0</Z>
+      </RectArrowRight>
+      <Color Name="SelectSlideColor" />
+      <SelColor Name="SelectSlideSelColor" />
+      <ArrowColor Name="ArrowColor" />
+      <ArrowSelColor Name="ArrowSelColor" />
+      <TextColor Name="Invisible" />
+      <TextSelColor Name="Invisible" />
+      <TextH>27</TextH>
+      <TextRelativeX>920</TextRelativeX>
+      <TextRelativeY>0</TextRelativeY>
+      <TextMaxW>205.33</TextMaxW>
+      <TextFont>Outline</TextFont>
+      <TextStyle>Bold</TextStyle>
+      <NumVisible>2</NumVisible>
+    </SelectSlide>
+    <SelectSlide Name="SelectSlideGameMode5">
+      <Skin/>
+      <SkinArrowLeft>Plus</SkinArrowLeft>
+      <SkinArrowRight>Minus</SkinArrowRight>
+      <SkinSelected>SelectSlide</SkinSelected>
+      <SkinArrowLeftSelected>Plus</SkinArrowLeftSelected>
+      <SkinArrowRightSelected>Minus</SkinArrowRightSelected>
+      <Rect>
+        <X>40</X>
+        <Y>500</Y>
+        <W>1200</W>
+        <H>70</H>
+        <Z>0</Z>
+      </Rect>
+      <RectArrowLeft>
+        <X>1000</X>
+        <Y>515</Y>
+        <W>40</W>
+        <H>40</H>
+        <Z>0</Z>
+      </RectArrowLeft>
+      <RectArrowRight>
+        <X>1000</X>
+        <Y>515</Y>
+        <W>40</W>
+        <H>40</H>
+        <Z>0</Z>
+      </RectArrowRight>
+      <Color Name="SelectSlideColor" />
+      <SelColor Name="SelectSlideSelColor" />
+      <ArrowColor Name="ArrowColor" />
+      <ArrowSelColor Name="ArrowSelColor" />
+      <TextColor Name="Invisible" />
+      <TextSelColor Name="Invisible" />
+      <TextH>27</TextH>
+      <TextRelativeX>920</TextRelativeX>
+      <TextRelativeY>0</TextRelativeY>
+      <TextMaxW>205.33</TextMaxW>
+      <TextFont>Outline</TextFont>
+      <TextStyle>Bold</TextStyle>
+      <NumVisible>2</NumVisible>
+    </SelectSlide>
+  </SelectSlides>
+  <SingNotes />
+  <NameSelections />
+  <Equalizers />
+  <Playlists />
+  <ParticleEffects />
+  <ScreenSettings />
+</Screen>
