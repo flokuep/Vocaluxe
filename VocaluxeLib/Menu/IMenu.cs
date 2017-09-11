@@ -55,7 +55,5 @@ namespace VocaluxeLib.Menu
 
         void ProcessMouseClick(int x, int y);
         void ProcessMouseMove(int x, int y);
-
-        IMenuElement GetElement(EType type, string key);
     }
 }

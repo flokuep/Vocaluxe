@@ -107,6 +107,24 @@ namespace Vocaluxe.Screens
 
         private float _CurrentTime;
         private float _FinishTime;
+        private float _TotalTime
+        {
+            get
+            {
+                if (_CurrentStream != -1)
+                {
+                    CSong song = CGame.GetSong();
+                    float totalTime = CSound.GetLength(_CurrentStream);
+                    if (Math.Abs(song.Finish) > 0.001)
+                        totalTime = song.Finish;
+                    totalTime -= song.Start;
+
+                    return totalTime;
+                }
+                else
+                    return 0f;
+            }
+        }
 
         private float _TimeToFirstNote;
         private float _RemainingTimeToFirstNote;
@@ -606,6 +624,10 @@ namespace Vocaluxe.Screens
                     voiceAssignments[i] = CGame.Players[i].VoiceNr;
             }
             CGame.ResetPlayer();
+            List<SRectF> avatarPosition = new List<SRectF>();
+            for(int p = 0; p < CGame.NumPlayers; p++)
+                avatarPosition.Add(_Statics[_StaticAvatars[p, CGame.NumPlayers - 1]].Rect);
+            CGame.GameMode.OnInit(_TotalTime, avatarPosition);
 
             if (!String.IsNullOrEmpty(song.VideoFileName))
             {
@@ -1323,12 +1345,10 @@ namespace Vocaluxe.Screens
             if (song == null)
                 return;
 
-            float totalTime = CSound.GetLength(_CurrentStream);
-            if (Math.Abs(song.Finish) > 0.001)
-                totalTime = song.Finish;
-
-            float remainingTime = totalTime - _CurrentTime;
-            totalTime -= song.Start;
+            float totalTime = _TotalTime;
+            
+            float remainingTime = totalTime - _CurrentTime + song.Start;
+            
             float currentTime = _CurrentTime - song.Start;
 
             if (_Length < 0 && totalTime > 0)

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using VocaluxeLib;
 
 namespace Vocaluxe.GameModes
 {
@@ -10,6 +8,7 @@ namespace Vocaluxe.GameModes
         public CGameMode()
         {
         }
+
         public virtual bool IsNotesVisible(int p)
         {
             return true;
@@ -34,6 +33,10 @@ namespace Vocaluxe.GameModes
         }
 
         #region events / graphics
+        public virtual void OnInit(float songLenght, List<SRectF> avatarPositions)
+        {
+            return;
+        }
         public virtual void OnUpdate(float time)
         {
             return;

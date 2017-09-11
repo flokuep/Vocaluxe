@@ -540,23 +540,6 @@ namespace VocaluxeLib.Menu
             get { return EMusicType.Background; }
         }
 
-        public virtual IMenuElement GetElement(EType type, string key)
-        {
-            switch (type)
-            {
-                case EType.Static:
-                   return _Statics[key];
-                case EType.Text:
-                   return _Texts[key];
-                case EType.SingNote:
-                   return _SingNotes[key];
-                case EType.Button:
-                   return _Buttons[key];
-                default:
-                    return null;
-            }
-        }
-
         protected void _ResumeBG()
         {
             foreach (CBackground bg in _Backgrounds)
