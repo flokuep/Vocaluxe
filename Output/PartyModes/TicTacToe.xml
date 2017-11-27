@@ -16,5 +16,6 @@
 	<ScreenFile>CPartyScreenTicTacToeConfig</ScreenFile>
 	<ScreenFile>CPartyScreenTicTacToeNames</ScreenFile>
 	<ScreenFile>CPartyScreenTicTacToeGameModes</ScreenFile>
+	<ScreenFile>CPartyScreenTicTacToeSongs</ScreenFile>
   </PartyScreens>
 </root>

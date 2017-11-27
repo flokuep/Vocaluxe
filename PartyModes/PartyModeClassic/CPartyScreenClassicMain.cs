@@ -300,7 +300,7 @@ namespace VocaluxeLib.PartyModes.Classic
                 }
 
                 //Update next player
-                int profileId = currentRound.Singer[i];
+                Guid profileId = currentRound.Singer[i];
                 _Texts[_TextNextPlayer[i]].Text = CBase.Profiles.GetPlayerName(profileId);
 
                 //Update team points

@@ -141,6 +141,16 @@ namespace Vocaluxe.Base
             return CConfig.Config.Game.Tabs;
         }
 
+        public EOffOn GetAutoplayPreviews()
+        {
+            return CConfig.Config.Game.AutoplayPreviews;
+        }
+
+        public int GetAutoplayPreviewDelay()
+        {
+            return CConfig.Config.Game.AutoplayPreviewDelay;
+        }
+
         public EOffOn GetIgnoreArticles()
         {
             return CConfig.Config.Game.IgnoreArticles;
@@ -156,11 +166,6 @@ namespace Vocaluxe.Base
             return CConfig.GetMaxNumMics();
         }
 
-        public bool GetLoadOldThemeFiles()
-        {
-            return CConfig.LoadOldThemeFiles;
-        }
-
         public void AddSongMenuListener(OnSongMenuChanged onSongMenuChanged)
         {
             CConfig.SongMenuChanged += onSongMenuChanged;
@@ -169,6 +174,11 @@ namespace Vocaluxe.Base
         public void RemoveSongMenuListener(OnSongMenuChanged onSongMenuChanged)
         {
             CConfig.SongMenuChanged -= onSongMenuChanged;
+        }
+
+        public int GetNumScreens()
+        {
+            return CConfig.GetNumScreens();
         }
     }
 
@@ -227,6 +237,11 @@ namespace Vocaluxe.Base
         public int GetMaxNumPlayer()
         {
             return CSettings.MaxNumPlayer;
+        }
+
+        public int GetMaxNumScreens()
+        {
+            return CSettings.MaxNumScreens;
         }
 
         public float GetDefaultMedleyFadeInTime()
@@ -398,14 +413,14 @@ namespace Vocaluxe.Base
             CDraw.DrawTexture(texture, rect);
         }
 
-        public void DrawTexture(CTextureRef texture, SRectF rect, SColorF color)
+        public void DrawTexture(CTextureRef texture, SRectF rect, SColorF color, bool allMonitors = true)
         {
-            CDraw.DrawTexture(texture, rect, color);
+            CDraw.DrawTexture(texture, rect, color, false, allMonitors);
         }
 
-        public void DrawTexture(CTextureRef texture, SRectF rect, SColorF color, SRectF bounds, bool mirrored = false)
+        public void DrawTexture(CTextureRef texture, SRectF rect, SColorF color, SRectF bounds, bool mirrored = false, bool allMonitors = true)
         {
-            CDraw.DrawTexture(texture, rect, color, bounds, mirrored);
+            CDraw.DrawTexture(texture, rect, color, bounds, mirrored, allMonitors);
         }
 
         public void DrawTexture(CTextureRef textureRef, SRectF bounds, EAspect aspect)
@@ -418,9 +433,9 @@ namespace Vocaluxe.Base
             CDraw.DrawTexture(textureRef, bounds, aspect, color);
         }
 
-        public void DrawTextureReflection(CTextureRef texture, SRectF rect, SColorF color, SRectF bounds, float reflectionSpace, float reflectionHeight)
+        public void DrawTextureReflection(CTextureRef texture, SRectF rect, SColorF color, SRectF bounds, float reflectionSpace, float reflectionHeight, bool allMonitors = true)
         {
-            CDraw.DrawTextureReflection(texture, rect, color, bounds, reflectionSpace, reflectionHeight);
+            CDraw.DrawTextureReflection(texture, rect, color, bounds, reflectionSpace, reflectionHeight, allMonitors);
         }
 
         public CTextureRef AddTexture(string fileName)
@@ -438,9 +453,9 @@ namespace Vocaluxe.Base
             CDraw.RemoveTexture(ref texture);
         }
 
-        public void DrawRect(SColorF color, SRectF rect)
+        public void DrawRect(SColorF color, SRectF rect, bool allMonitors = true)
         {
-            CDraw.DrawRect(color, rect);
+            CDraw.DrawRect(color, rect, allMonitors);
         }
 
         public void DrawRectReflection(SColorF color, SRectF rect, float space, float height)
@@ -517,9 +532,9 @@ namespace Vocaluxe.Base
             return CFonts.GetTextBounds(text);
         }
 
-        public void DrawText(string text, CFont font, float x, float y, float z, SColorF color)
+        public void DrawText(string text, CFont font, float x, float y, float z, SColorF color, bool allMonitors = true)
         {
-            CFonts.DrawText(text, font, x, y, z, color);
+            CFonts.DrawText(text, font, x, y, z, color, allMonitors);
         }
 
         public void DrawTextReflection(string text, CFont font, float x, float y, float z, SColorF color, float reflectionSpace, float reflectionHeight)
@@ -641,17 +656,22 @@ namespace Vocaluxe.Base
             return CProfiles.GetProfiles();
         }
 
-        public EGameDifficulty GetDifficulty(int profileID)
+        public int GetNum()
+        {
+            return CProfiles.NumProfiles;
+        }
+
+        public EGameDifficulty GetDifficulty(Guid profileID)
         {
             return CProfiles.GetDifficulty(profileID);
         }
 
-        public string GetPlayerName(int profileID, int playerNum = 0)
+        public string GetPlayerName(Guid profileID, int playerNum = 0)
         {
             return CProfiles.GetPlayerName(profileID, playerNum);
         }
 
-        public CTextureRef GetAvatar(int profileID)
+        public CTextureRef GetAvatar(Guid profileID)
         {
             return CProfiles.GetAvatarTextureFromProfile(profileID);
         }
@@ -661,12 +681,12 @@ namespace Vocaluxe.Base
             return CProfiles.GetAvatarByFilename(fileName);
         }
 
-        public bool IsProfileIDValid(int profileID)
+        public bool IsProfileIDValid(Guid profileID)
         {
             return CProfiles.IsProfileIDValid(profileID);
         }
 
-        public bool IsGuest(int profileID)
+        public bool IsGuest(Guid profileID)
         {
             return CProfiles.IsGuestProfile(profileID);
         }
@@ -782,9 +802,9 @@ namespace Vocaluxe.Base
             CSongs.ResetPartySongSung(catIndex);
         }
 
-        public void SortSongs(ESongSorting sorting, EOffOn tabs, EOffOn ignoreArticles, String searchString, EDuetOptions duetOptions)
+        public void SortSongs(ESongSorting sorting, EOffOn tabs, EOffOn ignoreArticles, String searchString, EDuetOptions duetOptions, int playlistID)
         {
-            CSongs.Sort(sorting, tabs, ignoreArticles, searchString, duetOptions);
+            CSongs.Sort(sorting, tabs, ignoreArticles, searchString, duetOptions, playlistID);
         }
 
         public void NextCategory()
@@ -822,7 +842,14 @@ namespace Vocaluxe.Base
 
         public void Close(ref CVideoStream stream)
         {
-            CVideo.Close(ref stream);
+            try
+            {
+                CVideo.Close(ref stream);
+            }
+            catch (NotSupportedException e)
+            {
+                CLog.LogError($"Clould not close the background video: {e.Message}");
+            }
         }
 
         public void SetLoop(CVideoStream stream, bool loop = true)
@@ -832,12 +859,26 @@ namespace Vocaluxe.Base
 
         public void Pause(CVideoStream stream)
         {
-            CVideo.Pause(stream);
+            try
+            {
+                CVideo.Pause(stream);
+            }
+            catch (NotSupportedException e)
+            {
+                CLog.LogError($"Clould not pause the background video: {e.Message}");
+            }
         }
 
         public void Resume(CVideoStream stream)
         {
-            CVideo.Resume(stream);
+            try
+            {
+                CVideo.Resume(stream);
+            }
+            catch (NotSupportedException e)
+            {
+                CLog.LogError($"Clould not resume the background video: {e.Message}");
+            }
         }
     }
 
@@ -1013,6 +1054,11 @@ namespace Vocaluxe.Base
         public CPlaylistSong GetSong(int playlistID, int songIndex)
         {
             return CPlaylists.GetSong(playlistID, songIndex);
+        }
+
+        public bool ContainsSong(int playlistID, int songID)
+        {
+            return CPlaylists.ContainsSong(playlistID, songID);
         }
     }
 }

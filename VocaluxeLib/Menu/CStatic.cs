@@ -15,22 +15,22 @@
 // along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
 #endregion
 
-using System;
 using System.Diagnostics;
 using System.Xml.Serialization;
 using VocaluxeLib.Draw;
-using VocaluxeLib.Xml;
 
 namespace VocaluxeLib.Menu
 {
     [XmlType("Static")]
     public struct SThemeStatic
     {
-        [XmlAttribute(AttributeName = "Name")] public string Name;
+        [XmlAttribute(AttributeName = "Name")]
+        public string Name;
         public string Skin;
         public SThemeColor Color;
         public SRectF Rect;
         public SReflection? Reflection;
+        public bool? AllMonitors;
     }
 
     public sealed class CStatic : CMenuElementBase, IMenuElement, IThemeable
@@ -65,6 +65,8 @@ namespace VocaluxeLib.Menu
         public float ReflectionSpace;
         public float ReflectionHeight;
 
+        public bool AllMonitors = true;
+
         public float Alpha = 1;
 
         public EAspect Aspect = EAspect.Stretch;
@@ -93,6 +95,7 @@ namespace VocaluxeLib.Menu
             Reflection = s.Reflection;
             ReflectionSpace = s.ReflectionHeight;
             ReflectionHeight = s.ReflectionSpace;
+            AllMonitors = s.AllMonitors;
 
             Alpha = s.Alpha;
             Visible = s.Visible;
@@ -120,52 +123,6 @@ namespace VocaluxeLib.Menu
             _PartyModeID = partyModeID;
             _Theme = theme;
             ThemeLoaded = true;
-        }
-
-        public bool LoadTheme(string xmlPath, string elementName, CXmlReader xmlReader)
-        {
-            string item = xmlPath + "/" + elementName;
-            ThemeLoaded = true;
-
-            ThemeLoaded &= xmlReader.GetValue(item + "/Skin", out _Theme.Skin, String.Empty);
-
-            ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/X", ref _Theme.Rect.X);
-            ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/Y", ref _Theme.Rect.Y);
-            ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/Z", ref _Theme.Rect.Z);
-            ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/W", ref _Theme.Rect.W);
-            ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/H", ref _Theme.Rect.H);
-
-            if (xmlReader.GetValue(item + "/Color", out _Theme.Color.Name, String.Empty))
-                ThemeLoaded &= _Theme.Color.Get(_PartyModeID, out Color);
-            else
-            {
-                ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/R", ref Color.R);
-                ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/G", ref Color.G);
-                ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/B", ref Color.B);
-                ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/A", ref Color.A);
-            }
-
-            _Theme.Color.Color = Color;
-
-            if (xmlReader.ItemExists(item + "/Reflection"))
-            {
-                Reflection = true;
-                ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/Reflection/Space", ref ReflectionSpace);
-                ThemeLoaded &= xmlReader.TryGetFloatValue(item + "/Reflection/Height", ref ReflectionHeight);
-                _Theme.Reflection = new SReflection(ReflectionHeight, ReflectionSpace);
-            }
-            else
-            {
-                Reflection = false;
-                _Theme.Reflection = null;
-            }
-
-            if (ThemeLoaded)
-            {
-                _Theme.Name = elementName;
-                LoadSkin();
-            }
-            return ThemeLoaded;
         }
 
         public void Draw()
@@ -197,9 +154,9 @@ namespace VocaluxeLib.Menu
             {
                 if (texture != null)
                 {
-                    CBase.Drawing.DrawTexture(texture, rect, color, bounds);
+                    CBase.Drawing.DrawTexture(texture, rect, color, bounds, false, AllMonitors);
                     if (Reflection)
-                        CBase.Drawing.DrawTextureReflection(texture, rect, color, bounds, ReflectionSpace, ReflectionHeight);
+                        CBase.Drawing.DrawTextureReflection(texture, rect, color, bounds, ReflectionSpace, ReflectionHeight, AllMonitors);
                 }
                 else
                     CBase.Drawing.DrawRect(color, rect);
@@ -209,7 +166,7 @@ namespace VocaluxeLib.Menu
                 CBase.Drawing.DrawRect(new SColorF(1f, 1f, 1f, 0.5f), rect);
         }
 
-        public void UnloadSkin() {}
+        public void UnloadSkin() { }
 
         public void LoadSkin()
         {

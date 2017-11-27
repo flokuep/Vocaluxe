@@ -15,6 +15,7 @@
 // along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
 #endregion
 
+using System;
 using System.Collections.Generic;
 using VocaluxeLib.Menu;
 
@@ -42,13 +43,13 @@ namespace VocaluxeLib.PartyModes.Classic
 
             int[] numPlayerPerTeam = new int[_PartyMode.GameData.Teams.Count];
             int totalNumPlayer = 0;
-            List<int>[] selectedPlayer = new List<int>[_PartyMode.GameData.Teams.Count];
+            List<Guid>[] selectedPlayer = new List<Guid>[_PartyMode.GameData.Teams.Count];
             for (int t = 0; t < _PartyMode.GameData.Teams.Count; t++)
             {
                 numPlayerPerTeam[t] = _PartyMode.GameData.Teams[t].Count;
                 totalNumPlayer += _PartyMode.GameData.Teams[t].Count;
 
-                selectedPlayer[t] = new List<int>();
+                selectedPlayer[t] = new List<Guid>();
                 selectedPlayer[t].AddRange(_PartyMode.GameData.Teams[t]);
             }
 
@@ -60,7 +61,7 @@ namespace VocaluxeLib.PartyModes.Classic
         public override void Back()
         {
             _PartyMode.GameData.Teams.Clear();
-            foreach (List<int> l in _TeamList)
+            foreach (List<Guid> l in _TeamList)
                 _PartyMode.GameData.Teams.Add(l);
 
             _PartyMode.Back();
@@ -69,7 +70,7 @@ namespace VocaluxeLib.PartyModes.Classic
         public override void Next()
         {
             _PartyMode.GameData.Teams.Clear();
-            foreach (List<int> l in _TeamList)
+            foreach (List<Guid> l in _TeamList)
                 _PartyMode.GameData.Teams.Add(l);
 
             _PartyMode.Next();

@@ -1,11 +1,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vocaluxe", "Vocaluxe\Vocaluxe.csproj", "{2A1E0F2D-5392-4BB7-B0A1-A9DFA13E79FF}"
 	ProjectSection(ProjectDependencies) = postProject
 		{55F89808-4E79-4FFE-BC13-48258913F5C9} = {55F89808-4E79-4FFE-BC13-48258913F5C9}
-		{6F3E1874-F28A-40E9-AFBD-31934D593678} = {6F3E1874-F28A-40E9-AFBD-31934D593678}
 		{6F3E1874-F28A-40E9-AFBD-31934D593679} = {6F3E1874-F28A-40E9-AFBD-31934D593679}
 		{D2B6DDEF-E0E1-4DDF-A73A-E6ACEF5C95EC} = {D2B6DDEF-E0E1-4DDF-A73A-E6ACEF5C95EC}
 		{5A4053F1-5AD5-441F-B254-D97A088127B6} = {5A4053F1-5AD5-441F-B254-D97A088127B6}
@@ -18,8 +17,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PartyModeTicTacToe", "PartyModes\PartyModeTicTacToe\PartyModeTicTacToe.csproj", "{6F3E1874-F28A-40E9-AFBD-31934D593679}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PartyModeChallenge", "PartyModes\PartyModeChallenge\PartyModeChallenge.csproj", "{5A4053F1-5AD5-441F-B254-D97A088127B6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PartyModeChallengeMedley", "PartyModes\PartyModeChallengeMedley\PartyModeChallengeMedley.csproj", "{6F3E1874-F28A-40E9-AFBD-31934D593678}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PartyModeClassic", "PartyModes\PartyModeClassic\PartyModeClassic.csproj", "{DE7C817C-F7EE-4D6F-9707-2668D8DB7FDB}"
 EndProject
@@ -317,5 +314,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5545CBA7-F7A7-4E72-B230-F6A6C3AD0A09}
 	EndGlobalSection
 EndGlobal

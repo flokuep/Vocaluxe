@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using VocaluxeLib.Menu;
 
 namespace VocaluxeLib.PartyModes.Classic

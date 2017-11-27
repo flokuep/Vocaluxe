@@ -145,7 +145,7 @@ namespace VocaluxeLib.PartyModes.Classic
     public class CRound
     {
         public int SongID;
-        public List<int> Singer;
+        public List<Guid> Singer;
         public List<int> Points;
         public List<int> WinnerTeams;
         public bool Finished;

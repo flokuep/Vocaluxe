@@ -121,7 +121,7 @@ namespace VocaluxeLib.PartyModes.Classic
 
         public struct SData
         {
-            public List<List<int>> Teams;
+            public List<List<Guid>> Teams;
             public int NumTeams
             {
                 get
@@ -173,7 +173,7 @@ namespace VocaluxeLib.PartyModes.Classic
 
             GameData = new SData
             {
-                Teams = new List<List<int>>(),
+                Teams = new List<List<Guid>>(),
                 CurrentRoundNr = 0,
                 SongSource = ESongSource.TR_ALLSONGS,
                 PlaylistID = 0,
@@ -207,8 +207,8 @@ namespace VocaluxeLib.PartyModes.Classic
             GameData.GameModes.Clear();
 
             //Set default team number to 2
-            GameData.Teams.Add(new List<int>());
-            GameData.Teams.Add(new List<int>());
+            GameData.Teams.Add(new List<Guid>());
+            GameData.Teams.Add(new List<Guid>());
         }
 
         public override bool Init()
@@ -421,7 +421,7 @@ namespace VocaluxeLib.PartyModes.Classic
                 if (c != null)
                     players[i].ProfileID = c.Singer[i];
                 else
-                    players[i].ProfileID = -1;
+                    players[i].ProfileID = Guid.Empty;
 
                 if (isDuet)
                     players[i].VoiceNr = i % 2;
@@ -463,9 +463,9 @@ namespace VocaluxeLib.PartyModes.Classic
         private void _CreateRounds()
         {
             GameData.Rounds = new List<CRound>();
-            List<List<int>> teams = new List<List<int>>();
+            List<List<Guid>> teams = new List<List<Guid>>();
             for (int t = 0; t < GameData.Teams.Count; t++)
-                teams.Add(new List<int>());
+                teams.Add(new List<Guid>());
 
             List<CPartyGameMode> gameModes = new List<CPartyGameMode>();
             gameModes.AddRange(GameData.GameModes);
@@ -475,7 +475,7 @@ namespace VocaluxeLib.PartyModes.Classic
                 CRound r = new CRound();
 
                 //Add next player
-                r.Singer = new List<int>();
+                r.Singer = new List<Guid>();
                 for (int t = 0; t < GameData.Teams.Count; t++)
                 {
                     if (teams[t].Count == 0)
@@ -484,7 +484,7 @@ namespace VocaluxeLib.PartyModes.Classic
                         teams[t].Shuffle();
                     }
                     r.Singer.Add(teams[t][0]);
-                    teams[t].Remove(0);
+                    teams[t].RemoveAt(0);
                 }
 
                 //Select game mode
