@@ -200,13 +200,10 @@ namespace VocaluxeLib.Menu
             {
                 for (int i = 0; i < Math.Min(_GameModes.Count, _NumGMSelectSlides); i++)
                 {
-                    if (CHelper.IsInBounds(_SelectSlides[_SelectSlideGameModes[i]].Rect, mouseEvent))
+                    if (CHelper.IsInBounds(_SelectSlides[_SelectSlideGameModes[i]].Rect, mouseEvent) && _GameModes.Count > _NumGMSelectSlides)
                     {
                         _Offset += mouseEvent.Wheel;
-                        if (_Offset < 0)
-                            _Offset = 0;
-                        else if (_Offset + _NumGMSelectSlides > _GameModes.Count)
-                            _Offset = _GameModes.Count - _NumGMSelectSlides;
+                        _Offset = _Offset.Clamp(0, _GameModes.Count - _NumGMSelectSlides);
 
                         _UpdateGameModeSelectSlides();
                         break;
