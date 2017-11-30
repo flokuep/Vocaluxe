@@ -14,26 +14,26 @@
     </Background>
   </Backgrounds>
   <Statics>
-    <Static Name="Static1">
-      <Skin>Menu</Skin>
-      <Color Name="StaticColor" />
+    <Static Name="StaticMenuBar">
+      <Skin />
+      <Color Name="BackgroundColorAlpha" />
       <Rect>
-        <X>40</X>
+        <X>0</X>
         <Y>40</Y>
-        <W>1200</W>
-        <H>50</H>
-        <Z>0</Z>
+        <W>1280</W>
+        <H>45</H>
+        <Z>1</Z>
       </Rect>
     </Static>
   </Statics>
   <Texts>
-    <Text Name="Text1">
+    <Text Name="TextTitle">
       <X>640</X>
-      <Y>48</Y>
+      <Y>50</Y>
       <Z>0</Z>
       <H>27</H>
       <MaxW>0</MaxW>
-      <Color Name="StaticColor" />
+      <Color Name="TextColor" />
       <SelColor Name="TextSelColor" />
       <Align>Center</Align>
       <ResizeAlign>Center</ResizeAlign>
@@ -197,7 +197,7 @@
       <SelColor Name="ButtonSelColor" />
       <Text Name="Text">
         <X>75</X>
-        <Y>10</Y>
+        <Y>12</Y>
         <Z>0</Z>
         <H>27</H>
         <MaxW>142</MaxW>
@@ -232,7 +232,7 @@
       <SelColor Name="ButtonSelColor" />
       <Text Name="Text">
         <X>75</X>
-        <Y>10</Y>
+        <Y>12</Y>
         <Z>0</Z>
         <H>27</H>
         <MaxW>142</MaxW>
@@ -265,21 +265,21 @@
       <SkinArrowLeftSelected>SelectSlideArrowLeft</SkinArrowLeftSelected>
       <SkinArrowRightSelected>SelectSlideArrowRight</SkinArrowRightSelected>
       <Rect>
-        <X>40</X>
+        <X>75</X>
         <Y>100</Y>
-        <W>1200</W>
+        <W>1130</W>
         <H>50</H>
         <Z>0</Z>
       </Rect>
       <RectArrowLeft>
-        <X>45</X>
+        <X>80</X>
         <Y>105</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
       </RectArrowLeft>
       <RectArrowRight>
-        <X>1170</X>
+        <X>1155</X>
         <Y>105</Y>
         <W>40</W>
         <H>40</H>
@@ -289,7 +289,7 @@
       <SelColor Name="SelectSlideSelColor" />
       <ArrowColor Name="ArrowColor" />
       <ArrowSelColor Name="ArrowSelColor" />
-      <TextColor Name="TextColor" />
+      <TextColor Name="TextColorAlpha" />
       <TextSelColor Name="TextSelColor" />
       <TextH>27</TextH>
       <TextRelativeX>50</TextRelativeX>
@@ -307,21 +307,21 @@
       <SkinArrowLeftSelected>Plus</SkinArrowLeftSelected>
       <SkinArrowRightSelected>Minus</SkinArrowRightSelected>
       <Rect>
-        <X>40</X>
+        <X>75</X>
         <Y>180</Y>
-        <W>1200</W>
+        <W>1130</W>
         <H>70</H>
         <Z>0</Z>
       </Rect>
       <RectArrowLeft>
-        <X>1000</X>
+        <X>1060</X>
         <Y>195</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
       </RectArrowLeft>
       <RectArrowRight>
-        <X>1000</X>
+        <X>1060</X>
         <Y>195</Y>
         <W>40</W>
         <H>40</H>
@@ -349,21 +349,21 @@
       <SkinArrowLeftSelected>Plus</SkinArrowLeftSelected>
       <SkinArrowRightSelected>Minus</SkinArrowRightSelected>
       <Rect>
-        <X>40</X>
+        <X>75</X>
         <Y>260</Y>
-        <W>1200</W>
+        <W>1130</W>
         <H>70</H>
         <Z>0</Z>
       </Rect>
       <RectArrowLeft>
-        <X>1000</X>
+        <X>1060</X>
         <Y>275</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
       </RectArrowLeft>
       <RectArrowRight>
-        <X>1000</X>
+        <X>1060</X>
         <Y>275</Y>
         <W>40</W>
         <H>40</H>
@@ -391,21 +391,21 @@
       <SkinArrowLeftSelected>Plus</SkinArrowLeftSelected>
       <SkinArrowRightSelected>Minus</SkinArrowRightSelected>
       <Rect>
-        <X>40</X>
+        <X>75</X>
         <Y>340</Y>
-        <W>1200</W>
+        <W>1130</W>
         <H>70</H>
         <Z>0</Z>
       </Rect>
       <RectArrowLeft>
-        <X>1000</X>
+        <X>1060</X>
         <Y>355</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
       </RectArrowLeft>
       <RectArrowRight>
-        <X>1000</X>
+        <X>1060</X>
         <Y>355</Y>
         <W>40</W>
         <H>40</H>
@@ -433,21 +433,21 @@
       <SkinArrowLeftSelected>Plus</SkinArrowLeftSelected>
       <SkinArrowRightSelected>Minus</SkinArrowRightSelected>
       <Rect>
-        <X>40</X>
+        <X>75</X>
         <Y>420</Y>
-        <W>1200</W>
+        <W>1130</W>
         <H>70</H>
         <Z>0</Z>
       </Rect>
       <RectArrowLeft>
-        <X>1000</X>
+        <X>1060</X>
         <Y>435</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
       </RectArrowLeft>
       <RectArrowRight>
-        <X>1000</X>
+        <X>1060</X>
         <Y>435</Y>
         <W>40</W>
         <H>40</H>
@@ -475,21 +475,21 @@
       <SkinArrowLeftSelected>Plus</SkinArrowLeftSelected>
       <SkinArrowRightSelected>Minus</SkinArrowRightSelected>
       <Rect>
-        <X>40</X>
+        <X>75</X>
         <Y>500</Y>
-        <W>1200</W>
+        <W>1130</W>
         <H>70</H>
         <Z>0</Z>
       </Rect>
       <RectArrowLeft>
-        <X>1000</X>
+        <X>1060</X>
         <Y>515</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
       </RectArrowLeft>
       <RectArrowRight>
-        <X>1000</X>
+        <X>1060</X>
         <Y>515</Y>
         <W>40</W>
         <H>40</H>
