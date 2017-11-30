@@ -143,7 +143,7 @@ namespace VocaluxeLib.PartyModes.Classic
             public int CurrentRoundNr;
             public int NumRounds;
 
-            public EOffOn RefillJokers;
+            public bool RefillJokers;
             public int[] Jokers;
             public int NumJokers;
         }
@@ -182,7 +182,7 @@ namespace VocaluxeLib.PartyModes.Classic
                 Rounds = new List<CRound>(),
                 Songs = new List<int>(),
                 GameModes = new List<CPartyGameMode>(),
-                RefillJokers = EOffOn.TR_CONFIG_OFF,
+                RefillJokers = false,
                 Jokers = new int[MaxTeams],
                 NumJokers = 3,
                 NumRounds = 5
@@ -510,7 +510,7 @@ namespace VocaluxeLib.PartyModes.Classic
 
         private void _SetNumJokers()
         {
-            if (GameData.RefillJokers == EOffOn.TR_CONFIG_ON)
+            if (GameData.RefillJokers)
             {
                 for (int i = 0; i < GameData.Jokers.Length; i++)
                     GameData.Jokers[i] = GameData.NumJokers;

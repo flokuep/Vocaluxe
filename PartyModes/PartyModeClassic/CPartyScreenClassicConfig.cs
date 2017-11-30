@@ -31,13 +31,11 @@ namespace VocaluxeLib.PartyModes.Classic
         }
 
         private const string _SelectSlideNumRounds = "SelectSlideNumRounds";
-        private const string _SelectSlideSongSource = "SelectSlideSongSource";
-        private const string _SelectSlideCategory = "SelectSlideCategory";
-        private const string _SelectSlideSongMode = "SelectSlideSongMode";
+        private const string _SelectSlideNumJokers = "SelectSlideNumJokers";
+        private const string _SelectSlideRefillJokers = "SelectSlideRefillJokers";
+
         private const string _ButtonNext = "ButtonNext";
         private const string _ButtonBack = "ButtonBack";
-
-        private bool _ConfigOk = true;
 
         public override void Init()
         {
@@ -45,7 +43,7 @@ namespace VocaluxeLib.PartyModes.Classic
 
             _ThemeSelectSlides = new string[]
                 {
-                    _SelectSlideNumRounds, _SelectSlideSongSource, _SelectSlideCategory, _SelectSlideSongMode
+                    _SelectSlideNumRounds, _SelectSlideNumJokers, _SelectSlideNumRounds
                 };
             _ThemeButtons = new string[] { _ButtonNext, _ButtonBack };
         }
@@ -118,7 +116,6 @@ namespace VocaluxeLib.PartyModes.Classic
 
         public override bool UpdateGame()
         {
-            _Buttons[_ButtonNext].Visible = _ConfigOk;
             return true;
         }
 
@@ -130,90 +127,29 @@ namespace VocaluxeLib.PartyModes.Classic
 
             _SelectSlides[_SelectSlideNumRounds].SelectedValue = _PartyMode.GameData.NumRounds.ToString();
 
-            _SelectSlides[_SelectSlideSongSource].Clear();
-            _SelectSlides[_SelectSlideSongSource].SetValues<ESongSource>((int)_PartyMode.GameData.SongSource);
-
-            _SelectSlides[_SelectSlideCategory].Clear();
-            for (int i = 0; i < CBase.Songs.GetNumCategories(); i++)
+            // build num joker slide 1 to 10
+            _SelectSlides[_SelectSlideNumJokers].Clear();
+            for (int i = 1; i <= 10; i++)
             {
-                CCategory cat = CBase.Songs.GetCategory(i);
-                string value = cat.Name + " (" + cat.GetNumSongsNotSung() + " " + CBase.Language.Translate("TR_SONGS", PartyModeID) + ")";
-                _SelectSlides[_SelectSlideCategory].AddValue(value);
+                _SelectSlides[_SelectSlideNumJokers].AddValue(i.ToString());
             }
-            _SelectSlides[_SelectSlideCategory].Selection = _PartyMode.GameData.CategoryIndex;
-            _SelectSlides[_SelectSlideCategory].Visible = _PartyMode.GameData.SongSource == ESongSource.TR_CATEGORY;
+            _SelectSlides[_SelectSlideNumJokers].SelectedValue = "5";
 
-            _SelectSlides[_SelectSlideSongMode].Visible = true;
-            _SelectSlides[_SelectSlideSongMode].Clear();
-            _SelectSlides[_SelectSlideSongMode].SetValues<ESongMode>((int)_PartyMode.GameData.SongMode);
-            _SelectSlides[_SelectSlideSongMode].RemoveValue(ESongMode.TR_SONGMODE_MEDLEY.ToString());
+            //build joker config slide
+            _SelectSlides[_SelectSlideRefillJokers].Clear();
+            _SelectSlides[_SelectSlideRefillJokers].AddValue(CBase.Language.Translate("TR_BUTTON_NO", PartyModeID));
+            _SelectSlides[_SelectSlideRefillJokers].AddValue(CBase.Language.Translate("TR_BUTTON_YES", PartyModeID));
+            _SelectSlides[_SelectSlideRefillJokers].SelectLastValue();
+
         }
 
         private void _UpdateSlides()
         {
             _PartyMode.GameData.NumRounds = int.Parse(_SelectSlides[_SelectSlideNumRounds].SelectedValue);
+            _PartyMode.GameData.NumJokers = _SelectSlides[_SelectSlideNumJokers].Selection + 1;
+            _PartyMode.GameData.RefillJokers = (_SelectSlides[_SelectSlideRefillJokers].Selection == 1) ? true : false;
 
-            _PartyMode.GameData.SongSource = (ESongSource)_SelectSlides[_SelectSlideSongSource].Selection;
-            _PartyMode.GameData.CategoryIndex = _SelectSlides[_SelectSlideCategory].Selection;
-            _PartyMode.GameData.SongMode = (ESongMode)_SelectSlides[_SelectSlideSongMode].Selection;
 
-            ESongMode gm = _PartyMode.GameData.SongMode;
-
-            if (_PartyMode.GameData.SongSource == ESongSource.TR_PLAYLIST)
-            {
-                if (CBase.Playlist.GetNumPlaylists() > 0)
-                {
-                    if (CBase.Playlist.GetSongCount(_PartyMode.GameData.PlaylistID) > 0)
-                    {
-                        _ConfigOk = false;
-                        for (int i = 0; i < CBase.Playlist.GetSongCount(_PartyMode.GameData.PlaylistID); i++)
-                        {
-                            int id = CBase.Playlist.GetSong(_PartyMode.GameData.PlaylistID, i).SongID;
-                            _ConfigOk = CBase.Songs.GetSongByID(id).AvailableSongModes.Any(mode => mode == gm);
-                            if (_ConfigOk)
-                                break;
-                        }
-                    }
-                    else
-                        _ConfigOk = false;
-                }
-                else
-                    _ConfigOk = false;
-            }
-            if (_PartyMode.GameData.SongSource == ESongSource.TR_CATEGORY)
-            {
-                if (CBase.Songs.GetNumCategories() == 0)
-                    _ConfigOk = false;
-                else if (CBase.Songs.GetNumSongsNotSungInCategory(_PartyMode.GameData.CategoryIndex) <= 0)
-                    _ConfigOk = false;
-                else
-                {
-                    CBase.Songs.SetCategory(_PartyMode.GameData.CategoryIndex);
-                    _ConfigOk = false;
-                    foreach (CSong song in CBase.Songs.GetVisibleSongs())
-                    {
-                        _ConfigOk = song.AvailableSongModes.Any(mode => mode == gm);
-                        if (_ConfigOk)
-                            break;
-                    }
-                    CBase.Songs.SetCategory(-1);
-                }
-            }
-            if (_PartyMode.GameData.SongSource == ESongSource.TR_ALLSONGS)
-            {
-                if (CBase.Songs.GetNumSongs() > 0)
-                {
-                    for (int i = 0; i < CBase.Songs.GetNumSongs(); i++)
-                    {
-                        _ConfigOk = CBase.Songs.GetSongByID(i).AvailableSongModes.Any(mode => mode == gm);
-                        if (_ConfigOk)
-                            break;
-                    }
-                }
-                else
-                    _ConfigOk = false;
-            }
-            _SelectSlides[_SelectSlideCategory].Visible = _PartyMode.GameData.SongSource == ESongSource.TR_CATEGORY;
         }
     }
 }
