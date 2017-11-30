@@ -176,8 +176,8 @@ namespace VocaluxeLib.Menu
         private void _FillSlides()
         {
             _SelectSlides[_SelectSlideSongMode].Clear();
-            foreach (EGameMode gm in AllowedSongModes)
-                _SelectSlides[_SelectSlideSongMode].AddValue(gm.ToString());
+            foreach (ESongMode sm in AllowedSongModes)
+                _SelectSlides[_SelectSlideSongMode].AddValue(sm.ToString());
 
             _SelectSlides[_SelectSlideSource].Clear();
             foreach (ESongSource ss in AllowedSongSources)

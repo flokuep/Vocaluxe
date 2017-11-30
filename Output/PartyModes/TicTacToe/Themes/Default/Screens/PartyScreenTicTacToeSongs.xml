@@ -67,7 +67,7 @@
       <ResizeAlign>Center</ResizeAlign>
       <Style>Bold</Style>
       <Font>Outline</Font>
-      <Text>TR_GAMEMODE</Text>
+      <Text>TR_SONGMODE</Text>
     </Text>
   </Texts>
   <Buttons>
