@@ -1223,7 +1223,7 @@
       <ArrowColor Name="ArrowColor" />
       <ArrowSelColor Name="ArrowSelColor" />
       <TextColor Name="TextColorAlpha" />
-      <TextSelColor Name="TextSelColor" />
+      <TextSelColor Name="TextColorAlpha" />
       <TextH>25</TextH>
       <TextRelativeX>50</TextRelativeX>
       <TextRelativeY>0</TextRelativeY>
