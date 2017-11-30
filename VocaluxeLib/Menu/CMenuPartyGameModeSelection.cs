@@ -60,7 +60,11 @@ namespace VocaluxeLib.Menu
         //This list will contain all available game-modes for this party-mode
         private List<CPartyGameMode> _GameModes;
 
+        private const int _CustomGameModesOption = 0;
+        private const int _AllGameModesOption = 1;
+
         private const int _NumGMSelectSlides = 5;
+
         private const string _ButtonNext = "ButtonNext";
         private const string _ButtonBack = "ButtonBack";
         private const string _SelectSlideGameMode = "SelectSlideGameMode";
@@ -107,10 +111,12 @@ namespace VocaluxeLib.Menu
         {
             base.LoadTheme(xmlPath);
 
+            _SelectSlides[_SelectSlideGameMode].AddValue("TR_GAMEMODE_CUSTOM");
             _SelectSlides[_SelectSlideGameMode].AddValue("TR_GAMEMODE_ALL");
             foreach (CPartyGameMode pgm in _GameModes)
                 _SelectSlides[_SelectSlideGameMode].AddValue(pgm.TranslationName);
-            _SelectSlides[_SelectSlideGameMode].AddValue("TR_GAMEMODE_CUSTOM");
+
+            _SelectSlides[_SelectSlideGameMode].Selection = _AllGameModesOption;
 
             _UpdateGameModeSelectSlides();
         }
@@ -158,25 +164,7 @@ namespace VocaluxeLib.Menu
 
                 case Keys.Left:
                 case Keys.Right:
-                    int selection = -1;
-                    for(int i =0; i < Math.Min(_GameModes.Count, _NumGMSelectSlides); i++)
-                    { 
-                        if (_SelectSlides[_SelectSlideGameModes[i]].Selected 
-                            && _GameModes[i + _Offset].Active != (EOffOn)_SelectSlides[_SelectSlideGameModes[i]].Selection)
-                        {
-                            selection = i;
-                            break;
-                        }
-                    }
-                    if (selection > -1 && _CurrentGlobalSelection == _SelectSlides[_SelectSlideGameMode].NumValues - 1)
-                    {
-                        _GameModes[selection + _Offset].Active = (EOffOn)_SelectSlides[_SelectSlideGameModes[selection]].Selection;
-                    }
-                    else if(selection > -1)
-                    { 
-                        _CurrentGlobalSelection = _SelectSlides[_SelectSlideGameMode].NumValues - 1;
-                        _SelectSlides[_SelectSlideGameMode].Selection = _SelectSlides[_SelectSlideGameMode].NumValues - 1;
-                    }
+                    _ApplyGameModeSelection();
                     break;
             }
             return true;
@@ -192,6 +180,8 @@ namespace VocaluxeLib.Menu
 
                 if (_Buttons[_ButtonNext].Selected)
                     Next();
+
+                _ApplyGameModeSelection();
             }
             if (mouseEvent.RB)
                 Back();
@@ -225,8 +215,7 @@ namespace VocaluxeLib.Menu
             {
                 _CurrentGlobalSelection = _SelectSlides[_SelectSlideGameMode].Selection;
 
-                //First value: Select all, Last value: Select custom (on default: all)
-                if (_CurrentGlobalSelection == 0 || _CurrentGlobalSelection == _SelectSlides[_SelectSlideGameMode].NumValues - 1)
+                if (_CurrentGlobalSelection == _CustomGameModesOption || _CurrentGlobalSelection == _AllGameModesOption)
                 {
                     foreach(CPartyGameMode pgm in _GameModes)
                         pgm.Active = EOffOn.TR_CONFIG_ON;
@@ -238,7 +227,7 @@ namespace VocaluxeLib.Menu
                 {
                     for(int i=0; i<_GameModes.Count; i++)
                     {
-                        if (i == _CurrentGlobalSelection - 1)
+                        if (i == _CurrentGlobalSelection - 2)
                             _GameModes[i].Active = EOffOn.TR_CONFIG_ON;
                         else
                             _GameModes[i].Active = EOffOn.TR_CONFIG_OFF;
@@ -325,6 +314,29 @@ namespace VocaluxeLib.Menu
                     _Texts[_TextGameMode[i]].Visible = false;
                     _Texts[_TextGameModeDesc[i]].Visible = false;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Check (and save) gamemode selection and select custom modes if needed
+        /// </summary>
+        private void _ApplyGameModeSelection()
+        {
+            int selection = -1;
+            for (int i = 0; i < Math.Min(_GameModes.Count, _NumGMSelectSlides); i++)
+            {
+                if (_SelectSlides[_SelectSlideGameModes[i]].Selected
+                    && _GameModes[i + _Offset].Active != (EOffOn)_SelectSlides[_SelectSlideGameModes[i]].Selection)
+                {
+                    selection = i;
+                    _GameModes[selection + _Offset].Active = (EOffOn)_SelectSlides[_SelectSlideGameModes[selection]].Selection;
+                    break;
+                }
+            }
+            if (selection > -1 && _CurrentGlobalSelection != _CustomGameModesOption)
+            {
+                _CurrentGlobalSelection = _CustomGameModesOption;
+                _SelectSlides[_SelectSlideGameMode].Selection = _CurrentGlobalSelection;
             }
         }
     }
