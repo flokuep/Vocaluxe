@@ -101,9 +101,9 @@
     <Compile Include="Menu\CMenu.cs" />
     <Compile Include="Menu\CMenuElementBase.cs" />
     <Compile Include="Menu\CMenuParty.cs" />
-    <Compile Include="Menu\CMenuPartyGameModeSelection.cs" />
-    <Compile Include="Menu\CMenuPartyNameSelection.cs" />
-    <Compile Include="Menu\CMenuPartySongSelection.cs" />
+    <Compile Include="Menu\Party\CMenuPartyGameModeSelection.cs" />
+    <Compile Include="Menu\Party\CMenuPartyNameSelection.cs" />
+    <Compile Include="Menu\Party\CMenuPartySongSelection.cs" />
     <Compile Include="Menu\CNameSelection.cs" />
     <Compile Include="Menu\CObjectInteractions.cs" />
     <Compile Include="Menu\COrderedDictionaryLite.cs" />
