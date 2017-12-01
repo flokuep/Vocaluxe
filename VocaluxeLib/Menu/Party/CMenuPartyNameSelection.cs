@@ -594,6 +594,7 @@ namespace VocaluxeLib.Menu
                 }
             }
             _UpdateButtonState();
+            _UpdateTeamSlide();
         }
 
         public void DecreaseTeamNum()
@@ -604,6 +605,7 @@ namespace VocaluxeLib.Menu
             if (_NumTeams - 1 >= _PartyMode.MinTeams)
                 _NumTeams--;
             _UpdateButtonState();
+            _UpdateTeamSlide();
         }
 
         public void IncreasePlayerNum(int team)
