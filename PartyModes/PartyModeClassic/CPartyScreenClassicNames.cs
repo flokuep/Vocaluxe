@@ -46,15 +46,20 @@ namespace VocaluxeLib.PartyModes.Classic
             List<Guid>[] selectedPlayer = new List<Guid>[_PartyMode.GameData.Teams.Count];
             for (int t = 0; t < _PartyMode.GameData.Teams.Count; t++)
             {
-                numPlayerPerTeam[t] = _PartyMode.GameData.Teams[t].Count;
-                totalNumPlayer += _PartyMode.GameData.Teams[t].Count;
+                //Set default player num or saved one.
+                if (_PartyMode.GameData.Teams[t].Count == 0)
+                    numPlayerPerTeam[t] = 2;
+                else
+                    numPlayerPerTeam[t] = _PartyMode.GameData.Teams[t].Count;
+
+                totalNumPlayer += numPlayerPerTeam[t];
 
                 selectedPlayer[t] = new List<Guid>();
                 selectedPlayer[t].AddRange(_PartyMode.GameData.Teams[t]);
             }
 
 
-            SetPartyModeData(2, totalNumPlayer, numPlayerPerTeam);
+            SetPartyModeData(numPlayerPerTeam.Length, totalNumPlayer, numPlayerPerTeam);
             SetPartyModeProfiles(selectedPlayer);
         }
 
