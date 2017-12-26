@@ -589,7 +589,7 @@ namespace VocaluxeLib.Menu
                     else
                     {
                         //Get average num players per teams as default player number
-                        _NumPlayerTeams[i] = _NumPlayer/(_NumTeams - 1);
+                        _NumPlayerTeams[i] = _NumPlayer / (_NumTeams - 1);
                         _NumPlayer += _NumPlayerTeams[i];
                         _TeamList[i] = new List<Guid>();
                     }

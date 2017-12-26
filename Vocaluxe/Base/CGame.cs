@@ -17,6 +17,8 @@
 
 //Uncomment to make the engine hit every note
 //#define DEBUG_HIT
+//Uncomment to only hit notes for player one
+//#define DEBUG_HIT_1
 
 using System;
 using System.Collections.Generic;
@@ -291,6 +293,8 @@ namespace Vocaluxe.Base
                     if (notes[note].PointsForBeat > 0 && (CRecord.ToneValid(p)
 #if DEBUG_HIT
                         || true
+#elif DEBUG_HIT_1
+                        || (true && p == 0)
 #endif
                                                          ))
                     {
@@ -305,6 +309,8 @@ namespace Vocaluxe.Base
 
 #if DEBUG_HIT
                             tonePlayer = tone;
+#elif DEBUG_HIT_1
+                            if(p == 0) tonePlayer = tone;
 #endif
 
                         Players[p].NoteDiff = Math.Abs(tone - tonePlayer);
