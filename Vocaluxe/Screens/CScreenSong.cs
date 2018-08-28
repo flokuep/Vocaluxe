@@ -647,17 +647,19 @@ namespace Vocaluxe.Screens
 
             _Sso = CParty.GetSongSelectionOptions();
             CSongs.Sort(_Sso.Sorting.SongSorting, _Sso.Sorting.Tabs, _Sso.Sorting.IgnoreArticles, _Sso.Sorting.SearchString, _Sso.Sorting.DuetOptions, _Sso.Sorting.FilterPlaylistID);
-            if (_Sso.Selection.CategoryIndex != CBase.Songs.GetCurrentCategoryIndex())
+            if (_Sso.Selection.PartyMode && _Sso.Selection.CategoryIndex != CBase.Songs.GetCurrentCategoryIndex())
             {
                 _SelectedCategoryIndex = _Sso.Selection.CategoryIndex;
+
+                //Leave current category
+                if (_SongMenu.GetSelectedCategory() != 1)
+                    _SongMenu.LeaveSelectedCategory();
+
+                //Enter selected category
                 if (_SelectedCategoryIndex != -1)
                 {
                     _SongMenu.SetSelectedCategory(_SelectedCategoryIndex);
                     _SongMenu.EnterSelectedCategory();
-                }
-                else
-                {
-                    _SongMenu.LeaveSelectedCategory();
                 }
             }
             _SearchActive = _Sso.Sorting.SearchActive;
