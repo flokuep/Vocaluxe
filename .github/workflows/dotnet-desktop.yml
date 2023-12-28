@@ -71,8 +71,6 @@ jobs:
     # Install the .NET Core workload
     - name: Install .NET Core
       uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '4.7.2'
 
     - name: Setup Nuget
       uses: Nuget/setup-nuget@v1.2.0
