@@ -117,6 +117,7 @@ namespace Vocaluxe
         public static bool CheckRequirements()
         {
 #if WIN
+            /*
             if (!_IsVC2010Installed())
             {
                 CLog.Fatal(
