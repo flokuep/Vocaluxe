@@ -101,7 +101,7 @@ namespace VocaluxeLib.Songs
         public readonly List<string> BackgroundFileNames = new List<string>();
         public string VideoFileName = String.Empty;
 
-        public EAspect VideoAspect = EAspect.Crop;
+        public EAspect VideoAspect = EAspect.Automatic;
 
         public bool NotesLoaded { get; private set; }
 
@@ -288,6 +288,17 @@ namespace VocaluxeLib.Songs
             return loader.ReadNotes();
         }
 
+        public bool ReloadSong(bool reloadNotes)
+        {
+            var loader = new CSongLoader(this);
+            bool retValue = loader.ReadHeader();
+            if (!retValue)
+                return false;
+
+            retValue = loader.ReadNotes(reloadNotes);
+            return retValue;
+        }
+
         public bool Save()
         {
             return Save(Path.Combine(Folder, FileName));
@@ -325,7 +336,7 @@ namespace VocaluxeLib.Songs
         {
             if (CoverFileName == "")
             {
-                List<string> files = CHelper.ListImageFiles(Folder);
+                IEnumerable<string> files = CHelper.ListImageFiles(Folder);
                 foreach (String file in files)
                 {
                     if (file.ContainsIgnoreCase("[CO]") &&
@@ -336,7 +347,7 @@ namespace VocaluxeLib.Songs
 
             if (BackgroundFileNames.Count == 0)
             {
-                List<string> files = CHelper.ListImageFiles(Folder);
+                IEnumerable<string> files = CHelper.ListImageFiles(Folder);
                 foreach (String file in files)
                 {
                     if (file.ContainsIgnoreCase("[BG]") &&

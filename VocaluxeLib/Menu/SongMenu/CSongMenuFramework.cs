@@ -63,6 +63,7 @@ namespace VocaluxeLib.Menu.SongMenu
         public SThemeText TextArtist;
         public SThemeText TextTitle;
         public SThemeText TextSongLength;
+        public SThemeText TextSongYear;
 
         public SThemeStatic StaticCoverBig;
         public SThemeStatic StaticTextBG;
@@ -111,6 +112,7 @@ namespace VocaluxeLib.Menu.SongMenu
         public SThemeText TextArtist;
         public SThemeText TextTitle;
         public SThemeText TextSongLength;
+        public SThemeText TextSongYear;
 
         public SThemeStatic StaticCoverBig;
         public SThemeStatic StaticTextBG;
@@ -220,7 +222,7 @@ namespace VocaluxeLib.Menu.SongMenu
             EScreen check = CBase.Graphics.GetNextScreenType();
             if (CBase.Graphics.GetNextScreenType() == EScreen.Sing)
                 _ResetPreview(false);
-            else if (CBase.Graphics.GetNextScreenType() != EScreen.Names || CBase.Config.GetBackgroundMusicStatus() == EBackgroundMusicOffOn.TR_CONFIG_OFF)
+            else if ((CBase.Graphics.GetNextScreenType() != EScreen.Names && CBase.Graphics.GetNextScreenType() != EScreen.Highscore) || CBase.Config.GetBackgroundMusicStatus() == EBackgroundMusicOffOn.TR_CONFIG_OFF)
                 _ResetPreview();
         }
 
@@ -288,7 +290,9 @@ namespace VocaluxeLib.Menu.SongMenu
 
         public void LeaveSelectedCategory()
         {
-            _LeaveCategory();
+            // Stefan1200: This was implemented with the pull request #359 and is the reason for the bug described in issue #390.
+            //             Currently disabled until we know if this is still needed or we find a better solution!
+            // _LeaveCategory();
         }
 
         public virtual void UnloadSkin() {}

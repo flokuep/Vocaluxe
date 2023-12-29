@@ -208,6 +208,11 @@ namespace VocaluxeLib
     public interface IRecording
     {
         int GetToneAbs(int player);
+        void AnalyzeBuffer(int player);
+        float GetMaxVolume(int player);
+        float[] ToneWeigth(int player);
+        bool Start();
+        bool Stop();
     }
 
     public interface IProfiles
@@ -304,6 +309,7 @@ namespace VocaluxeLib
     {
         bool Exists(int playlistID);
         string GetName(int playlistID);
+        List<int> GetIds();
         List<string> GetNames();
 
         void SetName(int playlistID, string name);
