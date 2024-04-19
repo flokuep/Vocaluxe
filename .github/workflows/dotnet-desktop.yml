@@ -59,11 +59,13 @@ jobs:
 
          - name: Create output
            id: create-output
-           run: echo "${{ matrix.platform }}=${{ steps.upload-artifact.outputs.artifact-url}} | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append"
+           run: echo "${{ matrix.platform }}=${{ steps.upload-artifact.outputs.artifact-url}} >> $GITHUB_OUTPUT"
+           shell: bash
 
          - name: Create output test
            id: create-output-test
-           run: echo "bar=foo | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append"
+           run: echo "bar=foo >> $GITHUB_OUTPUT"
+           shell: bash
 
          outputs:
             x86: ${{ steps.create-output.outputs.x86 }}
