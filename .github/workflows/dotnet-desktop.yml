@@ -68,4 +68,4 @@ jobs:
           tag: Nightly
           prerelease: true
           allowUpdates: true
-          artifacts: Vocaluxe_Nightly_${{ matrix.platform }}.zip
+          artifacts: Vocaluxe_Nightly_${{ matrix.platform }}
