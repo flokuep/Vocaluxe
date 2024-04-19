@@ -7,7 +7,7 @@ on:
     branches: [ "develop" ]
 
 jobs:
-
+  runs-on: windows-latest
   build:
     steps:
     - uses: ./.github/actions/dotnet-desktop
