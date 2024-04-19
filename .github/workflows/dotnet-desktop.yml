@@ -14,7 +14,7 @@ jobs:
              matrix:
                 configuration: [ReleaseWin]
                 platform: [x86,x64]
-         name: Build Win${{ matrix.platform }}
+         name: ${{ matrix.platform }}
          runs-on: windows-latest  # For a list of available runner types, refer to
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
          env:
@@ -62,5 +62,5 @@ jobs:
            run: echo "${{ matrix.platform }}=${{ steps.upload-artifact.outputs.artifact-url}} >> $GITHUB_OUTPUT"
 
          outputs:
-            x86: ${{ steps.create-outputs.outputs.x86 }}
+            x86: ${{ steps.create-output.outputs.x86 }}
             test: "Hallo"
