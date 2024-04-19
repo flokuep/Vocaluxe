@@ -8,9 +8,8 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
     steps:
-    - uses: ./../../.github/actions/dotnet-desktop
+    - uses: ./.github/actions/dotnet-desktop
 
     - name: Create Release
       if: ${{ github.event_name == 'push'}}
