@@ -6,7 +6,7 @@ on:
             url-win-x64: 
                 value: ${{ jobs.build.outputs.test}}
             url-win-x86:
-                value: ${{ jobs.build.outputs.x86 }}
+                value: ${{ env.bar }}
 
 jobs:
     build:
@@ -64,8 +64,7 @@ jobs:
 
          - name: Create output test
            id: create-output-test
-           run: echo "bar=foo" >> "${GITHUB_OUTPUT}"
-           shell: bash
+           run: echo "bar=foo" >> $ENV:GITHUB_OUTPUT
 
          outputs:
             x86: ${{ steps.create-output.outputs.x86 }}
