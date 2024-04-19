@@ -64,7 +64,7 @@ jobs:
 
          - name: Create output test
            id: create-output-test
-           run: echo "bar=foo >> $GITHUB_OUTPUT"
+           run: echo "bar=foo" >> "${GITHUB_OUTPUT}"
            shell: bash
 
          outputs:
