@@ -1,7 +1,6 @@
 name: Build and test application
 
-on:
-    workflow_call:
+on: workflow_call
 
 jobs:
     strategy:
