@@ -41,7 +41,7 @@ jobs:
     steps:
     - name: Download artifact
       run: |
-          Invoke-WebRequest -Uri ${{ matrix.build.url }}  -OutFile 'Vocaluxe_Nightly_${{ matrix.build.label}}.zip'
+          Invoke-WebRequest -Headers @{'Authorization' = 'Bearer ${GITHUB_TOKEN}'  -Uri ${{ matrix.build.url }}  -OutFile 'Vocaluxe_Nightly_${{ matrix.build.label}}.zip'
 
     - name: Attach to release
       uses: softprops/action-gh-release@v2
