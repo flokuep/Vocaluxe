@@ -3,9 +3,9 @@ name: Build and test application
 on: 
     workflow_call:
         outputs:
-            url: 
+            url-win-x64: 
                 description: "Artifact url"
-                value: ${{ jobs.build.outputs.url }}
+                value: ${{ jobs.build.outputs.url-win-x64 }}
 
 jobs:
     build:
@@ -55,5 +55,5 @@ jobs:
              name: Vocaluxe_Nightly_${{ matrix.platform }}
              path: Output
          outputs:
-           url: ${{ steps.upload-artifact.artifact-url }}
+           url-win-${{ matrix.plattform}}: ${{ steps.upload-artifact.artifact-url }}
            
