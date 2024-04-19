@@ -55,6 +55,17 @@ jobs:
 
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
+        name: Vocaluxe_Nightly_${{ matrix.platform }}.zip
         path: Output
+
+    - name: Create Release
+      if: ${{ github.event_name == 'push'}}
+      uses: ncipollo/release-action@v1.14.0
+      with:
+          name: Latest Nightly build
+          tag: Nightly
+          prerelease: true
+          allowUpdates: true
+          artifacts: Vocaluxe_Nightly_${{ matrix.platform }}.zip
