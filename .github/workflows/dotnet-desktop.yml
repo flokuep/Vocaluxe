@@ -4,7 +4,7 @@ on:
     workflow_call:
         outputs:
             url-win-x64: 
-                value: "blub"
+                value: ${{ jobs.build.outputs.test}}
             url-win-x86:
                 value: ${{ jobs.build.outputs.x86 }}
 
@@ -63,3 +63,4 @@ jobs:
 
          outputs:
             x86: ${{ steps.create-outputs.outputs.x86 }}
+            test: "Hallo"
