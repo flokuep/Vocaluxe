@@ -35,11 +35,12 @@ jobs:
           artifacts: Vocaluxe_Nightly_x64
 
   attach-artifacts:
+  needs: [build-windows, publish]
     strategy:
       matrix:
         build:
           - label: "Windows x86"
-            url: ${{jobs.build-windows.outputs.x86}}
+            url: ${{needs.build.build-windows.outputs.x86}}
 
     runs-on: windows-latest
     steps:
