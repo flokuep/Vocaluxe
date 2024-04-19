@@ -62,6 +62,9 @@ jobs:
            run: echo "${{ matrix.platform }}=${{ steps.upload-artifact.outputs.artifact-url}} >> $GITHUB_OUTPUT"
          - run: ${{ tojson(steps) }}
            shell: cat {0}
+
+         - name: Dump context
+           uses: crazy-max/ghaction-dump-context@v2
          outputs:
             x86: ${{ steps.create-output.outputs.x86 }}
             test: "Hallo"
