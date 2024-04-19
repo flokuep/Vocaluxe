@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-windows:
-    uses: ./.github/workflows/dotnet-desktop
+    uses: ./.github/workflows/dotnet-desktop.yml
 
   publish:
     runs-on: windows-latest
