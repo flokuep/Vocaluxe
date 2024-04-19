@@ -55,6 +55,9 @@ jobs:
            with:
              name: Vocaluxe_Nightly_${{ matrix.platform }}
              path: Output
+         - name: Create output
+           id: create-output
+           run: echo "url-${{ matrix.platform}}=${{steps.upload-artifact.artifact-url}}" >> $GITHUB_OUTPUT
          outputs:
-           url-win-x64: ${{ steps.upload-artifact-x64.artifact-url }}
+           url-win-x64: ${{ steps.create-output.url-x64 }}
            
