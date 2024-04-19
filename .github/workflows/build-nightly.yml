@@ -41,11 +41,18 @@ jobs:
         build:
           - label: "Windows x86"
             url: ${{needs.build-windows.outputs.x86}}
+          - label: "Windows x64"
+            url: ${{needs.build-windows.outputs.x64}}
 
     runs-on: windows-latest
     steps:
-    - name: ${{ matrix.label }}
+    - name: Download artefact of ${{ matrix.label }}
       run: |
           Invoke-WebRequest -Uri ${{ matrix.url }}
+
+    - name: Attach to release
+      uses: softprops/action-gh-relase@v2
+      with:
+        files: foo
 
 
