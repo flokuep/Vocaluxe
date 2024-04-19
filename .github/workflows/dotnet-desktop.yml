@@ -1,31 +1,48 @@
-name: Nightly build
+name: Build and test application
 
 on:
-  push:
-    branches: [ "develop" ]
-  pull_request:
-    branches: [ "develop" ]
+    workflow_call:
 
 jobs:
-  build-windows:
-    runs-on: windows-latest
+    strategy:
+        matrix:
+            configuration: [ReleaseWin]
+            platform: [x86,x64]
+    runs-on: windows-latest  # For a list of available runner types, refer to
+                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+    env:
+      Solution_Name: Vocaluxe.sln                               # Replace with your solution name, i.e. MyWpfApp.sln.
+      
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    - uses: ./.github/actions/dotnet-desktop
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v3
 
-  publish:
-    runs-on: windows-latest
-    steps:
-    - name: Create Release
-      if: ${{ github.event_name == 'push'}}
-      needs: build-windows
-      uses: ncipollo/release-action@v1.14.0
+    - name: Setup Nuget
+      uses: Nuget/setup-nuget@v1.2.0
+
+    - name: Restore nuget packages
+      run: nuget restore -DisableParallelProcessing $env:Solution_Name
+
+    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1
+
+    # Restore the application to populate the obj folder with RuntimeIdentifiers
+    - name: Restore the application
+      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
+      env:
+        Configuration: ${{ matrix.configuration }}
+
+    # Create the app package by building and packaging the Windows Application Packaging project
+    - name: Create the app package
+      run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration
+      env:
+        Configuration: ${{ matrix.configuration }}
+
+    # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
       with:
-          name: Latest Nightly build
-          tag: Nightly
-          prerelease: true
-          allowUpdates: true
-          artifacts: Vocaluxe_Nightly_${{ matrix.platform }}
+        name: Vocaluxe_Nightly_${{ matrix.platform }}
+        path: Output
