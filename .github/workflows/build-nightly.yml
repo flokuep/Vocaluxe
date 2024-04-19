@@ -10,9 +10,16 @@ jobs:
   build-windows:
     uses: ./.github/workflows/dotnet-desktop.yml
 
+  collect-release-data:
+    runs-on: ubuntu-latest
+    needs: build-windows
+    steps:
+    - run: ${{ tojson(needs) }}
+      shell: cat {0}
+
   publish:
     runs-on: windows-latest
-    needs: build-windows
+    needs: collect-release-data
     steps:
     - name: Create Release
       if: ${{ github.event_name == 'push'}}
