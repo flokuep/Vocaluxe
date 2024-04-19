@@ -33,3 +33,18 @@ jobs:
           prerelease: true
           allowUpdates: true
           artifacts: Vocaluxe_Nightly_x64
+
+  attach-artifacts:
+    strategy:
+      matrix:
+        build:
+          - label: "Windows x86"
+            url: ${{jobs.build-windows.outputs.x86}}
+
+    runs-on: windows-latest
+    steps:
+    - name: ${{ matrix.label }}
+      run: |
+          Invoke-WebRequest -Uri ${{ matrix.url }}
+
+
