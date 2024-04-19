@@ -6,14 +6,11 @@ on:
   pull_request:
     branches: [ "develop" ]
 
-permissions:
-  contents: read
-
 jobs:
   build:
     runs-on: windows-latest
     steps:
-    - uses: ./../actions/dotnet-desktop
+    - uses: ./../../.github/actions/dotnet-desktop
 
     - name: Create Release
       if: ${{ github.event_name == 'push'}}
