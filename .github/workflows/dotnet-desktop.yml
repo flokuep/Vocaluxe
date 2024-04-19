@@ -6,7 +6,7 @@ on:
             url-win-x64: 
                 value: ${{ jobs.build.outputs.test}}
             url-win-x86:
-                value: ${{ env.bar }}
+                value: ${{ jobs.build.outputs.x86}}
 
 jobs:
     build:
@@ -20,6 +20,10 @@ jobs:
          env:
             Solution_Name: Vocaluxe.sln                               # Replace with your solution name, i.e. MyWpfApp.sln.
       
+         outputs:
+            x86: ${{ steps.create-output.outputs.x86 }}
+            test: ${{ steps.create-output-test.outputs.bar }}
+
          steps:
          - name: Checkout
            uses: actions/checkout@v4
@@ -65,7 +69,3 @@ jobs:
          - name: Create output test
            id: create-output-test
            run: echo "bar=foo" >> $ENV:GITHUB_OUTPUT
-
-         outputs:
-            x86: ${{ steps.create-output.outputs.x86 }}
-            test: ${{ steps.create-output.outputs.bar }}
