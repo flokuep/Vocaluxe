@@ -46,7 +46,7 @@ jobs:
 
     runs-on: windows-latest
     steps:
-    - name: Download artefact of ${{ matrix.label }}
+    - name: Download artifact of ${{ matrix.url }}
       run: |
           Invoke-WebRequest -Uri ${{ matrix.url }}
 
