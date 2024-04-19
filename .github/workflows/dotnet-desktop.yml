@@ -55,5 +55,5 @@ jobs:
              name: Vocaluxe_Nightly_${{ matrix.platform }}
              path: Output
          outputs:
-           url-win-${{ matrix.plattform}}: ${{ steps.upload-artifact.artifact-url }}
+           url-win-${{ matrix.platform }}: ${{ steps.upload-artifact.artifact-url }}
            
