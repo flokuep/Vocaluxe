@@ -6,7 +6,7 @@ on:
             url-win-x64: 
                 value: "blub"
             url-win-x86:
-                value: "bla"
+                value: ${{ jobs.build.outputs.x86 }}
 
 jobs:
     build:
@@ -56,3 +56,9 @@ jobs:
            with:
              name: Vocaluxe_Nightly_${{ matrix.platform }}
              path: Output
+
+         - name: Create output
+           id: create-output
+           run: echo "${{ matrix.os }}=${{ steps.upload-artifact.outputs.artifact-url}} >> $GITHUB_OUTPUT"
+    outputs:
+        x86: ${{ steps.create-outputs.outputs.x86 }}
