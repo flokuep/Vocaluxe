@@ -3,7 +3,7 @@ name: Build and test application
 on: 
     workflow_call:
         outputs:
-            url: ${{ jobs.build.url }}
+            url: ${{ job.build.url }}
 
 jobs:
     build:
