@@ -3,7 +3,9 @@ name: Build and test application
 on: 
     workflow_call:
         outputs:
-            url: ${{ jobs.build.outputs.url }}
+            url: 
+                description: "Artifact url"
+                value: ${{ jobs.build.outputs.url }}
 
 jobs:
     build:
