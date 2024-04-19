@@ -1,6 +1,9 @@
 name: Build and test application
 
-on: workflow_call
+on: 
+    workflow_call:
+        outputs:
+            url: ${{ jobs.build.url }}
 
 jobs:
     build:
