@@ -7,8 +7,8 @@ on:
     branches: [ "develop" ]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  build-windows:
+    runs-on: windows-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -16,8 +16,12 @@ jobs:
         fetch-depth: 0
     - uses: ./.github/actions/dotnet-desktop
 
+  publish:
+    runs-on: windows-latest
+    steps:
     - name: Create Release
       if: ${{ github.event_name == 'push'}}
+      needs: build-windows
       uses: ncipollo/release-action@v1.14.0
       with:
           name: Latest Nightly build
