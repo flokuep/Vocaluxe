@@ -39,20 +39,21 @@ jobs:
     strategy:
       matrix:
         build:
-          - label: "Windows x86"
+          - label: "Windows_x86"
             url: ${{needs.build-windows.outputs.x86}}
-          - label: "Windows x64"
+          - label: "Windows_x64"
             url: ${{needs.build-windows.outputs.x64}}
 
     runs-on: windows-latest
     steps:
-    - name: Download artifact of ${{ matrix.url }}
+    - name: Download artifact
       run: |
-          Invoke-WebRequest -Uri ${{ matrix.url }}
+          Invoke-WebRequest -Uri ${{ matrix.url }}  -OutFile 'Vocaluxe_Nightly_${{ matrix.label}}.zip'
 
     - name: Attach to release
-      uses: softprops/action-gh-relase@v2
+      uses: softprops/action-gh-release@v2
       with:
-        files: foo
+        files: Vocaluxe_Nightly_${{ matrix.label}}.zip
+        tag: Nightly
 
 
