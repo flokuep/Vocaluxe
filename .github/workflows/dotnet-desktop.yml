@@ -9,7 +9,7 @@ on:
 jobs:
 
   build:
-    - uses: ./.github/actions/dotnet-desktop.yml
+    - uses: ./.github/actions/dotnet-desktop
 
     - name: Create Release
       if: ${{ github.event_name == 'push'}}
