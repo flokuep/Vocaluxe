@@ -35,7 +35,7 @@ jobs:
           artifacts: Vocaluxe_Nightly_x64
 
   attach-artifacts:
-  needs: [build-windows, publish]
+    needs: [build-windows, publish]
     strategy:
       matrix:
         build:
