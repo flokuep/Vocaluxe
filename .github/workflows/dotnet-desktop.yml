@@ -1,6 +1,10 @@
 name: Build and test application
 
-on: workflow_call
+on: 
+    workflow_call:
+        outputs:
+            url-win-x64: "blub"
+            url-win-x86: "bla"
 
 jobs:
     build:
