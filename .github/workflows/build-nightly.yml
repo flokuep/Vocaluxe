@@ -40,8 +40,8 @@ jobs:
     runs-on: windows-latest
     steps:
     - name: Download artifact
-      run: |
-          Invoke-WebRequest -Headers @{'Authorization' = 'Bearer ${GITHUB_TOKEN}'}  -Uri ${{ matrix.build.url }}  -OutFile 'Vocaluxe_Nightly_${{ matrix.build.label}}.zip'
+      run: wget --header='Authorization: Bearer ${GITHUB_TOKEN}' ${{ matrix.build.url }}  -O 'Vocaluxe_Nightly_${{ matrix.build.label}}.zip'
+      shell: bash
 
     - name: Attach to release
       uses: softprops/action-gh-release@v2
