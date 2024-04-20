@@ -12,7 +12,7 @@ jobs:
     uses: ./.github/workflows/dotnet-desktop.yml
 
   publish:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: build-windows
     name: Publish release
     steps:
@@ -37,10 +37,9 @@ jobs:
           - label: "Windows_x64"
             url: ${{needs.build-windows.outputs.x64}}
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - name: Download artifact
-      shell: bash
 #      run: wget --header='Authorization: Bearer ${{GITHUB_TOKEN}}' ${{ matrix.build.url }}  -O 'Vocaluxe_Nightly_${{ matrix.build.label}}.zip'
       run: wget ${{ matrix.build.url }}
     - name: Attach to release
