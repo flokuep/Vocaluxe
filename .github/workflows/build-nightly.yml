@@ -41,8 +41,8 @@ jobs:
     steps:
     - name: Download artifact
       uses: wei/wget@v1
-        with:
-          --header='Authorization: Bearer ${GITHUB_TOKEN}' ${{ matrix.build.url }}  -O 'Vocaluxe_Nightly_${{ matrix.build.label}}.zip'
+      with:
+        args: --header='Authorization: Bearer ${GITHUB_TOKEN}' ${{ matrix.build.url }}  -O 'Vocaluxe_Nightly_${{ matrix.build.label}}.zip'
 
     - name: Attach to release
       uses: softprops/action-gh-release@v2
