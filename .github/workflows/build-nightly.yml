@@ -55,8 +55,8 @@ jobs:
         result-encoding: string
         script: |
           github.rest.git.createTag({
-            context.repo.owner,
-            context.repo.repo,
+            ${{context.repo.owner}},
+            ${{context.repo.repo}},
             "Nightly",
             "",
             ${{ github.sha }},
