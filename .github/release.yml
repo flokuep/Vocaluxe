@@ -1,0 +1,16 @@
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+    authors:
+      - transifex-integration[bot]
+  categories:
+    - title: Bugfixes 🛠
+      labels:
+        - bugfix
+    - title: New Features 🎉
+      labels:
+        - feature
+    - title: Other Changes
+      labels:
+        - "*"
