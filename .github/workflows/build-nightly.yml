@@ -54,6 +54,6 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         files: ${{ matrix.build.artifact-name }}.zip
-        tag: Nightly
+        tag_name: Nightly
 
 
