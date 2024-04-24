@@ -54,14 +54,12 @@ jobs:
           })
     - name: Create Release
       if: ${{ github.event_name == 'push'}}
-      uses: ncipollo/release-action@v1.14.0
-      with:
+      uses: softprops/action-gh-release@v2
+      with:          
           name: Latest Nightly build
-          tag: Nightly
+          tag_name: Nightly
           prerelease: true
-          allowUpdates: true
-          removeArtifacts: true
-          generateReleaseNotes: true
+          generate_release_notes: true
 
   attach-artifacts:
     name: Attach artifacts
