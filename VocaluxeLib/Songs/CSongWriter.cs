@@ -88,6 +88,7 @@ namespace VocaluxeLib.Songs
                     _WriteHeaderEntry("ARTIST-ON-SORTING", _Song.ArtistSorting);
                 _WriteHeaderEntrys("EDITION", _Song.Editions);
                 _WriteHeaderEntrys("GENRE", _Song.Genres);
+                _WriteHeaderEntry("TAGS", String.Join(",", _Song.Tags.ToArray()));
                 _WriteHeaderEntrys("LANGUAGE", _Song.Languages);
                 _WriteHeaderEntry("ALBUM", _Song.Album);
                 _WriteHeaderEntry("YEAR", _Song.Year);
@@ -186,6 +187,12 @@ namespace VocaluxeLib.Songs
                                     break;
                                 case ENoteType.Freestyle:
                                     tag = "F";
+                                    break;
+                                case ENoteType.Rap:
+                                    tag = "R";
+                                    break;
+                                case ENoteType.RapGolden:
+                                    tag = "G";
                                     break;
                                 default:
                                     throw new NotImplementedException("Note type " + note.Type);

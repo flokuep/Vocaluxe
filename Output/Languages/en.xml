@@ -65,6 +65,7 @@
   <string name="TR_CONFIG_ARTIST_LETTER">Artist by letter</string>
   <string name="TR_CONFIG_TITLE_LETTER">Title by letter</string>
   <string name="TR_CONFIG_EDITION">Edition</string>
+  <string name="TR_CONFIG_TAGS">Tags</string>
   <string name="TR_CONFIG_GENRE">Genre</string>
   <string name="TR_CONFIG_YEAR">Year</string>
   <string name="TR_CONFIG_DECADE">Decade</string>
@@ -148,12 +149,13 @@
   <string name="TR_SCREENSONG_NOYEAR">No Year</string>
   <string name="TR_SCREENSONG_NOGENRE">No Genre</string>
   <string name="TR_SCREENSONG_NOEDITION">No Edition</string>
+  <string name="TR_SCREENSONG_NOTAGS">No Tags</string>
   <string name="TR_SCREENSONG_ALLSONGS">All Songs</string>
   <string name="TR_SCREENSONG_NUMSONGS">(%v songs)</string>
   <string name="TR_SCREENSONG_NUMSONG">(%v song)</string>
   <string name="TR_SCREENSONG_ARTIST_TITLE">%a - %t</string>
   <string name="TR_SCREENSONG_HELPMESSAGE">A-Z = Jump to the letter • F3 = Search • CTRL+R = Random selection • CTRL+S = Start medley • CTRL+# = Change song sorting • CTRL+T = Enable/Disable category view • Space = Open song options • ESC = Back to main menu</string>
-  <string name="TR_SCREENSONG_HELPMESSAGESEARCH">A-Z = Search artist and title, prefixes for the search → a: = artist • t: = title • c: = creator • e: = edition • g: = genre • y: = year (e.g. 1999 or 1980-1989) • l: = language • al: = album • fi: = file name • fo: = folder name</string>
+  <string name="TR_SCREENSONG_HELPMESSAGESEARCH">A-Z = Search artist and title, prefixes for the search → a: = artist • t: = title • c: = creator • e: = edition • g: = genre • y: = year (e.g. 1999 or 1980-1989) • l: = language • al: = album • fi: = file name • fo: = folder name • #: = tags</string>
   <string name="TR_SCREENSONG_HELPMESSAGEPARTY">1-6 = Press your team number to use a random song joker</string>
   <string name="TR_SCREENSONG_SORTING">Sorting: %s</string>
   <string name="TR_SCREENSONG_NOMEDLEY">No Medley for this song!</string>
