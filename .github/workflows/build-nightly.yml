@@ -40,14 +40,6 @@ jobs:
     needs: build-windows
     name: Publish release
     steps:
-    - name: Create Release
-      if: ${{ github.event_name == 'push'}}
-      uses: ncipollo/release-action@v1.14.0
-      with:
-          name: Latest Nightly build
-          tag: Nightly
-          prerelease: true
-          allowUpdates: true
     - name: Move tag
       if: ${{ github.event_name == 'push'}}
       uses: actions/github-script@v7
@@ -60,7 +52,16 @@ jobs:
             ref: "tags/Nightly",
             sha: context.sha
           })
-
+    - name: Create Release
+      if: ${{ github.event_name == 'push'}}
+      uses: ncipollo/release-action@v1.14.0
+      with:
+          name: Latest Nightly build
+          tag: Nightly
+          prerelease: true
+          allowUpdates: true
+          removeArtifacts: true
+          generateReleaseNotes: true
 
   attach-artifacts:
     name: Attach artifacts
