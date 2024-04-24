@@ -48,7 +48,6 @@ jobs:
           tag: Nightly
           prerelease: true
           allowUpdates: true
-          artifacts: Vocaluxe_Nightly_x64
 
   attach-artifacts:
     name: Attach artifacts
