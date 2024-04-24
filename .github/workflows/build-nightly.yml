@@ -7,9 +7,28 @@ on:
     branches: [ "develop" ]
 
 jobs:
+  prepare-build:
+    name: Prepare build
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.previous-tag.outputs.tag }}-g${{ steps.shorten-sha.outputs.sha }}
+    steps:
+      - name: Get previous tag
+        id: previous-tag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        with:
+          fallback: 0.0.0
+      - name: Shorten sha
+        id: shorten-sha
+        run: |
+          sha=$(echo ${{ github.sha }} | cut -c 1-7) >> $GITHUB_OUTPUT
+
   build-windows:
     name: Build Windows
+    needs: prepare-build
     uses: ./.github/workflows/dotnet-desktop.yml
+    with:
+      version: ${{ needs.prepare-build.outputs }}-g${{ github.sha }}
 
   publish:
     runs-on: ubuntu-latest
