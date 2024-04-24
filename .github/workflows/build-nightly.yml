@@ -54,12 +54,11 @@ jobs:
       with:
         result-encoding: string
         script: |
-          github.rest.git.createTag({
-            ${{context.repo.owner}},
-            ${{context.repo.repo}},
-            "Nightly",
-            "",
-            ${{ github.sha }},
+          github.rest.git.updateRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: "tags/Nightly",
+            sha: context.sha
           })
 
 
