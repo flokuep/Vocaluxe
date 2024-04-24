@@ -53,7 +53,7 @@ jobs:
     - name: Attach to release
       uses: softprops/action-gh-release@v2
       with:
-        files: ${{ matrix.build.artifact-name }}.zip
+        files: ${{ steps.download-artifact.outputs.download-path }}/../${{ matrix.build.artifact-name }}.zip
         tag_name: Nightly
 
 
