@@ -54,6 +54,14 @@ jobs:
            env:
             Configuration: ${{ matrix.configuration }}
 
+         - name: Download and add video files
+           run: |          
+             Invoke-WebRequest -Uri 'https://github.com/Vocaluxe/VocaluxeDependencies/blob/master/zips/themes/vocaluxe.themes.vocaluxe-2024.video-part1.zip?raw=true' -OutFile 'vocaluxe.themes.vocaluxe-2024.video-part1.zip'
+             Invoke-WebRequest -Uri 'https://github.com/Vocaluxe/VocaluxeDependencies/blob/master/zips/themes/vocaluxe.themes.vocaluxe-2024.video-part2.zip?raw=true' -OutFile 'vocaluxe.themes.vocaluxe-2024.video-part2.zip'
+             7z x '-aoa' '-oOutput/' './vocaluxe.themes.vocaluxe-2024.video-part1.zip'
+             Remove-Item './vocaluxe.themes.vocaluxe-2024.video-part1.zip'
+             Remove-Item './vocaluxe.themes.vocaluxe-2024.video-part2.zip'
+
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
          - name: Upload build artifact
            id: upload-artifact
