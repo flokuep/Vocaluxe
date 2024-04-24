@@ -40,7 +40,8 @@ jobs:
     needs: build-windows
     name: Publish release
     steps:
-    - name: Remove old nightly 
+    - name: Remove old nightly
+      if: ${{ github.event_name == 'push'}}
       uses: dev-drprasad/delete-tag-and-release@v1.1
       with:
         tag_name: Nightly
@@ -50,11 +51,11 @@ jobs:
       if: ${{ github.event_name == 'push'}}
       uses: softprops/action-gh-release@v2
       with:          
-          name: Latest Nightly build
-          tag_name: Nightly
-          target_commitish: ${{ github.sha }}
-          prerelease: true
-          generate_release_notes: true
+        name: Latest Nightly build
+        tag_name: Nightly
+        target_commitish: ${{ github.sha }}
+        prerelease: true
+        generate_release_notes: true
 
   attach-artifacts:
     name: Attach artifacts
