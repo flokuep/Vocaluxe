@@ -45,7 +45,8 @@ jobs:
       uses: dev-drprasad/delete-tag-and-release@v1.1
       with:
         tag_name: Nightly
-        delete_release: true 
+        delete_release: true
+        github_token: ${{ github.token }}
 
     - name: Create Release
       if: ${{ github.event_name == 'push'}}
