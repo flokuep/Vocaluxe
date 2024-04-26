@@ -38,7 +38,7 @@ jobs:
            uses: actions/setup-dotnet@v4
 
          - name: Setup Nuget
-           uses: Nuget/setup-nuget@v1.2.0
+           uses: Nuget/setup-nuget@v2
 
          - name: Restore nuget packages
            run: nuget restore -DisableParallelProcessing $env:Solution_Name
