@@ -39,7 +39,7 @@ jobs:
             tag_name: ${{ inputs.version-name }}
             target_commitish: ${{ github.sha }}
             prerelease: ${{ env.IS_NIGHTLY }}
-            latest: ${{ !env.IS_NIGHTLY }}
+            latest: ${{ env.IS_NIGHTLY == false}}
             generate_release_notes: true
 
     attach-artifacts:

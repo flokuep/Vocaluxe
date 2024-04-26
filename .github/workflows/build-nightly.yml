@@ -4,9 +4,6 @@ on:
   push:
     branches: [ "develop" ]
 
-env:
-  VERSION_NAME: Nightly
-
 jobs:
   prepare-build:
     name: Prepare build
@@ -36,7 +33,7 @@ jobs:
     uses: ./.github/workflows/dotnet-desktop.yml
     with:
       version: ${{ needs.prepare-build.outputs.version }}
-      version-name: $VERSION_NAME
+      version-name: Nightly
 
   publish:
     name: Publish release
@@ -44,6 +41,6 @@ jobs:
     uses: ./.github/workflows/publish-release.yml
     with:
       release-name: Latest nightly build
-      version-name: $VERSION_NAME
+      version-name: Nightly
       artifact-x86: ${{ needs.build-windows.outputs.x86 }} 
       artifact-x64: ${{ needs.build-windows.outputs.x64 }} 
