@@ -4,6 +4,9 @@ on:
   push:
     branches: [ "develop" ]
 
+env:
+  VERSION_NAME: Nightly
+
 jobs:
   prepare-build:
     name: Prepare build
@@ -33,59 +36,14 @@ jobs:
     uses: ./.github/workflows/dotnet-desktop.yml
     with:
       version: ${{ needs.prepare-build.outputs.version }}
-      version-name: Nightly
+      version-name: $VERSION_NAME
 
   publish:
-    runs-on: ubuntu-latest
-    needs: build-windows
     name: Publish release
-    steps:
-    - name: Remove old nightly
-      if: ${{ github.event_name == 'push'}}
-      uses: dev-drprasad/delete-tag-and-release@v1.1
-      with:
-        tag_name: Nightly
-        delete_release: true
-        github_token: ${{ github.token }}
-
-    - name: Create Release
-      if: ${{ github.event_name == 'push'}}
-      uses: softprops/action-gh-release@v2
-      with:          
-        name: Latest Nightly build
-        tag_name: Nightly
-        target_commitish: ${{ github.sha }}
-        prerelease: true
-        generate_release_notes: true
-
-  attach-artifacts:
-    name: Attach artifacts
-    needs: [build-windows, publish]
-    strategy:
-      matrix:
-        build:
-          - label: "Windows_x86"
-            artifact-name: ${{needs.build-windows.outputs.x86}}
-          - label: "Windows_x64"
-            artifact-name: ${{needs.build-windows.outputs.x64}}
-
-    runs-on: ubuntu-latest
-    steps:
-    - name: Download artifact
-      id: download-artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: ${{ matrix.build.artifact-name }}
-
-    - name: Zip files
-      run: |
-        cd ${{ steps.download-artifact.outputs.download-path }}
-        7z a '../${{ matrix.build.artifact-name }}.zip'
-
-    - name: Attach to release
-      uses: softprops/action-gh-release@v2
-      with:
-        files: ${{ steps.download-artifact.outputs.download-path }}/../${{ matrix.build.artifact-name }}.zip
-        tag_name: Nightly
-
-
+    needs: [prepare-build, build-windows]
+    uses: ./.github/workflows/publish-release.yml
+    with:
+      version: ${{ needs.prepare-build.outputs.version }}
+      version-name: $VERSION_NAME
+      artifact-x86: ${{ needs.build-windows.outputs.x86 }} 
+      artifact-x64: ${{ needs.build-windows.outputs.x64 }} 

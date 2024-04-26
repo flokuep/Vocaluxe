@@ -1,0 +1,76 @@
+name: Publish release
+
+on: 
+    workflow_call:
+        inputs:
+          release-name:
+            type: string
+            default: ${{ inputs.version-name }}
+          version-name:
+            required: true
+            type: string
+          artifact-x86:
+            required: true
+            type: string
+          artifact-x64:
+            required: true
+            type: string
+
+env:
+    IS_NIGHTLY: ${{ inputs.version-name == 'Nightly'}}
+
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+        name: Publish release
+        steps:
+        - name: Remove old release
+          if: ${{ env.IS_NIGHTLY }}
+          uses: dev-drprasad/delete-tag-and-release@v1.1
+          with:
+            tag_name: Nightly
+            delete_release: true
+            github_token: ${{ github.token }}
+    
+        - name: Create Release
+          uses: softprops/action-gh-release@v2
+          with:          
+            name: ${{ inputs.release-name }}
+            tag_name: ${{ inputs.version-name }}
+            target_commitish: ${{ github.sha }}
+            prerelease: ${{ env.IS_NIGHTLY }}
+            latest: ${{ !env.IS_NIGHTLY }}
+            generate_release_notes: true
+
+    attach-artifacts:
+        name: Attach artifacts
+        needs: [publish]
+        strategy:
+            matrix:
+              build:
+                - label: "Windows_x86"
+                  artifact-name: ${{ inputs.artifact-x86 }}
+                - label: "Windows_x64"
+                  artifact-name: ${{ inputs.artifact-x64}}
+
+        runs-on: ubuntu-latest
+        steps:
+        - name: Download artifact
+          id: download-artifact
+          uses: actions/download-artifact@v4
+          with:
+            name: ${{ matrix.build.artifact-name }}
+    
+        - name: Zip files
+          run: |
+            cd ${{ steps.download-artifact.outputs.download-path }}
+            7z a '../${{ matrix.build.artifact-name }}.zip'
+    
+        - name: Attach to release
+          uses: softprops/action-gh-release@v2
+          with:
+            files: ${{ steps.download-artifact.outputs.download-path }}/../${{ matrix.build.artifact-name }}.zip
+            tag_name: Nightly
+    
+            
+            
