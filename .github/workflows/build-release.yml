@@ -2,7 +2,6 @@ name: Release build
 
 on:
   push:
-    tags: '**'
     tags-ignore: 'Nightly'
 
 
