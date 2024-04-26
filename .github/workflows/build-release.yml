@@ -1,0 +1,47 @@
+name: Release build
+
+on:
+  push:
+    tags: '**'
+    tags-ignore: 'Nightly'
+
+
+jobs:
+  prepare-build:
+    name: Prepare build
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.previous-tag.outputs.tag }}-g${{ steps.shorten-sha.outputs.sha }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-tags: true
+          sparse-checkout: |
+            README.md
+      - name: Get previous tag
+        id: previous-tag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        with:
+          fallback: 0.0.0
+      - name: Shorten sha
+        id: shorten-sha
+        run: |
+          sha=$(echo ${{ github.sha }} | cut -c 1-7) >> $GITHUB_OUTPUT
+
+  build-windows:
+    name: Build Windows
+    needs: prepare-build
+    uses: ./.github/workflows/dotnet-desktop.yml
+    with:
+      version: ${{ needs.prepare-build.outputs.version }}
+      version-name: ${{ github.ref }}
+
+  publish:
+    name: Publish release
+    needs: [prepare-build, build-windows]
+    uses: ./.github/workflows/publish-release.yml
+    with:
+      version-name: ${{ github.ref }}
+      artifact-x86: ${{ needs.build-windows.outputs.x86 }} 
+      artifact-x64: ${{ needs.build-windows.outputs.x64 }} 
