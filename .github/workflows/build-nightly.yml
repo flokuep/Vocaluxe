@@ -43,7 +43,7 @@ jobs:
     needs: [prepare-build, build-windows]
     uses: ./.github/workflows/publish-release.yml
     with:
-      version: ${{ needs.prepare-build.outputs.version }}
+      release-name: Latest nightly build
       version-name: $VERSION_NAME
       artifact-x86: ${{ needs.build-windows.outputs.x86 }} 
       artifact-x64: ${{ needs.build-windows.outputs.x64 }} 
