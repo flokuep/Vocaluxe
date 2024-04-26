@@ -6,6 +6,9 @@ on:
           version:
             required: true
             type: string
+          version-name:
+            required: true
+            type: string
         outputs:
             x64: 
                 value: ${{ jobs.build.outputs.x64}}
@@ -24,6 +27,7 @@ jobs:
          env:
             Solution_Name: Vocaluxe.sln
             VersionTag: ${{ inputs.version }}
+            Version_Name: ${{ inputs.version-name }}
             Artifact_Name: Vocaluxe_Nightly_${{ matrix.platform }}
       
          outputs:
