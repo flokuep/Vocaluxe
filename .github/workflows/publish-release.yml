@@ -22,17 +22,17 @@ env:
 jobs:
     publish:
         runs-on: ubuntu-latest
-        name: Publish release
+        name: Create release
         steps:
-        - name: Remove old release
+        - name: Remove existing release
           if: ${{ env.IS_NIGHTLY }}
           uses: dev-drprasad/delete-tag-and-release@v1.1
           with:
-            tag_name: Nightly
+            tag_name: ${{ inputs.version-name }}
             delete_release: true
             github_token: ${{ github.token }}
     
-        - name: Create Release
+        - name: Create release
           uses: softprops/action-gh-release@v2
           with:          
             name: ${{ inputs.release-name }}
@@ -48,29 +48,29 @@ jobs:
         strategy:
             matrix:
               build:
-                - label: "Windows_x86"
+                - label: "Windows x86"
                   artifact-name: ${{ inputs.artifact-x86 }}
-                - label: "Windows_x64"
+                - label: "Windows x64"
                   artifact-name: ${{ inputs.artifact-x64}}
 
         runs-on: ubuntu-latest
         steps:
-        - name: Download artifact
+        - name: Download artifact (${{matrix.build.label}})
           id: download-artifact
           uses: actions/download-artifact@v4
           with:
             name: ${{ matrix.build.artifact-name }}
     
-        - name: Zip files
+        - name: Zip files (${{matrix.build.label}})
           run: |
             cd ${{ steps.download-artifact.outputs.download-path }}
             7z a '../${{ matrix.build.artifact-name }}.zip'
     
-        - name: Attach to release
+        - name: Attach to release (${{matrix.build.label}})
           uses: softprops/action-gh-release@v2
           with:
             files: ${{ steps.download-artifact.outputs.download-path }}/../${{ matrix.build.artifact-name }}.zip
-            tag_name: Nightly
+            tag_name: ${{inputs.version-name}}
     
             
             
