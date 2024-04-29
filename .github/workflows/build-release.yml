@@ -10,19 +10,8 @@ jobs:
     name: Prepare build
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.previous-tag.outputs.tag }}-g${{ steps.shorten-sha.outputs.sha }}
+      version: ${{ github.ref }}-g${{ steps.shorten-sha.outputs.sha }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-tags: true
-          sparse-checkout: |
-            README.md
-      - name: Get previous tag
-        id: previous-tag
-        uses: "WyriHaximus/github-action-get-previous-tag@v1"
-        with:
-          fallback: 0.0.0
       - name: Shorten sha
         id: shorten-sha
         run: |
